@@ -1,3 +1,5 @@
+from lxml import etree
+
 import iati.core.resources
 
 class Codelist(object):
@@ -6,9 +8,13 @@ class Codelist(object):
     def __init__(self, name=None, path=None, xml=None):
         def parse_from_xml(xml):
             """Parse a Codelist from the XML that defines it"""
-            self.name = 'FlowType'
-            for i in range(0, 6):
-                self.add_code(iati.core.codelists.Code())
+            tree = etree.fromstring(xml)
+
+            self.name = tree.attrib['name']
+            for codeEl in tree.findall('codelist-items/codelist-item'):
+                value = codeEl.find('code').text
+                name = codeEl.find('description/narrative').text
+                self.add_code(iati.core.codelists.Code(value, name))
 
         self.codes = []
         self.name = name

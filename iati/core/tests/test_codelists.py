@@ -74,6 +74,7 @@ class TestCodelists(object):
 
         assert 'FlowType' == name
         assert 6 == len(codelist.codes)
+        assert '10' == codelist.codes[0].value
 
 
 class TestCodes(object):
