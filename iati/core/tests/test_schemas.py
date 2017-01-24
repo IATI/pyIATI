@@ -13,7 +13,7 @@ class TestSchemas(object):
 
     def test_schema_name_instance(self):
         """Check a Schema's attributes are correct when defined with only a name"""
-        name_to_set = "test Codelist name"
+        name_to_set = "test Schema name"
         schema = iati.core.schemas.Schema(name_to_set)
 
         assert name_to_set == schema.name
