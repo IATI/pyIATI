@@ -1,10 +1,10 @@
 class Codelist(object):
     """Representation of a Codelist as defined within the IATI SSOT"""
 
-    def __init__(self, name=None):
+    def __init__(self, name=None, path=None):
         self.codes = []
         self.name = name
-        self.path = None
+        self.path = path
 
 
 class Code(object):

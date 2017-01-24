@@ -30,6 +30,20 @@ class TestCodelists(object):
         assert name_to_set == name
         assert None == path
 
+    def test_codelist_name_and_path_instance(self):
+        """Check a Codelist's attributes are correct when defined with a name and path"""
+        name_to_set = "test Codelist name"
+        path_to_set = "test Codelist path"
+        codelist = iati.core.codelists.Codelist(name_to_set, path_to_set)
+
+        codes = codelist.codes
+        name = codelist.name
+        path = codelist.path
+
+        assert [] == codes
+        assert name_to_set == name
+        assert path_to_set == path
+
 
 class TestCodes(object):
     """A container for tests relating to Codes"""
