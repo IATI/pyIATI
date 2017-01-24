@@ -19,6 +19,7 @@ class TestCodelists(object):
         assert name == None
         assert path == None
 
+
 class TestCodes(object):
     """A container for tests relating to Codes"""
 
@@ -33,3 +34,16 @@ class TestCodes(object):
         assert activation_date == None
         assert name == None
         assert value == None
+
+    def test_code_value_instance(self):
+        """Check a Code's attributes are correct when being defined with only a value"""
+        value_to_set = "test code value"
+        code = iati.core.codelists.Code(value_to_set)
+
+        activation_date = code.activation_date
+        name = code.name
+        value = code.value
+
+        assert activation_date == None
+        assert name == None
+        assert value == value_to_set

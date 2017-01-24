@@ -11,7 +11,7 @@ class Codelist(object):
 class Code(object):
     """Representation of a Code contained within a Codelist"""
 
-    def __init__(self):
+    def __init__(self, value=None):
         self.activation_date = None
         self.name = None
-        self.value = None
+        self.value = value
