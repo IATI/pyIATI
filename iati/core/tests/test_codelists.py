@@ -27,11 +27,9 @@ class TestCodes(object):
         """Check a Code's default attributes are correct"""
         code = iati.core.codelists.Code()
 
-        activation_date = code.activation_date
         name = code.name
         value = code.value
 
-        assert None == activation_date
         assert None == name
         assert None == value
 
@@ -40,11 +38,9 @@ class TestCodes(object):
         value_to_set = "test code value"
         code = iati.core.codelists.Code(value_to_set)
 
-        activation_date = code.activation_date
         name = code.name
         value = code.value
 
-        assert None == activation_date
         assert None == name
         assert value_to_set == value
 
@@ -54,10 +50,8 @@ class TestCodes(object):
         name_to_set = "test Code name"
         code = iati.core.codelists.Code(value_to_set, name_to_set)
 
-        activation_date = code.activation_date
         name = code.name
         value = code.value
 
-        assert None == activation_date
         assert name_to_set == name
-        assert value_to_set == name
+        assert value_to_set == value
