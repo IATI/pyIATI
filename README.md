@@ -1,2 +1,18 @@
 # iati.core
+
 The iati.core Python module.
+
+Dev Installation
+================
+
+```
+# install software development dependencies
+apt-get install python-pip python-virtualenv
+
+# create and start a virtual environment
+virtualenv -p python3 pyenv
+source pyenv/bin/activate
+
+# install Python package dependencies
+pip install -r requirements.txt
+```
