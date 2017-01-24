@@ -54,6 +54,16 @@ class TestCodelists(object):
 
         assert 1 == num_codes
 
+    def test_codelist_add_code_decline_non_code(self):
+        """Check something that is not a code cannot be added to a Codelist"""
+        codelist = iati.core.codelists.Codelist()
+        not_a_code = True
+        codelist.add_code(not_a_code)
+
+        num_codes = len(codelist.codes)
+
+        assert 0 == num_codes
+
 
 class TestCodes(object):
     """A container for tests relating to Codes"""

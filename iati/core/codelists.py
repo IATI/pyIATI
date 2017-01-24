@@ -8,7 +8,8 @@ class Codelist(object):
 
     def add_code(self, code):
         """Add a Code to the Codelist"""
-        self.codes.append(code)
+        if isinstance(code, Code):
+            self.codes.append(code)
 
 
 class Code(object):
