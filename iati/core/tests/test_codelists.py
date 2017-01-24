@@ -3,16 +3,20 @@ import pytest
 import iati.core.codelists
 
 class TestCodelists(object):
-    """A container for tests relating to codelists"""
+    """A container for tests relating to Codelists"""
     pass
 
 class TestCodes(object):
-    """A container for tests relating to codes"""
+    """A container for tests relating to Codes"""
 
-    def test_code_default_activation_date(self):
-        """Check a Code's default activation date is correct"""
+    def test_code_default_attributes(self):
+        """Check a Code's default attributes are correct"""
         code = iati.core.codelists.Code()
 
-        result = code.activation_date
+        activation_date = code.activation_date
+        name = code.name
+        value = code.value
 
-        assert result == None
+        assert activation_date == None
+        assert name == None
+        assert value == None
