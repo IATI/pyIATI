@@ -2,4 +2,5 @@ class Codelist(object):
     pass
 
 class Code(object):
-    pass
+    def __init__(self):
+        self.activation_date = None
