@@ -16,3 +16,11 @@ source pyenv/bin/activate
 # install Python package dependencies
 pip install -r requirements.txt
 ```
+
+Running
+=======
+
+```
+# to run the tests
+py.test iati/
+```
