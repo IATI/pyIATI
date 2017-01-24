@@ -10,12 +10,10 @@ class TestCodelists(object):
         codelist = iati.core.codelists.Codelist()
 
         codes = codelist.codes
-        condition = codelist.condition
         name = codelist.name
         path = codelist.path
 
         assert codes == []
-        assert condition == None
         assert name == None
         assert path == None
 

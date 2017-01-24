@@ -3,7 +3,6 @@ class Codelist(object):
 
     def __init__(self):
         self.codes = []
-        self.condition = None
         self.name = None
         self.path = None
 
