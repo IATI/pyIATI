@@ -6,6 +6,10 @@ class Codelist(object):
         self.name = name
         self.path = path
 
+    def add_code(self, code):
+        """Add a Code to the Codelist"""
+        self.codes.append(code)
+
 
 class Code(object):
     """Representation of a Code contained within a Codelist"""

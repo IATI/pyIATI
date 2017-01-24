@@ -44,6 +44,16 @@ class TestCodelists(object):
         assert name_to_set == name
         assert path_to_set == path
 
+    def test_codelist_add_code(self):
+        """Check a Code can be added to a Codelist"""
+        codelist = iati.core.codelists.Codelist()
+        code = iati.core.codelists.Code()
+        codelist.add_code(code)
+
+        num_codes = len(codelist.codes)
+
+        assert 1 == num_codes
+
 
 class TestCodes(object):
     """A container for tests relating to Codes"""
