@@ -4,7 +4,20 @@ import iati.core.codelists
 
 class TestCodelists(object):
     """A container for tests relating to Codelists"""
-    pass
+
+    def test_codelist_default_attributes(self):
+        """Check a Codelist's default attributes are correct"""
+        codelist = iati.core.codelists.Codelist()
+
+        codes = codelist.codes
+        condition = codelist.condition
+        name = codelist.name
+        path = codelist.path
+
+        assert codes == []
+        assert condition == None
+        assert name == None
+        assert path == None
 
 class TestCodes(object):
     """A container for tests relating to Codes"""
