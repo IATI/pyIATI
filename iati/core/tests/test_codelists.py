@@ -13,9 +13,9 @@ class TestCodelists(object):
         name = codelist.name
         path = codelist.path
 
-        assert codes == []
-        assert name == None
-        assert path == None
+        assert [] == codes
+        assert None == name
+        assert None == path
 
     def test_codelist_name_instance(self):
         """Check a Codelist's attributes are correct when defined with only a name"""
@@ -26,9 +26,9 @@ class TestCodelists(object):
         name = codelist.name
         path = codelist.path
 
-        assert codes == []
-        assert name == name_to_set
-        assert path == None
+        assert [] == codes
+        assert name_to_set == name
+        assert None == path
 
 
 class TestCodes(object):
