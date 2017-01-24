@@ -9,26 +9,18 @@ class TestCodelists(object):
         """Check a Codelist's default attributes are correct"""
         codelist = iati.core.codelists.Codelist()
 
-        codes = codelist.codes
-        name = codelist.name
-        path = codelist.path
-
-        assert [] == codes
-        assert None == name
-        assert None == path
+        assert [] == codelist.codes
+        assert None == codelist.name
+        assert None == codelist.path
 
     def test_codelist_name_instance(self):
         """Check a Codelist's attributes are correct when defined with only a name"""
         name_to_set = "test Codelist name"
         codelist = iati.core.codelists.Codelist(name_to_set)
 
-        codes = codelist.codes
-        name = codelist.name
-        path = codelist.path
-
-        assert [] == codes
-        assert name_to_set == name
-        assert None == path
+        assert [] == codelist.codes
+        assert name_to_set == codelist.name
+        assert None == codelist.path
 
     def test_codelist_name_and_path_instance(self):
         """Check a Codelist's attributes are correct when defined with a name and path"""
@@ -36,13 +28,9 @@ class TestCodelists(object):
         path_to_set = "test Codelist path"
         codelist = iati.core.codelists.Codelist(name_to_set, path_to_set)
 
-        codes = codelist.codes
-        name = codelist.name
-        path = codelist.path
-
-        assert [] == codes
-        assert name_to_set == name
-        assert path_to_set == path
+        assert [] == codelist.codes
+        assert name_to_set == codelist.name
+        assert path_to_set == codelist.path
 
     def test_codelist_add_code(self):
         """Check a Code can be added to a Codelist"""
@@ -82,22 +70,16 @@ class TestCodes(object):
         """Check a Code's default attributes are correct"""
         code = iati.core.codelists.Code()
 
-        name = code.name
-        value = code.value
-
-        assert None == name
-        assert None == value
+        assert None == code.name
+        assert None == code.value
 
     def test_code_value_instance(self):
         """Check a Code's attributes are correct when being defined with only a value"""
         value_to_set = "test Code value"
         code = iati.core.codelists.Code(value_to_set)
 
-        name = code.name
-        value = code.value
-
-        assert None == name
-        assert value_to_set == value
+        assert None == code.name
+        assert value_to_set == code.value
 
     def test_code_value_and_name_instance(self):
         """Check a Code's attributes are correct when being defined with a value and name"""
@@ -105,8 +87,5 @@ class TestCodes(object):
         name_to_set = "test Code name"
         code = iati.core.codelists.Code(value_to_set, name_to_set)
 
-        name = code.name
-        value = code.value
-
-        assert name_to_set == name
-        assert value_to_set == value
+        assert name_to_set == code.name
+        assert value_to_set == code.value
