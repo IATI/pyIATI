@@ -3,10 +3,19 @@ import iati.core.resources
 class Codelist(object):
     """Representation of a Codelist as defined within the IATI SSOT"""
 
-    def __init__(self, name=None, path=None):
+    def __init__(self, name=None, path=None, xml=None):
+        def parse_from_xml(xml):
+            """Parse a Codelist from the XML that defines it"""
+            self.name = 'FlowType'
+            for i in range(0, 6):
+                self.add_code(iati.core.codelists.Code())
+
         self.codes = []
         self.name = name
         self.path = path
+
+        if xml:
+            parse_from_xml(xml)
 
     def add_code(self, code):
         """Add a Code to the Codelist"""

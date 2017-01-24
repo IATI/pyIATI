@@ -55,7 +55,7 @@ class TestCodelists(object):
         assert 1 == num_codes
 
     def test_codelist_add_code_decline_non_code(self):
-        """Check something that is not a code cannot be added to a Codelist"""
+        """Check something that is not a Code cannot be added to a Codelist"""
         codelist = iati.core.codelists.Codelist()
         not_a_code = True
         codelist.add_code(not_a_code)
@@ -63,6 +63,17 @@ class TestCodelists(object):
         num_codes = len(codelist.codes)
 
         assert 0 == num_codes
+
+    def test_codelist_define_from_xml(self):
+        """Check that a Codelist can be generated from an XML codelist definition"""
+        path = iati.core.resources.path_codelist('FlowType')
+        xml_str = iati.core.resources.load_as_string(path)
+        codelist = iati.core.codelists.Codelist(xml=xml_str)
+
+        name = codelist.name
+
+        assert 'FlowType' == name
+        assert 6 == len(codelist.codes)
 
 
 class TestCodes(object):
