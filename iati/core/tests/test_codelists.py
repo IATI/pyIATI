@@ -31,9 +31,9 @@ class TestCodes(object):
         name = code.name
         value = code.value
 
-        assert activation_date == None
-        assert name == None
-        assert value == None
+        assert None == activation_date
+        assert None == name
+        assert None == value
 
     def test_code_value_instance(self):
         """Check a Code's attributes are correct when being defined with only a value"""
@@ -44,9 +44,9 @@ class TestCodes(object):
         name = code.name
         value = code.value
 
-        assert activation_date == None
-        assert name == None
-        assert value == value_to_set
+        assert None == activation_date
+        assert None == name
+        assert value_to_set == value
 
     def test_code_value_and_name_instance(self):
         """Check a Code's attributes are correct when being defined with a value and name"""
@@ -58,6 +58,6 @@ class TestCodes(object):
         name = code.name
         value = code.value
 
-        assert activation_date == None
-        assert name == name_to_set
-        assert value == value_to_set
+        assert None == activation_date
+        assert name_to_set == name
+        assert value_to_set == name
