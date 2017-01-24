@@ -70,9 +70,7 @@ class TestCodelists(object):
         xml_str = iati.core.resources.load_as_string(path)
         codelist = iati.core.codelists.Codelist(xml=xml_str)
 
-        name = codelist.name
-
-        assert 'FlowType' == name
+        assert 'FlowType' == codelist.name
         assert 6 == len(codelist.codes)
         assert '10' == codelist.codes[0].value
 
