@@ -47,3 +47,17 @@ class TestCodes(object):
         assert activation_date == None
         assert name == None
         assert value == value_to_set
+
+    def test_code_value_and_name_instance(self):
+        """Check a Code's attributes are correct when being defined with a value and name"""
+        value_to_set = "test Code value"
+        name_to_set = "test Code name"
+        code = iati.core.codelists.Code(value_to_set, name_to_set)
+
+        activation_date = code.activation_date
+        name = code.name
+        value = code.value
+
+        assert activation_date == None
+        assert name == name_to_set
+        assert value == value_to_set
