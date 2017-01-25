@@ -139,10 +139,10 @@ logging-modules=logging
 
 # Spelling dictionary name. Available dictionaries: none. To make it working
 # install python-enchant package.
-spelling-dict=
+spelling-dict=en_GB
 
 # List of comma separated words that should not be checked.
-spelling-ignore-words=
+spelling-ignore-words=codelist,codelists,IATI,NSMAP,SSOT,TODO,XML
 
 # A path to a file that contains private dictionary; one word per line.
 spelling-private-dict-file=
@@ -201,7 +201,7 @@ redefining-builtins-modules=six.moves,future.builtins
 good-names=i,j,k,ex,Run,_
 
 # Bad variable names which should always be refused, separated by a comma
-bad-names=foo,bar,baz,toto,tutu,tata
+bad-names=foo,bar,baz,toto,tutu,tata,jim,bob
 
 # Colon-delimited sets of names that determine each other's naming style when
 # the name regexes allow several styles.
