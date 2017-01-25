@@ -24,6 +24,7 @@ Running
 # to run the tests
 py.test iati/
 
-# to run the linter
+# to run the linters
 pylint iati
+pep8 iati/
 ```
