@@ -143,7 +143,7 @@ logging-modules=logging
 spelling-dict=en_GB
 
 # List of comma separated words that should not be checked.
-spelling-ignore-words=codelist,codelists,IATI,NSMAP,SSOT,TODO,XML
+spelling-ignore-words=codelist,codelists,IATI,namespace,NSMAP,SSOT,TODO,XML
 
 # A path to a file that contains private dictionary; one word per line.
 spelling-private-dict-file=
