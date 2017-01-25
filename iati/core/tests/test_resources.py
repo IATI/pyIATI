@@ -17,7 +17,8 @@ class TestResources(object):
         assert len(content) > 3200
 
     def test_resource_filename(self):
-        """Check that resource filenames are found correctly"""
+        """Check that resource file names are found correctly"""
+        # TODO: Implement better assertions
         path = iati.core.resources.BASE_PATH_SCHEMAS
         filename = iati.core.resources.resource_filename(path)
 

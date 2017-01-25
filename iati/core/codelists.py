@@ -10,10 +10,8 @@ class Codelist(object):
 
     def __init__(self, name=None, path=None, xml=None):
         def parse_from_xml(xml):
-            """Parse a Codelist from the XML that defines it
-
-            TODO: Define relevant tests and add error handling
-            """
+            """Parse a Codelist from the XML that defines it"""
+            # TODO: Define relevant tests and add error handling
             tree = etree.fromstring(xml)
 
             self.name = tree.attrib['name']
