@@ -1,6 +1,8 @@
 """
 A module containing a core representation of IATI Schemas.
 """
+from lxml import etree
+import iati.core.resources
 
 
 class Schema(object):
@@ -8,3 +10,9 @@ class Schema(object):
 
     def __init__(self, name=None):
         self.name = name
+        self.schema = None
+
+        if name:
+            generated_schema = iati.core.resources.load_as_schema(self.name)
+            if isinstance(generated_schema, etree.XMLSchema):
+                self.schema = generated_schema

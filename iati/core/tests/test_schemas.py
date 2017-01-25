@@ -1,6 +1,7 @@
 """
 A module containing tests for the library representation of Schemas.
 """
+from lxml.etree import XMLSchema
 import iati.core.schemas
 
 
@@ -19,3 +20,12 @@ class TestSchemas(object):
         schema = iati.core.schemas.Schema(name_to_set)
 
         assert schema.name == name_to_set
+
+    def test_schema_define_from_xsd(self):
+        """Check that a Schema can be generated from an XSD definition"""
+        schema_name = 'iati-activities-schema'
+
+        schema = iati.core.schemas.Schema(name=schema_name)
+
+        assert schema.name == schema_name
+        assert isinstance(schema.schema, XMLSchema)

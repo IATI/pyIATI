@@ -3,6 +3,7 @@ A module to provide a way of locating resources within the IATI library.
 """
 import os
 import pkg_resources
+from lxml import etree
 
 
 PACKAGE = __name__
@@ -29,6 +30,17 @@ def path_schema(name):
     TODO: Handle non-202 versions
     """
     return os.sep.join((BASE_PATH_SCHEMAS_202, '{0}.xsd'.format(name)))
+
+
+def load_as_schema(name):
+    """Load a schema with the specified name into an XMLSchema"""
+    schema_path = pkg_resources.resource_filename(PACKAGE, path_schema(name))
+    try:
+        doc = etree.parse(schema_path)
+    except OSError:
+        return None
+
+    return etree.XMLSchema(doc)
 
 
 def load_as_string(path):
