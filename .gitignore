@@ -1,5 +1,14 @@
-# development folders
+###
+### Project-specific ignored files
+###
+
+# pyenv folder specified in README
 pyenv/
+
+###
+### Python .gitignore
+### https://github.com/github/gitignore/tree/7f2ce36bbebaff948bd9fa82b708d233adcb04c6
+###
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
