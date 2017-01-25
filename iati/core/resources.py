@@ -1,13 +1,13 @@
 import os
 import pkg_resources
 
-package = __name__
+PACKAGE = __name__
 
-base_path = 'resources'
-base_path_codelists = os.sep.join((base_path, 'codelists'))
-base_path_codelists_non_embedded = os.sep.join((base_path_codelists, 'non_embedded'))
-base_path_schemas = os.sep.join((base_path, 'schemas'))
-base_path_schemas_202 = os.sep.join((base_path_schemas, '202'))
+BASE_PATH = 'resources'
+BASE_PATH_CODELISTS = os.sep.join((BASE_PATH, 'codelists'))
+BASE_PATH_CODELISTS_NON_EMBEDDED = os.sep.join((BASE_PATH_CODELISTS, 'non_embedded'))
+BASE_PATH_SCHEMAS = os.sep.join((BASE_PATH, 'schemas'))
+BASE_PATH_SCHEMAS_202 = os.sep.join((BASE_PATH_SCHEMAS, '202'))
 
 
 def path_codelist(name):
@@ -15,7 +15,7 @@ def path_codelist(name):
 
     TODO: Handle non-embedded codelists
     """
-    return os.sep.join((base_path_codelists_non_embedded, '{0}.xml'.format(name)))
+    return os.sep.join((BASE_PATH_CODELISTS_NON_EMBEDDED, '{0}.xml'.format(name)))
 
 
 def path_schema(name):
@@ -23,9 +23,9 @@ def path_schema(name):
 
     TODO: Handle non-202 versions
     """
-    return os.sep.join((base_path_schemas_202, '{0}.xsd'.format(name)))
+    return os.sep.join((BASE_PATH_SCHEMAS_202, '{0}.xsd'.format(name)))
 
 
 def load_as_string(path):
     """Load a resource at the specified path into a string"""
-    return pkg_resources.resource_string(package, path)
+    return pkg_resources.resource_string(PACKAGE, path)
