@@ -46,6 +46,10 @@ optimize-ast=no
 
 [MESSAGES CONTROL]
 
+# whitelist specific C libraries that are otherwise not imported
+# (the default is not to load C extensions due to security reasons)
+extension-pkg-whitelist=lxml
+
 # Only show warnings with the listed confidence levels. Leave empty to show
 # all. Valid levels: HIGH, INFERENCE, INFERENCE_FAILURE, UNDEFINED
 confidence=
