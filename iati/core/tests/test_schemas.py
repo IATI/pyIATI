@@ -4,6 +4,7 @@ A module containing tests for the library representation of Schemas.
 
 import iati.core.schemas
 
+
 class TestSchemas(object):
     """A container for tests relating to Schemas"""
 

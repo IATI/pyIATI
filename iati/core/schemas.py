@@ -2,6 +2,7 @@
 A module containing a core representation of IATI Codelists.
 """
 
+
 class Schema(object):
     """Represenation of a Schema as defined within the IATI SSOT"""
 

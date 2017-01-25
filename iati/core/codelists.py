@@ -6,6 +6,7 @@ from lxml import etree
 
 import iati.core.resources
 
+
 class Codelist(object):
     """Representation of a Codelist as defined within the IATI SSOT"""
 
