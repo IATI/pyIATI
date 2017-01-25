@@ -14,9 +14,9 @@ class Codelist(object):
             tree = etree.fromstring(xml)
 
             self.name = tree.attrib['name']
-            for codeEl in tree.findall('codelist-items/codelist-item'):
-                value = codeEl.find('code').text
-                name = codeEl.find('description/narrative').text
+            for code_el in tree.findall('codelist-items/codelist-item'):
+                value = code_el.find('code').text
+                name = code_el.find('description/narrative').text
                 self.add_code(iati.core.codelists.Code(value, name))
 
         self.codes = []
