@@ -50,4 +50,4 @@ class TestResources(object):
         path = iati.core.resources.path_schema('iati-activities-schema')
         schema = iati.core.resources.load_as_tree(path)
 
-        assert isinstance(schema, etree._ElementTree)
+        assert isinstance(schema, etree._ElementTree) #pylint: disable=protected-access
