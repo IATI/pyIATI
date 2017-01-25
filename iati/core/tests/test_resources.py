@@ -1,7 +1,6 @@
 """
 A module containing tests for the library implementation of accessing resources.
 """
-
 import iati.core.resources
 
 

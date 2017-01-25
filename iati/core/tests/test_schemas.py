@@ -1,7 +1,6 @@
 """
 A module containing tests for the library representation of Schemas.
 """
-
 import iati.core.schemas
 
 
