@@ -1,7 +1,7 @@
 lxml==3.6.0
 
 # dev requirements
-pep8==1.7.0
+flake8==3.2.1
 pyenchant==1.6.8
 pylint==1.6.5
 pytest==3.0.5

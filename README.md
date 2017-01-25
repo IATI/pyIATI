@@ -26,5 +26,5 @@ py.test iati/
 
 # to run the linters
 pylint iati
-pep8 iati/
+flake8 iati/
 ```
