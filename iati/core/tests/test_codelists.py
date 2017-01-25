@@ -1,3 +1,7 @@
+"""
+A module containing tests for the library representation of Codelists.
+"""
+
 import iati.core.codelists
 
 class TestCodelists(object):

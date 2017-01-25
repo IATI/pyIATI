@@ -1,3 +1,7 @@
+"""
+A module containing tests for the library representation of IATI constants.
+"""
+
 import iati.core.constants
 
 class TestConstants(object):
