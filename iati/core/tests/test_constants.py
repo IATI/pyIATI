@@ -1,5 +1,3 @@
-import pytest
-
 import iati.core.constants
 
 class TestConstants(object):
@@ -7,4 +5,4 @@ class TestConstants(object):
 
     def test_nsmap(self):
         """Check that the NSMAP constant exists"""
-        assert None != iati.core.constants.NSMAP
+        assert iati.core.constants.NSMAP is not None

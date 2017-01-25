@@ -23,4 +23,7 @@ Running
 ```
 # to run the tests
 py.test iati/
+
+# to run the linter
+pylint iati
 ```

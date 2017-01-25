@@ -1,5 +1,3 @@
-import pytest
-
 import iati.core.resources
 
 class TestResources(object):
@@ -11,7 +9,7 @@ class TestResources(object):
 
         content = iati.core.resources.load_as_string(path)
 
-        assert 3200 < len(content)
+        assert len(content) > 3200
 
     def test_schema_activity(self):
         """Check that the Activity schema contains content"""
@@ -19,4 +17,4 @@ class TestResources(object):
 
         content = iati.core.resources.load_as_string(path)
 
-        assert 130000 < len(content)
+        assert len(content) > 130000

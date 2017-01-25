@@ -1,5 +1,3 @@
-import pytest
-
 class TestTest(object):
     """Container to demonstrate that tests are running"""
 
