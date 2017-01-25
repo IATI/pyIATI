@@ -34,15 +34,31 @@ def path_schema(name):
 
 def load_as_schema(name):
     """Load a schema with the specified name into an XMLSchema"""
-    schema_path = pkg_resources.resource_filename(PACKAGE, path_schema(name))
-    try:
-        doc = etree.parse(schema_path)
-    except OSError:
-        return None
+    path = path_schema(name)
 
-    return etree.XMLSchema(doc)
+    doc = load_as_tree(path)
+    if doc:
+        # TODO: surround schema conversion with error handling
+        return etree.XMLSchema(doc)
+    else:
+        return None
 
 
 def load_as_string(path):
     """Load a resource at the specified path into a string"""
     return pkg_resources.resource_string(PACKAGE, path)
+
+
+def load_as_tree(path):
+    """Load a schema with the specified name into an XMLSchema"""
+    path_filename = resource_filename(path)
+    try:
+        doc = etree.parse(path_filename)
+        return doc
+    except OSError:
+        return None
+
+
+def resource_filename(path):
+    """Find the filesystem path for a specified resource path"""
+    return pkg_resources.resource_filename(PACKAGE, path)
