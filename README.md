@@ -27,4 +27,5 @@ py.test iati/
 # to run the linters
 pylint iati
 flake8 iati/
+pydocstyle iati/
 ```
