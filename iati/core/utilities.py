@@ -2,6 +2,7 @@
 import logging
 import os
 from lxml import etree
+import iati.core.constants
 
 
 def convert_to_schema(tree):
@@ -16,11 +17,11 @@ def convert_to_schema(tree):
 def log(lvl, msg, *args, **kwargs):
     """Logs a message of some level."""
     logging.basicConfig(
-        filename=os.path.join('iatilib.log'),
+        filename=os.path.join(iati.core.constants.LOG_FILE_NAME),
         format='%(asctime)s %(levelname)s:%(name)s: %(message)s %(stack_info)s',
         level=logging.DEBUG
         )
-    logger = logging.getLogger('iati')
+    logger = logging.getLogger(iati.core.constants.LOGGER_NAME)
     logger.log(lvl, msg, *args, **kwargs)
 
 
