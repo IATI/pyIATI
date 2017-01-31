@@ -2,6 +2,7 @@ lxml==3.6.0
 
 # distribution requirements
 Sphinx==1.5.2
+sphinx_rtd_theme==0.1.9
 
 # dev requirements
 flake8==3.2.1
