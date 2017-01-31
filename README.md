@@ -28,4 +28,6 @@ py.test iati/
 pylint iati
 flake8 iati/
 pydocstyle iati/
+# OR
+pylint iati; echo; flake8 iati/; echo; pydocstyle iati/
 ```

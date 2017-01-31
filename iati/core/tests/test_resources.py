@@ -31,15 +31,6 @@ class TestResources(object):
 
         assert len(content) > 130000
 
-    def test_schema_activity_schema(self):
-        """Check that the Activity schema loads into a Schema
-
-        This additionally involves checking that imported schemas also work.
-        """
-        schema = iati.core.resources.load_as_schema('iati-activities-schema')
-
-        assert isinstance(schema, etree.XMLSchema)
-
     def test_schema_activity_tree(self):
         """Check that the Activity schema loads into an XML Tree
 
@@ -48,4 +39,4 @@ class TestResources(object):
         path = iati.core.resources.path_schema('iati-activities-schema')
         schema = iati.core.resources.load_as_tree(path)
 
-        assert isinstance(schema, etree._ElementTree) #pylint: disable=protected-access
+        assert isinstance(schema, etree._ElementTree)  # pylint: disable=protected-access

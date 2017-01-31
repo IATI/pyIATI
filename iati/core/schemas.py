@@ -1,6 +1,7 @@
 """A module containing a core representation of IATI Schemas."""
 from lxml import etree
 import iati.core.resources
+import iati.core.utilities
 
 
 class Schema(object):
@@ -13,6 +14,10 @@ class Schema(object):
         self.schema = None
 
         if name:
-            generated_schema = iati.core.resources.load_as_schema(self.name)
-            if isinstance(generated_schema, etree.XMLSchema):
-                self.schema = generated_schema
+            # TODO: Use try-except pattern
+            path = iati.core.resources.path_schema(self.name)
+            loaded_tree = iati.core.resources.load_as_tree(path)
+            if loaded_tree:
+                generated_schema = iati.core.utilities.convert_to_schema(loaded_tree)
+                if isinstance(generated_schema, etree.XMLSchema):
+                    self.schema = generated_schema

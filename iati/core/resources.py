@@ -26,18 +26,6 @@ def path_schema(name):
     return os.sep.join((BASE_PATH_SCHEMAS_202, '{0}.xsd'.format(name)))
 
 
-def load_as_schema(name):
-    """Load a schema with the specified name into an XMLSchema."""
-    path = path_schema(name)
-
-    doc = load_as_tree(path)
-    if doc:
-        # TODO: surround schema conversion with error handling
-        return etree.XMLSchema(doc)
-    else:
-        return None
-
-
 def load_as_string(path):
     """Load a resource at the specified path into a string."""
     return pkg_resources.resource_string(PACKAGE, path)
