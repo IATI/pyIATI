@@ -1,5 +1,6 @@
 """A module containing tests for the library representation of Schemas."""
 from lxml.etree import XMLSchema
+import iati.core.exceptions
 import iati.core.schemas
 
 
@@ -15,9 +16,13 @@ class TestSchemas(object):
     def test_schema_name_instance(self):
         """Check a Schema's attributes are correct when defined with only a name"""
         name_to_set = "test Schema name"
-        schema = iati.core.schemas.Schema(name_to_set)
-
-        assert schema.name == name_to_set
+        try:
+            schema = iati.core.schemas.Schema(name_to_set)
+        except iati.core.exceptions.SchemaError:
+            assert True
+        else:
+            # an exception should be raised
+            assert False
 
     def test_schema_define_from_xsd(self):
         """Check that a Schema can be generated from an XSD definition"""

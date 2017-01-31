@@ -1,5 +1,6 @@
 """A module containing a core representation of IATI Schemas."""
 from lxml import etree
+import iati.core.exceptions
 import iati.core.resources
 import iati.core.utilities
 
@@ -19,8 +20,9 @@ class Schema(object):
             try:
                 loaded_tree = iati.core.resources.load_as_tree(path)
             except OSError:
-                iati.core.utilities.log_error(
-                    "Failed to load tree at '{0}' when creating Schema.".format(path))
+                msg = "Failed to load tree at '{0}' when creating Schema.".format(path)
+                iati.core.utilities.log_error(msg)
+                raise iati.core.exceptions.SchemaError
             else:
                 generated_schema = iati.core.utilities.convert_to_schema(loaded_tree)
                 if isinstance(generated_schema, etree.XMLSchema):
