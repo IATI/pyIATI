@@ -6,11 +6,26 @@ import iati.core.utilities
 
 
 class Schema(object):
-    """Represenation of a Schema as defined within the IATI SSOT."""
+    """Represenation of a Schema as defined within the IATI SSOT.
+
+    Attributes:
+        name (str): The name of the Schema.
+        schema (etree.XMLSchema): An actual Schema that can be used for validation.
+    """
 
     def __init__(self, name=None):
-        """Initialise a Schema."""
-        # TODO: Better determine how to load from XSD
+        """Initialise a Schema.
+
+        Args:
+            name (str): The name of the schema being initialised.
+                This name refers to a file contained within the core IATI resources folder.
+
+        Raises:
+            iati.core.exceptions.SchemaError: An error occurred during the creation of the Schema.
+
+        Todo:
+            Allow for generation of schemas outside the IATI SSOT.
+        """
         self.name = name
         self.schema = None
 
