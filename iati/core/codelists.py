@@ -4,11 +4,11 @@ import iati.core.resources
 
 
 class Codelist(object):
-    """Representation of a Codelist as defined within the IATI SSOT"""
+    """Representation of a Codelist as defined within the IATI SSOT."""
 
     def __init__(self, name=None, path=None, xml=None):
         def parse_from_xml(xml):
-            """Parse a Codelist from the XML that defines it"""
+            """Parse a Codelist from the XML that defines it."""
             # TODO: Define relevant tests and add error handling
             tree = etree.fromstring(xml)
 
@@ -26,13 +26,13 @@ class Codelist(object):
             parse_from_xml(xml)
 
     def add_code(self, code):
-        """Add a Code to the Codelist"""
+        """Add a Code to the Codelist."""
         if isinstance(code, Code):
             self.codes.append(code)
 
 
 class Code(object):
-    """Representation of a Code contained within a Codelist"""
+    """Representation of a Code contained within a Codelist."""
 
     def __init__(self, value=None, name=None):
         self.name = name

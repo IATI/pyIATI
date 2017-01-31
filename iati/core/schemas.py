@@ -4,7 +4,7 @@ import iati.core.resources
 
 
 class Schema(object):
-    """Represenation of a Schema as defined within the IATI SSOT"""
+    """Represenation of a Schema as defined within the IATI SSOT."""
 
     def __init__(self, name=None):
         # TODO: Better determine how to load from XSD
