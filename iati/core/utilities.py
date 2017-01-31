@@ -15,7 +15,7 @@ def convert_to_schema(tree):
 
 
 def log(lvl, msg, *args, **kwargs):
-    """Logs a message of some level."""
+    """Log a message of some level."""
     logging.basicConfig(
         filename=os.path.join(iati.core.constants.LOG_FILE_NAME),
         format='%(asctime)s %(levelname)s:%(name)s: %(message)s %(stack_info)s',
@@ -26,12 +26,12 @@ def log(lvl, msg, *args, **kwargs):
 
 
 def log_error(msg, *args, **kwargs):
-    """Logs an error."""
+    """Log an error."""
     log(logging.ERROR, msg, *args, **kwargs)
 
 
 def log_exception(msg, *args, **kwargs):
-    """Logs an exception.
+    """Log an exception.
 
     An exception is like an error, but with a stack trace.
     """
@@ -39,5 +39,5 @@ def log_exception(msg, *args, **kwargs):
 
 
 def log_warning(msg, *args, **kwargs):
-    """Logs a warning."""
+    """Log a warning."""
     log(logging.WARN, msg, *args, **kwargs)
