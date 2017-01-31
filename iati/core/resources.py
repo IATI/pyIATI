@@ -37,7 +37,6 @@ def path_codelist(name):
     Todo:
         Handle embedded codelists.
     """
-    # TODO: Handle non-embedded codelists
     return os.sep.join((BASE_PATH_CODELISTS_NON_EMBEDDED, '{0}.xml'.format(name)))
 
 

@@ -32,7 +32,7 @@ def convert_xml_to_tree(xml):
     try:
         tree = etree.fromstring(xml)
         return tree
-    except Exception as e:
+    except Exception as err:
         # TODO: Perform actual error handling
         pass
 
