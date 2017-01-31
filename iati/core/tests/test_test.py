@@ -1,6 +1,4 @@
-"""
-A module containing tests to demonstrate that tests are working.
-"""
+"""A module containing tests to demonstrate that tests are working."""
 
 
 class TestTest(object):

@@ -1,6 +1,4 @@
-"""
-A module containing tests for the library representation of Schemas.
-"""
+"""A module containing tests for the library representation of Schemas."""
 from lxml.etree import XMLSchema
 import iati.core.schemas
 

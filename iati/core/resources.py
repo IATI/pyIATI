@@ -1,6 +1,4 @@
-"""
-A module to provide a way of locating resources within the IATI library.
-"""
+"""A module to provide a way of locating resources within the IATI library."""
 import os
 import pkg_resources
 from lxml import etree

@@ -1,6 +1,4 @@
-"""
-A module containing a core representation of IATI Schemas.
-"""
+"""A module containing a core representation of IATI Schemas."""
 from lxml import etree
 import iati.core.resources
 

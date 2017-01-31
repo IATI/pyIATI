@@ -1,3 +1,1 @@
-"""
-A package containing tests for core IATI functionality.
-"""
+"""A package containing tests for core IATI functionality."""

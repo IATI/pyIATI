@@ -1,6 +1,4 @@
-"""
-A module containing a core representation of IATI Codelists.
-"""
+"""A module containing a core representation of IATI Codelists."""
 from lxml import etree
 import iati.core.resources
 

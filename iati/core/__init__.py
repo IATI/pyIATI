@@ -1,3 +1,1 @@
-"""
-A package containing core IATI functionality.
-"""
+"""A package containing core IATI functionality."""

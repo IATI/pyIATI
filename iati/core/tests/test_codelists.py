@@ -1,6 +1,4 @@
-"""
-A module containing tests for the library representation of Codelists.
-"""
+"""A module containing tests for the library representation of Codelists."""
 import iati.core.codelists
 
 

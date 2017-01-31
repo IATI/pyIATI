@@ -1,6 +1,4 @@
-"""
-A module containing tests for the library implementation of accessing resources.
-"""
+"""A module containing tests for the library implementation of accessing resources."""
 from lxml import etree
 import iati.core.resources
 
