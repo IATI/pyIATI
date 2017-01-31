@@ -2,4 +2,6 @@
 
 
 class SchemaError(Exception):
+    """An error with an IATI Schema."""
+
     pass

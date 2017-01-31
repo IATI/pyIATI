@@ -18,6 +18,7 @@ class TestSchemas(object):
         name_to_set = "test Schema name"
         try:
             schema = iati.core.schemas.Schema(name_to_set)
+            assert isinstance(schema, iati.core.schemas.Schema)
         except iati.core.exceptions.SchemaError:
             assert True
         else:

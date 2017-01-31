@@ -1,6 +1,6 @@
 """A module containing a core representation of IATI Codelists."""
-from lxml import etree
 import iati.core.resources
+import iati.core.utilities
 
 
 class Codelist(object):
@@ -11,7 +11,7 @@ class Codelist(object):
         def parse_from_xml(xml):
             """Parse a Codelist from the XML that defines it."""
             # TODO: Define relevant tests and add error handling
-            tree = etree.fromstring(xml)
+            tree = iati.core.utilities.convert_xml_to_tree(xml)
 
             self.name = tree.attrib['name']
             for code_el in tree.findall('codelist-items/codelist-item'):

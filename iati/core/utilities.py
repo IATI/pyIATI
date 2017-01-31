@@ -5,13 +5,23 @@ from lxml import etree
 import iati.core.constants
 
 
-def convert_to_schema(tree):
+def convert_tree_to_schema(tree):
     """Convert an etree to a schema.
 
     This additionally involves checking that imported schemas also work.
     """
     # TODO: surround schema conversion with error handling
     return etree.XMLSchema(tree)
+
+
+def convert_xml_to_tree(xml):
+    """Convert an XML string into an etree."""
+    try:
+        tree = etree.fromstring(xml)
+        return tree
+    except Exception as e:
+        # TODO: Perform actual error handling
+        pass
 
 
 def log(lvl, msg, *args, **kwargs):

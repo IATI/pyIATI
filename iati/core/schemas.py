@@ -24,6 +24,6 @@ class Schema(object):
                 iati.core.utilities.log_error(msg)
                 raise iati.core.exceptions.SchemaError
             else:
-                generated_schema = iati.core.utilities.convert_to_schema(loaded_tree)
+                generated_schema = iati.core.utilities.convert_tree_to_schema(loaded_tree)
                 if isinstance(generated_schema, etree.XMLSchema):
                     self.schema = generated_schema
