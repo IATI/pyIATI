@@ -16,8 +16,11 @@ class Schema(object):
         if name:
             # TODO: Use try-except pattern
             path = iati.core.resources.path_schema(self.name)
-            loaded_tree = iati.core.resources.load_as_tree(path)
-            if loaded_tree:
+            try:
+                loaded_tree = iati.core.resources.load_as_tree(path)
+            except OSError:
+                iati.core.utilities.log_error("Failed to load tree at {0}".format(path))
+            else:
                 generated_schema = iati.core.utilities.convert_to_schema(loaded_tree)
                 if isinstance(generated_schema, etree.XMLSchema):
                     self.schema = generated_schema

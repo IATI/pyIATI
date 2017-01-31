@@ -38,7 +38,7 @@ def load_as_tree(path):
         doc = etree.parse(path_filename)
         return doc
     except OSError:
-        return None
+        raise
 
 
 def resource_filename(path):

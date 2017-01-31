@@ -17,3 +17,9 @@ class TestUtilities(object):
         schema = iati.core.utilities.convert_to_schema(tree)
 
         assert isinstance(schema, etree.XMLSchema)
+
+    def test_log(self):
+        pass
+
+    def test_log_error(self):
+        pass
