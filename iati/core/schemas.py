@@ -19,7 +19,7 @@ class Schema(object):
             try:
                 loaded_tree = iati.core.resources.load_as_tree(path)
             except OSError:
-                iati.core.utilities.log_error("Failed to load tree at {0}".format(path))
+                iati.core.utilities.log_error("Failed to load tree at '{0}' when creating Schema.".format(path))
             else:
                 generated_schema = iati.core.utilities.convert_to_schema(loaded_tree)
                 if isinstance(generated_schema, etree.XMLSchema):
