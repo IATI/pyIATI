@@ -19,13 +19,17 @@ class TestUtilities(object):
         assert isinstance(schema, etree.XMLSchema)
 
     def test_log(self):
+        """TODO: Implement testing for logging."""
         pass
 
     def test_log_error(self):
+        """TODO: Implement testing for logging."""
         pass
 
     def test_log_exception(self):
+        """TODO: Implement testing for logging."""
         pass
 
     def test_log_warning(self):
+        """TODO: Implement testing for logging."""
         pass
