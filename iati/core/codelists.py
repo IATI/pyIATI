@@ -9,7 +9,7 @@ class Codelist(object):
     Attributes:
         codes (list): The codes demonstrating the range of values that the Codelist may represent.
         name (str): The name of the Codelist.
-        path (str): A path to a file containg a Codelist in XML form.
+        path (str): A path to a file containing a Codelist in XML form.
 
     Note:
         The path attribute may be removed.
