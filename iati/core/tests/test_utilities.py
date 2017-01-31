@@ -23,3 +23,9 @@ class TestUtilities(object):
 
     def test_log_error(self):
         pass
+
+    def test_log_exception(self):
+        pass
+
+    def test_log_warning(self):
+        pass
