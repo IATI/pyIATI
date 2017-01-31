@@ -30,4 +30,8 @@ flake8 iati/
 pydocstyle iati/
 # OR
 pylint iati; echo; flake8 iati/; echo; pydocstyle iati/
+
+# to build the documentation
+sphinx-apidoc -o docs/source/ iati/
+sphinx-build -b html docs/source/ docs/build/
 ```

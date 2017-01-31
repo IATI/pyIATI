@@ -1,5 +1,8 @@
 lxml==3.6.0
 
+# distribution requirements
+Sphinx==1.5.2
+
 # dev requirements
 flake8==3.2.1
 pydocstyle==1.1.1
