@@ -7,6 +7,7 @@ class Codelist(object):
     """Representation of a Codelist as defined within the IATI SSOT."""
 
     def __init__(self, name=None, path=None, xml=None):
+        """Initialise a Codelist."""
         def parse_from_xml(xml):
             """Parse a Codelist from the XML that defines it."""
             # TODO: Define relevant tests and add error handling
@@ -35,5 +36,6 @@ class Code(object):
     """Representation of a Code contained within a Codelist."""
 
     def __init__(self, value=None, name=None):
+        """Initialise a Code."""
         self.name = name
         self.value = value
