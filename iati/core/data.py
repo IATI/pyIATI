@@ -21,7 +21,7 @@ class Dataset(object):
         Args:
             xml (str/ElementTree): A representation of the XML to encapsulate.
                 May be either a string or an ElementTree.
-            strictly_valid (bool): Whether the dataset must strictly conform to the IATI standard.
+            strictly_valid (bool, optional): Whether the dataset must strictly conform to the IATI standard.
                 Defaults to False.
 
         Raises:
