@@ -7,7 +7,7 @@ class Codelist(object):
     """Representation of a Codelist as defined within the IATI SSOT.
 
     Attributes:
-        codes (list): The codes demonstrating the range of values that the Codelist may represent.
+        codes (:obj:`list` of :obj:`iati.core.codelists.Code`): The codes demonstrating the range of values that the Codelist may represent.
         name (str): The name of the Codelist.
         path (str): A path to a file containing a Codelist in XML form.
 
