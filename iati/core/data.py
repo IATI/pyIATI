@@ -2,6 +2,7 @@
 from lxml import etree
 import iati.core.exceptions
 
+
 class Dataset(object):
     """Representation of an IATI XML file that may be validated against a schema.
 
