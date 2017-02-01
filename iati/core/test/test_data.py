@@ -24,7 +24,13 @@ class TestDatasets(object):
 
     def test_dataset_invalid_xml_string(self):
         """Test Dataset creation with a string that is not valid XML."""
-        pass
+        try:
+            data = iati.core.data.Dataset(iati.core.test.utilities.XML_STR_INVALID)
+        except ValueError:
+            assert True
+        else:
+            # a ValueError should be raised when creating without valid XML
+            assert False
 
     def test_dataset_tree(self):
         """Test Dataset creation with an etree that is not valid IATI data."""

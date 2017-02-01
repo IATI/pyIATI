@@ -1,6 +1,7 @@
 """A module containing a core representation of an IATI Dataset."""
 from lxml import etree
 import iati.core.exceptions
+import iati.core.utilities
 
 
 class Dataset(object):
@@ -35,4 +36,9 @@ class Dataset(object):
             Undertake validation.
         """
         self.xml_str = xml
-        self.xml_tree = etree.fromstring(xml)
+        try:
+            self.xml_tree = etree.fromstring(xml)
+        except etree.XMLSyntaxError:
+            msg = "The value provided to create a Dataset from is not valid XML. type: {0}".format(type(xml))
+            iati.core.utilities.log_error(msg)
+            raise ValueError(msg)
