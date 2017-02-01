@@ -1,4 +1,5 @@
 """A module containing tests for the library representation of IATI data."""
+from lxml import etree
 import iati.core.data
 import iati.core.test.utilities
 
@@ -12,7 +13,10 @@ class TestDatasets(object):
 
     def test_dataset_valid_xml_string(self):
         """Test Dataset creation with a valid XML string that is not IATI data."""
-        pass
+        data = iati.core.data.Dataset(iati.core.test.utilities.XML_STR_VALID)
+
+        assert data.xml_str == iati.core.test.utilities.XML_STR_VALID
+        assert etree.tostring(data.xml_tree) == etree.tostring(iati.core.test.utilities.XML_TREE_VALID)
 
     def test_dataset_valid_iati_string(self):
         """Test Dataset creation with a valid IATI XML string."""

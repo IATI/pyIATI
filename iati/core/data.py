@@ -34,4 +34,5 @@ class Dataset(object):
             Implement this function.
             Undertake validation.
         """
-        pass
+        self.xml_str = xml
+        self.xml_tree = etree.fromstring(xml)
