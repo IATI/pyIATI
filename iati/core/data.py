@@ -15,14 +15,14 @@ class Dataset(object):
         Implement getters and setters for attributes.
     """
 
-    def __init__(self, **kargs):
+    def __init__(self, xml, strictly_valid=False):
         """Initialise a dataset.
 
-        Keyword args:
-            strictly_valid (bool): Whether the dataset must strictly conform to the IATI standard.
-                Defaults to False.
+        Args:
             xml (str/ElementTree): A representation of the XML to encapsulate.
                 May be either a string or an ElementTree.
+            strictly_valid (bool): Whether the dataset must strictly conform to the IATI standard.
+                Defaults to False.
 
         Raises:
             ValueError: If a provided XML string is not valid XML.
