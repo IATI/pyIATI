@@ -48,10 +48,10 @@ class TestDatasets(object):
         """Test Dataset creation when it's passed a number rather than a string or etree."""
         try:
             data = iati.core.data.Dataset(17)
-        except ValueError:
+        except TypeError:
             assert True
         else:
-            # a ValueError should be raised when creating without valid XML
+            # a TypeError should be raised when creating without valid XML
             assert False
 
     def test_dataset_tree(self):

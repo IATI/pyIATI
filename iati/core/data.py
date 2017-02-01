@@ -27,6 +27,7 @@ class Dataset(object):
                 Defaults to False.
 
         Raises:
+            TypeError: If an attempt to pass something that is not a string or ElementTree is made.
             ValueError: If a provided XML string is not valid XML.
             iati.core.exceptions.ValidationError:
                 If the provided XML should conform to the IATI standard, but does not.
@@ -48,4 +49,4 @@ class Dataset(object):
             except ValueError:
                 msg = "Datasets can only be created from ElementTrees or strings containing valid XML. Actual type: {0}".format(type(xml))
                 iati.core.utilities.log_error(msg)
-                raise ValueError(msg)
+                raise TypeError(msg)
