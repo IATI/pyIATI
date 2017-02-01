@@ -2,6 +2,16 @@
 
 The iati.core Python module.
 
+General Installation for System Use
+===================================
+```
+# install software dependencies
+apt-get install python-pip
+
+# install Python package dependencies
+pip install -r requirements.txt
+```
+
 Dev Installation
 ================
 
@@ -14,7 +24,7 @@ virtualenv -p python3 pyenv
 source pyenv/bin/activate
 
 # install Python package dependencies
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 ```
 
 Running

@@ -1,4 +1,8 @@
-"""A module containing tests for the library representation of IATI data."""
+"""A module containing tests for the library representation of IATI data.
+
+Todo:
+    Implement tests for strict checking once validation work is underway.
+"""
 from lxml import etree
 import iati.core.data
 import iati.core.test.utilities

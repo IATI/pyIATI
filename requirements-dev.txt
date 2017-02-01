@@ -1,0 +1,25 @@
+#
+# general requirements
+#
+-r requirements.txt
+
+#
+# dev requirements
+#
+
+# linters
+flake8==3.2.1
+pydocstyle==1.1.1
+pyenchant==1.6.8
+pylint==1.6.5
+
+# testing tools
+pytest==3.0.5
+
+#
+# distribution requirements
+#
+
+# documentation
+Sphinx==1.5.2
+sphinx_rtd_theme==0.1.9
