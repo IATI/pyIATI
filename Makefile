@@ -9,6 +9,7 @@ LINE_SEP = ---
 
 all: test lint docs
 
+
 docs: $(IATI_FOLDER) $(DOCS_FOLDER_SOURCE)
 	sphinx-apidoc -o $(DOCS_FOLDER_SOURCE) $(IATI_FOLDER)
 	echo $(LINE_SEP)

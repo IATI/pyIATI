@@ -22,7 +22,7 @@ class TestSchemas(object):
         except iati.core.exceptions.SchemaError:
             assert True
         else:
-            # an exception should be raised
+            # a ShemaError should be raised, so this point should not be reached
             assert False
 
     def test_schema_define_from_xsd(self):
