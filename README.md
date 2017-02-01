@@ -32,7 +32,7 @@ pydocstyle iati/
 pylint iati; echo; flake8 iati/; echo; pydocstyle iati/
 
 # to build the documentation
-sphinx-apidoc -o docs/source/ iati/
+sphinx-apidoc -f -o docs/source/ iati/
 sphinx-build -b html docs/source/ docs/build/
 ```
 

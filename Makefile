@@ -11,7 +11,7 @@ all: test lint docs
 
 
 docs: $(IATI_FOLDER) $(DOCS_FOLDER_SOURCE)
-	sphinx-apidoc -o $(DOCS_FOLDER_SOURCE) $(IATI_FOLDER)
+	sphinx-apidoc -f -o $(DOCS_FOLDER_SOURCE) $(IATI_FOLDER)
 	echo $(LINE_SEP)
 	-sphinx-build -b html $(DOCS_FOLDER_SOURCE) $(DOCS_FOLDER_BUILD)
 

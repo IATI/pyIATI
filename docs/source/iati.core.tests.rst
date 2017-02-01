@@ -20,6 +20,14 @@ iati.core.tests.test_constants module
     :undoc-members:
     :show-inheritance:
 
+iati.core.tests.test_data module
+--------------------------------
+
+.. automodule:: iati.core.tests.test_data
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 iati.core.tests.test_resources module
 -------------------------------------
 
