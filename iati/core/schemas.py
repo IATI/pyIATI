@@ -25,12 +25,12 @@ class Schema(object):
 
         Todo:
             Allow for generation of schemas outside the IATI SSOT.
+            Better use the try-except pattern.
         """
         self.name = name
         self.schema = None
 
         if name:
-            # TODO: Use try-except pattern
             path = iati.core.resources.path_schema(self.name)
             try:
                 loaded_tree = iati.core.resources.load_as_tree(path)

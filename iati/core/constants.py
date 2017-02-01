@@ -1,7 +1,10 @@
-"""A module containing constants required throughout IATI library code."""
+"""A module containing constants required throughout IATI library code.
+
+Todo:
+    Allow logging constants to be user-definable.
+"""
 
 
-# TODO: Allow logging constants to be user-definable.
 LOG_FILE_NAME = 'iatilib.log'
 """The location of the primary IATI log file."""
 LOGGER_NAME = 'iati'

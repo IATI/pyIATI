@@ -28,12 +28,14 @@ def convert_xml_to_tree(xml):
 
     Returns:
         etree._Element: An lxml element tree representing the provided XML.
+
+    Todo:
+        Perform actual error handling in the except block.
     """
     try:
         tree = etree.fromstring(xml)
         return tree
     except Exception as err:
-        # TODO: Perform actual error handling
         pass
 
 
