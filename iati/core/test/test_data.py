@@ -34,7 +34,11 @@ class TestDatasets(object):
 
     def test_dataset_tree(self):
         """Test Dataset creation with an etree that is not valid IATI data."""
-        pass
+        tree = iati.core.test.utilities.XML_TREE_VALID
+        data = iati.core.data.Dataset(tree)
+
+        assert data.xml_tree == tree
+        assert data.xml_str == etree.tostring(tree)
 
     def test_dataset_iati_tree(self):
         """Test Dataset creation with a valid IATI etree."""

@@ -35,10 +35,14 @@ class Dataset(object):
             Implement this function.
             Undertake validation.
         """
-        self.xml_str = xml
-        try:
-            self.xml_tree = etree.fromstring(xml)
-        except etree.XMLSyntaxError:
-            msg = "The value provided to create a Dataset from is not valid XML. type: {0}".format(type(xml))
-            iati.core.utilities.log_error(msg)
-            raise ValueError(msg)
+        if isinstance(xml, etree._Element):
+            self.xml_tree = xml
+            self.xml_str = etree.tostring(xml)
+        else:
+            self.xml_str = xml
+            try:
+                self.xml_tree = etree.fromstring(xml)
+            except etree.XMLSyntaxError:
+                msg = "The value provided to create a Dataset from is not valid XML. type: {0}".format(type(xml))
+                iati.core.utilities.log_error(msg)
+                raise ValueError(msg)
