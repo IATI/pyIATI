@@ -1,8 +1,10 @@
+# folders
 DOCS_FOLDER = docs
 DOCS_FOLDER_BUILD = $(DOCS_FOLDER)/build/
 DOCS_FOLDER_SOURCE = $(DOCS_FOLDER)/source/
 IATI_FOLDER = iati/
 
+# useful constants
 LINE_SEP = ---
 
 all: test lint docs
