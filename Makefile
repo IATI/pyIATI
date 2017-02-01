@@ -25,4 +25,4 @@ lint: $(IATI_FOLDER)
 
 
 test: $(IATI_FOLDER)
-	-py.test --cov=$(IATI_FOLDER) $(IATI_FOLDER)
+	-py.test --cov-report term-missing --cov=$(IATI_FOLDER) $(IATI_FOLDER)
