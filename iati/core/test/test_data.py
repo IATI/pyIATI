@@ -13,7 +13,13 @@ class TestDatasets(object):
 
     def test_dataset_no_params(self):
         """Test Dataset creation with no parameters."""
-        pass
+        try:
+            data = iati.core.data.Dataset()
+        except TypeError:
+            assert True
+        else:
+            # a TypeError should be raised when creating without any parameters
+            assert False
 
     def test_dataset_valid_xml_string(self):
         """Test Dataset creation with a valid XML string that is not IATI data."""
