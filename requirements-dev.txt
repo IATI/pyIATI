@@ -15,6 +15,7 @@ pylint==1.6.5
 
 # testing tools
 pytest==3.0.5
+pytest-cov==2.4.0
 
 #
 # distribution requirements
