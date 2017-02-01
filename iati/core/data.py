@@ -18,9 +18,9 @@ class Dataset(object):
         """Initialise a dataset.
 
         Keyword args:
-            xml_str (str): A string representation of the XML to encapsulate.
-            xml_tree (ElementTree): A tree representation of the XML to encapsulate.
             strictly_valid (bool): Whether the dataset must strictly conform to the IATI standard.
                 Defaults to False.
+            xml_str (str): A string representation of the XML to encapsulate.
+            xml_tree (ElementTree): A tree representation of the XML to encapsulate.
         """
         pass
