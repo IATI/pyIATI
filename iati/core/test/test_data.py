@@ -1,5 +1,6 @@
 """A module containing tests for the library representation of IATI data."""
 import iati.core.data
+import iati.core.test.utilities
 
 
 class TestDatasets(object):
