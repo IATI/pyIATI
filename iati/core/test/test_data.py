@@ -42,6 +42,16 @@ class TestDatasets(object):
             # a ValueError should be raised when creating without valid XML
             assert False
 
+    def test_dataset_number_not_xml(self):
+        """Test Dataset creation when it's passed a number rather than a string or etree."""
+        try:
+            data = iati.core.data.Dataset(17)
+        except ValueError:
+            assert True
+        else:
+            # a ValueError should be raised when creating without valid XML
+            assert False
+
     def test_dataset_tree(self):
         """Test Dataset creation with an etree that is not valid IATI data."""
         tree = iati.core.test.utilities.XML_TREE_VALID

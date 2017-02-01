@@ -32,7 +32,6 @@ class Dataset(object):
                 If the provided XML should conform to the IATI standard, but does not.
 
         Todo:
-            Implement this function.
             Undertake validation.
         """
         if isinstance(xml, etree._Element):
@@ -43,6 +42,10 @@ class Dataset(object):
             try:
                 self.xml_tree = etree.fromstring(xml)
             except etree.XMLSyntaxError:
-                msg = "The value provided to create a Dataset from is not valid XML. type: {0}".format(type(xml))
+                msg = "The string provided to create a Dataset from is not valid XML."
+                iati.core.utilities.log_error(msg)
+                raise ValueError(msg)
+            except ValueError:
+                msg = "Datasets can only be created from ElementTrees or strings containing valid XML. Actual type: {0}".format(type(xml))
                 iati.core.utilities.log_error(msg)
                 raise ValueError(msg)
