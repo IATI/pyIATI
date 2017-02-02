@@ -1,8 +1,8 @@
 # iati.core
 
-[![Build Status](https://travis-ci.com/IATI/iati.core.svg?token=jGz3fUUcXxQNh1U6Jsyp&branch=master)](https://travis-ci.com/IATI/iati.core)
-
 The iati.core Python module.
+
+[![Build Status](https://travis-ci.com/IATI/iati.core.svg?token=jGz3fUUcXxQNh1U6Jsyp&branch=master)](https://travis-ci.com/IATI/iati.core)
 
 General Installation for System Use
 ===================================
