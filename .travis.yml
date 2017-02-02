@@ -1,11 +1,14 @@
 language: python
-cache: pip
+cache:
+    pip
 python:
   - "2.7"
   - "3.4"
   - "3.5"
   - "3.6"
-install: "pip install -r requirements-dev.txt"
+install:
+    - pip install -U pip wheel
+    - pip install -r requirements-dev.txt
 script:
     - make test
     - make lint
