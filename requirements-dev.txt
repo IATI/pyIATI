@@ -10,7 +10,7 @@
 # linters
 flake8==3.2.1
 pydocstyle==1.1.1
-pyenchant==1.6.8
+# pyenchant==1.6.8
 pylint==1.6.5
 
 # testing tools
