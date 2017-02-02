@@ -15,6 +15,7 @@ class Dataset(object):
 
     Todo:
         Implement getters and setters for attributes.
+        Implement an addition override to allow for combation of datasets.
     """
 
     def __init__(self, xml, strictly_valid=False):
