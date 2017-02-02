@@ -34,7 +34,7 @@ class Schema(object):
             path = iati.core.resources.path_schema(self.name)
             try:
                 loaded_tree = iati.core.resources.load_as_tree(path)
-            except OSError:
+            except (IOError, OSError):
                 msg = "Failed to load tree at '{0}' when creating Schema.".format(path)
                 iati.core.utilities.log_error(msg)
                 raise iati.core.exceptions.SchemaError
