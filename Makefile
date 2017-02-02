@@ -13,7 +13,7 @@ all: test lint docs
 docs: $(IATI_FOLDER) $(DOCS_FOLDER_SOURCE)
 	sphinx-apidoc -f -o $(DOCS_FOLDER_SOURCE) $(IATI_FOLDER)
 	echo $(LINE_SEP)
-	-sphinx-build -b html $(DOCS_FOLDER_SOURCE) $(DOCS_FOLDER_BUILD)
+	sphinx-build -b html $(DOCS_FOLDER_SOURCE) $(DOCS_FOLDER_BUILD)
 
 
 lint: $(IATI_FOLDER)
@@ -21,7 +21,7 @@ lint: $(IATI_FOLDER)
 	echo $(LINE_SEP)
 	-flake8 $(IATI_FOLDER)
 	echo $(LINE_SEP)
-	-pydocstyle $(IATI_FOLDER)
+	pydocstyle $(IATI_FOLDER)
 
 
 test: $(IATI_FOLDER)
