@@ -12,6 +12,11 @@ class TestSchemas(object):
 
     @pytest.fixture
     def schema_initialised(self):
+        """Create a very basic Schema.
+
+        Returns:
+            iati.core.schemas.Schema: A Schema that has been initialised with basic values.
+        """
         schema_name = iati.core.test.utilities.SCHEMA_NAME_VALID
 
         return iati.core.schemas.Schema(name=schema_name)

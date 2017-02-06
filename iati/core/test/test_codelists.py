@@ -8,6 +8,11 @@ class TestCodelists(object):
 
     @pytest.fixture
     def name_to_set(self):
+        """A name to give Codelists.
+
+        Returns:
+            str: Something that can be provided as a name to Codelists.
+        """
         return "test Codelist name"
 
     def test_codelist_default_attributes(self):
