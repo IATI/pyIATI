@@ -13,7 +13,7 @@ class TestCodelists(object):
     def test_codelist_default_attributes(self):
         """Check a Codelist's default attributes are correct"""
         try:
-            _ = iati.core.codelists.Codelist()
+            _ = iati.core.codelists.Codelist()  # pylint: disable=E1120
         except TypeError:
             assert True
         else:
