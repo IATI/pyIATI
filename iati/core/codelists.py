@@ -18,7 +18,7 @@ class Codelist(object):
         Provide functionality to allow XML to be loaded from a parameter-defined path.
     """
 
-    def __init__(self, name=None, path=None, xml=None):
+    def __init__(self, name, path=None, xml=None):
         """Initialise a Codelist.
 
         Any Codes contained within the specified XML are added.

@@ -11,6 +11,7 @@ class Schema(object):
     Attributes:
         name (str): The name of the Schema.
         schema (etree.XMLSchema): An actual Schema that can be used for validation.
+        codelists (dict): The Codelists asspciated with this Schema.
     """
 
     def __init__(self, name=None):
