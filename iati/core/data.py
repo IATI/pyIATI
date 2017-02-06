@@ -41,11 +41,22 @@ class Dataset(object):
             Undertake validation.
             Add a way to determine whether a dataset fully conforms to the IATI standard and / or modify the dataset so that it does.
         """
-        # TODO: It should not be possible to assign a string to this and have it fail silently
-        self.xml_tree = xml
+        self._xml_str = None
+        self._xml_tree = None
+
+        if isinstance(xml, etree._Element):
+            self.xml_tree = xml
+        else:
+            self.xml_str = xml
 
     @property
     def xml_str(self):
+        """A string representation of the XML being represented.
+
+        Raises:
+            ValueError: If a value that is being assigned is not a valid XML string.
+            TypeError: If a value that is being assigned is not a string at all.
+        """
         return self._xml_str
 
     @xml_str.setter
@@ -53,12 +64,23 @@ class Dataset(object):
         if isinstance(value, etree._Element):
             msg = "If setting a dataset with an ElementTree, use the xml_tree property, not the xml_str property."
             iati.core.utilities.log_error(msg)
-            raise ValueError(msg)
-        self.xml_tree = value
-        self._xml_str = value
+            raise TypeError(msg)
+        else:
+            try:
+                self.xml_tree = etree.fromstring(value)
+                self._xml_str = value
+            except etree.XMLSyntaxError:
+                msg = "The string provided to create a Dataset from is not valid XML."
+                iati.core.utilities.log_error(msg)
+                raise ValueError(msg)
+            except ValueError:
+                msg = "Datasets can only be ElementTrees or strings containing valid XML, using the xml_tree and xml_str attributes respectively. Actual type: {0}".format(type(value))
+                iati.core.utilities.log_error(msg)
+                raise TypeError(msg)
 
     @property
     def xml_tree(self):
+        """A tree representation of the XML being represented."""
         return self._xml_tree
 
     @xml_tree.setter
@@ -67,14 +89,6 @@ class Dataset(object):
             self._xml_tree = value
             self._xml_str = etree.tostring(value, pretty_print=True)
         else:
-            try:
-                self._xml_tree = etree.fromstring(value)
-                self._xml_str = value
-            except etree.XMLSyntaxError:
-                msg = "The string provided to create a Dataset from is not valid XML."
-                iati.core.utilities.log_error(msg)
-                raise ValueError(msg)
-            except ValueError:
-                msg = "Datasets can only be created from ElementTrees or strings containing valid XML. Actual type: {0}".format(type(value))
-                iati.core.utilities.log_error(msg)
-                raise TypeError(msg)
+            msg = "If setting a dataset with the xml_property, an ElementTree should be provided, not a {0}.".format(type(value))
+            iati.core.utilities.log_error(msg)
+            raise TypeError(msg)

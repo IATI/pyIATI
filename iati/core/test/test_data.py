@@ -15,7 +15,7 @@ class TestDatasets(object):
     """A container for tests relating to Datasets"""
 
     @pytest.fixture
-    def dataset_initialised(cls):
+    def dataset_initialised(self):
         """An initialised dataset to work from in other tests."""
         return iati.core.data.Dataset(iati.core.test.utilities.XML_STR_VALID)
 
@@ -68,38 +68,95 @@ class TestDatasets(object):
         assert data.xml_tree == tree
         assert data.xml_str == etree.tostring(tree, pretty_print=True)
 
-    def test_dataset_xml_str_assignment_valid_str(self, dataset_initialised):
-        """Test assignment to the xml_str property with a valid XML string."""
+    def test_dataset_iati_tree(self):
+        """Test Dataset creation with a valid IATI etree.
+
+        Todo:
+            Implement this function.
+        """
         pass
+
+    def test_dataset_xml_str_assignment_valid_str(self, dataset_initialised):
+        """Test assignment to the xml_str property with a valid XML string.
+
+        Todo:
+            Check that the tree is updated correctly.
+        """
+        data = dataset_initialised
+        data.xml_str = iati.core.test.utilities.XML_STR_VALID
+
+        assert data.xml_str == iati.core.test.utilities.XML_STR_VALID
 
     def test_dataset_xml_str_assignment_invalid_str(self, dataset_initialised):
         """Test assignment to the xml_str property with an invalid XML string."""
-        pass
+        data = dataset_initialised
+        try:
+            data.xml_str = iati.core.test.utilities.XML_STR_INVALID
+        except ValueError:
+            assert True
+        else:
+            # a ValueError should be raised when creating without valid XML
+            assert False
 
     def test_dataset_xml_str_assignment_tree(self, dataset_initialised):
         """Test assignment to the xml_str property with an ElementTree."""
-        pass
+        data = dataset_initialised
+        try:
+            data.xml_str = iati.core.test.utilities.XML_TREE_VALID
+        except TypeError:
+            assert True
+        else:
+            # a TypeError should be raised when creating without valid XML
+            assert False
 
     def test_dataset_xml_str_assignment_invalid_value(self, dataset_initialised):
         """Test assignment to the xml_str property with a value that is very much not valid."""
-        pass
+        data = dataset_initialised
+        try:
+            data.xml_str = 785
+        except TypeError:
+            assert True
+        else:
+            # a TypeError should be raised when creating without valid XML
+            assert False
 
     def test_dataset_xml_tree_assignment_valid_tree(self, dataset_initialised):
-        """Test assignment to the xml_tree property with a valid ElementTree."""
-        pass
+        """Test assignment to the xml_tree property with a valid ElementTree.
+
+        Todo:
+            Check that the xml_tree attribute is updated to the new tree.
+        """
+        data = dataset_initialised
+        data.xml_tree = iati.core.test.utilities.XML_TREE_VALID
+
+        assert data.xml_str == etree.tostring(iati.core.test.utilities.XML_TREE_VALID, pretty_print=True)
 
     def test_dataset_xml_tree_assignment_invalid_tree(self, dataset_initialised):
-        """Test assignment to the xml_tree property with an invalid ElementTree."""
+        """Test assignment to the xml_tree property with an invalid ElementTree.
+
+        Todo:
+            Create an invalid tree and test it.
+        """
         pass
 
     def test_dataset_xml_tree_assignment_str(self, dataset_initialised):
         """Test assignment to the xml_tree property with an XML string."""
-        pass
+        data = dataset_initialised
+        try:
+            data.xml_tree = iati.core.test.utilities.XML_STR_VALID
+        except TypeError:
+            assert True
+        else:
+            # a TypeError should be raised when creating without a tree
+            assert False
 
     def test_dataset_xml_tree_assignment_invalid_value(self, dataset_initialised):
         """Test assignment to the xml_tree property with a value that is very much not valid."""
-        pass
-
-    def test_dataset_iati_tree(self):
-        """Test Dataset creation with a valid IATI etree."""
-        pass
+        data = dataset_initialised
+        try:
+            data.xml_tree = {}
+        except TypeError:
+            assert True
+        else:
+            # a TypeError should be raised when creating without a tree
+            assert False
