@@ -58,6 +58,9 @@ class Codelist(object):
 
         Args:
             code (iati.core.codelists.Code): The Code to add to the Codelist.
+
+        Todo:
+            Prohibit duplicate Codes being added to a Codelist.
         """
         if isinstance(code, Code):
             self.codes.append(code)
