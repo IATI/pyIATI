@@ -1,9 +1,15 @@
 """A module containing tests for the library representation of Codelists."""
+import pytest
 import iati.core.codelists
 
 
 class TestCodelists(object):
     """A container for tests relating to Codelists"""
+
+
+    @pytest.fixture
+    def name_to_set(self):
+        return "test Codelist name"
 
     def test_codelist_default_attributes(self):
         """Check a Codelist's default attributes are correct"""
@@ -15,18 +21,16 @@ class TestCodelists(object):
             # a TypeError should have been thrown due to a lack of name
             assert False
 
-    def test_codelist_name_instance(self):
+    def test_codelist_name_instance(self, name_to_set):
         """Check a Codelist's attributes are correct when defined with only a name"""
-        name_to_set = "test Codelist name"
         codelist = iati.core.codelists.Codelist(name_to_set)
 
         assert [] == codelist.codes
         assert codelist.name == name_to_set
         assert codelist.path is None
 
-    def test_codelist_name_and_path_instance(self):
+    def test_codelist_name_and_path_instance(self, name_to_set):
         """Check a Codelist's attributes are correct when defined with a name and path"""
-        name_to_set = "test Codelist name"
         path_to_set = "test Codelist path"
         codelist = iati.core.codelists.Codelist(name_to_set, path_to_set)
 
@@ -34,9 +38,8 @@ class TestCodelists(object):
         assert codelist.name == name_to_set
         assert codelist.path == path_to_set
 
-    def test_codelist_add_code(self):
+    def test_codelist_add_code(self, name_to_set):
         """Check a Code can be added to a Codelist"""
-        name_to_set = "test Codelist name"
         codelist = iati.core.codelists.Codelist(name_to_set)
         code = iati.core.codelists.Code()
         codelist.add_code(code)
@@ -45,9 +48,8 @@ class TestCodelists(object):
 
         assert num_codes == 1
 
-    def test_codelist_add_code_decline_non_code(self):
+    def test_codelist_add_code_decline_non_code(self, name_to_set):
         """Check something that is not a Code cannot be added to a Codelist"""
-        name_to_set = "test Codelist name"
         codelist = iati.core.codelists.Codelist(name_to_set)
         not_a_code = True
         codelist.add_code(not_a_code)
@@ -56,9 +58,8 @@ class TestCodelists(object):
 
         assert num_codes == 0
 
-    def test_codelist_define_from_xml(self):
+    def test_codelist_define_from_xml(self, name_to_set):
         """Check that a Codelist can be generated from an XML codelist definition"""
-        name_to_set = "test Codelist name"
         path = iati.core.resources.path_codelist('FlowType')
         xml_str = iati.core.resources.load_as_string(path)
         codelist = iati.core.codelists.Codelist(name_to_set, xml=xml_str)
