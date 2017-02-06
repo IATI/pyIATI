@@ -1,5 +1,4 @@
 """A module containing tests for the library representation of Rulesets."""
-import iati.core.rulesets
 
 
 class TestRulesets(object):
