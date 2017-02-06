@@ -2,8 +2,6 @@
 
 Todo:
     Implement tests for strict checking once validation work is underway.
-
-    Implement tests regarding modification of attributes after the Dataset has initially been created.
 """
 from lxml import etree
 import pytest
