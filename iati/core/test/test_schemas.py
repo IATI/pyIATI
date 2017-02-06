@@ -26,7 +26,7 @@ class TestSchemas(object):
         """Check that an Error is raised when attempting to load a Schema that does not exist"""
         name_to_set = "test Schema name"
         try:
-            schema = iati.core.schemas.Schema(name_to_set)
+            _ = iati.core.schemas.Schema(name_to_set)
         except iati.core.exceptions.SchemaError:
             assert True
         else:
