@@ -42,10 +42,7 @@ class Dataset(object):
         Todo:
             Undertake validation.
         """
-        if isinstance(xml, etree._Element):
-            self.xml_tree = xml
-        else:
-            self.xml_str = xml
+        self.xml_tree = xml
 
     @property
     def xml_str(self):
@@ -53,6 +50,10 @@ class Dataset(object):
 
     @xml_str.setter
     def xml_str(self, value):
+        if isinstance(value, etree._Element):
+            msg = "If setting a dataset with an ElementTree, use the xml_tree property, not the xml_str property."
+            iati.core.utilities.log_error(msg)
+            raise ValueError(msg)
         self.xml_tree = value
         self._xml_str = value
 
