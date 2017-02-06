@@ -14,10 +14,10 @@ class Dataset(object):
         xml_tree (ElementTree): A tree representation of the XML being represented.
 
     Note:
-        The current content of the dataset is deemed to be that which was last asigned to either self.xml_str or self.xml_tree.
+        The current content of the dataset is deemed to be that which was last asigned to either `self.xml_str` or `self.xml_tree`.
 
     Warning:
-        The behaviour of simultaneous assignment to both self.xml_str and self.xml_tree is undefined.
+        The behaviour of simultaneous assignment to both `self.xml_str` and `self.xml_tree` is undefined.
 
     Todo:
         Implement getters and setters for attributes.
