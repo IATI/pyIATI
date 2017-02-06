@@ -42,6 +42,7 @@ class Dataset(object):
         Todo:
             Undertake validation.
         """
+        # TODO: It should not be possible to assign a string to this and have it fail silently
         self.xml_tree = xml
 
     @property
