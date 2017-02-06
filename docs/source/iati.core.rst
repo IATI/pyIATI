@@ -51,6 +51,14 @@ iati.core.resources module
     :undoc-members:
     :show-inheritance:
 
+iati.core.rulesets module
+-------------------------
+
+.. automodule:: iati.core.rulesets
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 iati.core.schemas module
 ------------------------
 

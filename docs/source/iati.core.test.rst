@@ -36,6 +36,14 @@ iati.core.test.test_resources module
     :undoc-members:
     :show-inheritance:
 
+iati.core.test.test_rulesets module
+-----------------------------------
+
+.. automodule:: iati.core.test.test_rulesets
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 iati.core.test.test_schemas module
 ----------------------------------
 
