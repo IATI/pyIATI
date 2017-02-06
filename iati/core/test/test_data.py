@@ -16,7 +16,7 @@ class TestDatasets(object):
     def test_dataset_no_params(self):
         """Test Dataset creation with no parameters."""
         try:
-            data = iati.core.data.Dataset()
+            _ = iati.core.data.Dataset()
         except TypeError:
             assert True
         else:
@@ -37,7 +37,7 @@ class TestDatasets(object):
     def test_dataset_invalid_xml_string(self):
         """Test Dataset creation with a string that is not valid XML."""
         try:
-            data = iati.core.data.Dataset(iati.core.test.utilities.XML_STR_INVALID)
+            _ = iati.core.data.Dataset(iati.core.test.utilities.XML_STR_INVALID)
         except ValueError:
             assert True
         else:
@@ -47,7 +47,7 @@ class TestDatasets(object):
     def test_dataset_number_not_xml(self):
         """Test Dataset creation when it's passed a number rather than a string or etree."""
         try:
-            data = iati.core.data.Dataset(17)
+            _ = iati.core.data.Dataset(17)
         except TypeError:
             assert True
         else:
