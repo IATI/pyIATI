@@ -6,12 +6,18 @@ Todo:
     Implement tests regarding modification of attributes after the Dataset has initially been created.
 """
 from lxml import etree
+import pytest
 import iati.core.data
 import iati.core.test.utilities
 
 
 class TestDatasets(object):
     """A container for tests relating to Datasets"""
+
+    @pytest.fixture
+    def dataset_initialised(cls):
+        """An initialised dataset to work from in other tests."""
+        return iati.core.data.Dataset(iati.core.test.utilities.XML_STR_VALID)
 
     def test_dataset_no_params(self):
         """Test Dataset creation with no parameters."""
@@ -100,4 +106,36 @@ class TestDatasets(object):
         """Test Dataset creation with a valid IATI etree.
         Strict IATI checks are enabled.
         """
+        pass
+
+    def test_dataset_xml_str_assignment_valid_str(self, dataset_initialised):
+        """Test assignment to the xml_str property with a valid XML string."""
+        pass
+
+    def test_dataset_xml_str_assignment_invalid_str(self, dataset_initialised):
+        """Test assignment to the xml_str property with an invalid XML string."""
+        pass
+
+    def test_dataset_xml_str_assignment_tree(self, dataset_initialised):
+        """Test assignment to the xml_str property with an ElementTree."""
+        pass
+
+    def test_dataset_xml_str_assignment_invalid_value(self, dataset_initialised):
+        """Test assignment to the xml_str property with a value that is very much not valid."""
+        pass
+
+    def test_dataset_xml_tree_assignment_valid_tree(self, dataset_initialised):
+        """Test assignment to the xml_tree property with a valid ElementTree."""
+        pass
+
+    def test_dataset_xml_tree_assignment_invalid_tree(self, dataset_initialised):
+        """Test assignment to the xml_tree property with an invalid ElementTree."""
+        pass
+
+    def test_dataset_xml_tree_assignment_str(self, dataset_initialised):
+        """Test assignment to the xml_tree property with an XML string."""
+        pass
+
+    def test_dataset_xml_tree_assignment_invalid_value(self, dataset_initialised):
+        """Test assignment to the xml_tree property with a value that is very much not valid."""
         pass

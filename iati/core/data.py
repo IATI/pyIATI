@@ -41,6 +41,7 @@ class Dataset(object):
 
         Todo:
             Undertake validation.
+            Use the strictly_valid parameter.
         """
         # TODO: It should not be possible to assign a string to this and have it fail silently
         self.xml_tree = xml
