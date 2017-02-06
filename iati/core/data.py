@@ -80,7 +80,10 @@ class Dataset(object):
 
     @property
     def xml_tree(self):
-        """A tree representation of the XML being represented."""
+        """A tree representation of the XML being represented.
+
+        TypeError: If a value that is being assigned is not an ElementTree.
+        """
         return self._xml_tree
 
     @xml_tree.setter
