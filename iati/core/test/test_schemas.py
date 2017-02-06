@@ -40,15 +40,15 @@ class TestSchemas(object):
 
         assert schema.name == iati.core.test.utilities.SCHEMA_NAME_VALID
         assert isinstance(schema.schema, XMLSchema)
-        assert isinstance(schema.codelists, dict)
+        assert isinstance(schema.codelists, set)
         assert len(schema.codelists) == 0
 
     def test_schema_codelists_assignment(self, schema_initialised):
-        """Check that it is not possible to directly add Codelists to the Schema."""
+        """Check that it is possible to add Codelists to the Schema."""
         codelist_name = "a test Codelist name"
         schema = schema_initialised
         codelist = iati.core.codelists.Codelist(codelist_name)
 
-        schema.codelists[codelist_name] = codelist
+        schema.codelists.add(codelist)
 
-        assert len(schema.codelists) == 0
+        assert len(schema.codelists) == 1
