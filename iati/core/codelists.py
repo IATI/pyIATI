@@ -54,7 +54,7 @@ class Codelist(object):
             parse_from_xml(xml)
 
     def __eq__(self, other):
-        """Checks Codelist equality.
+        """Check Codelist equality.
 
         Todo:
             Utilise the contained Codes as part of the equality process.
@@ -62,7 +62,7 @@ class Codelist(object):
         return (self.name) == (other.name)
 
     def __hash__(self):
-        """Hashes the Codelist.
+        """Hash the Codelist.
 
         Todo:
             Utilise the contained Codes as part of the hashing process.
