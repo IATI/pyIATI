@@ -52,7 +52,7 @@ def log(lvl, msg, *args, **kwargs):
         filename=os.path.join(iati.core.constants.LOG_FILE_NAME),
         format='%(asctime)s %(levelname)s:%(name)s: %(message)s %(stack_info)s',
         level=logging.DEBUG
-        )
+    )
     logger = logging.getLogger(iati.core.constants.LOGGER_NAME)
     logger.log(lvl, msg, *args, **kwargs)
 
