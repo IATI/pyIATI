@@ -68,6 +68,38 @@ class TestDatasets(object):
         assert data.xml_tree == tree
         assert data.xml_str == etree.tostring(tree, pretty_print=True)
 
+    def test_dataset_xml_str_assignment_valid_str(self, dataset_initialised):
+        """Test assignment to the xml_str property with a valid XML string."""
+        pass
+
+    def test_dataset_xml_str_assignment_invalid_str(self, dataset_initialised):
+        """Test assignment to the xml_str property with an invalid XML string."""
+        pass
+
+    def test_dataset_xml_str_assignment_tree(self, dataset_initialised):
+        """Test assignment to the xml_str property with an ElementTree."""
+        pass
+
+    def test_dataset_xml_str_assignment_invalid_value(self, dataset_initialised):
+        """Test assignment to the xml_str property with a value that is very much not valid."""
+        pass
+
+    def test_dataset_xml_tree_assignment_valid_tree(self, dataset_initialised):
+        """Test assignment to the xml_tree property with a valid ElementTree."""
+        pass
+
+    def test_dataset_xml_tree_assignment_invalid_tree(self, dataset_initialised):
+        """Test assignment to the xml_tree property with an invalid ElementTree."""
+        pass
+
+    def test_dataset_xml_tree_assignment_str(self, dataset_initialised):
+        """Test assignment to the xml_tree property with an XML string."""
+        pass
+
+    def test_dataset_xml_tree_assignment_invalid_value(self, dataset_initialised):
+        """Test assignment to the xml_tree property with a value that is very much not valid."""
+        pass
+
     def test_dataset_iati_tree(self):
         """Test Dataset creation with a valid IATI etree."""
         pass
@@ -108,34 +140,50 @@ class TestDatasets(object):
         """
         pass
 
-    def test_dataset_xml_str_assignment_valid_str(self, dataset_initialised):
-        """Test assignment to the xml_str property with a valid XML string."""
+    def test_dataset_xml_str_assignment_valid_str_strict(self, dataset_initialised):
+        """Test assignment to the xml_str property with a valid XML string.
+        Strict IATI checks are enabled.
+        """
         pass
 
-    def test_dataset_xml_str_assignment_invalid_str(self, dataset_initialised):
-        """Test assignment to the xml_str property with an invalid XML string."""
+    def test_dataset_xml_str_assignment_invalid_str_strict(self, dataset_initialised):
+        """Test assignment to the xml_str property with an invalid XML string.
+        Strict IATI checks are enabled.
+        """
         pass
 
-    def test_dataset_xml_str_assignment_tree(self, dataset_initialised):
-        """Test assignment to the xml_str property with an ElementTree."""
+    def test_dataset_xml_str_assignment_tree_strict(self, dataset_initialised):
+        """Test assignment to the xml_str property with an ElementTree.
+        Strict IATI checks are enabled.
+        """
         pass
 
-    def test_dataset_xml_str_assignment_invalid_value(self, dataset_initialised):
-        """Test assignment to the xml_str property with a value that is very much not valid."""
+    def test_dataset_xml_str_assignment_invalid_value_strict(self, dataset_initialised):
+        """Test assignment to the xml_str property with a value that is very much not valid.
+        Strict IATI checks are enabled.
+        """
         pass
 
-    def test_dataset_xml_tree_assignment_valid_tree(self, dataset_initialised):
-        """Test assignment to the xml_tree property with a valid ElementTree."""
+    def test_dataset_xml_tree_assignment_valid_tree_strict(self, dataset_initialised):
+        """Test assignment to the xml_tree property with a valid ElementTree.
+        Strict IATI checks are enabled.
+        """
         pass
 
-    def test_dataset_xml_tree_assignment_invalid_tree(self, dataset_initialised):
-        """Test assignment to the xml_tree property with an invalid ElementTree."""
+    def test_dataset_xml_tree_assignment_invalid_tree_strict(self, dataset_initialised):
+        """Test assignment to the xml_tree property with an invalid ElementTree.
+        Strict IATI checks are enabled.
+        """
         pass
 
-    def test_dataset_xml_tree_assignment_str(self, dataset_initialised):
-        """Test assignment to the xml_tree property with an XML string."""
+    def test_dataset_xml_tree_assignment_str_strict(self, dataset_initialised):
+        """Test assignment to the xml_tree property with an XML string.
+        Strict IATI checks are enabled.
+        """
         pass
 
-    def test_dataset_xml_tree_assignment_invalid_value(self, dataset_initialised):
-        """Test assignment to the xml_tree property with a value that is very much not valid."""
+    def test_dataset_xml_tree_assignment_invalid_value_strict(self, dataset_initialised):
+        """Test assignment to the xml_tree property with a value that is very much not valid.
+        Strict IATI checks are enabled.
+        """
         pass
