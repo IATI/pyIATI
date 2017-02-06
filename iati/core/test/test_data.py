@@ -60,7 +60,7 @@ class TestDatasets(object):
         data = iati.core.data.Dataset(tree)
 
         assert data.xml_tree == tree
-        assert data.xml_str == etree.tostring(tree)
+        assert data.xml_str == etree.tostring(tree, pretty_print=True)
 
     def test_dataset_iati_tree(self):
         """Test Dataset creation with a valid IATI etree."""
