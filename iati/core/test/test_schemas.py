@@ -1,6 +1,7 @@
 """A module containing tests for the library representation of Schemas."""
 import pytest
 from lxml.etree import XMLSchema
+import iati.core.codelists
 import iati.core.exceptions
 import iati.core.schemas
 import iati.core.test.utilities
@@ -40,4 +41,14 @@ class TestSchemas(object):
         assert schema.name == iati.core.test.utilities.SCHEMA_NAME_VALID
         assert isinstance(schema.schema, XMLSchema)
         assert isinstance(schema.codelists, dict)
+        assert len(schema.codelists) == 0
+
+    def test_schema_codelists_assignment(self, schema_initialised):
+        """Check that it is not possible to directly add Codelists to the Schema."""
+        codelist_name = "a test Codelist name"
+        schema = schema_initialised
+        codelist = iati.core.codelists.Codelist(codelist_name)
+
+        schema.codelists[codelist_name] = codelist
+
         assert len(schema.codelists) == 0
