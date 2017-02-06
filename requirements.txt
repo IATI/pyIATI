@@ -2,3 +2,4 @@
 # requirements used by library
 #
 lxml==3.6.0
+typing==3.5.3.0
