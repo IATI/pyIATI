@@ -6,7 +6,6 @@ import iati.core.codelists
 class TestCodelists(object):
     """A container for tests relating to Codelists"""
 
-
     @pytest.fixture
     def name_to_set(self):
         return "test Codelist name"

@@ -10,7 +10,6 @@ import iati.core.test.utilities
 class TestSchemas(object):
     """A container for tests relating to Schemas"""
 
-
     @pytest.fixture
     def schema_initialised(self):
         schema_name = iati.core.test.utilities.SCHEMA_NAME_VALID
