@@ -16,7 +16,7 @@ class TestDatasets(object):
     def test_dataset_no_params(self):
         """Test Dataset creation with no parameters."""
         try:
-            _ = iati.core.data.Dataset()
+            _ = iati.core.data.Dataset()  # pylint: disable=E1120
         except TypeError:
             assert True
         else:
