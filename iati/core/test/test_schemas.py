@@ -14,11 +14,10 @@ class TestSchemas(object):
         assert schema.name is None
 
     def test_schema_name_instance(self):
-        """Check a Schema's attributes are correct when defined with only a name"""
+        """Check that an Error is raised when attempting to load a Schema that does not exist"""
         name_to_set = "test Schema name"
         try:
             schema = iati.core.schemas.Schema(name_to_set)
-            assert isinstance(schema, iati.core.schemas.Schema)
         except iati.core.exceptions.SchemaError:
             assert True
         else:
@@ -33,3 +32,5 @@ class TestSchemas(object):
 
         assert schema.name == schema_name
         assert isinstance(schema.schema, XMLSchema)
+        assert isinstance(schema.codelists, dict)
+        assert len(schema.codelists) == 0

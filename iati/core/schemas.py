@@ -12,6 +12,9 @@ class Schema(object):
         name (str): The name of the Schema.
         schema (etree.XMLSchema): An actual Schema that can be used for validation.
         codelists (dict): The Codelists asspciated with this Schema.
+
+    Todo:
+        Create a custom dictionary type that prevents overwriting values and only allows the correct types to be added.
     """
 
     def __init__(self, name=None):
@@ -26,10 +29,12 @@ class Schema(object):
 
         Todo:
             Allow for generation of schemas outside the IATI SSOT.
+
             Better use the try-except pattern.
         """
         self.name = name
         self.schema = None
+        self.codelists = {}
 
         if name:
             path = iati.core.resources.path_schema(self.name)
