@@ -24,14 +24,12 @@ class Dataset(object):
         Implement an addition override to allow for combation of datasets.
     """
 
-    def __init__(self, xml, strictly_valid=False):
+    def __init__(self, xml):
         """Initialise a dataset.
 
         Args:
             xml (str/ElementTree): A representation of the XML to encapsulate.
                 May be either a string or an ElementTree.
-            strictly_valid (bool, optional): Whether the dataset must strictly conform to the IATI standard.
-                Defaults to False.
 
         Raises:
             TypeError: If an attempt to pass something that is not a string or ElementTree is made.
@@ -41,7 +39,7 @@ class Dataset(object):
 
         Todo:
             Undertake validation.
-            Use the strictly_valid parameter.
+            Add a way to determine whether a dataset fully conforms to the IATI standard and / or modify the dataset so that it does.
         """
         # TODO: It should not be possible to assign a string to this and have it fail silently
         self.xml_tree = xml
