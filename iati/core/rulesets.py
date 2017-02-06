@@ -1,4 +1,8 @@
-"""A module containg a core representation of IATI Rulesets."""
+"""A module containg a core representation of IATI Rulesets.
+
+Todo:
+    Implement Rulesets (and Rules). Likely worth completing the Codelist implementation first since the two will be similar.
+"""
 
 
 class Ruleset(object):
