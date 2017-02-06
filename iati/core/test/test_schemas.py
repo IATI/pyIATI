@@ -1,11 +1,20 @@
 """A module containing tests for the library representation of Schemas."""
+import pytest
 from lxml.etree import XMLSchema
 import iati.core.exceptions
 import iati.core.schemas
+import iati.core.test.utilities
 
 
 class TestSchemas(object):
     """A container for tests relating to Schemas"""
+
+
+    @pytest.fixture
+    def schema_initialised(self):
+        schema_name = iati.core.test.utilities.SCHEMA_NAME_VALID
+
+        return iati.core.schemas.Schema(name=schema_name)
 
     def test_schema_default_attributes(self):
         """Check a Schema's default attributes are correct"""
@@ -24,13 +33,11 @@ class TestSchemas(object):
             # a ShemaError should be raised, so this point should not be reached
             assert False
 
-    def test_schema_define_from_xsd(self):
+    def test_schema_define_from_xsd(self, schema_initialised):
         """Check that a Schema can be generated from an XSD definition"""
-        schema_name = 'iati-activities-schema'
+        schema = schema_initialised
 
-        schema = iati.core.schemas.Schema(name=schema_name)
-
-        assert schema.name == schema_name
+        assert schema.name == iati.core.test.utilities.SCHEMA_NAME_VALID
         assert isinstance(schema.schema, XMLSchema)
         assert isinstance(schema.codelists, dict)
         assert len(schema.codelists) == 0

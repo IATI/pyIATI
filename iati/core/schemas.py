@@ -11,7 +11,7 @@ class Schema(object):
     Attributes:
         name (str): The name of the Schema.
         schema (etree.XMLSchema): An actual Schema that can be used for validation.
-        codelists (dict): The Codelists asspciated with this Schema.
+        codelists (dict): The Codelists asspciated with this Schema. This is a read-only attribute.
 
     Todo:
         Create a custom dictionary type that prevents overwriting values and only allows the correct types to be added.
@@ -34,7 +34,7 @@ class Schema(object):
         """
         self.name = name
         self.schema = None
-        self.codelists = {}
+        self._codelists = {}
 
         if name:
             path = iati.core.resources.path_schema(self.name)
@@ -48,3 +48,7 @@ class Schema(object):
                 generated_schema = iati.core.utilities.convert_tree_to_schema(loaded_tree)
                 if isinstance(generated_schema, etree.XMLSchema):
                     self.schema = generated_schema
+
+    @property
+    def codelists(self):
+        return self._codelists

@@ -5,6 +5,8 @@ Todo:
 """
 from lxml import etree
 
+SCHEMA_NAME_VALID = 'iati-activities-schema'
+"""A string containing a valid Schema name."""
 
 XML_STR_VALID = '<parent><child attribute="value" /></parent>'
 """A string containing valid XML that is not valid against the IATI schema."""
