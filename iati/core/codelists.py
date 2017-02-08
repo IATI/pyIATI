@@ -81,6 +81,13 @@ class Codelist(object):
         if isinstance(code, Code):
             self.codes.append(code)
 
+    def to_xsd_tree(self):
+        """Output the Codelist as an XSD etree.
+
+        This tree may be used to specify the type of given elements, allowing insertion and validation within a schema.
+        """
+        pass
+
 
 class Code(object):
     """Representation of a Code contained within a Codelist.
@@ -102,3 +109,7 @@ class Code(object):
         """
         self.name = name
         self.value = value
+
+    def to_xsd_tree(self):
+        """Output the Code as an etree element for validation."""
+        pass
