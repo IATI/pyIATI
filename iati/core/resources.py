@@ -2,6 +2,7 @@
 import os
 import pkg_resources
 from lxml import etree
+import iati.core.utilities
 
 
 PACKAGE = __name__
@@ -27,11 +28,40 @@ PATH_CODELIST_MAPPINGS = os.sep.join((BASE_PATH_CODELISTS, 'mapping.xml'))
 """The relative location of the file containing mappings between Schema XPaths and Codelists."""
 
 
-def path_codelist(name):
+def find_all_codelist_paths(version=0):
+    """Find the paths for all codelists.
+
+    Args:
+        version (float): The version of the Standard to return the Codelists for. Defaults to 0. This means that the latest version of the Codelist is returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        list: A list of paths to all of the Codelists at the specified version of the Standard.
+
+    Todo:
+        Actually handle versions.
+
+        Provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
+    """
+    files_embedded = pkg_resources.resource_listdir(PACKAGE, BASE_PATH_CODELISTS_EMBEDDED)
+    files_non_embedded = pkg_resources.resource_listdir(PACKAGE, BASE_PATH_CODELISTS_NON_EMBEDDED)
+
+    paths_embedded = [path_codelist(file, 'embedded') for file in files_embedded]
+    paths_non_embedded = [path_codelist(file, 'non-embedded') for file in files_non_embedded]
+
+    paths_all = [path for path in paths_embedded + paths_non_embedded if path[-4:] == '.xml']
+
+    return paths_all
+
+
+def path_codelist(name, type='non-embedded'):
     """Determine the path of a codelist with the given name.
 
     Args:
-        name (str): The name of the codelist to locate.
+        name (str): The name of the codelist to locate. Should the name end in '.xml', this shall be removed to determine the name.
+        type (str): The type of codelist being located. Either 'embedded' or 'non-embedded'. Defaults to 'non-embedded'.
 
     Returns:
         str: The path to a file containing the specified codelist.
@@ -39,10 +69,25 @@ def path_codelist(name):
     Note:
         Does not check whether the specified codelist actually exists.
 
+    Raises:
+        ValueError: If the specified type of Codelist is not valid.
+
     Todo:
-        Handle embedded codelists.
+        Provide a better interface for specifying whether a codelise is Embedded or Non-Embedded.
+
+        Add tests for: Embedded codelist, invalid type, explicit non-embedded, a name with a file extension.
     """
-    return os.sep.join((BASE_PATH_CODELISTS_NON_EMBEDDED, '{0}.xml'.format(name)))
+    if name[-4:] == '.xml':
+        name = name[:-4]
+
+    if type == 'embedded':
+        return os.sep.join((BASE_PATH_CODELISTS_EMBEDDED, '{0}.xml'.format(name)))
+    elif type == 'non-embedded':
+        return os.sep.join((BASE_PATH_CODELISTS_NON_EMBEDDED, '{0}.xml'.format(name)))
+    else:
+        msg = "The type of a Codelist must be either 'embedded' or 'non-embedded'"
+        iati.core.utilities.log_error(msg)
+        raise ValueError(msg)
 
 
 def path_schema(name):

@@ -6,8 +6,9 @@ Todo:
     Handle multiple versions of the Standard rather than limiting to the latest.
 """
 
+
 def codelists(version=0):
-    """Locates the default Codelists for the specified version of the Schema.
+    """Locate the default Codelists for the specified version of the Schema.
 
     Args:
         version (float): The version of the Standard to return the Codelists for. Defaults to 0. This means that the latest version of the Codelist is returned.
