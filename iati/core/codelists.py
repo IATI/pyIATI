@@ -57,6 +57,8 @@ class Codelist(object):
     def __eq__(self, other):
         """Check Codelist equality.
 
+        This allows uniqueness to be correctly defined upon insertion into a set.
+
         Todo:
             Utilise the contained Codes as part of the equality process.
         """
@@ -64,6 +66,8 @@ class Codelist(object):
 
     def __hash__(self):
         """Hash the Codelist.
+
+        This allows uniqueness to be correctly defined upon insertion into a set.
 
         Todo:
             Utilise the contained Codes as part of the hashing process.
