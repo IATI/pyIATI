@@ -25,8 +25,23 @@ class TestResources(object):
 
         assert len(paths) == 62
         for path in paths:
-            assert path[-4:] == '.xml'
+            assert path[-4:] == iati.core.resources.FILE_CODELIST_EXTENSION
             assert iati.core.resources.BASE_PATH_CODELISTS in path
+
+    def test_find_schema_paths(self):
+        """Check that all schema paths are being found.
+
+        Todo:
+            Add other tests relating to specific versions of the Standard.
+
+            Handle all paths to schemas being found correctly.
+        """
+        paths = iati.core.resources.find_all_schema_paths()
+
+        assert len(paths) == 1
+        for path in paths:
+            assert path[-4:] == iati.core.resources.FILE_SCHEMA_EXTENSION
+            assert iati.core.resources.BASE_PATH_SCHEMAS_202 in path
 
     @pytest.mark.parametrize('name,location', [
         ('Name', None),

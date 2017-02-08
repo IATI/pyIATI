@@ -55,7 +55,7 @@ def find_all_codelist_paths(version=0):
         list: A list of paths to all of the Codelists at the specified version of the Standard.
 
     Todo:
-        Actually handle versions, including errors.
+        Handle versions, including errors.
 
         Provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
     """
@@ -65,7 +65,7 @@ def find_all_codelist_paths(version=0):
     paths_embedded = [path_codelist(file, 'embedded') for file in files_embedded]
     paths_non_embedded = [path_codelist(file, 'non-embedded') for file in files_non_embedded]
 
-    paths_all = [path for path in paths_embedded + paths_non_embedded if path[-4:] == '.xml']
+    paths_all = [path for path in paths_embedded + paths_non_embedded if path[-4:] == FILE_CODELIST_EXTENSION]
 
     return paths_all
 
@@ -83,9 +83,9 @@ def find_all_schema_paths(version=0):
         list: A list of paths to all of the Schemas at the specified version of the Standard.
 
     Todo:
-        Actually handle versions, including errors.
+        Handle versions, including errors.
     """
-    pass
+    return [path_schema(FILE_SCHEMA_ACTIVITY_NAME)]
 
 
 def path_codelist(name, location='non-embedded'):
