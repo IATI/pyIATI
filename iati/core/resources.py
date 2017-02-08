@@ -1,4 +1,8 @@
-"""A module to provide a way of locating resources within the IATI library."""
+"""A module to provide a way of locating resources within the IATI library.
+
+Todo:
+    Determine how to distribute SSOT content - with package, or separately (being downloaded at runtime)
+"""
 import os
 import pkg_resources
 from lxml import etree
