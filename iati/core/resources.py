@@ -74,8 +74,6 @@ def path_codelist(name, type='non-embedded'):
 
     Todo:
         Provide a better interface for specifying whether a codelise is Embedded or Non-Embedded.
-
-        Add tests for: Embedded codelist, invalid type, explicit non-embedded, a name with a file extension.
     """
     if name[-4:] == '.xml':
         name = name[:-4]
@@ -85,7 +83,7 @@ def path_codelist(name, type='non-embedded'):
     elif type == 'non-embedded':
         return os.sep.join((BASE_PATH_CODELISTS_NON_EMBEDDED, '{0}.xml'.format(name)))
     else:
-        msg = "The type of a Codelist must be either 'embedded' or 'non-embedded'"
+        msg = "The type of a Codelist must be a string equal to either 'embedded' or 'non-embedded'"
         iati.core.utilities.log_error(msg)
         raise ValueError(msg)
 
