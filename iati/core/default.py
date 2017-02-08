@@ -34,6 +34,8 @@ def codelists(version=0, bypass_cache=False):
 
     Todo:
         Actually handle versions, including errors.
+
+        Test a cache bypass where data is updated.
     """
     paths = iati.core.resources.find_all_codelist_paths()
 
