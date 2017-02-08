@@ -28,6 +28,14 @@ iati.core.test.test_data module
     :undoc-members:
     :show-inheritance:
 
+iati.core.test.test_default module
+----------------------------------
+
+.. automodule:: iati.core.test.test_default
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 iati.core.test.test_resources module
 ------------------------------------
 

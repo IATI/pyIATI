@@ -31,6 +31,16 @@ BASE_PATH_SCHEMAS_202 = os.sep.join((BASE_PATH_SCHEMAS, '202'))
 PATH_CODELIST_MAPPINGS = os.sep.join((BASE_PATH_CODELISTS, 'mapping.xml'))
 """The relative location of the file containing mappings between Schema XPaths and Codelists."""
 
+FILE_CODELIST_EXTENSION = '.xml'
+"""The extension of a file containing a Codelist."""
+
+FILE_SCHEMA_ACTIVITY_NAME = 'iati-activities-schema'
+"""The name of a file containing an Activity Schema."""
+FILE_SCHEMA_ORGANISATION_NAME = 'iati-organisations-schema'
+"""The name of a file containing an Organisation Schema."""
+FILE_SCHEMA_EXTENSION = '.xsd'
+"""The extension of a file containing a Schema."""
+
 
 def find_all_codelist_paths(version=0):
     """Find the paths for all codelists.
@@ -60,6 +70,24 @@ def find_all_codelist_paths(version=0):
     return paths_all
 
 
+def find_all_schema_paths(version=0):
+    """Find the paths for all schemas.
+
+    Args:
+        version (float): The version of the Standard to return the Schemas for. Defaults to 0. This means that the latest version of the Schema is returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        list: A list of paths to all of the Schemas at the specified version of the Standard.
+
+    Todo:
+        Actually handle versions, including errors.
+    """
+    pass
+
+
 def path_codelist(name, location='non-embedded'):
     """Determine the path of a codelist with the given name.
 
@@ -79,13 +107,13 @@ def path_codelist(name, location='non-embedded'):
     Todo:
         Provide a better interface for specifying whether a codelist is Embedded or Non-Embedded, keeping in mind user-defined codelists.
     """
-    if name[-4:] == '.xml':
+    if name[-4:] == FILE_CODELIST_EXTENSION:
         name = name[:-4]
 
     if location == 'embedded':
-        return os.sep.join((BASE_PATH_CODELISTS_EMBEDDED, '{0}.xml'.format(name)))
+        return os.sep.join((BASE_PATH_CODELISTS_EMBEDDED, '{0}'.format(name) + FILE_CODELIST_EXTENSION))
     elif location == 'non-embedded':
-        return os.sep.join((BASE_PATH_CODELISTS_NON_EMBEDDED, '{0}.xml'.format(name)))
+        return os.sep.join((BASE_PATH_CODELISTS_NON_EMBEDDED, '{0}'.format(name) + FILE_CODELIST_EXTENSION))
     else:
         msg = "The location of a Codelist must be a string equal to either 'embedded' or 'non-embedded'"
         iati.core.utilities.log_error(msg)
@@ -107,7 +135,7 @@ def path_schema(name):
     Todo:
         Handle versions of the standard other than 2.02.
     """
-    return os.sep.join((BASE_PATH_SCHEMAS_202, '{0}.xsd'.format(name)))
+    return os.sep.join((BASE_PATH_SCHEMAS_202, '{0}'.format(name) + FILE_SCHEMA_EXTENSION))
 
 
 def load_as_string(path):

@@ -1,6 +1,7 @@
 """A module containing tests for the library representation of default values."""
 import iati.core.codelists
 import iati.core.default
+import iati.core.schemas
 
 
 class TestDefault(object):
@@ -11,6 +12,8 @@ class TestDefault(object):
 
         Todo:
             Handle multiple versions.
+
+            Check internal values beyond the codelists being the correct type.
         """
         codelists = iati.core.default.codelists()
 
@@ -18,3 +21,15 @@ class TestDefault(object):
         assert len(codelists) == 62
         for _, codelist in codelists.items():
             assert isinstance(codelist, iati.core.codelists.Codelist)
+
+    def test_default_schemas(self):
+        """Check that the default Schemas are correct.
+
+        Todo:
+            Check internal values beyond the schemas being the correct type.
+        """
+        schemas = iati.core.default.schemas()
+
+        assert isinstance(schemas, dict)
+        for _, schema in schemas.items():
+            assert isinstance(schema, iati.core.schemas.Schema)

@@ -20,7 +20,7 @@ This removes the need to repeatedly load a Codelist from disk each time it is ac
 
 
 def codelists(version=0, bypass_cache=False):
-    """Locate the default Codelists for the specified version of the Schema.
+    """Locate the default Codelists for the specified version of the Standard.
 
     Args:
         version (float): The version of the Standard to return the Codelists for. Defaults to 0. This means that the latest version of the Codelist is returned.
@@ -47,3 +47,27 @@ def codelists(version=0, bypass_cache=False):
             _codelists[name] = codelist
 
     return _codelists
+
+
+_schemas = {}
+"""A cache of loaded Schemas.
+
+This removes the need to repeatedly load a Schema from disk each time it is accessed.
+"""
+
+
+def schemas(bypass_cache=False):
+    """Locate the default Schemas.
+
+    Args:
+        bypass_cache (bool): Whether the cache should be bypassed, instead reloading data from disk even if it's already been loaded.
+
+    Returns:
+        dict: A dictionary containing all the Schemas for versions of the Standard. The version of the Standard is the key. An iati.core.schemas.Schema() is each value.
+
+    Todo:
+        Handle the difference between Organisation and Activity Schemas.
+
+        Test a cache bypass where data is updated.
+    """
+    return {}
