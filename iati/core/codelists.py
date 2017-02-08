@@ -87,11 +87,34 @@ class Codelist(object):
             self.codes.append(code)
 
     def xsd_tree(self):
-        """Output the Codelist as an XSD etree.
+        """Output the Codelist as an XSD etree type.
 
         This tree may be used to specify the type of given elements, allowing insertion and validation within a schema.
+
+        Todo:
+            See whether there are only Codelists of a type other than string.
+
+            Improve naming of the type to reduce potential of clashes.
+
+            Rename this function, potentially making it a property.
         """
-        pass
+        type_base_el = etree.Element(
+            iati.core.constants.NAMESPACE + 'simpleType',
+            name='{0}-type'.format(self.name),
+            nsmap=iati.core.constants.NSMAP
+        )
+        restriction_base_el = etree.Element(
+            iati.core.constants.NAMESPACE + 'restriction',
+            base='xsd:string',
+            nsmap=iati.core.constants.NSMAP
+        )
+
+        for code in self.codes:
+            restriction_base_el.append(code.xsd_tree())
+
+        type_base_el.append(restriction_base_el)
+
+        return type_base_el
 
 
 class Code(object):
@@ -119,7 +142,7 @@ class Code(object):
         """Output the Code as an etree enumeration element.
 
         Todo:
-            Look at making this a property rather than a function.
+            Rename this function, potentially making it a property.
         """
         return etree.Element(
             iati.core.constants.NAMESPACE + 'enumeration',

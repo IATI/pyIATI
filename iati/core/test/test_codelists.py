@@ -73,6 +73,29 @@ class TestCodelists(object):
         assert len(codelist.codes) == 6
         assert codelist.codes[0].value == '10'
 
+    def test_codelist_type_xsd(self, name_to_set):
+        """Check that a Codelist can turn itself into a type to use for validation."""
+        code_value_to_set = "test Code value"
+        codelist = iati.core.codelists.Codelist(name_to_set)
+        code = iati.core.codelists.Code(code_value_to_set)
+        codelist.add_code(code)
+
+        type_tree = codelist.xsd_tree()
+
+        assert isinstance(type_tree, etree._Element)  # pylint: disable=protected-access
+        assert type_tree.tag == iati.core.constants.NAMESPACE + 'simpleType'
+        assert type_tree.attrib['name'] == name_to_set + '-type'
+        assert type_tree.nsmap == iati.core.constants.NSMAP
+        assert len(type_tree) == 1
+
+        assert type_tree[0].tag == iati.core.constants.NAMESPACE + 'restriction'
+        assert type_tree[0].nsmap == iati.core.constants.NSMAP
+        assert len(type_tree[0]) == 1
+
+        assert type_tree[0][0].tag == iati.core.constants.NAMESPACE + 'enumeration'
+        assert type_tree[0][0].attrib['value'] == code_value_to_set
+        assert type_tree[0][0].nsmap == iati.core.constants.NSMAP
+
 
 class TestCodes(object):
     """A container for tests relating to Codes"""
@@ -102,7 +125,11 @@ class TestCodes(object):
         assert code.value == value_to_set
 
     def test_code_enumeration_element(self):
-        """Check that a Code correctly outputs an enumeration element."""
+        """Check that a Code correctly outputs an enumeration element.
+
+        Todo:
+            Test enumerating a Code with no value.
+        """
         value_to_set = "test Code value"
         code = iati.core.codelists.Code(value_to_set)
 
