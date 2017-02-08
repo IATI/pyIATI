@@ -4,8 +4,19 @@ This includes Codelists, Schemas and Rulesets at various versions of the Standar
 
 Todo:
     Handle multiple versions of the Standard rather than limiting to the latest.
-"""
 
+    Implement more than Codelists.
+"""
+import os
+import iati.core.codelists
+import iati.core.resources
+
+
+_codelists = {}
+"""A cache of loaded Codelists.
+
+This removes the need to repeatedly load a Codelist from disk each time it is accessed.
+"""
 
 def codelists(version=0):
     """Locate the default Codelists for the specified version of the Schema.
@@ -21,6 +32,16 @@ def codelists(version=0):
             The Codelist name is the key. An iati.core.codelists.Codelist() is each value.
 
     Todo:
-        Implement this.
+        Actually handle versions, including errors.
+
+        Improve caching.
     """
-    pass
+    paths = iati.core.resources.find_all_codelist_paths()
+
+    for path in paths:
+        xml_str = iati.core.resources.load_as_string(path)
+        name = path.split(os.sep).pop()[:-4]
+        codelist = iati.core.codelists.Codelist(name, xml=xml_str)
+        _codelists[name] = codelist
+
+    return _codelists

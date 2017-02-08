@@ -41,7 +41,7 @@ def find_all_codelist_paths(version=0):
         list: A list of paths to all of the Codelists at the specified version of the Standard.
 
     Todo:
-        Actually handle versions.
+        Actually handle versions, including errors.
 
         Provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
     """

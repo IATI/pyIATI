@@ -64,13 +64,16 @@ class Codelist(object):
 
             Todo:
                 Define relevant tests and error handling.
+
+                Handle Codelists without description or name elements.
             """
             tree = iati.core.utilities.convert_xml_to_tree(xml)
 
             self.name = tree.attrib['name']
             for code_el in tree.findall('codelist-items/codelist-item'):
                 value = code_el.find('code').text
-                name = code_el.find('description/narrative').text
+                name = 'tmp'
+                # name = code_el.find('description/narrative').text
                 self.add_code(iati.core.codelists.Code(value, name))
 
         self.codes = []

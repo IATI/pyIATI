@@ -35,6 +35,14 @@ iati.core.data module
     :undoc-members:
     :show-inheritance:
 
+iati.core.default module
+------------------------
+
+.. automodule:: iati.core.default
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 iati.core.exceptions module
 ---------------------------
 
