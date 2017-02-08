@@ -56,12 +56,12 @@ def find_all_codelist_paths(version=0):
     return paths_all
 
 
-def path_codelist(name, type='non-embedded'):
+def path_codelist(name, cl_type='non-embedded'):
     """Determine the path of a codelist with the given name.
 
     Args:
         name (str): The name of the codelist to locate. Should the name end in '.xml', this shall be removed to determine the name.
-        type (str): The type of codelist being located. Either 'embedded' or 'non-embedded'. Defaults to 'non-embedded'.
+        cl_type (str): The type of codelist being located. Either 'embedded' or 'non-embedded'. Defaults to 'non-embedded'.
 
     Returns:
         str: The path to a file containing the specified codelist.
@@ -78,9 +78,9 @@ def path_codelist(name, type='non-embedded'):
     if name[-4:] == '.xml':
         name = name[:-4]
 
-    if type == 'embedded':
+    if cl_type == 'embedded':
         return os.sep.join((BASE_PATH_CODELISTS_EMBEDDED, '{0}.xml'.format(name)))
-    elif type == 'non-embedded':
+    elif cl_type == 'non-embedded':
         return os.sep.join((BASE_PATH_CODELISTS_NON_EMBEDDED, '{0}.xml'.format(name)))
     else:
         msg = "The type of a Codelist must be a string equal to either 'embedded' or 'non-embedded'"

@@ -61,13 +61,12 @@ class TestResources(object):
     def test_path_codelist_invalid_type(self, name, cl_type):
         """Check that an error is raised when attempting to find a codelist of invalid type."""
         try:
-            path = iati.core.resources.path_codelist(name, cl_type)
+            _ = iati.core.resources.path_codelist(name, cl_type)
         except ValueError:
             assert True
         else:
             # a ValueError should be raised, meaning this is not reached
             assert False
-
 
     def test_resource_filename(self):
         """Check that resource file names are found correctly
