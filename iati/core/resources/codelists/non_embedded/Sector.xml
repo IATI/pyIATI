@@ -1,0 +1,2620 @@
+<codelist name="Sector" xml:lang="en" category-codelist="SectorCategory" complete="1">
+	<metadata>
+		<name>
+			<narrative>DAC 5 Digit Sector</narrative>
+		</name>
+		<url>http://www.oecd.org/dac/stats/dacandcrscodelists.htm</url>
+	</metadata>
+	<codelist-items>
+		<codelist-item>
+			<code>11110</code>
+			<name>
+				<narrative>Education policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Education sector policy, planning and programmes; aid to education ministries, administration and management systems; institution capacity building and advice; school management and governance; curriculum and materials development; unspecified education activities.</narrative>
+			</description>
+			<category>111</category>
+		</codelist-item>
+		<codelist-item>
+			<code>11120</code>
+			<name>
+				<narrative>Education facilities and training</narrative>
+			</name>
+			<description>
+				<narrative>Educational buildings, equipment, materials; subsidiary services to education (boarding facilities, staff housing); language training; colloquia, seminars, lectures, etc.</narrative>
+			</description>
+			<category>111</category>
+		</codelist-item>
+		<codelist-item>
+			<code>11130</code>
+			<name>
+				<narrative>Teacher training</narrative>
+			</name>
+			<description>
+				<narrative>Teacher education (where the level of education is unspecified); in-service and pre-service training; materials development.</narrative>
+			</description>
+			<category>111</category>
+		</codelist-item>
+		<codelist-item>
+			<code>11182</code>
+			<name>
+				<narrative>Educational research</narrative>
+			</name>
+			<description>
+				<narrative>Research and studies on education effectiveness, relevance and quality; systematic evaluation and monitoring.</narrative>
+			</description>
+			<category>111</category>
+		</codelist-item>
+		<codelist-item>
+			<code>11220</code>
+			<name>
+				<narrative>Primary education</narrative>
+			</name>
+			<description>
+				<narrative>Formal and non-formal primary education for children; all elementary and first cycle systematic instruction; provision of learning materials.</narrative>
+			</description>
+			<category>112</category>
+		</codelist-item>
+		<codelist-item>
+			<code>11230</code>
+			<name>
+				<narrative>Basic life skills for youth and adults</narrative>
+			</name>
+			<description>
+				<narrative>Formal and non-formal education for basic life skills for young people and adults (adults education); literacy and numeracy training.</narrative>
+			</description>
+			<category>112</category>
+		</codelist-item>
+		<codelist-item>
+			<code>11231</code>
+			<name>
+				<narrative>Basic life skills for youth</narrative>
+			</name>
+			<description>
+				<narrative>Formal and non-formal education for basic life skills for young people.</narrative>
+			</description>
+			<category>112</category>
+		</codelist-item>
+		<codelist-item>
+			<code>11232</code>
+			<name>
+				<narrative>Primary education equivalent for adults</narrative>
+			</name>
+			<description>
+				<narrative>Formal primary education for adults.</narrative>
+			</description>
+			<category>112</category>
+		</codelist-item>
+		<codelist-item>
+			<code>11240</code>
+			<name>
+				<narrative>Early childhood education</narrative>
+			</name>
+			<description>
+				<narrative>Formal and non-formal pre-school education.</narrative>
+			</description>
+			<category>112</category>
+		</codelist-item>
+		<codelist-item>
+			<code>11320</code>
+			<name>
+				<narrative>Secondary education</narrative>
+			</name>
+			<description>
+				<narrative>Second cycle systematic instruction at both junior and senior levels.</narrative>
+			</description>
+			<category>113</category>
+		</codelist-item>
+		<codelist-item>
+			<code>11321</code>
+			<name>
+				<narrative>Lower secondary education</narrative>
+			</name>
+			<description>
+				<narrative>Second cycle systematic instruction at junior level.</narrative>
+			</description>
+			<category>113</category>
+		</codelist-item>
+		<codelist-item>
+			<code>11322</code>
+			<name>
+				<narrative>Upper secondary education</narrative>
+			</name>
+			<description>
+				<narrative>Second cycle systematic instruction at senior level.</narrative>
+			</description>
+			<category>113</category>
+		</codelist-item>
+		<codelist-item>
+			<code>11330</code>
+			<name>
+				<narrative>Vocational training</narrative>
+			</name>
+			<description>
+				<narrative>Elementary vocational training and secondary level technical education; on-the job training; apprenticeships; including informal vocational training.</narrative>
+			</description>
+			<category>113</category>
+		</codelist-item>
+		<codelist-item>
+			<code>11420</code>
+			<name>
+				<narrative>Higher education</narrative>
+			</name>
+			<description>
+				<narrative>Degree and diploma programmes at universities, colleges and polytechnics; scholarships.</narrative>
+			</description>
+			<category>114</category>
+		</codelist-item>
+		<codelist-item>
+			<code>11430</code>
+			<name>
+				<narrative>Advanced technical and managerial training</narrative>
+			</name>
+			<description>
+				<narrative>Professional-level vocational training programmes and in-service training.</narrative>
+			</description>
+			<category>114</category>
+		</codelist-item>
+		<codelist-item>
+			<code>12110</code>
+			<name>
+				<narrative>Health policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Health sector policy, planning and programmes; aid to health ministries, public health administration; institution capacity building and advice; medical insurance programmes; unspecified health activities.</narrative>
+			</description>
+			<category>121</category>
+		</codelist-item>
+		<codelist-item>
+			<code>12181</code>
+			<name>
+				<narrative>Medical education/training</narrative>
+			</name>
+			<description>
+				<narrative>Medical education and training for tertiary level services.</narrative>
+			</description>
+			<category>121</category>
+		</codelist-item>
+		<codelist-item>
+			<code>12182</code>
+			<name>
+				<narrative>Medical research</narrative>
+			</name>
+			<description>
+				<narrative>General medical research (excluding basic health research).</narrative>
+			</description>
+			<category>121</category>
+		</codelist-item>
+		<codelist-item>
+			<code>12191</code>
+			<name>
+				<narrative>Medical services</narrative>
+			</name>
+			<description>
+				<narrative>Laboratories, specialised clinics and hospitals (including equipment and supplies); ambulances; dental services; mental health care; medical rehabilitation; control of non-infectious diseases; drug and substance abuse control [excluding narcotics traffic control (16063)].</narrative>
+			</description>
+			<category>121</category>
+		</codelist-item>
+		<codelist-item>
+			<code>12220</code>
+			<name>
+				<narrative>Basic health care</narrative>
+			</name>
+			<description>
+				<narrative>Basic and primary health care programmes; paramedical and nursing care programmes; supply of drugs, medicines and vaccines related to basic health care.</narrative>
+			</description>
+			<category>122</category>
+		</codelist-item>
+		<codelist-item>
+			<code>12230</code>
+			<name>
+				<narrative>Basic health infrastructure</narrative>
+			</name>
+			<description>
+				<narrative>District-level hospitals, clinics and dispensaries and related medical equipment; excluding specialised hospitals and clinics (12191).</narrative>
+			</description>
+			<category>122</category>
+		</codelist-item>
+		<codelist-item>
+			<code>12240</code>
+			<name>
+				<narrative>Basic nutrition</narrative>
+			</name>
+			<description>
+				<narrative>Direct feeding programmes (maternal feeding, breastfeeding and weaning foods, child feeding, school feeding); determination of micro-nutrient deficiencies; provision of vitamin A, iodine, iron etc.; monitoring of nutritional status; nutrition and food hygiene education; household food security.</narrative>
+			</description>
+			<category>122</category>
+		</codelist-item>
+		<codelist-item>
+			<code>12250</code>
+			<name>
+				<narrative>Infectious disease control</narrative>
+			</name>
+			<description>
+				<narrative>Immunisation; prevention and control of infectious and parasite diseases, except malaria (12262), tuberculosis (12263), HIV/AIDS and other STDs (13040). It includes diarrheal diseases, vector-borne diseases (e.g. river blindness and guinea worm), viral diseases, mycosis, helminthiasis, zoonosis, diseases by other bacteria and viruses, pediculosis, etc.</narrative>
+			</description>
+			<category>122</category>
+		</codelist-item>
+		<codelist-item>
+			<code>12261</code>
+			<name>
+				<narrative>Health education</narrative>
+			</name>
+			<description>
+				<narrative>Information, education and training of the population for improving health knowledge and practices; public health and awareness campaigns; promotion of improved personal hygiene practices, including use of sanitation facilities and handwashing with soap.</narrative>
+			</description>
+			<category>122</category>
+		</codelist-item>
+		<codelist-item>
+			<code>12262</code>
+			<name>
+				<narrative>Malaria control</narrative>
+			</name>
+			<description>
+				<narrative>Prevention and control of malaria.</narrative>
+			</description>
+			<category>122</category>
+		</codelist-item>
+		<codelist-item>
+			<code>12263</code>
+			<name>
+				<narrative>Tuberculosis control</narrative>
+			</name>
+			<description>
+				<narrative>Immunisation, prevention and control of tuberculosis.</narrative>
+			</description>
+			<category>122</category>
+		</codelist-item>
+		<codelist-item>
+			<code>12281</code>
+			<name>
+				<narrative>Health personnel development</narrative>
+			</name>
+			<description>
+				<narrative>Training of health staff for basic health care services.</narrative>
+			</description>
+			<category>122</category>
+		</codelist-item>
+		<codelist-item>
+			<code>13010</code>
+			<name>
+				<narrative>Population policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Population/development policies; census work, vital registration; migration data; demographic research/analysis; reproductive health research; unspecified population activities.</narrative>
+			</description>
+			<category>130</category>
+		</codelist-item>
+		<codelist-item>
+			<code>13020</code>
+			<name>
+				<narrative>Reproductive health care</narrative>
+			</name>
+			<description>
+				<narrative>Promotion of reproductive health; prenatal and postnatal care including delivery; prevention and treatment of infertility; prevention and management of consequences of abortion; safe motherhood activities.</narrative>
+			</description>
+			<category>130</category>
+		</codelist-item>
+		<codelist-item>
+			<code>13030</code>
+			<name>
+				<narrative>Family planning</narrative>
+			</name>
+			<description>
+				<narrative>Family planning services including counselling; information, education and communication (IEC) activities; delivery of contraceptives; capacity building and training.</narrative>
+			</description>
+			<category>130</category>
+		</codelist-item>
+		<codelist-item>
+			<code>13040</code>
+			<name>
+				<narrative>STD control including HIV/AIDS</narrative>
+			</name>
+			<description>
+				<narrative>All activities related to sexually transmitted diseases and HIV/AIDS control e.g. information, education and communication; testing; prevention; treatment, care.</narrative>
+			</description>
+			<category>130</category>
+		</codelist-item>
+		<codelist-item>
+			<code>13081</code>
+			<name>
+				<narrative>Personnel development for population and reproductive health</narrative>
+			</name>
+			<description>
+				<narrative>Education and training of health staff for population and reproductive health care services.</narrative>
+			</description>
+			<category>130</category>
+		</codelist-item>
+		<codelist-item>
+			<code>14010</code>
+			<name>
+				<narrative>Water sector policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Water sector policy and governance, including legislation, regulation, planning and management as well as transboundary management of water; institutional capacity development; activities supporting the Integrated Water Resource Management approach (IWRM: see box below).</narrative>
+			</description>
+			<category>140</category>
+		</codelist-item>
+		<codelist-item>
+			<code>14015</code>
+			<name>
+				<narrative>Water resources conservation (including data collection)</narrative>
+			</name>
+			<description>
+				<narrative>Collection and usage of quantitative and qualitative data on water resources; creation and sharing of water knowledge; conservation and rehabilitation of inland surface waters (rivers, lakes etc.), ground water and coastal waters; prevention of water contamination.</narrative>
+			</description>
+			<category>140</category>
+		</codelist-item>
+		<codelist-item>
+			<code>14020</code>
+			<name>
+				<narrative>Water supply and sanitation - large systems</narrative>
+			</name>
+			<description>
+				<narrative>Programmes where components according to 14021 and 14022 cannot be identified. When components are known, they should individually be reported under their respective purpose codes: water supply [14021], sanitation [14022], and hygiene [12261].</narrative>
+			</description>
+			<category>140</category>
+		</codelist-item>
+		<codelist-item>
+			<code>14021</code>
+			<name>
+				<narrative>Water supply - large systems</narrative>
+			</name>
+			<description>
+				<narrative>Potable water treatment plants; intake works; storage; water supply pumping stations; large scale transmission / conveyance and distribution systems.</narrative>
+			</description>
+			<category>140</category>
+		</codelist-item>
+		<codelist-item>
+			<code>14022</code>
+			<name>
+				<narrative>Sanitation - large systems</narrative>
+			</name>
+			<description>
+				<narrative>Large scale sewerage including trunk sewers and sewage pumping stations; domestic and industrial waste water treatment plants.</narrative>
+			</description>
+			<category>140</category>
+		</codelist-item>
+		<codelist-item>
+			<code>14030</code>
+			<name>
+				<narrative>Basic drinking water supply and basic sanitation</narrative>
+			</name>
+			<description>
+				<narrative>Programmes where components according to 14031 and 14032 cannot be identified. When components are known, they should individually be reported under their respective purpose codes: water supply [14031], sanitation [14032], and hygiene [12261].</narrative>
+			</description>
+			<category>140</category>
+		</codelist-item>
+		<codelist-item>
+			<code>14031</code>
+			<name>
+				<narrative>Basic drinking water supply</narrative>
+			</name>
+			<description>
+				<narrative>Rural water supply schemes using handpumps, spring catchments, gravity-fed systems, rainwater collection and fog harvesting, storage tanks, small distribution systems typically with shared connections/points of use. Urban schemes using handpumps and local neighbourhood networks including those with shared connections.</narrative>
+			</description>
+			<category>140</category>
+		</codelist-item>
+		<codelist-item>
+			<code>14032</code>
+			<name>
+				<narrative>Basic sanitation</narrative>
+			</name>
+			<description>
+				<narrative>Latrines, on-site disposal and alternative sanitation systems, including the promotion of household and community investments in the construction of these facilities. (Use code 12261 for activities promoting improved personal hygiene practices.)</narrative>
+			</description>
+			<category>140</category>
+		</codelist-item>
+		<codelist-item>
+			<code>14040</code>
+			<name>
+				<narrative>River basins’ development</narrative>
+			</name>
+			<description>
+				<narrative>Infrastructure focused integrated river basin projects and related institutional activities; river flow control; dams and reservoirs [excluding dams primarily for irrigation (31140) and hydropower (23065) and activities related to river transport (21040)].</narrative>
+			</description>
+			<category>140</category>
+		</codelist-item>
+		<codelist-item>
+			<code>14050</code>
+			<name>
+				<narrative>Waste management / disposal</narrative>
+			</name>
+			<description>
+				<narrative>Municipal and industrial solid waste management, including hazardous and toxic waste; collection, disposal and treatment; landfill areas; composting and reuse.</narrative>
+			</description>
+			<category>140</category>
+		</codelist-item>
+		<codelist-item>
+			<code>14081</code>
+			<name>
+				<narrative>Education and training in water supply and sanitation</narrative>
+			</name>
+			<description>
+				<narrative>Education and training for sector professionals and service providers.</narrative>
+			</description>
+			<category>140</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15110</code>
+			<name>
+				<narrative>Public sector policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Institution-building assistance to strengthen core public sector management systems and capacities. This includes macro-economic and other policy management, co-ordination, planning and reform; human resource management; organisational development; civil service reform; e‑government; development planning, monitoring and evaluation; support to ministries involved in aid co-ordination; other ministries and government departments when sector cannot be specified. (Use specific sector codes for development of systems and capacities in sector ministries.)</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15111</code>
+			<name>
+				<narrative>Public finance management</narrative>
+			</name>
+			<description>
+				<narrative>Fiscal policy and planning; support to ministries of finance; strengthening financial and managerial accountability; public expenditure management; improving financial management systems; tax policy and administration; budget drafting; inter-governmental fiscal relations, public audit, public debt. (Use code 15114 for revenue-generating tax support and code 33120 for customs).</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15112</code>
+			<name>
+				<narrative>Decentralisation and support to subnational government</narrative>
+			</name>
+			<description>
+				<narrative>Decentralisation processes (including political, administrative and fiscal dimensions); intergovernmental relations and federalism; strengthening departments of regional and local government, regional and local authorities and their national associations. (Use specific sector codes for decentralisation of sector management and services.)</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15113</code>
+			<name>
+				<narrative>Anti-corruption organisations and institutions</narrative>
+			</name>
+			<description>
+				<narrative>Specialised organisations, institutions and frameworks for the prevention of and combat against corruption, bribery, money-laundering and other aspects of organised crime, with or without law enforcement powers, e.g. anti-corruption commissions and monitoring bodies, special investigation services, institutions and initiatives of integrity and ethics oversight, specialised NGOs, other civil society and citizens’ organisations directly concerned with corruption.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15114</code>
+			<name>
+				<narrative>Tax policy and tax administration support</narrative>
+			</name>
+			<description>
+				<narrative>Support to the ministries of finance, revenue authorities or other local, regional or national public bodies on tax policy, analysis and administration (including “non-tax” public revenue).</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15116</code>
+			<name>
+				<narrative>Tax collection</narrative>
+			</name>
+			<description>
+				<narrative>Operation of the inland revenue authority.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15117</code>
+			<name>
+				<narrative>Budget planning</narrative>
+			</name>
+			<description>
+				<narrative>Operation of the budget office and planning as part of the budget process.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15118</code>
+			<name>
+				<narrative>National audit</narrative>
+			</name>
+			<description>
+				<narrative>Operation of the accounting and audit services.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15119</code>
+			<name>
+				<narrative>Debt and aid management</narrative>
+			</name>
+			<description>
+				<narrative>Management of public debt and foreign aid received (in the partner country). For reporting on debt reorganisation, use codes 600xx.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15120</code>
+			<name>
+				<narrative>Public sector financial management</narrative>
+			</name>
+			<description>
+				<narrative>Strengthening financial and managerial accountability; public expenditure management; improving financial management systems; tax assessment procedures; budget drafting; field auditing; measures against waste, fraud and corruption.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15121</code>
+			<name>
+				<narrative>Foreign affairs</narrative>
+			</name>
+			<description>
+				<narrative>Administration of external affairs and services.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15122</code>
+			<name>
+				<narrative>Diplomatic missions</narrative>
+			</name>
+			<description>
+				<narrative>Operation of diplomatic and consular missions stationed abroad or at offices of international organisations.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15123</code>
+			<name>
+				<narrative>Administration of developing countries' foreign aid</narrative>
+			</name>
+			<description>
+				<narrative>Support to administration of developing countries' foreign aid (including triangular and south-south cooperation).</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15124</code>
+			<name>
+				<narrative>General personnel services</narrative>
+			</name>
+			<description>
+				<narrative>Administration and operation of the civil service including policies, procedures and regulations.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15125</code>
+			<name>
+				<narrative>Central procurement</narrative>
+			</name>
+			<description>
+				<narrative>Administration and operation of centralised supply and purchasing services.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15126</code>
+			<name>
+				<narrative>Other general public services</narrative>
+			</name>
+			<description>
+				<narrative>Maintenance and storage of government records and archives, operation of government-owned or occupied buildings, central motor vehicle pools, government-operated printing offices, centralised computer and data processing services, etc.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15127</code>
+			<name>
+				<narrative>National monitoring and evaluation</narrative>
+			</name>
+			<description>
+				<narrative>Operation or support of institutions providing national monitoring and evaluation.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15128</code>
+			<name>
+				<narrative>Local government finance</narrative>
+			</name>
+			<description>
+				<narrative>Financial transfers to local government; support to institutions managing such transfers. (Use specific sector codes for sector-related transfers.)</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15129</code>
+			<name>
+				<narrative>Other central transfers to institutions</narrative>
+			</name>
+			<description>
+				<narrative>Transfers to non sector-specific autonomous bodies or state-owned enterprises outside of local government finance; support to institutions managing such transfers. (Use specific sector codes for sector-related transfers.)</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15130</code>
+			<name>
+				<narrative>Legal and judicial development</narrative>
+			</name>
+			<description>
+				<narrative>Support to institutions, systems and procedures of the justice sector, both formal and informal; support to ministries of justice, the interior and home affairs; judges and courts; legal drafting services; bar and lawyers associations; professional legal education; maintenance of law and order and public safety; border management; law enforcement agencies, police, prisons and their supervision; ombudsmen; alternative dispute resolution, arbitration and mediation; legal aid and counsel; traditional, indigenous and paralegal practices that fall outside the formal legal system. Measures that support the improvement of legal frameworks, constitutions, laws and regulations; legislative and constitutional drafting and review; legal reform; integration of formal and informal systems of law. Public legal education; dissemination of information on entitlements and remedies for injustice; awareness campaigns. (Use codes 152xx for activities that are primarily aimed at supporting security system reform or undertaken in connection with post-conflict and peace building activities.)</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15131</code>
+			<name>
+				<narrative>Justice, law and order policy, planning and administration</narrative>
+			</name>
+			<description>
+				<narrative>Judicial law and order sectors; policy development within ministries of justice or equivalents.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15132</code>
+			<name>
+				<narrative>Police</narrative>
+			</name>
+			<description>
+				<narrative>Police affairs and services.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15133</code>
+			<name>
+				<narrative>Fire and rescue services</narrative>
+			</name>
+			<description>
+				<narrative>Fire-prevention and fire-fighting affairs and services.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15134</code>
+			<name>
+				<narrative>Judicial affairs</narrative>
+			</name>
+			<description>
+				<narrative>Civil and criminal law courts and the judicial system, including enforcement of fines and legal settlements imposed by the courts and operation of parole and probation systems.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15135</code>
+			<name>
+				<narrative>Ombudsman</narrative>
+			</name>
+			<description>
+				<narrative>Independent service representing the interests of the public by investigating and addressing complaints of unfair treatment or maladministration.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15136</code>
+			<name>
+				<narrative>Immigration</narrative>
+			</name>
+			<description>
+				<narrative>Immigration affairs and services, including alien registration, issuing work and travel documents to immigrants.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15137</code>
+			<name>
+				<narrative>Prisons</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15140</code>
+			<name>
+				<narrative>Government administration</narrative>
+			</name>
+			<description>
+				<narrative>Systems of government including parliament, local government, decentralisation; civil service and civil service reform. Including general services by government (or commissioned by government) not elsewhere specified e.g. police, fire protection; cartography, meteorology, legal metrology, aerial surveys and remote sensing; administrative buildings.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15142</code>
+			<name>
+				<narrative>Macroeconomic policy</narrative>
+			</name>
+			<description>
+				<narrative>Macroeconomic policy development and implementation.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15143</code>
+			<name>
+				<narrative>Meteorological services</narrative>
+			</name>
+			<description>
+				<narrative>Operation or support of institutions dealing with weather forecasting.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15144</code>
+			<name>
+				<narrative>National standards development</narrative>
+			</name>
+			<description>
+				<narrative>Operation or support of institutions dealing with national standards development. (Use code 16062 for statistical capacity-building.)</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15150</code>
+			<name>
+				<narrative>Democratic participation and civil society</narrative>
+			</name>
+			<description>
+				<narrative>Support to the exercise of democracy and diverse forms of participation of citizens beyond elections (15151); direct democracy instruments such as referenda and citizens’ initiatives; support to organisations to represent and advocate for their members, to monitor, engage and hold governments to account, and to help citizens learn to act in the public sphere; curricula and teaching for civic education at various levels. (This purpose code is restricted to activities targeting governance issues. When assistance to civil society is for non-governance purposes use other appropriate purpose codes.)</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15151</code>
+			<name>
+				<narrative>Elections</narrative>
+			</name>
+			<description>
+				<narrative>Electoral management bodies and processes, election observation, voters' education. (Use code 15230 when in the context of an international peacekeeping operation.)</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15152</code>
+			<name>
+				<narrative>Legislatures and political parties</narrative>
+			</name>
+			<description>
+				<narrative>Assistance to strengthen key functions of legislatures/ parliaments including subnational assemblies and councils (representation; oversight; legislation), such as improving the capacity of legislative bodies, improving legislatures’ committees and administrative procedures,; research and information management systems; providing training programmes for legislators and support personnel. Assistance to political parties and strengthening of party systems.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15153</code>
+			<name>
+				<narrative>Media and free flow of information</narrative>
+			</name>
+			<description>
+				<narrative>Activities that support free and uncensored flow of information on public issues; activities that increase the editorial and technical skills and the integrity of the print and broadcast media, e.g. training of journalists. (Use codes 22010-22040 for provision of equipment and capital assistance to media.)</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15154</code>
+			<name>
+				<narrative>Executive office</narrative>
+			</name>
+			<description>
+				<narrative>Administration, operation or support of executive office. Includes office of the chief executive at all levels of government (monarch, governor-general, president, prime minister, governor, mayor, etc.).</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15155</code>
+			<name>
+				<narrative>Tax policy and administration support</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15156</code>
+			<name>
+				<narrative>Other non-tax revenue mobilisation</narrative>
+			</name>
+			<description>
+				<narrative>Non-tax public revenue, which includes line ministries, revenue authorities or other local, regional or national public bodies.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15160</code>
+			<name>
+				<narrative>Human rights</narrative>
+			</name>
+			<description>
+				<narrative>Measures to support specialised official human rights institutions and mechanisms at universal, regional, national and local levels in their statutory roles to promote and protect civil and political, economic, social and cultural rights as defined in international conventions and covenants; translation of international human rights commitments into national legislation; reporting and follow-up; human rights dialogue. Human rights defenders and human rights NGOs; human rights advocacy, activism, mobilisation; awareness raising and public human rights education. Human rights programming targeting specific groups, e.g. children, persons with disabilities, migrants, ethnic, religious, linguistic and sexual minorities, indigenous people and those suffering from caste discrimination, victims of trafficking, victims of torture. (Use code 15230 when in the context of a peacekeeping operation)</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15161</code>
+			<name>
+				<narrative>Elections</narrative>
+			</name>
+			<description>
+				<narrative>Electoral assistance and monitoring, voters' education [other than in connection with UN peace building (15230)].</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15162</code>
+			<name>
+				<narrative>Human rights</narrative>
+			</name>
+			<description>
+				<narrative>Monitoring of human rights performance; support for national and regional human rights bodies; protection of ethnic, religious and cultural minorities [other than in connection with un peace building (15230)].</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15163</code>
+			<name>
+				<narrative>Free flow of information</narrative>
+			</name>
+			<description>
+				<narrative>Uncensored flow of information on public issues, including activities that increase the professionalism, skills and integrity of the print and broadcast media (e.g. training of journalists).</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15164</code>
+			<name>
+				<narrative>Women's equality organisations and institutions</narrative>
+			</name>
+			<description>
+				<narrative>Support for institutions and organisations (governmental and non-governmental) working for gender equality and women's empowerment.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15170</code>
+			<name>
+				<narrative>Women’s equality organisations and institutions</narrative>
+			</name>
+			<description>
+				<narrative>Support for institutions and organisations (governmental and non-governmental) working for gender equality and women's empowerment.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15185</code>
+			<name>
+				<narrative>Local government administration</narrative>
+			</name>
+			<description>
+				<narrative>Decentralisation processes (including political, administrative and fiscal dimensions); intergovernmental relations and federalism; strengthening local authorities.</narrative>
+			</description>
+			<category>151</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15210</code>
+			<name>
+				<narrative>Security system management and reform</narrative>
+			</name>
+			<description>
+				<narrative>Technical co-operation provided to parliament, government ministries, law enforcement agencies and the judiciary to assist review and reform of the security system to improve democratic governance and civilian control; technical co-operation provided to government to improve civilian oversight and democratic control of budgeting, management, accountability and auditing of security expenditure, including military budgets, as part of a public expenditure management programme; assistance to civil society to enhance its competence and capacity to scrutinise the security system so that it is managed in accordance with democratic norms and principles of accountability, transparency and good governance. [Other than in the context of an international peacekeeping operation (15230)].</narrative>
+			</description>
+			<category>152</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15220</code>
+			<name>
+				<narrative>Civilian peace-building, conflict prevention and resolution</narrative>
+			</name>
+			<description>
+				<narrative>Support for civilian activities related to peace building, conflict prevention and resolution, including capacity building, monitoring, dialogue and information exchange. Bilateral participation in international civilian peace missions such as those conducted by the UN Department of Political Affairs (UNDPA) or the European Union (European Security and Defence Policy), and contributions to civilian peace funds or commissions (e.g. Peacebuilding Commission, Peacebuilding thematic window of the MDG achievement fund etc.). The contributions can take the form of financing or provision of equipment or civilian or military personnel (e.g. for training civilians). (Use code 15230 for bilateral participation in international peacekeeping operations).</narrative>
+			</description>
+			<category>152</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15230</code>
+			<name>
+				<narrative>Participation in international peacekeeping operations</narrative>
+			</name>
+			<description>
+				<narrative>Bilateral participation in peacekeeping operations mandated or authorised by the United Nations (UN) through Security Council resolutions, and conducted by international organisations, e.g. UN, NATO, the European Union (Security and Defence Policy security-related operations), or regional groupings of developing countries. Direct contributions to the UN Department for Peacekeeping Operations (UNDPKO) budget are excluded from bilateral ODA (they are reportable in part as multilateral ODA, see Annex 2 of DAC Directives). The activities that can be reported as bilateral ODA under this code are limited to: human rights and election monitoring; reintegration of demobilised soldiers; rehabilitation of basic national infrastructure; monitoring or retraining of civil administrators and police forces; security sector reform and other rule of law-related activities; training in customs and border control procedures; advice or training in fiscal or macroeconomic stabilisation policy; repatration and demobilisation of armed factions, and disposal of their weapons; explosive mine removal. The enforcement aspects of international peacekeeping operations are not reportable as ODA. ODA-eligible bilateral participation in peacekeeping operations can take the form of financing or provision of equipment or military or civilian personnel (e.g. police officers). The reportable cost is calculated as the excess over what the personnel and equipment would have cost to maintain had they not been assigned to take part in a peace operation. International peacekeeping operations may include humanitarian-type activities (contributions to the form of equipment or personnel), as described in paragraphs 184 and 185 of DAC Directives. These should be included under code 15230 if they are an integrated part of the activities above, otherwise they should be reported as humanitarian aid. NB: When using this code, indicate the name of the operation in the short description of the activity reported.</narrative>
+			</description>
+			<category>152</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15240</code>
+			<name>
+				<narrative>Reintegration and SALW control</narrative>
+			</name>
+			<description>
+				<narrative>Reintegration of demobilised military personnel into the economy; conversion of production facilities from military to civilian outputs; technical co-operation to control, prevent and/or reduce the proliferation of small arms and light weapons (SALW) – see para. 45 of the DAC Statistical Reporting Directives for definition of SALW activities covered. [Other than in the context of an international peacekeeping operation (15230) or child soldiers (15261)].</narrative>
+			</description>
+			<category>152</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15250</code>
+			<name>
+				<narrative>Removal of land mines and explosive remnants of war</narrative>
+			</name>
+			<description>
+				<narrative>All activities related to land mines and explosive remnants of war which have benefits to developing countries as their main objective, including removal of land mines and explosive remnants of war, and stockpile destruction for developmental purposes [other than in the context of an international peacekeeping operation (15230)]; risk education and awareness raising; rehabilitation, reintegration and assistance to victims, and research and development on demining and clearance. Only activities for civilian purposes are ODA-eligible.</narrative>
+			</description>
+			<category>152</category>
+		</codelist-item>
+		<codelist-item>
+			<code>15261</code>
+			<name>
+				<narrative>Child soldiers (Prevention and demobilisation)</narrative>
+			</name>
+			<description>
+				<narrative>Technical co-operation provided to government – and assistance to civil society organisations – to support and apply legislation designed to prevent the recruitment of child soldiers, and to demobilise, disarm, reintegrate, repatriate and resettle (DDR) child soldiers.</narrative>
+			</description>
+			<category>152</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16010</code>
+			<name>
+				<narrative>Social/ welfare services</narrative>
+			</name>
+			<description>
+				<narrative>Social legislation and administration; institution capacity building and advice; social security and other social schemes; special programmes for the elderly, orphans, the disabled, street children; social dimensions of structural adjustment; unspecified social infrastructure and services, including consumer protection.</narrative>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16011</code>
+			<name>
+				<narrative>Social protection and welfare services policy, planning and administration</narrative>
+			</name>
+			<description>
+				<narrative>Administration of overall social protection policies, plans, programmes and budgets including legislation, standards and statistics on social protection.</narrative>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16012</code>
+			<name>
+				<narrative>Social security (excl pensions)</narrative>
+			</name>
+			<description>
+				<narrative>Social protection shemes in the form of cash or in-kind benefits to people unable to work due to sickness or injury.</narrative>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16013</code>
+			<name>
+				<narrative>General pensions</narrative>
+			</name>
+			<description>
+				<narrative>Social protection schemes in the form of cash or in-kind benefits, including pensions, against the risks linked to old age.</narrative>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16014</code>
+			<name>
+				<narrative>Civil service pensions</narrative>
+			</name>
+			<description>
+				<narrative>Pension schemes for government personnel.</narrative>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16015</code>
+			<name>
+				<narrative>Social services (incl youth development and women+ children)</narrative>
+			</name>
+			<description>
+				<narrative>Social protection schemes in the form of cash or in-kind benefits to households with dependent children, including parental leave benefits.</narrative>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16020</code>
+			<name>
+				<narrative>Employment policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Employment policy and planning; labour law; labour unions; institution capacity building and advice; support programmes for unemployed; employment creation and income generation programmes; occupational safety and health; combating child labour.</narrative>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16030</code>
+			<name>
+				<narrative>Housing policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Housing sector policy, planning and programmes; excluding low-cost housing and slum clearance (16040).</narrative>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16040</code>
+			<name>
+				<narrative>Low-cost housing</narrative>
+			</name>
+			<description>
+				<narrative>Including slum clearance.</narrative>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16050</code>
+			<name>
+				<narrative>Multisector aid for basic social services</narrative>
+			</name>
+			<description>
+				<narrative>Basic social services are defined to include basic education, basic health, basic nutrition, population/reproductive health and basic drinking water supply and basic sanitation.</narrative>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16061</code>
+			<name>
+				<narrative>Culture and recreation</narrative>
+			</name>
+			<description>
+				<narrative>Including libraries and museums.</narrative>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16062</code>
+			<name>
+				<narrative>Statistical capacity building</narrative>
+			</name>
+			<description>
+				<narrative>Both in national statistical offices and any other government ministries.</narrative>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16063</code>
+			<name>
+				<narrative>Narcotics control</narrative>
+			</name>
+			<description>
+				<narrative>In-country and customs controls including training of the police; educational programmes and awareness campaigns to restrict narcotics traffic and in-country distribution.</narrative>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16064</code>
+			<name>
+				<narrative>Social mitigation of HIV/AIDS</narrative>
+			</name>
+			<description>
+				<narrative>Special programmes to address the consequences of HIV/AIDS, e.g. social, legal and economic assistance to people living with HIV/AIDS including food security and employment; support to vulnerable groups and children orphaned by HIV/AIDS; human rights of HIV/AIDS affected people.</narrative>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16065</code>
+			<name>
+				<narrative>Recreation and sport</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>16066</code>
+			<name>
+				<narrative>Culture</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>160</category>
+		</codelist-item>
+		<codelist-item>
+			<code>21010</code>
+			<name>
+				<narrative>Transport policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Transport sector policy, planning and programmes; aid to transport ministries; institution capacity building and advice; unspecified transport; activities that combine road, rail, water and/or air transport.</narrative>
+			</description>
+			<category>210</category>
+		</codelist-item>
+		<codelist-item>
+			<code>21011</code>
+			<name>
+				<narrative>Transport policy, planning and administration</narrative>
+			</name>
+			<description>
+				<narrative>Administration of affairs and services concerning transport systems.</narrative>
+			</description>
+			<category>210</category>
+		</codelist-item>
+		<codelist-item>
+			<code>21012</code>
+			<name>
+				<narrative>Public transport services</narrative>
+			</name>
+			<description>
+				<narrative>Administration of affairs and services concerning public transport.</narrative>
+			</description>
+			<category>210</category>
+		</codelist-item>
+		<codelist-item>
+			<code>21013</code>
+			<name>
+				<narrative>Transport regulation</narrative>
+			</name>
+			<description>
+				<narrative>Supervision and regulation of users, operations, construction and maintenance of transport systems (registration, licensing, inspection of equipment, operator skills and training; safety standards, franchises, tarriffs, levels of service, etc.).</narrative>
+			</description>
+			<category>210</category>
+		</codelist-item>
+		<codelist-item>
+			<code>21020</code>
+			<name>
+				<narrative>Road transport</narrative>
+			</name>
+			<description>
+				<narrative>Road infrastructure, road vehicles; passenger road transport, motor passenger cars.</narrative>
+			</description>
+			<category>210</category>
+		</codelist-item>
+		<codelist-item>
+			<code>21021</code>
+			<name>
+				<narrative>Feeder road construction</narrative>
+			</name>
+			<description>
+				<narrative>Construction or operation of feeder road transport systems and facilities.</narrative>
+			</description>
+			<category>210</category>
+		</codelist-item>
+		<codelist-item>
+			<code>21022</code>
+			<name>
+				<narrative>Feeder road maintenance</narrative>
+			</name>
+			<description>
+				<narrative>Maintenance of feeder road transport systems and facilities.</narrative>
+			</description>
+			<category>210</category>
+		</codelist-item>
+		<codelist-item>
+			<code>21023</code>
+			<name>
+				<narrative>National road construction</narrative>
+			</name>
+			<description>
+				<narrative>Construction or operation of national road transport systems and facilities.</narrative>
+			</description>
+			<category>210</category>
+		</codelist-item>
+		<codelist-item>
+			<code>21024</code>
+			<name>
+				<narrative>National road maintenance</narrative>
+			</name>
+			<description>
+				<narrative>Maintenance of national road transport systems and facilities.</narrative>
+			</description>
+			<category>210</category>
+		</codelist-item>
+		<codelist-item>
+			<code>21030</code>
+			<name>
+				<narrative>Rail transport</narrative>
+			</name>
+			<description>
+				<narrative>Rail infrastructure, rail equipment, locomotives, other rolling stock; including light rail (tram) and underground systems.</narrative>
+			</description>
+			<category>210</category>
+		</codelist-item>
+		<codelist-item>
+			<code>21040</code>
+			<name>
+				<narrative>Water transport</narrative>
+			</name>
+			<description>
+				<narrative>Harbours and docks, harbour guidance systems, ships and boats; river and other inland water transport, inland barges and vessels.</narrative>
+			</description>
+			<category>210</category>
+		</codelist-item>
+		<codelist-item>
+			<code>21050</code>
+			<name>
+				<narrative>Air transport</narrative>
+			</name>
+			<description>
+				<narrative>Airports, airport guidance systems, aeroplanes, aeroplane maintenance equipment.</narrative>
+			</description>
+			<category>210</category>
+		</codelist-item>
+		<codelist-item>
+			<code>21061</code>
+			<name>
+				<narrative>Storage</narrative>
+			</name>
+			<description>
+				<narrative>Whether or not related to transportation.</narrative>
+			</description>
+			<category>210</category>
+		</codelist-item>
+		<codelist-item>
+			<code>21081</code>
+			<name>
+				<narrative>Education and training in transport and storage</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>210</category>
+		</codelist-item>
+		<codelist-item>
+			<code>22010</code>
+			<name>
+				<narrative>Communications policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Communications sector policy, planning and programmes; institution capacity building and advice; including postal services development; unspecified communications activities.</narrative>
+			</description>
+			<category>220</category>
+		</codelist-item>
+		<codelist-item>
+			<code>22011</code>
+			<name>
+				<narrative>Communications policy, planning and administration</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>220</category>
+		</codelist-item>
+		<codelist-item>
+			<code>22012</code>
+			<name>
+				<narrative>Postal services</narrative>
+			</name>
+			<description>
+				<narrative>Development and operation of postal services.</narrative>
+			</description>
+			<category>220</category>
+		</codelist-item>
+		<codelist-item>
+			<code>22013</code>
+			<name>
+				<narrative>Information services</narrative>
+			</name>
+			<description>
+				<narrative>Provision of information services.</narrative>
+			</description>
+			<category>220</category>
+		</codelist-item>
+		<codelist-item>
+			<code>22020</code>
+			<name>
+				<narrative>Telecommunications</narrative>
+			</name>
+			<description>
+				<narrative>Telephone networks, telecommunication satellites, earth stations.</narrative>
+			</description>
+			<category>220</category>
+		</codelist-item>
+		<codelist-item>
+			<code>22030</code>
+			<name>
+				<narrative>Radio/television/print media</narrative>
+			</name>
+			<description>
+				<narrative>Radio and TV links, equipment; newspapers; printing and publishing.</narrative>
+			</description>
+			<category>220</category>
+		</codelist-item>
+		<codelist-item>
+			<code>22040</code>
+			<name>
+				<narrative>Information and communication technology (ICT)</narrative>
+			</name>
+			<description>
+				<narrative>Computer hardware and software; internet access; IT training. When sector cannot be specified.</narrative>
+			</description>
+			<category>220</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23010</code>
+			<name>
+				<narrative>Energy policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Energy sector policy, planning and programmes; aid to energy ministries; institution capacity building and advice; unspecified energy activities including energy conservation.</narrative>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23020</code>
+			<name>
+				<narrative>Power generation/non-renewable sources</narrative>
+			</name>
+			<description>
+				<narrative>Thermal power plants including when heat source cannot be determined; combined gas-coal power plants.</narrative>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23030</code>
+			<name>
+				<narrative>Power generation/renewable sources</narrative>
+			</name>
+			<description>
+				<narrative>Including policy, planning, development programmes, surveys and incentives. Fuelwood/ charcoal production should be included under forestry (31261).</narrative>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23040</code>
+			<name>
+				<narrative>Electrical transmission/ distribution</narrative>
+			</name>
+			<description>
+				<narrative>Distribution from power source to end user; transmission lines.</narrative>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23050</code>
+			<name>
+				<narrative>Gas distribution</narrative>
+			</name>
+			<description>
+				<narrative>Delivery for use by ultimate consumer.</narrative>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23061</code>
+			<name>
+				<narrative>Oil-fired power plants</narrative>
+			</name>
+			<description>
+				<narrative>Including diesel power plants.</narrative>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23062</code>
+			<name>
+				<narrative>Gas-fired power plants</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23063</code>
+			<name>
+				<narrative>Coal-fired power plants</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23064</code>
+			<name>
+				<narrative>Nuclear power plants</narrative>
+			</name>
+			<description>
+				<narrative>Including nuclear safety.</narrative>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23065</code>
+			<name>
+				<narrative>Hydro-electric power plants</narrative>
+			</name>
+			<description>
+				<narrative>Including power-generating river barges.</narrative>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23066</code>
+			<name>
+				<narrative>Geothermal energy</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23067</code>
+			<name>
+				<narrative>Solar energy</narrative>
+			</name>
+			<description>
+				<narrative>Including photo-voltaic cells, solar thermal applications and solar heating.</narrative>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23068</code>
+			<name>
+				<narrative>Wind power</narrative>
+			</name>
+			<description>
+				<narrative>Wind energy for water lifting and electric power generation.</narrative>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23069</code>
+			<name>
+				<narrative>Ocean power</narrative>
+			</name>
+			<description>
+				<narrative>Including ocean thermal energy conversion, tidal and wave power.</narrative>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23070</code>
+			<name>
+				<narrative>Biomass</narrative>
+			</name>
+			<description>
+				<narrative>Densification technologies and use of biomass for direct power generation including biogas, gas obtained from sugar cane and other plant residues, anaerobic digesters.</narrative>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23081</code>
+			<name>
+				<narrative>Energy education/training</narrative>
+			</name>
+			<description>
+				<narrative>Applies to all energy sub-sectors; all levels of training.</narrative>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23082</code>
+			<name>
+				<narrative>Energy research</narrative>
+			</name>
+			<description>
+				<narrative>Including general inventories, surveys.</narrative>
+			</description>
+			<category>230</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23111</code>
+			<name>
+				<narrative>Energy sector policy, planning and administration</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>231</category>
+		</codelist-item>
+		<codelist-item>
+			<code>23112</code>
+			<name>
+				<narrative>Energy regulation</narrative>
+			</name>
+			<description>
+				<narrative>Regulation of the energy sector, including wholesale and retail electricity provision.</narrative>
+			</description>
+			<category>231</category>
+		</codelist-item>
+		<codelist-item>
+			<code>24010</code>
+			<name>
+				<narrative>Financial policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Finance sector policy, planning and programmes; institution capacity building and advice; financial markets and systems.</narrative>
+			</description>
+			<category>240</category>
+		</codelist-item>
+		<codelist-item>
+			<code>24020</code>
+			<name>
+				<narrative>Monetary institutions</narrative>
+			</name>
+			<description>
+				<narrative>Central banks.</narrative>
+			</description>
+			<category>240</category>
+		</codelist-item>
+		<codelist-item>
+			<code>24030</code>
+			<name>
+				<narrative>Formal sector financial intermediaries</narrative>
+			</name>
+			<description>
+				<narrative>All formal sector financial intermediaries; credit lines; insurance, leasing, venture capital, etc. (except when focused on only one sector).</narrative>
+			</description>
+			<category>240</category>
+		</codelist-item>
+		<codelist-item>
+			<code>24040</code>
+			<name>
+				<narrative>Informal/semi-formal financial intermediaries</narrative>
+			</name>
+			<description>
+				<narrative>Micro credit, savings and credit co-operatives etc.</narrative>
+			</description>
+			<category>240</category>
+		</codelist-item>
+		<codelist-item>
+			<code>24081</code>
+			<name>
+				<narrative>Education/training in banking and financial services</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>240</category>
+		</codelist-item>
+		<codelist-item>
+			<code>25010</code>
+			<name>
+				<narrative>Business support services and institutions</narrative>
+			</name>
+			<description>
+				<narrative>Support to trade and business associations, chambers of commerce; legal and regulatory reform aimed at improving business and investment climate; private sector institution capacity building and advice; trade information; public-private sector networking including trade fairs; e‑commerce. Where sector cannot be specified: general support to private sector enterprises (in particular, use code 32130 for enterprises in the industrial sector).</narrative>
+			</description>
+			<category>250</category>
+		</codelist-item>
+		<codelist-item>
+			<code>25020</code>
+			<name>
+				<narrative>Privatisation</narrative>
+			</name>
+			<description>
+				<narrative>When sector cannot be specified. Including general state enterprise restructuring or demonopolisation programmes; planning, programming, advice.</narrative>
+			</description>
+			<category>250</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31110</code>
+			<name>
+				<narrative>Agricultural policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Agricultural sector policy, planning and programmes; aid to agricultural ministries; institution capacity building and advice; unspecified agriculture.</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31120</code>
+			<name>
+				<narrative>Agricultural development</narrative>
+			</name>
+			<description>
+				<narrative>Integrated projects; farm development.</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31130</code>
+			<name>
+				<narrative>Agricultural land resources</narrative>
+			</name>
+			<description>
+				<narrative>Including soil degradation control; soil improvement; drainage of water logged areas; soil desalination; agricultural land surveys; land reclamation; erosion control, desertification control.</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31140</code>
+			<name>
+				<narrative>Agricultural water resources</narrative>
+			</name>
+			<description>
+				<narrative>Irrigation, reservoirs, hydraulic structures, ground water exploitation for agricultural use.</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31150</code>
+			<name>
+				<narrative>Agricultural inputs</narrative>
+			</name>
+			<description>
+				<narrative>Supply of seeds, fertilizers, agricultural machinery/equipment.</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31161</code>
+			<name>
+				<narrative>Food crop production</narrative>
+			</name>
+			<description>
+				<narrative>Including grains (wheat, rice, barley, maize, rye, oats, millet, sorghum); horticulture; vegetables; fruit and berries; other annual and perennial crops. [Use code 32161 for agro-industries.]</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31162</code>
+			<name>
+				<narrative>Industrial crops/export crops</narrative>
+			</name>
+			<description>
+				<narrative>Including sugar; coffee, cocoa, tea; oil seeds, nuts, kernels; fibre crops; tobacco; rubber. [Use code 32161 for agro-industries.]</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31163</code>
+			<name>
+				<narrative>Livestock</narrative>
+			</name>
+			<description>
+				<narrative>Animal husbandry; animal feed aid.</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31164</code>
+			<name>
+				<narrative>Agrarian reform</narrative>
+			</name>
+			<description>
+				<narrative>Including agricultural sector adjustment.</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31165</code>
+			<name>
+				<narrative>Agricultural alternative development</narrative>
+			</name>
+			<description>
+				<narrative>Projects to reduce illicit drug cultivation through other agricultural marketing and production opportunities (see code 43050 for non-agricultural alternative development).</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31166</code>
+			<name>
+				<narrative>Agricultural extension</narrative>
+			</name>
+			<description>
+				<narrative>Non-formal training in agriculture.</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31181</code>
+			<name>
+				<narrative>Agricultural education/training</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31182</code>
+			<name>
+				<narrative>Agricultural research</narrative>
+			</name>
+			<description>
+				<narrative>Plant breeding, physiology, genetic resources, ecology, taxonomy, disease control, agricultural bio-technology; including livestock research (animal health, breeding and genetics, nutrition, physiology).</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31191</code>
+			<name>
+				<narrative>Agricultural services</narrative>
+			</name>
+			<description>
+				<narrative>Marketing policies &amp; organisation; storage and transportation, creation of strategic reserves.</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31192</code>
+			<name>
+				<narrative>Plant and post-harvest protection and pest control</narrative>
+			</name>
+			<description>
+				<narrative>Including integrated plant protection, biological plant protection activities, supply and management of agrochemicals, supply of pesticides, plant protection policy and legislation.</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31193</code>
+			<name>
+				<narrative>Agricultural financial services</narrative>
+			</name>
+			<description>
+				<narrative>Financial intermediaries for the agricultural sector including credit schemes; crop insurance.</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31194</code>
+			<name>
+				<narrative>Agricultural co-operatives</narrative>
+			</name>
+			<description>
+				<narrative>Including farmers’ organisations.</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31195</code>
+			<name>
+				<narrative>Livestock/veterinary services</narrative>
+			</name>
+			<description>
+				<narrative>Animal health and management, genetic resources, feed resources.</narrative>
+			</description>
+			<category>311</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31210</code>
+			<name>
+				<narrative>Forestry policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Forestry sector policy, planning and programmes; institution capacity building and advice; forest surveys; unspecified forestry and agro-forestry activities.</narrative>
+			</description>
+			<category>312</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31220</code>
+			<name>
+				<narrative>Forestry development</narrative>
+			</name>
+			<description>
+				<narrative>Afforestation for industrial and rural consumption; exploitation and utilisation; erosion control, desertification control; integrated forestry projects.</narrative>
+			</description>
+			<category>312</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31261</code>
+			<name>
+				<narrative>Fuelwood/charcoal</narrative>
+			</name>
+			<description>
+				<narrative>Forestry development whose primary purpose is production of fuelwood and charcoal.</narrative>
+			</description>
+			<category>312</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31281</code>
+			<name>
+				<narrative>Forestry education/training</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>312</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31282</code>
+			<name>
+				<narrative>Forestry research</narrative>
+			</name>
+			<description>
+				<narrative>Including artificial regeneration, genetic improvement, production methods, fertilizer, harvesting.</narrative>
+			</description>
+			<category>312</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31291</code>
+			<name>
+				<narrative>Forestry services</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>312</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31310</code>
+			<name>
+				<narrative>Fishing policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Fishing sector policy, planning and programmes; institution capacity building and advice; ocean and coastal fishing; marine and freshwater fish surveys and prospecting; fishing boats/equipment; unspecified fishing activities.</narrative>
+			</description>
+			<category>313</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31320</code>
+			<name>
+				<narrative>Fishery development</narrative>
+			</name>
+			<description>
+				<narrative>Exploitation and utilisation of fisheries; fish stock protection; aquaculture; integrated fishery projects.</narrative>
+			</description>
+			<category>313</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31381</code>
+			<name>
+				<narrative>Fishery education/training</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>313</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31382</code>
+			<name>
+				<narrative>Fishery research</narrative>
+			</name>
+			<description>
+				<narrative>Pilot fish culture; marine/freshwater biological research.</narrative>
+			</description>
+			<category>313</category>
+		</codelist-item>
+		<codelist-item>
+			<code>31391</code>
+			<name>
+				<narrative>Fishery services</narrative>
+			</name>
+			<description>
+				<narrative>Fishing harbours; fish markets; fishery transport and cold storage.</narrative>
+			</description>
+			<category>313</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32110</code>
+			<name>
+				<narrative>Industrial policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Industrial sector policy, planning and programmes; institution capacity building and advice; unspecified industrial activities; manufacturing of goods not specified below.</narrative>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32120</code>
+			<name>
+				<narrative>Industrial development</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32130</code>
+			<name>
+				<narrative>Small and medium-sized enterprises (SME) development</narrative>
+			</name>
+			<description>
+				<narrative>Direct support to the development of small and medium-sized enterprises in the industrial sector, including accounting, auditing and advisory services.</narrative>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32140</code>
+			<name>
+				<narrative>Cottage industries and handicraft</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32161</code>
+			<name>
+				<narrative>Agro-industries</narrative>
+			</name>
+			<description>
+				<narrative>Staple food processing, dairy products, slaughter houses and equipment, meat and fish processing and preserving, oils/fats, sugar refineries, beverages/tobacco, animal feeds production.</narrative>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32162</code>
+			<name>
+				<narrative>Forest industries</narrative>
+			</name>
+			<description>
+				<narrative>Wood production, pulp/paper production.</narrative>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32163</code>
+			<name>
+				<narrative>Textiles, leather and substitutes</narrative>
+			</name>
+			<description>
+				<narrative>Including knitting factories.</narrative>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32164</code>
+			<name>
+				<narrative>Chemicals</narrative>
+			</name>
+			<description>
+				<narrative>Industrial and non-industrial production facilities; includes pesticides production.</narrative>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32165</code>
+			<name>
+				<narrative>Fertilizer plants</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32166</code>
+			<name>
+				<narrative>Cement/lime/plaster</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32167</code>
+			<name>
+				<narrative>Energy manufacturing</narrative>
+			</name>
+			<description>
+				<narrative>Including gas liquefaction; petroleum refineries.</narrative>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32168</code>
+			<name>
+				<narrative>Pharmaceutical production</narrative>
+			</name>
+			<description>
+				<narrative>Medical equipment/supplies; drugs, medicines, vaccines; hygienic products.</narrative>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32169</code>
+			<name>
+				<narrative>Basic metal industries</narrative>
+			</name>
+			<description>
+				<narrative>Iron and steel, structural metal production.</narrative>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32170</code>
+			<name>
+				<narrative>Non-ferrous metal industries</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32171</code>
+			<name>
+				<narrative>Engineering</narrative>
+			</name>
+			<description>
+				<narrative>Manufacturing of electrical and non-electrical machinery, engines/turbines.</narrative>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32172</code>
+			<name>
+				<narrative>Transport equipment industry</narrative>
+			</name>
+			<description>
+				<narrative>Shipbuilding, fishing boats building; railroad equipment; motor vehicles and motor passenger cars; aircraft; navigation/guidance systems.</narrative>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32182</code>
+			<name>
+				<narrative>Technological research and development</narrative>
+			</name>
+			<description>
+				<narrative>Including industrial standards; quality management; metrology; testing; accreditation; certification.</narrative>
+			</description>
+			<category>321</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32210</code>
+			<name>
+				<narrative>Mineral/mining policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Mineral and mining sector policy, planning and programmes; mining legislation, mining cadastre, mineral resources inventory, information systems, institution capacity building and advice; unspecified mineral resources exploitation.</narrative>
+			</description>
+			<category>322</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32220</code>
+			<name>
+				<narrative>Mineral prospection and exploration</narrative>
+			</name>
+			<description>
+				<narrative>Geology, geophysics, geochemistry; excluding hydrogeology (14010) and environmental geology (41010), mineral extraction and processing, infrastructure, technology, economics, safety and environment management.</narrative>
+			</description>
+			<category>322</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32261</code>
+			<name>
+				<narrative>Coal</narrative>
+			</name>
+			<description>
+				<narrative>Including lignite and peat.</narrative>
+			</description>
+			<category>322</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32262</code>
+			<name>
+				<narrative>Oil and gas</narrative>
+			</name>
+			<description>
+				<narrative>Petroleum, natural gas, condensates, liquefied petroleum gas (LPG), liquefied natural gas (LNG); including drilling and production.</narrative>
+			</description>
+			<category>322</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32263</code>
+			<name>
+				<narrative>Ferrous metals</narrative>
+			</name>
+			<description>
+				<narrative>Iron and ferro-alloy metals.</narrative>
+			</description>
+			<category>322</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32264</code>
+			<name>
+				<narrative>Nonferrous metals</narrative>
+			</name>
+			<description>
+				<narrative>Aluminium, copper, lead, nickel, tin, zinc.</narrative>
+			</description>
+			<category>322</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32265</code>
+			<name>
+				<narrative>Precious metals/materials</narrative>
+			</name>
+			<description>
+				<narrative>Gold, silver, platinum, diamonds, gemstones.</narrative>
+			</description>
+			<category>322</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32266</code>
+			<name>
+				<narrative>Industrial minerals</narrative>
+			</name>
+			<description>
+				<narrative>Baryte, limestone, feldspar, kaolin, sand, gypsym, gravel, ornamental stones.</narrative>
+			</description>
+			<category>322</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32267</code>
+			<name>
+				<narrative>Fertilizer minerals</narrative>
+			</name>
+			<description>
+				<narrative>Phosphates, potash.</narrative>
+			</description>
+			<category>322</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32268</code>
+			<name>
+				<narrative>Offshore minerals</narrative>
+			</name>
+			<description>
+				<narrative>Polymetallic nodules, phosphorites, marine placer deposits.</narrative>
+			</description>
+			<category>322</category>
+		</codelist-item>
+		<codelist-item>
+			<code>32310</code>
+			<name>
+				<narrative>Construction policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Construction sector policy and planning; excluding construction activities within specific sectors (e.g., hospital or school construction).</narrative>
+			</description>
+			<category>323</category>
+		</codelist-item>
+		<codelist-item>
+			<code>33110</code>
+			<name>
+				<narrative>Trade policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Trade policy and planning; support to ministries and departments responsible for trade policy; trade-related legislation and regulatory reforms; policy analysis and implementation of multilateral trade agreements e.g. technical barriers to trade and sanitary and phytosanitary measures (TBT/SPS) except at regional level (see 33130); mainstreaming trade in national development strategies (e.g. poverty reduction strategy papers); wholesale/retail trade; unspecified trade and trade promotion activities.</narrative>
+			</description>
+			<category>331</category>
+		</codelist-item>
+		<codelist-item>
+			<code>33120</code>
+			<name>
+				<narrative>Trade facilitation</narrative>
+			</name>
+			<description>
+				<narrative>Simplification and harmonisation of international import and export procedures (e.g. customs valuation, licensing procedures, transport formalities, payments, insurance); support to customs departments; tariff reforms.</narrative>
+			</description>
+			<category>331</category>
+		</codelist-item>
+		<codelist-item>
+			<code>33130</code>
+			<name>
+				<narrative>Regional trade agreements (RTAs)</narrative>
+			</name>
+			<description>
+				<narrative>Support to regional trade arrangements [e.g. Southern African Development Community (SADC), Association of Southeast Asian Nations (ASEAN), Free Trade Area of the Americas (FTAA), African Caribbean Pacific/European Union (ACP/EU)], including work on technical barriers to trade and sanitary and phytosanitary measures (TBT/SPS) at regional level; elaboration of rules of origin and introduction of special and differential treatment in RTAs.</narrative>
+			</description>
+			<category>331</category>
+		</codelist-item>
+		<codelist-item>
+			<code>33140</code>
+			<name>
+				<narrative>Multilateral trade negotiations</narrative>
+			</name>
+			<description>
+				<narrative>Support developing countries' effective participation in multilateral trade negotiations, including training of negotiators, assessing impacts of negotiations; accession to the World Trade Organisation (WTO) and other multilateral trade-related organisations.</narrative>
+			</description>
+			<category>331</category>
+		</codelist-item>
+		<codelist-item>
+			<code>33150</code>
+			<name>
+				<narrative>Trade-related adjustment</narrative>
+			</name>
+			<description>
+				<narrative>Contributions to the government budget to assist the implementation of recipients' own trade reforms and adjustments to trade policy measures by other countries; assistance to manage shortfalls in the balance of payments due to changes in the world trading environment.</narrative>
+			</description>
+			<category>331</category>
+		</codelist-item>
+		<codelist-item>
+			<code>33181</code>
+			<name>
+				<narrative>Trade education/training</narrative>
+			</name>
+			<description>
+				<narrative>Human resources development in trade not included under any of the above codes. Includes university programmes in trade.</narrative>
+			</description>
+			<category>331</category>
+		</codelist-item>
+		<codelist-item>
+			<code>33210</code>
+			<name>
+				<narrative>Tourism policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>332</category>
+		</codelist-item>
+		<codelist-item>
+			<code>41010</code>
+			<name>
+				<narrative>Environmental policy and administrative management</narrative>
+			</name>
+			<description>
+				<narrative>Environmental policy, laws, regulations and economic instruments; administrational institutions and practices; environmental and land use planning and decision-making procedures; seminars, meetings; miscellaneous conservation and protection measures not specified below.</narrative>
+			</description>
+			<category>410</category>
+		</codelist-item>
+		<codelist-item>
+			<code>41020</code>
+			<name>
+				<narrative>Biosphere protection</narrative>
+			</name>
+			<description>
+				<narrative>Air pollution control, ozone layer preservation; marine pollution control.</narrative>
+			</description>
+			<category>410</category>
+		</codelist-item>
+		<codelist-item>
+			<code>41030</code>
+			<name>
+				<narrative>Bio-diversity</narrative>
+			</name>
+			<description>
+				<narrative>Including natural reserves and actions in the surrounding areas; other measures to protect endangered or vulnerable species and their habitats (e.g. wetlands preservation).</narrative>
+			</description>
+			<category>410</category>
+		</codelist-item>
+		<codelist-item>
+			<code>41040</code>
+			<name>
+				<narrative>Site preservation</narrative>
+			</name>
+			<description>
+				<narrative>Applies to unique cultural landscape; including sites/objects of historical, archeological, aesthetic, scientific or educational value.</narrative>
+			</description>
+			<category>410</category>
+		</codelist-item>
+		<codelist-item>
+			<code>41050</code>
+			<name>
+				<narrative>Flood prevention/control</narrative>
+			</name>
+			<description>
+				<narrative>Floods from rivers or the sea; including sea water intrusion control and sea level rise related activities.</narrative>
+			</description>
+			<category>410</category>
+		</codelist-item>
+		<codelist-item>
+			<code>41081</code>
+			<name>
+				<narrative>Environmental education/ training</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>410</category>
+		</codelist-item>
+		<codelist-item>
+			<code>41082</code>
+			<name>
+				<narrative>Environmental research</narrative>
+			</name>
+			<description>
+				<narrative>Including establishment of databases, inventories/accounts of physical and natural resources; environmental profiles and impact studies if not sector specific.</narrative>
+			</description>
+			<category>410</category>
+		</codelist-item>
+		<codelist-item>
+			<code>43010</code>
+			<name>
+				<narrative>Multisector aid</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>430</category>
+		</codelist-item>
+		<codelist-item>
+			<code>43030</code>
+			<name>
+				<narrative>Urban development and management</narrative>
+			</name>
+			<description>
+				<narrative>Integrated urban development projects; local development and urban management; urban infrastructure and services; municipal finances; urban environmental management; urban development and planning; urban renewal and urban housing; land information systems.</narrative>
+			</description>
+			<category>430</category>
+		</codelist-item>
+		<codelist-item>
+			<code>43031</code>
+			<name>
+				<narrative>Urban land policy and management</narrative>
+			</name>
+			<description>
+				<narrative>Urban development and planning; urban management, land information systems.</narrative>
+			</description>
+			<category>430</category>
+		</codelist-item>
+		<codelist-item>
+			<code>43032</code>
+			<name>
+				<narrative>Urban development</narrative>
+			</name>
+			<description>
+				<narrative>Integrated urban development projects; local development; urban infrastructure and services; municipal finances; urban environment systems; urban renewal and urban housing.</narrative>
+			</description>
+			<category>430</category>
+		</codelist-item>
+		<codelist-item>
+			<code>43040</code>
+			<name>
+				<narrative>Rural development</narrative>
+			</name>
+			<description>
+				<narrative>Integrated rural development projects; e.g. regional development planning; promotion of decentralised and multi-sectoral competence for planning, co-ordination and management; implementation of regional development and measures (including natural reserve management); land management; land use planning; land settlement and resettlement activities [excluding resettlement of refugees and internally displaced persons (72010)]; functional integration of rural and urban areas; geographical information systems.</narrative>
+			</description>
+			<category>430</category>
+		</codelist-item>
+		<codelist-item>
+			<code>43041</code>
+			<name>
+				<narrative>Rural land policy and management</narrative>
+			</name>
+			<description>
+				<narrative>Regional development planning; promotion of decentralised and multi-sectoral competence for planning, co-ordination and management; land management; land use planning; geographical information systems.</narrative>
+			</description>
+			<category>430</category>
+		</codelist-item>
+		<codelist-item>
+			<code>43042</code>
+			<name>
+				<narrative>Rural development</narrative>
+			</name>
+			<description>
+				<narrative>Integrated rural development projects; implementation of regional development and measures (including natural reserve management); land settlement and resettlement activities [excluding resettlement of refugees and internally displaced persons (72010)]; functional integration of rural and urban areas.</narrative>
+			</description>
+			<category>430</category>
+		</codelist-item>
+		<codelist-item>
+			<code>43050</code>
+			<name>
+				<narrative>Non-agricultural alternative development</narrative>
+			</name>
+			<description>
+				<narrative>Projects to reduce illicit drug cultivation through, for example, non-agricultural income opportunities, social and physical infrastructure (see code 31165 for agricultural alternative development).</narrative>
+			</description>
+			<category>430</category>
+		</codelist-item>
+		<codelist-item>
+			<code>43081</code>
+			<name>
+				<narrative>Multisector education/training</narrative>
+			</name>
+			<description>
+				<narrative>Including scholarships.</narrative>
+			</description>
+			<category>430</category>
+		</codelist-item>
+		<codelist-item>
+			<code>43082</code>
+			<name>
+				<narrative>Research/scientific institutions</narrative>
+			</name>
+			<description>
+				<narrative>When sector cannot be identified.</narrative>
+			</description>
+			<category>430</category>
+		</codelist-item>
+		<codelist-item>
+			<code>51010</code>
+			<name>
+				<narrative>General budget support</narrative>
+			</name>
+			<description>
+				<narrative>Unearmarked contributions to the government budget; support for the implementation of macroeconomic reforms (structural adjustment programmes, poverty reduction strategies); general programme assistance (when not allocable by sector).</narrative>
+			</description>
+			<category>510</category>
+		</codelist-item>
+		<codelist-item>
+			<code>52010</code>
+			<name>
+				<narrative>Food aid/Food security programmes</narrative>
+			</name>
+			<description>
+				<narrative>Supply of edible human food under national or international programmes including transport costs; cash payments made for food supplies; project food aid and food aid for market sales when benefiting sector not specified; excluding emergency food aid.</narrative>
+			</description>
+			<category>520</category>
+		</codelist-item>
+		<codelist-item>
+			<code>53030</code>
+			<name>
+				<narrative>Import support (capital goods)</narrative>
+			</name>
+			<description>
+				<narrative>Capital goods and services; lines of credit.</narrative>
+			</description>
+			<category>530</category>
+		</codelist-item>
+		<codelist-item>
+			<code>53040</code>
+			<name>
+				<narrative>Import support (commodities)</narrative>
+			</name>
+			<description>
+				<narrative>Commodities, general goods and services, oil imports.</narrative>
+			</description>
+			<category>530</category>
+		</codelist-item>
+		<codelist-item>
+			<code>60010</code>
+			<name>
+				<narrative>Action relating to debt</narrative>
+			</name>
+			<description>
+				<narrative>Actions falling outside the code headings below.</narrative>
+			</description>
+			<category>600</category>
+		</codelist-item>
+		<codelist-item>
+			<code>60020</code>
+			<name>
+				<narrative>Debt forgiveness</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>600</category>
+		</codelist-item>
+		<codelist-item>
+			<code>60030</code>
+			<name>
+				<narrative>Relief of multilateral debt</narrative>
+			</name>
+			<description>
+				<narrative>Grants or credits to cover debt owed to multilateral financial institutions; including contributions to Heavily Indebted Poor Countries (HIPC) Trust Fund.</narrative>
+			</description>
+			<category>600</category>
+		</codelist-item>
+		<codelist-item>
+			<code>60040</code>
+			<name>
+				<narrative>Rescheduling and refinancing</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>600</category>
+		</codelist-item>
+		<codelist-item>
+			<code>60061</code>
+			<name>
+				<narrative>Debt for development swap</narrative>
+			</name>
+			<description>
+				<narrative>Allocation of debt claims to use for development (e.g., debt for education, debt for environment).</narrative>
+			</description>
+			<category>600</category>
+		</codelist-item>
+		<codelist-item>
+			<code>60062</code>
+			<name>
+				<narrative>Other debt swap</narrative>
+			</name>
+			<description>
+				<narrative>Where the debt swap benefits an external agent i.e. is not specifically for development purposes.</narrative>
+			</description>
+			<category>600</category>
+		</codelist-item>
+		<codelist-item>
+			<code>60063</code>
+			<name>
+				<narrative>Debt buy-back</narrative>
+			</name>
+			<description>
+				<narrative>Purchase of debt for the purpose of cancellation.</narrative>
+			</description>
+			<category>600</category>
+		</codelist-item>
+		<codelist-item>
+			<code>72010</code>
+			<name>
+				<narrative>Material relief assistance and services</narrative>
+			</name>
+			<description>
+				<narrative>Shelter, water, sanitation and health services, supply of medicines and other non-food relief items; assistance to refugees and internally displaced people in developing countries other than for food (72040) or protection (72050).</narrative>
+			</description>
+			<category>720</category>
+		</codelist-item>
+		<codelist-item>
+			<code>72040</code>
+			<name>
+				<narrative>Emergency food aid</narrative>
+			</name>
+			<description>
+				<narrative>Food aid normally for general free distribution or special supplementary feeding programmes; short-term relief to targeted population groups affected by emergency situations. Excludes non-emergency food security assistance programmes/food aid (52010).</narrative>
+			</description>
+			<category>720</category>
+		</codelist-item>
+		<codelist-item>
+			<code>72050</code>
+			<name>
+				<narrative>Relief co-ordination; protection and support services</narrative>
+			</name>
+			<description>
+				<narrative>Measures to co-ordinate delivery of humanitarian aid, including logistics and communications systems; measures to promote and protect the safety, well-being, dignity and integrity of civilians and those no longer taking part in hostilities. (Activities designed to protect the security of persons or property through the use or display of force are not reportable as ODA.)</narrative>
+			</description>
+			<category>720</category>
+		</codelist-item>
+		<codelist-item>
+			<code>73010</code>
+			<name>
+				<narrative>Reconstruction relief and rehabilitation</narrative>
+			</name>
+			<description>
+				<narrative>Short-term reconstruction work after emergency or conflict limited to restoring pre-existing infrastructure (e.g. repair or construction of roads, bridges and ports, restoration of essential facilities, such as water and sanitation, shelter, health care services); social and economic rehabilitation in the aftermath of emergencies to facilitate transition and enable populations to return to their previous livelihood or develop a new livelihood in the wake of an emergency situation (e.g. trauma counselling and treatment, employment programmes).</narrative>
+			</description>
+			<category>730</category>
+		</codelist-item>
+		<codelist-item>
+			<code>74010</code>
+			<name>
+				<narrative>Disaster prevention and preparedness</narrative>
+			</name>
+			<description>
+				<narrative>Disaster risk reduction activities (e.g. developing knowledge, natural risks cartography, legal norms for construction); early warning systems; emergency contingency stocks and contingency planning including preparations for forced displacement.</narrative>
+			</description>
+			<category>740</category>
+		</codelist-item>
+		<codelist-item>
+			<code>91010</code>
+			<name>
+				<narrative>Administrative costs</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>910</category>
+		</codelist-item>
+		<codelist-item>
+			<code>92010</code>
+			<name>
+				<narrative>Support to national NGOs</narrative>
+			</name>
+			<description>
+				<narrative>In the donor country.</narrative>
+			</description>
+			<category>920</category>
+		</codelist-item>
+		<codelist-item>
+			<code>92020</code>
+			<name>
+				<narrative>Support to international NGOs</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>920</category>
+		</codelist-item>
+		<codelist-item>
+			<code>92030</code>
+			<name>
+				<narrative>Support to local and regional NGOs</narrative>
+			</name>
+			<description>
+				<narrative>In the recipient country or region.</narrative>
+			</description>
+			<category>920</category>
+		</codelist-item>
+		<codelist-item>
+			<code>93010</code>
+			<name>
+				<narrative>Refugees in donor countries</narrative>
+			</name>
+			<description>
+				<narrative/>
+			</description>
+			<category>930</category>
+		</codelist-item>
+		<codelist-item>
+			<code>99810</code>
+			<name>
+				<narrative>Sectors not specified</narrative>
+			</name>
+			<description>
+				<narrative>Contributions to general development of the recipient should be included under programme assistance (51010).</narrative>
+			</description>
+			<category>998</category>
+		</codelist-item>
+		<codelist-item>
+			<code>99820</code>
+			<name>
+				<narrative>Promotion of development awareness</narrative>
+			</name>
+			<description>
+				<narrative>Spending in donor country for heightened awareness/interest in development co-operation (brochures, lectures, special research projects, etc.).</narrative>
+			</description>
+			<category>998</category>
+		</codelist-item>
+	</codelist-items>
+</codelist>
