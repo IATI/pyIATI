@@ -18,6 +18,7 @@ _codelists = {}
 This removes the need to repeatedly load a Codelist from disk each time it is accessed.
 """
 
+
 def codelists(version=0, bypass_cache=False):
     """Locate the default Codelists for the specified version of the Schema.
 
@@ -41,7 +42,7 @@ def codelists(version=0, bypass_cache=False):
 
     for path in paths:
         name = path.split(os.sep).pop()[:-4]
-        if (not name in _codelists.keys()) or bypass_cache:
+        if (name not in _codelists.keys()) or bypass_cache:
             xml_str = iati.core.resources.load_as_string(path)
             codelist = iati.core.codelists.Codelist(name, xml=xml_str)
             _codelists[name] = codelist
