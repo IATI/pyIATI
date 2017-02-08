@@ -28,7 +28,7 @@ class TestResources(object):
             assert path[-4:] == '.xml'
             assert iati.core.resources.BASE_PATH_CODELISTS in path
 
-    @pytest.mark.parametrize('name,cl_type', [
+    @pytest.mark.parametrize('name,location', [
         ('Name', None),
         ('Name', 'embedded'),
         ('Name', 'non-embedded'),
@@ -36,32 +36,32 @@ class TestResources(object):
         ('Name.xml', 'embedded'),
         ('Name.xml', 'non-embedded'),
     ])
-    def test_path_codelist_name(self, name, cl_type):
+    def test_path_codelist_name(self, name, location):
         """Check that a codelist path is found from just a name.
 
         Todo:
             Tidy up if-else mess.
         """
-        if cl_type is None:
+        if location is None:
             path = iati.core.resources.path_codelist(name)
         else:
-            path = iati.core.resources.path_codelist(name, cl_type)
+            path = iati.core.resources.path_codelist(name, location)
 
         assert path[-4:] == '.xml'
         assert path.count('.xml') == 1
-        if cl_type == 'embedded':
+        if location == 'embedded':
             assert iati.core.resources.BASE_PATH_CODELISTS_EMBEDDED in path
         else:
             assert iati.core.resources.BASE_PATH_CODELISTS_NON_EMBEDDED in path
 
-    @pytest.mark.parametrize('name,cl_type', [
+    @pytest.mark.parametrize('name,location', [
         ('Name', 23487),
         ('Name', 'invalid type')
     ])
-    def test_path_codelist_invalid_type(self, name, cl_type):
+    def test_path_codelist_invalid_type(self, name, location):
         """Check that an error is raised when attempting to find a codelist of invalid type."""
         try:
-            _ = iati.core.resources.path_codelist(name, cl_type)
+            _ = iati.core.resources.path_codelist(name, location)
         except ValueError:
             assert True
         else:

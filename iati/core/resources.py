@@ -56,12 +56,12 @@ def find_all_codelist_paths(version=0):
     return paths_all
 
 
-def path_codelist(name, cl_type='non-embedded'):
+def path_codelist(name, location='non-embedded'):
     """Determine the path of a codelist with the given name.
 
     Args:
         name (str): The name of the codelist to locate. Should the name end in '.xml', this shall be removed to determine the name.
-        cl_type (str): The type of codelist being located. Either 'embedded' or 'non-embedded'. Defaults to 'non-embedded'.
+        location (str): The location of the codelist. Either 'embedded' or 'non-embedded'. Defaults to 'non-embedded'.
 
     Returns:
         str: The path to a file containing the specified codelist.
@@ -70,20 +70,20 @@ def path_codelist(name, cl_type='non-embedded'):
         Does not check whether the specified codelist actually exists.
 
     Raises:
-        ValueError: If the specified type of Codelist is not valid.
+        ValueError: If the specified location of Codelist is not valid.
 
     Todo:
-        Provide a better interface for specifying whether a codelise is Embedded or Non-Embedded.
+        Provide a better interface for specifying whether a codelist is Embedded or Non-Embedded.
     """
     if name[-4:] == '.xml':
         name = name[:-4]
 
-    if cl_type == 'embedded':
+    if location == 'embedded':
         return os.sep.join((BASE_PATH_CODELISTS_EMBEDDED, '{0}.xml'.format(name)))
-    elif cl_type == 'non-embedded':
+    elif location == 'non-embedded':
         return os.sep.join((BASE_PATH_CODELISTS_NON_EMBEDDED, '{0}.xml'.format(name)))
     else:
-        msg = "The type of a Codelist must be a string equal to either 'embedded' or 'non-embedded'"
+        msg = "The location of a Codelist must be a string equal to either 'embedded' or 'non-embedded'"
         iati.core.utilities.log_error(msg)
         raise ValueError(msg)
 
