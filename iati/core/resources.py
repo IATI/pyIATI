@@ -21,6 +21,9 @@ BASE_PATH_SCHEMAS = os.sep.join((BASE_PATH, 'schemas'))
 BASE_PATH_SCHEMAS_202 = os.sep.join((BASE_PATH_SCHEMAS, '202'))
 """The relative location of the folder containing schemas from the SSOT, version 2.02 of the IATI standard."""
 
+PATH_CODELIST_MAPPINGS = os.sep.join((BASE_PATH_CODELISTS, 'mapping.xml'))
+"""The relative location of the file containing mappings between Schema XPaths and Codelists."""
+
 
 def path_codelist(name):
     """Determine the path of a codelist with the given name.
