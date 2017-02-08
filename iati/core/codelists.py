@@ -1,4 +1,5 @@
 """A module containing a core representation of IATI Codelists."""
+from lxml import etree
 import iati.core.resources
 import iati.core.utilities
 
@@ -81,7 +82,7 @@ class Codelist(object):
         if isinstance(code, Code):
             self.codes.append(code)
 
-    def to_xsd_tree(self):
+    def xsd_tree(self):
         """Output the Codelist as an XSD etree.
 
         This tree may be used to specify the type of given elements, allowing insertion and validation within a schema.
@@ -110,6 +111,14 @@ class Code(object):
         self.name = name
         self.value = value
 
-    def to_xsd_tree(self):
-        """Output the Code as an etree element for validation."""
-        pass
+    def xsd_tree(self):
+        """Output the Code as an etree enumeration element.
+
+        Todo:
+            Look at making this a property rather than a function.
+        """
+        return etree.Element(
+            iati.core.constants.NAMESPACE + 'enumeration',
+            value=self.value,
+            nsmap=iati.core.constants.NSMAP
+        )

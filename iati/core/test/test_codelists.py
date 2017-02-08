@@ -1,5 +1,6 @@
 """A module containing tests for the library representation of Codelists."""
 import pytest
+from lxml import etree
 import iati.core.codelists
 
 
@@ -99,3 +100,15 @@ class TestCodes(object):
 
         assert code.name == name_to_set
         assert code.value == value_to_set
+
+    def test_code_enumeration_element(self):
+        """Check that a Code correctly outputs an enumeration element."""
+        value_to_set = "test Code value"
+        code = iati.core.codelists.Code(value_to_set)
+
+        enum_el = code.xsd_tree()
+
+        assert isinstance(enum_el, etree._Element)
+        assert enum_el.tag == iati.core.constants.NAMESPACE + 'enumeration'
+        assert enum_el.attrib['value'] == value_to_set
+        assert enum_el.nsmap == iati.core.constants.NSMAP
