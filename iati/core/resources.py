@@ -14,6 +14,8 @@ BASE_PATH = 'resources'
 """The relative location of the resources folder."""
 BASE_PATH_CODELISTS = os.sep.join((BASE_PATH, 'codelists'))
 """The relative location of the folder containing codelists from the SSOT."""
+BASE_PATH_CODELISTS_EMBEDDED = os.sep.join((BASE_PATH_CODELISTS, 'embedded'))
+"""The relative location of the folder containing embedded codelists from the SSOT."""
 BASE_PATH_CODELISTS_NON_EMBEDDED = os.sep.join((BASE_PATH_CODELISTS, 'non_embedded'))
 """The relative location of the folder containing non-embedded codelists from the SSOT."""
 BASE_PATH_SCHEMAS = os.sep.join((BASE_PATH, 'schemas'))
