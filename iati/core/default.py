@@ -30,8 +30,7 @@ def codelists(version=0, bypass_cache=False):
         ValueError: When a specified version is not a valid version of the IATI Standard.
 
     Returns:
-        dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included.
-            The Codelist name is the key. An iati.core.codelists.Codelist() is each value.
+        dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. The Codelist name is the key. An iati.core.codelists.Codelist() is each value.
 
     Todo:
         Actually handle versions, including errors.
