@@ -73,7 +73,7 @@ def path_codelist(name, location='non-embedded'):
         ValueError: If the specified location of Codelist is not valid.
 
     Todo:
-        Provide a better interface for specifying whether a codelist is Embedded or Non-Embedded.
+        Provide a better interface for specifying whether a codelist is Embedded or Non-Embedded, keeping in mind user-defined codelists.
     """
     if name[-4:] == '.xml':
         name = name[:-4]
