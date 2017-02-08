@@ -69,5 +69,7 @@ def schemas(bypass_cache=False):
         Handle the difference between Organisation and Activity Schemas.
 
         Test a cache bypass where data is updated.
+
+        Load the Schemas.
     """
     return {}
