@@ -12,7 +12,7 @@ class TestUtilities(object):
         path = iati.core.resources.path_schema('iati-activities-schema')
 
         tree = iati.core.resources.load_as_tree(path)
-        if not tree:
+        if not tree:  # pragma: no cover
             assert False
         schema = iati.core.utilities.convert_tree_to_schema(tree)
 

@@ -34,7 +34,7 @@ class TestSchemas(object):
             _ = iati.core.schemas.Schema(name_to_set)
         except iati.core.exceptions.SchemaError:
             assert True
-        else:
+        else:  # pragma: no cover
             # a ShemaError should be raised, so this point should not be reached
             assert False
 

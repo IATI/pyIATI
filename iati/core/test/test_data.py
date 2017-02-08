@@ -23,7 +23,7 @@ class TestDatasets(object):
             _ = iati.core.data.Dataset()  # pylint: disable=E1120
         except TypeError:
             assert True
-        else:
+        else:  # pragma: no cover
             # a TypeError should be raised when creating without any parameters
             assert False
 
@@ -44,7 +44,7 @@ class TestDatasets(object):
             _ = iati.core.data.Dataset(iati.core.test.utilities.XML_STR_INVALID)
         except ValueError:
             assert True
-        else:
+        else:  # pragma: no cover
             # a ValueError should be raised when creating without valid XML
             assert False
 
@@ -54,7 +54,7 @@ class TestDatasets(object):
             _ = iati.core.data.Dataset(17)
         except TypeError:
             assert True
-        else:
+        else:  # pragma: no cover
             # a TypeError should be raised when creating without valid XML
             assert False
 
@@ -92,7 +92,7 @@ class TestDatasets(object):
             data.xml_str = iati.core.test.utilities.XML_STR_INVALID
         except ValueError:
             assert True
-        else:
+        else:  # pragma: no cover
             # a ValueError should be raised when creating without valid XML
             assert False
 
@@ -103,7 +103,7 @@ class TestDatasets(object):
             data.xml_str = iati.core.test.utilities.XML_TREE_VALID
         except TypeError:
             assert True
-        else:
+        else:  # pragma: no cover
             # a TypeError should be raised when creating without valid XML
             assert False
 
@@ -114,7 +114,7 @@ class TestDatasets(object):
             data.xml_str = 785
         except TypeError:
             assert True
-        else:
+        else:  # pragma: no cover
             # a TypeError should be raised when creating without valid XML
             assert False
 
@@ -144,7 +144,7 @@ class TestDatasets(object):
             data.xml_tree = iati.core.test.utilities.XML_STR_VALID
         except TypeError:
             assert True
-        else:
+        else:  # pragma: no cover
             # a TypeError should be raised when creating without a tree
             assert False
 
@@ -155,6 +155,6 @@ class TestDatasets(object):
             data.xml_tree = {}
         except TypeError:
             assert True
-        else:
+        else:  # pragma: no cover
             # a TypeError should be raised when creating without a tree
             assert False

@@ -79,7 +79,7 @@ class TestResources(object):
             _ = iati.core.resources.path_codelist(name, location)
         except ValueError:
             assert True
-        else:
+        else:  # pragma: no cover
             # a ValueError should be raised, meaning this is not reached
             assert False
 

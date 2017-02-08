@@ -40,7 +40,7 @@ class TestCodelists(object):
             _ = iati.core.codelists.Codelist()  # pylint: disable=E1120
         except TypeError:
             assert True
-        else:
+        else:  # pragma: no cover
             # a TypeError should have been thrown due to a lack of name
             assert False
 
