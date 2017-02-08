@@ -108,7 +108,7 @@ class TestCodes(object):
 
         enum_el = code.xsd_tree()
 
-        assert isinstance(enum_el, etree._Element)
+        assert isinstance(enum_el, etree._Element)  # pylint: disable=protected-access
         assert enum_el.tag == iati.core.constants.NAMESPACE + 'enumeration'
         assert enum_el.attrib['value'] == value_to_set
         assert enum_el.nsmap == iati.core.constants.NSMAP
