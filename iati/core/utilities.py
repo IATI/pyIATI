@@ -29,14 +29,21 @@ def convert_xml_to_tree(xml):
     Returns:
         etree._Element: An lxml element tree representing the provided XML.
 
-    Todo:
-        Perform actual error handling in the except block.
+    Raises:
+        ValueError: The XML provided was something other than a string.
+        lxml.etree.XMLSyntaxError: There was an error with the syntax of the provided XML.
     """
     try:
         tree = etree.fromstring(xml)
         return tree
-    except Exception as err:
-        pass
+    except etree.XMLSyntaxError as xml_syntax_err:
+        msg = "There was a problem with the provided XML, and it could therefore not be turned into a tree."
+        iati.core.utilities.log_error(msg)
+        raise xml_syntax_err
+    except ValueError:
+        msg = "To parse XML into a tree, the XML must be a string, not a {0}.".format(type(xml))
+        iati.core.utilities.log_error(msg)
+        raise ValueError(msg)
 
 
 def log(lvl, msg, *args, **kwargs):
