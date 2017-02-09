@@ -74,7 +74,11 @@ class TestResources(object):
         ('Name', 'invalid type')
     ])
     def test_path_codelist_invalid_type(self, name, location):
-        """Check that an error is raised when attempting to find a codelist of invalid type."""
+        """Check that an error is raised when attempting to find a codelist of invalid type.
+
+        Todo:
+            Fuzz with iati.core.test.utilities.find_parameter_by_type(['str'], False)
+        """
         try:
             _ = iati.core.resources.path_codelist(name, location)
         except ValueError:

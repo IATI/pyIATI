@@ -27,11 +27,16 @@ class TestSchemas(object):
 
         assert schema.name is None
 
-    def test_schema_name_instance(self):
-        """Check that an Error is raised when attempting to load a Schema that does not exist"""
-        name_to_set = "test Schema name"
+    @pytest.mark.parametrize("invalid_name", iati.core.test.utilities.find_parameter_by_type(['str'], False))
+    @pytest.mark.xfail
+    def test_schema_name_instance(self, invalid_name):
+        """Check that an Error is raised when attempting to load a Schema that does not exist.
+
+        Todo:
+            Check for type errors when the type is incorrect.
+        """
         try:
-            _ = iati.core.schemas.Schema(name_to_set)
+            _ = iati.core.schemas.Schema(invalid_name)
         except iati.core.exceptions.SchemaError:
             assert True
         else:  # pragma: no cover
