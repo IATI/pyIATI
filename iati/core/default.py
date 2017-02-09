@@ -40,7 +40,7 @@ def codelists(version=0, bypass_cache=False):
     paths = iati.core.resources.find_all_codelist_paths()
 
     for path in paths:
-        name = path.split(os.sep).pop()[:-4]
+        name = path.split(os.sep).pop()[:-len(iati.core.resources.FILE_CODELIST_EXTENSION)]
         if (name not in _codelists.keys()) or bypass_cache:
             xml_str = iati.core.resources.load_as_string(path)
             codelist = iati.core.codelists.Codelist(name, xml=xml_str)
@@ -74,4 +74,13 @@ def schemas(bypass_cache=False):
 
         Load the Schemas.
     """
-    return {}
+    paths = iati.core.resources.find_all_schema_paths()
+
+    for path in paths:
+        name = path.split(os.sep).pop()[:-len(iati.core.resources.FILE_SCHEMA_EXTENSION)]
+        if (name not in _schemas.keys()) or bypass_cache:
+            xml_str = iati.core.resources.load_as_string(path)
+            schema = iati.core.schemas.Schema(name)
+            _schemas[name] = schema
+
+    return _schemas
