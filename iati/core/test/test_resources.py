@@ -62,8 +62,8 @@ class TestResources(object):
         else:
             path = iati.core.resources.path_codelist(name, location)
 
-        assert path[-4:] == '.xml'
-        assert path.count('.xml') == 1
+        assert path[-4:] == iati.core.resources.FILE_CODELIST_EXTENSION
+        assert path.count(iati.core.resources.FILE_CODELIST_EXTENSION) == 1
         if location == 'embedded':
             assert iati.core.resources.BASE_PATH_CODELISTS_EMBEDDED in path
         else:
