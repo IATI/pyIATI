@@ -49,6 +49,7 @@ class Codelist(object):
         Implement and document attributes that are not yet implemented and documented.
     """
 
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, name, path=None, xml=None):
         """Initialise a Codelist.
 
@@ -169,6 +170,7 @@ class Code(object):
         Implement and document attributes that are not yet implemented and documented.
     """
 
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, value=None, name=None):
         """Initialise a Code.
 
