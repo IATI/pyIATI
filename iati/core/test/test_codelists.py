@@ -50,7 +50,6 @@ class TestCodelists(object):
 
         assert [] == codelist.codes
         assert codelist.name == name_to_set
-        assert codelist.path is None
 
     def test_codelist_name_and_path_instance(self, name_to_set):
         """Check a Codelist's attributes are correct when defined with a name and path"""
@@ -59,7 +58,6 @@ class TestCodelists(object):
 
         assert [] == codelist.codes
         assert codelist.name == name_to_set
-        assert codelist.path == path_to_set
 
     def test_codelist_add_code(self, name_to_set):
         """Check a Code can be added to a Codelist"""
