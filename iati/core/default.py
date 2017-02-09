@@ -68,6 +68,8 @@ def schemas(bypass_cache=False):
     Todo:
         Handle the difference between Organisation and Activity Schemas.
 
+        Consider the Schema that defines the format of Codelists.
+
         Test a cache bypass where data is updated.
 
         Load the Schemas.
