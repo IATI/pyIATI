@@ -43,17 +43,9 @@ class TestUtilities(object):
         else:  # pragma: no cover
             assert False
 
-    @pytest.mark.parametrize("not_xml", [
-        True, False,
-        0, 32498, -2348,
-        0.1, -45.324, 3545352525.54,
-        {}, []
-    ])
+    @pytest.mark.parametrize("not_xml", iati.core.test.utilities.find_parameter_by_type(['str'], False))
     def test_convert_xml_to_tree_not_str(self, not_xml):
         """Check that an invalid string raises an error when an attempt is made to convert it to an etree.
-
-        Todo:
-            Switch parameters to: iati.core.test.utilities.find_parameter_by_type(['str'], False)
         """
         try:
             tree = iati.core.utilities.convert_xml_to_tree(not_xml)
