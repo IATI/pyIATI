@@ -23,6 +23,8 @@ BASE_PATH_CODELISTS_EMBEDDED = os.sep.join((BASE_PATH_CODELISTS, 'embedded'))
 """The relative location of the folder containing embedded codelists from the SSOT."""
 BASE_PATH_CODELISTS_NON_EMBEDDED = os.sep.join((BASE_PATH_CODELISTS, 'non_embedded'))
 """The relative location of the folder containing non-embedded codelists from the SSOT."""
+BASE_PATH_DATA = os.sep.join((BASE_PATH, 'data'))
+"""The relative location of the folder containing IATI data files."""
 BASE_PATH_SCHEMAS = os.sep.join((BASE_PATH, 'schemas'))
 """The relative location of the folder containing schemas from the SSOT."""
 BASE_PATH_SCHEMAS_202 = os.sep.join((BASE_PATH_SCHEMAS, '202'))
@@ -33,6 +35,9 @@ PATH_CODELIST_MAPPINGS = os.sep.join((BASE_PATH_CODELISTS, 'mapping.xml'))
 
 FILE_CODELIST_EXTENSION = '.xml'
 """The extension of a file containing a Codelist."""
+
+FILE_DATA_EXTENSION = '.xml'
+"""The extension of a file containing IATI data."""
 
 FILE_SCHEMA_ACTIVITY_NAME = 'iati-activities-schema'
 """The name of a file containing an Activity Schema."""
@@ -106,6 +111,8 @@ def path_codelist(name, location='non-embedded'):
 
     Todo:
         Provide a better interface for specifying whether a codelist is Embedded or Non-Embedded, keeping in mind user-defined codelists.
+
+        Test this.
     """
     if name[-4:] == FILE_CODELIST_EXTENSION:
         name = name[:-4]
@@ -118,6 +125,24 @@ def path_codelist(name, location='non-embedded'):
         msg = "The location of a Codelist must be a string equal to either 'embedded' or 'non-embedded'"
         iati.core.utilities.log_error(msg)
         raise ValueError(msg)
+
+
+def path_data(name):
+    """Determine the path of an IATI data file with the given name.
+
+    Args:
+        name (str): The name of the data file to locate.
+
+    Returns:
+        str: The path to a file containing the specified data.
+
+    Note:
+        Does not check whether the specified data file actually exists.
+
+    Todo:
+        Test this.
+    """
+    return os.sep.join((BASE_PATH_DATA, '{0}'.format(name) + FILE_DATA_EXTENSION))
 
 
 def path_schema(name):
@@ -134,6 +159,8 @@ def path_schema(name):
 
     Todo:
         Handle versions of the standard other than 2.02.
+
+        Test this.
     """
     return os.sep.join((BASE_PATH_SCHEMAS_202, '{0}'.format(name) + FILE_SCHEMA_EXTENSION))
 

@@ -10,9 +10,16 @@ import iati.validate
 class TestValidate(object):
     """A container for tests relating to validation."""
 
-    def test_basic_validation(self):
-        """Perform super simple data validation."""
-        data = iati.core.data.Dataset(iati.core.test.utilities.XML_STR_VALID)
+    def test_basic_validation_valid(self):
+        """Perform super simple data validation against a valid dataset"""
+        data = iati.core.data.Dataset(iati.core.test.utilities.XML_STR_VALID_IATI)
         schema = iati.core.schemas.Schema(name=iati.core.test.utilities.SCHEMA_NAME_VALID)
 
         assert iati.validate.is_valid(data, schema)
+
+    def test_basic_validation_invalid(self):
+        """Perform super simple data validation against a valid dataset"""
+        data = iati.core.data.Dataset(iati.core.test.utilities.XML_STR_VALID)
+        schema = iati.core.schemas.Schema(name=iati.core.test.utilities.SCHEMA_NAME_VALID)
+
+        assert not iati.validate.is_valid(data, schema)

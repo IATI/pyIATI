@@ -1,4 +1,5 @@
 """A module containing validation functionality."""
+from lxml import etree
 import iati.core.data
 import iati.core.schemas
 
@@ -12,4 +13,8 @@ def is_valid(dataset, schema):
     Todo:
         Auto-detect Schema version.
     """
-    pass
+    try:
+        schema.schema.assertValid(dataset.xml_tree)
+        return True
+    except etree.DocumentInvalid:
+        return False

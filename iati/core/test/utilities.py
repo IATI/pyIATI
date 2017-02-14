@@ -5,13 +5,14 @@ Todo:
 """
 import decimal
 from lxml import etree
+import iati.core.resources
 
 SCHEMA_NAME_VALID = 'iati-activities-schema'
 """A string containing a valid Schema name."""
 
 XML_STR_VALID = '<parent><child attribute="value" /></parent>'
 """A string containing valid XML that is not valid against the IATI schema."""
-XML_STR_VALID_IATI = None
+XML_STR_VALID_IATI = iati.core.resources.load_as_string(iati.core.resources.path_data('example'))
 """A string containing valid IATI XML.
 
 Todo:
@@ -22,7 +23,7 @@ XML_STR_INVALID = 'This is a string that is not valid XML'
 
 XML_TREE_VALID = etree.fromstring(XML_STR_VALID)
 """An etree that is not valid IATI data."""
-XML_TREE_VALID_IATI = None
+XML_TREE_VALID_IATI = etree.fromstring(XML_STR_VALID_IATI)
 """A valid IATI etree.
 
 Todo:
