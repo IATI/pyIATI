@@ -26,6 +26,7 @@ class Schema(object):
                 This name refers to a file contained within the core IATI resources folder.
 
         Raises:
+            TypeError: The type of the provided name is incorrect.
             iati.core.exceptions.SchemaError: An error occurred during the creation of the Schema.
 
         Todo:
@@ -34,12 +35,14 @@ class Schema(object):
             Better use the try-except pattern.
 
             Allow the base schema to be modified after initialisation.
+
+            Create test instance where the SchemaError is raised.
         """
         self.name = name
         self._schema_base_tree = None
         self.codelists = set()
 
-        if name:
+        if isinstance(name, str):
             path = iati.core.resources.path_schema(self.name)
             try:
                 loaded_tree = iati.core.resources.load_as_tree(path)
@@ -49,6 +52,10 @@ class Schema(object):
                 raise iati.core.exceptions.SchemaError
             else:
                 self._schema_base_tree = loaded_tree
+        elif name is not None:
+            msg = "The name of the Schema is an invalid type. Must be a string, though was a {0}.".format(type(name))
+            iati.core.utilities.log_error(msg)
+            raise TypeError(msg)
 
     def validator(self):
         """A schema that can be used for validation.
