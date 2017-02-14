@@ -14,7 +14,7 @@ def is_valid(dataset, schema):
         Auto-detect Schema version.
     """
     try:
-        schema.schema.assertValid(dataset.xml_tree)
+        schema.validator().assertValid(dataset.xml_tree)
         return True
     except etree.DocumentInvalid:
         return False

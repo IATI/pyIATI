@@ -48,7 +48,7 @@ class TestSchemas(object):
         schema = schema_initialised
 
         assert schema.name == iati.core.test.utilities.SCHEMA_NAME_VALID
-        assert isinstance(schema.schema, XMLSchema)
+        assert isinstance(schema.validator(), XMLSchema)
         assert isinstance(schema.codelists, set)
         assert len(schema.codelists) == 0
 

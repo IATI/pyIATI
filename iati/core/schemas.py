@@ -1,4 +1,5 @@
 """A module containing a core representation of IATI Schemas."""
+import copy
 from lxml import etree
 import iati.core.exceptions
 import iati.core.resources
@@ -10,7 +11,6 @@ class Schema(object):
 
     Attributes:
         name (str): The name of the Schema.
-        schema (etree.XMLSchema): An actual Schema that can be used for validation.
         codelists (set): The Codelists asspciated with this Schema. This is a read-only attribute.
 
     Todo:
@@ -33,7 +33,7 @@ class Schema(object):
             Better use the try-except pattern.
         """
         self.name = name
-        self._schema_base = None
+        self._schema_base_tree = None
         self.codelists = set()
 
         if name:
@@ -45,34 +45,21 @@ class Schema(object):
                 iati.core.utilities.log_error(msg)
                 raise iati.core.exceptions.SchemaError
             else:
-                generated_schema = iati.core.utilities.convert_tree_to_schema(loaded_tree)
-                if isinstance(generated_schema, etree.XMLSchema):
-                    self._schema_base = generated_schema
+                self._schema_base_tree = loaded_tree
 
-    @property
-    def schema(self):
-        """A Schema that can be used for validation.
+    def validator(self):
+        """A schema that can be used for validation.
 
-        Takes the base Schema that was loaded and dynamically injects elements for content checking.
+        Takes the base schema and dynamically injects elements for content checking.
 
-        Raises:
-            TypeError: If a value being assigned is not an XMLSchema.
-
-        Note:
-            Setting this property will set the base schema, ontop of which content checking is added through the associated Codelists.
+        Returns:
+            etree.XMLSchema: A schema that can be used for validation.
 
         Todo:
             Implement Codelist content checking.
 
             Implement Ruleset content checking.
-        """
-        return self._schema_base
 
-    @schema.setter
-    def schema(self, value):
-        if isinstance(value, etree.XMLSchema):
-            self._schema_base = value
-        else:
-            msg = "Schemas must be of type XMLSchemas. Actual type: {0}".format(type(value))
-            iati.core.utilities.log_error(msg)
-            raise TypeError(msg)
+            Provide option to return a reference rather than a deep copy.
+        """
+        return iati.core.utilities.convert_tree_to_schema(self._schema_base_tree)
