@@ -12,7 +12,7 @@ SCHEMA_NAME_VALID = 'iati-activities-schema'
 
 XML_STR_VALID = '<parent><child attribute="value" /></parent>'
 """A string containing valid XML that is not valid against the IATI schema."""
-XML_STR_VALID_IATI = iati.core.resources.load_as_string(iati.core.resources.path_data('example'))
+XML_STR_VALID_IATI = iati.core.resources.load_as_string(iati.core.resources.path_data('valid'))
 """A string containing valid IATI XML.
 
 Todo:
