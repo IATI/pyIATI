@@ -38,7 +38,7 @@ class TestValidate(object):
         """Perform data validation against valid IATI XML that has an invalid Codelist value."""
         data = iati.core.data.Dataset(iati.core.test.utilities.XML_STR_VALID_IATI_INVALID_CODE)
         schema = iati.core.schemas.Schema(name=iati.core.test.utilities.SCHEMA_NAME_VALID)
-        schema.codelists.add(iati.core.default.codelists()['Country'])
+        schema.codelists.add(iati.core.default.codelist('Country'))
 
         assert len(schema.codelists) == 1
         assert not iati.validate.is_valid(data, schema)

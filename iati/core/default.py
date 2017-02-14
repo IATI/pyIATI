@@ -19,6 +19,36 @@ This removes the need to repeatedly load a Codelist from disk each time it is ac
 """
 
 
+def codelist(name, version=0):
+    """Locate the default Codelist with the specified name for the specified version of the Standard.
+
+    Args:
+        name (str): The name of the Codelist to locate.
+        version (float): The version of the Standard to return the Codelists for. Defaults to 0. This means that the latest version of the Codelist is returned.
+
+    Raises:
+        ValueError: When a specified name is not a valid Codelist.
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        iati.core.codelists.Codelist: A Codelist with the specified name.
+
+    Todo:
+        Actually handle versions, including errors.
+
+        Better distinguish the types of ValueError.
+
+        Test this function.
+    """
+    try:
+        codelist = codelists()[name]
+        return codelist
+    except KeyError:
+        msg = "There is no default Codelist in version {0} of the Standard with the name {1}.".format(version, name)
+        iati.core.utilities.log_warning(msg)
+        raise ValueError(msg)
+
+
 def codelists(version=0, bypass_cache=False):
     """Locate the default Codelists for the specified version of the Standard.
 
