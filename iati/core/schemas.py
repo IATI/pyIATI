@@ -1,6 +1,7 @@
 """A module containing a core representation of IATI Schemas."""
 import copy
 from lxml import etree
+import iati.core.codelists
 import iati.core.exceptions
 import iati.core.resources
 import iati.core.utilities
@@ -63,16 +64,34 @@ class Schema(object):
             Implement Ruleset content checking.
 
             Add configuration parameters.
+
+            Make the algorithm relating to mappings not-hideous.
         """
         # tree = copy.deepcopy(self._schema_base_tree)
         tree = self._schema_base_tree
 
         if len(self.codelists):
-            xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'recipient-country' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="code"]')
-            el_to_update = tree.getroot().find(xpath)
-            el_to_update.attrib['type'] = 'Country-type'
+            mappings = iati.core.codelists.fetch_mappings()
+            updated_xpaths = {}
+
+            for xpath, (ref, _) in mappings.items():
+                # the XPaths are for a data file rather than a Schema, so need formatting differently
+                path_sections = xpath.split('/')
+                try:
+                    elements = path_sections[path_sections.index('iati-activity') + 1:-1]
+                    # locate the relevant elements
+                    xpath_sections = ['{http://www.w3.org/2001/XMLSchema}element[@name="' + el + '"]' for el in elements]
+                    # locate the attribute on the final element
+                    xpath_sections.append('{http://www.w3.org/2001/XMLSchema}attribute[@name="' + path_sections[-1:][0][1:] + '"]')
+
+                    updated_xpaths[ref] = '//'.join(xpath_sections)
+                except ValueError:
+                    pass
 
             for codelist in self.codelists:
+                if codelist.name in updated_xpaths:
+                    thing_to_update = tree.getroot().find(updated_xpaths[codelist.name])
+                    thing_to_update.attrib['type'] = codelist.name + '-type'
                 tree.getroot().append(codelist.xsd_tree())
 
             try:
