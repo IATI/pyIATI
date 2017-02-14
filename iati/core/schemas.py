@@ -75,9 +75,6 @@ class Schema(object):
             updated_xpaths = {}
 
             for xpath, (ref, condition) in mappings.items():
-                if condition is not None:
-                    continue
-
                 # the XPaths are for a data file rather than a Schema, so need formatting differently
                 path_sections = xpath.split('/')
                 try:
