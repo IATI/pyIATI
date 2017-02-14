@@ -28,7 +28,7 @@ XML_TREE_VALID_IATI_INVALID_CODE = etree.fromstring(XML_STR_VALID_IATI_INVALID_C
 
 TYPE_TEST_DATA = {
     'bool': [True, False],
-    'bytes': [], # counts as a string, so moved there
+    'bytes': [],  # counts as a string, so moved there
     'bytearray': [bytearray.fromhex('2Ef0 F1f2  '), bytearray(b'Hi!'), bytearray(range(20))],
     'complex': [3453J, -35415J, 0J, complex(234, 681), complex(-768, 16078), complex(6187, -81), complex(-1867, -618)],
     'contextmanager': [decimal.localcontext()],
@@ -46,7 +46,7 @@ TYPE_TEST_DATA = {
     'str': [SCHEMA_NAME_VALID, XML_STR_VALID, XML_STR_INVALID, b'\x80abc', b'\x80abc', '\N{GREEK CAPITAL LETTER DELTA}', '\u0394', '\U00000394'],
     'tuple': [(), (1, 2)],
     'type': [type(1), type('string')],
-    'unicode': [], # counts as a string, so moed there
+    'unicode': [],  # counts as a string, so moed there
     'view': [{}.keys(), dict(zip(['one', 'two', 'three'], [1, 2, 3])).items(), dict(one=1, two=2, three=3).values()]
 }
 """Generic test data of various Python builtin types."""

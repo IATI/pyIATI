@@ -1,5 +1,4 @@
 """A module containing IATI exceptions."""
-from lxml import etree
 
 
 class SchemaError(Exception):

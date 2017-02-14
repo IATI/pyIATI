@@ -41,8 +41,8 @@ def codelist(name, version=0):
         Test this function.
     """
     try:
-        codelist = codelists()[name]
-        return codelist
+        codelist_found = codelists()[name]
+        return codelist_found
     except KeyError:
         msg = "There is no default Codelist in version {0} of the Standard with the name {1}.".format(version, name)
         iati.core.utilities.log_warning(msg)
@@ -75,8 +75,8 @@ def codelists(version=0, bypass_cache=False):
         name = path.split(os.sep).pop()[:-len(iati.core.resources.FILE_CODELIST_EXTENSION)]
         if (name not in _CODELISTS.keys()) or bypass_cache:
             xml_str = iati.core.resources.load_as_string(path)
-            codelist = iati.core.codelists.Codelist(name, xml=xml_str)
-            _CODELISTS[name] = codelist
+            codelist_found = iati.core.codelists.Codelist(name, xml=xml_str)
+            _CODELISTS[name] = codelist_found
 
     return _CODELISTS
 

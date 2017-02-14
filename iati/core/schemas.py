@@ -1,5 +1,4 @@
 """A module containing a core representation of IATI Schemas."""
-import copy
 from lxml import etree
 import iati.core.codelists
 import iati.core.exceptions

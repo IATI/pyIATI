@@ -1,5 +1,4 @@
 """A module containing tests for data validation."""
-from lxml import etree
 import pytest
 import iati.core.data
 import iati.core.default
