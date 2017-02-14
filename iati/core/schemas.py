@@ -81,7 +81,7 @@ class Schema(object):
             mappings = iati.core.codelists.fetch_mappings()
             updated_xpaths = {}
 
-            for xpath, (ref, condition) in mappings.items():
+            for xpath, (ref, _) in mappings.items():
                 # the XPaths are for a data file rather than a Schema, so need formatting differently
                 path_sections = xpath.split('/')
                 try:
@@ -98,8 +98,7 @@ class Schema(object):
             for codelist in self.codelists:
                 if codelist.name in updated_xpaths:
                     thing_to_update = tree.getroot().find(updated_xpaths[codelist.name])
-                    if thing_to_update is not None:
-                        thing_to_update.attrib['type'] = codelist.name + '-type'
+                    thing_to_update.attrib['type'] = codelist.name + '-type'
                 tree.getroot().append(codelist.xsd_tree())
 
             try:
