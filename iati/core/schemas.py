@@ -31,6 +31,8 @@ class Schema(object):
             Allow for generation of schemas outside the IATI SSOT.
 
             Better use the try-except pattern.
+
+            Allow the base schema to be modified after initialisation.
         """
         self.name = name
         self._schema_base_tree = None
