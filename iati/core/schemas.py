@@ -33,7 +33,7 @@ class Schema(object):
             Better use the try-except pattern.
         """
         self.name = name
-        self.schema = None
+        self._schema_base = None
         self.codelists = set()
 
         if name:
@@ -47,4 +47,32 @@ class Schema(object):
             else:
                 generated_schema = iati.core.utilities.convert_tree_to_schema(loaded_tree)
                 if isinstance(generated_schema, etree.XMLSchema):
-                    self.schema = generated_schema
+                    self._schema_base = generated_schema
+
+    @property
+    def schema(self):
+        """A Schema that can be used for validation.
+
+        Takes the base Schema that was loaded and dynamically injects elements for content checking.
+
+        Raises:
+            TypeError: If a value being assigned is not an XMLSchema.
+
+        Note:
+            Setting this property will set the base schema, ontop of which content checking is added through the associated Codelists.
+
+        Todo:
+            Implement Codelist content checking.
+
+            Implement Ruleset content checking.
+        """
+        return self._schema_base
+
+    @schema.setter
+    def schema(self, value):
+        if isinstance(value, etree.XMLSchema):
+            self._schema_base = value
+        else:
+            msg = "Schemas must be of type XMLSchemas. Actual type: {0}".format(type(value))
+            iati.core.utilities.log_error(msg)
+            raise TypeError(msg)
