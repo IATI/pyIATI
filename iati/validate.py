@@ -16,5 +16,5 @@ def is_valid(dataset, schema):
     try:
         schema.validator().assertValid(dataset.xml_tree)
         return True
-    except etree.DocumentInvalid:
+    except etree.DocumentInvalid as err:
         return False
