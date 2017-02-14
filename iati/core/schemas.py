@@ -62,6 +62,23 @@ class Schema(object):
 
             Implement Ruleset content checking.
 
-            Provide option to return a reference rather than a deep copy.
+            Add configuration parameters.
         """
-        return iati.core.utilities.convert_tree_to_schema(self._schema_base_tree)
+        # tree = copy.deepcopy(self._schema_base_tree)
+        tree = self._schema_base_tree
+
+        if len(self.codelists):
+            xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'recipient-country' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="code"]')
+            el_to_update = tree.getroot().find(xpath)
+            el_to_update.attrib['type'] = 'Country-type'
+
+            for codelist in self.codelists:
+                tree.getroot().append(codelist.xsd_tree())
+
+            try:
+                a = iati.core.utilities.convert_tree_to_schema(tree)
+                return a
+            except etree.XMLSchemaParseError as err:
+                iati.core.utilities.log_error(err)
+        else:
+            return iati.core.utilities.convert_tree_to_schema(tree)

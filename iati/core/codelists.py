@@ -133,6 +133,9 @@ class Codelist(object):
 
         This tree may be used to specify the type of given elements, allowing insertion and validation within a schema.
 
+        Returns:
+            etree.Element: An XSD simpleType representing this Codelist.
+
         Todo:
             See whether there are only Codelists of a type other than string.
 

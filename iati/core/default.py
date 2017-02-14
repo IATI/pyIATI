@@ -36,6 +36,8 @@ def codelists(version=0, bypass_cache=False):
         Actually handle versions, including errors.
 
         Test a cache bypass where data is updated.
+
+        Add a function to return a single Codelist by name.
     """
     paths = iati.core.resources.find_all_codelist_paths()
 

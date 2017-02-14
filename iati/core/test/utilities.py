@@ -13,22 +13,18 @@ SCHEMA_NAME_VALID = 'iati-activities-schema'
 XML_STR_VALID = '<parent><child attribute="value" /></parent>'
 """A string containing valid XML that is not valid against the IATI schema."""
 XML_STR_VALID_IATI = iati.core.resources.load_as_string(iati.core.resources.path_data('valid'))
-"""A string containing valid IATI XML.
-
-Todo:
-    Create a valid IATI XML string.
-"""
+"""A string containing valid IATI XML."""
+XML_STR_VALID_IATI_INVALID_CODE = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_invalid_code'))
+"""A string containing valid IATI XML, but an invalid Code valid."""
 XML_STR_INVALID = 'This is a string that is not valid XML'
 """A string that is not valid XML."""
 
 XML_TREE_VALID = etree.fromstring(XML_STR_VALID)
 """An etree that is not valid IATI data."""
 XML_TREE_VALID_IATI = etree.fromstring(XML_STR_VALID_IATI)
-"""A valid IATI etree.
-
-Todo:
-    Create a valid IATI XML etree.
-"""
+"""A valid IATI etree."""
+XML_TREE_VALID_IATI_INVALID_CODE = etree.fromstring(XML_STR_VALID_IATI_INVALID_CODE)
+"""A valid IATI etree that has an invalid Code value."""
 
 TYPE_TEST_DATA = {
     'bool': [True, False],
