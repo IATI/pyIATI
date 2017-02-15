@@ -28,7 +28,7 @@ class TestDefault(object):
     def test_default_codelist_invalid(self, name):
         """Check that trying to find a default Codelist with an invalid name raises an error."""
         try:
-            codelist = iati.core.default.codelist(name)
+            _ = iati.core.default.codelist(name)
         except ValueError:
             assert True
         else:  # pragma: no cover
