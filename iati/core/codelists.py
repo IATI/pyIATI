@@ -12,6 +12,9 @@ def fetch_mappings():
     Returns:
         dict: A dictionary of mappings from XPaths (keys) to a (ref, condition) tuple (values). The condition part of the tuple is optional, and so will be None if there is no attached condition.
 
+    Warning:
+        The format of the return value is likely to change to better match actual use cases.
+
     Todo:
         Determine alternative formats that the mappings may be returned in, such as the basic string or tree.
 
