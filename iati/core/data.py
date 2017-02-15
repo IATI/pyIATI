@@ -8,8 +8,6 @@ class Dataset(object):
     """Representation of an IATI XML file that may be validated against a schema.
 
     Attributes:
-        strictly_valid (bool): Whether the dataset must strictly conform to the IATI standard.
-            If strictly conforming, invalid elements and attributes will be removed.
         xml_str (str): A string representation of the XML being represented.
         xml_tree (ElementTree): A tree representation of the XML being represented.
 
