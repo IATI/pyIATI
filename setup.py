@@ -7,5 +7,8 @@ setup(
     author = 'IATI Technical Team and other contributors',
     author_email = 'code@iatistandard.org',
     licence = 'TBC', #TODO
-    packages = find_packages(exclude='iati/core/tests')
+    packages = find_packages(exclude='iati/core/tests'),
+    install_requires=[
+        'lxml==3.6.0'
+        ],
 )

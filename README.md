@@ -28,8 +28,8 @@ General Installation for System Use
 # install software dependencies
 apt-get install python-pip
 
-# install Python package dependencies
-pip install -r requirements.txt
+# install this package
+python setup.py install
 ```
 
 Dev Installation
