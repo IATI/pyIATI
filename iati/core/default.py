@@ -43,7 +43,7 @@ def codelist(name, version=0):
 
         Better distinguish the types of ValueError.
 
-        Better distinguish TypeErrors from KeyErrors - sometimes the latter is thrown when the former should have been.
+        Better distinguish TypeErrors from KeyErrors - sometimes the latter is raised when the former should have been.
     """
     try:
         codelist_found = codelists()[name]
