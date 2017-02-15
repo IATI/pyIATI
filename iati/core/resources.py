@@ -1,5 +1,14 @@
 """A module to provide a way of locating resources within the IATI library.
 
+`pkg_resources` is used to allow resources to be located however the package is distributed. If using the standard `os` functionality, resources may not be locatable if, for example, the package is distributed as an egg.
+
+Warning:
+    The contents of this module are likely to change. This is due to them expecting that there is a single version of the Standard. When this assumption changes, so will the contents of this module.
+
+    Many of the constants in this module should be deemed private to the IATI library.
+
+    The location of SSOT content may change. It may also require network access to perform certain tasks.
+
 Todo:
     Determine how to distribute SSOT content - with package, or separately (being downloaded at runtime)
 """
@@ -59,6 +68,9 @@ def find_all_codelist_paths(version=0):
     Returns:
         list: A list of paths to all of the Codelists at the specified version of the Standard.
 
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
     Todo:
         Handle versions, including errors.
 
@@ -87,6 +99,9 @@ def find_all_schema_paths(version=0):
     Returns:
         list: A list of paths to all of the Schemas at the specified version of the Standard.
 
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
     Todo:
         Handle versions, including errors.
     """
@@ -108,6 +123,13 @@ def path_codelist(name, location='non-embedded'):
 
     Raises:
         ValueError: If the specified location of Codelist is not valid.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+        Use of magic strings in the `location` parameter is not a tidy interface.
+
+        It needs to be determined how best to locate a user-defined Codelist that is available at a URL that needs fetching.
 
     Todo:
         Provide a better interface for specifying whether a codelist is Embedded or Non-Embedded, keeping in mind user-defined codelists.
@@ -139,6 +161,9 @@ def path_data(name):
     Note:
         Does not check whether the specified data file actually exists.
 
+    Warning:
+        Needs to handle a more complex file structure than a single flat directory.
+
     Todo:
         Test this.
     """
@@ -157,6 +182,9 @@ def path_schema(name):
     Note:
         Does not check whether the specified schema actually exists.
 
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
     Todo:
         Handle versions of the standard other than 2.02.
 
@@ -173,6 +201,9 @@ def load_as_string(path):
 
     Returns:
         str: The contents of the file at the specified location.
+
+    Warning:
+        Should raise Exceptions when there are problems loading the requested data.
 
     Todo:
         Add error handling for when the specified file does not exist.
@@ -192,6 +223,9 @@ def load_as_tree(path):
 
     Raises:
         OSError: An error occurred accessing the specified file.
+
+    Warning:
+        There should be errors raised when the request is to load something that is not valid XML.
 
     Todo:
         Handle when the specified file can be accessed without issue, but it does not contain valid XML.
@@ -215,5 +249,8 @@ def resource_filename(path):
 
     Note:
         Does not check to see that the specified file exists.
+
+    Warning:
+        When other functions in this module are reviewed, this will be too.
     """
     return pkg_resources.resource_filename(PACKAGE, path)
