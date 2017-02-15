@@ -19,8 +19,11 @@ class Dataset(object):
     Warning:
         The behaviour of simultaneous assignment to both `self.xml_str` and `self.xml_tree` is undefined.
 
+        `xml_str` and `xml_tree` are not great names. They are also too tied together. It should be determined whether this close relationship is really desired.
+
     Todo:
         Implement getters and setters for attributes.
+
         Implement an addition override to allow for combation of datasets.
     """
 
@@ -36,6 +39,9 @@ class Dataset(object):
             ValueError: If a provided XML string is not valid XML.
             iati.core.exceptions.ValidationError:
                 If the provided XML should conform to the IATI standard, but does not.
+
+        Warning:
+            It should be possible to create a dataset from a file. In this situation, having `xml` as a required parameter does not seem sensible. Need to better consider this situation.
 
         Todo:
             Undertake validation.
