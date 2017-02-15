@@ -32,6 +32,20 @@ apt-get install python-pip
 python setup.py install
 ```
 
+Documentation
+=============
+
+At present, an HTML documentation site can be generated using the following commands:
+
+```
+# to build the documentation
+sphinx-apidoc -f -o docs/source/ iati/
+sphinx-build -b html docs/source/ docs/build/
+```
+
+The file `docs/build/index.html` serves as the documentation home page.
+
+
 Dev Installation
 ================
 
@@ -47,8 +61,8 @@ source pyenv/bin/activate
 pip install -r requirements-dev.txt
 ```
 
-Running
-=======
+Tests
+=====
 
 ```
 # to run the tests
@@ -60,10 +74,6 @@ flake8 iati/
 pydocstyle iati/
 # OR
 pylint iati; echo; flake8 iati/; echo; pydocstyle iati/
-
-# to build the documentation
-sphinx-apidoc -f -o docs/source/ iati/
-sphinx-build -b html docs/source/ docs/build/
 ```
 
 Alternatively, the Makefile can be used.
