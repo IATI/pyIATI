@@ -59,7 +59,7 @@ pylint iati
 flake8 iati/
 pydocstyle iati/
 # OR
-pylint iati; echo; flake8 iati/; echo; pydocstyle iati/
+pylint iati; echo; flake8 iati/; echo; pydocstyle iati/; echo; radon mi iati/ -nb
 
 # to build the documentation
 sphinx-apidoc -f -o docs/source/ iati/

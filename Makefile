@@ -22,6 +22,8 @@ lint: $(IATI_FOLDER)
 	-flake8 $(IATI_FOLDER)
 	echo $(LINE_SEP)
 	pydocstyle $(IATI_FOLDER)
+	echo $(LINE_SEP)
+	radon mi $(IATI_FOLDER) -nb
 
 
 test: $(IATI_FOLDER)
