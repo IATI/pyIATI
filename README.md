@@ -17,7 +17,7 @@ Feedback, suggestions, use-case descriptions, bug reports and so on are much app
 
 At present the library (`core`) represents the contents of the IATI SSOT. It is able to handle a single version of the Standard (2.02 by default, although it is possible to change data files). Some placeholder work has been undertaken to deal with multiple standard versions. It is planned that this work will be completed once surrounding APIs are nearer a stable state.
 
-More pleasant API naming, full documentation, improved error handling, and a greater number of tests for edge-cases are known key areas for improvement.
+More pleasant API naming, better hiding of underlying `lxml`, full documentation, improved error handling, and a greater number of tests for edge-cases are known key areas for improvement.
 
 It is planned that different sections of the library, such as `validate` are split into their own repositories. They exist within this repository at present to help speed up the iteration process.
 
