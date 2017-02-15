@@ -4,7 +4,7 @@ from lxml.etree import XMLSchema
 import iati.core.codelists
 import iati.core.exceptions
 import iati.core.schemas
-import iati.core.test.utilities
+import iati.core.tests.utilities
 
 
 class TestSchemas(object):
@@ -17,7 +17,7 @@ class TestSchemas(object):
         Returns:
             iati.core.schemas.Schema: A Schema that has been initialised with basic values.
         """
-        schema_name = iati.core.test.utilities.SCHEMA_NAME_VALID
+        schema_name = iati.core.tests.utilities.SCHEMA_NAME_VALID
 
         return iati.core.schemas.Schema(name=schema_name)
 
@@ -27,7 +27,7 @@ class TestSchemas(object):
 
         assert schema.name is None
 
-    @pytest.mark.parametrize("invalid_name", iati.core.test.utilities.find_parameter_by_type(['str', 'none'], False))
+    @pytest.mark.parametrize("invalid_name", iati.core.tests.utilities.find_parameter_by_type(['str', 'none'], False))
     def test_schema_name_instance(self, invalid_name):
         """Check that an Error is raised when attempting to load a Schema that does not exist.
 
@@ -46,7 +46,7 @@ class TestSchemas(object):
         """Check that a Schema can be generated from an XSD definition"""
         schema = schema_initialised
 
-        assert schema.name == iati.core.test.utilities.SCHEMA_NAME_VALID
+        assert schema.name == iati.core.tests.utilities.SCHEMA_NAME_VALID
         assert isinstance(schema.validator(), XMLSchema)
         assert isinstance(schema.codelists, set)
         assert len(schema.codelists) == 0
