@@ -43,12 +43,14 @@ def codelist(name, version=0):
 
         Better distinguish the types of ValueError.
 
+        Better distinguish TypeErrors from KeyErrors - sometimes the latter is thrown when the former should have been.
+
         Test this function.
     """
     try:
         codelist_found = codelists()[name]
         return codelist_found
-    except KeyError:
+    except (KeyError, TypeError):
         msg = "There is no default Codelist in version {0} of the Standard with the name {1}.".format(version, name)
         iati.core.utilities.log_warning(msg)
         raise ValueError(msg)

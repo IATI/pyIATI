@@ -1,4 +1,5 @@
 """A module containing tests for the library representation of default values."""
+import pytest
 import iati.core.codelists
 import iati.core.default
 import iati.core.schemas
@@ -6,6 +7,32 @@ import iati.core.schemas
 
 class TestDefault(object):
     """A container for tests relating to Default data."""
+
+    def test_default_codelist_valid(self):
+        """Check that a named default Codelist may be located.
+
+        Todo:
+            Handle multiple versions.
+
+            Check internal values beyond the codelists being the correct type.
+        """
+        name = 'Country'
+        codelist = iati.core.default.codelist(name)
+
+        assert isinstance(codelist, iati.core.codelists.Codelist)
+        assert codelist.name == name
+        for code in codelist.codes:
+            assert isinstance(code, iati.core.codelists.Code)
+
+    @pytest.mark.parametrize("name", iati.core.test.utilities.find_parameter_by_type(['str'], False))
+    def test_default_codelist_invalid(self, name):
+        """Check that trying to find a default Codelist with an invalid name raises an error."""
+        try:
+            codelist = iati.core.default.codelist(name)
+        except ValueError:
+            assert True
+        else:  # pragma: no cover
+            assert False
 
     def test_default_codelists(self):
         """Check that the default Codelists are correct.
