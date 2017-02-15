@@ -1,4 +1,8 @@
-"""A module containing validation functionality."""
+"""A module containing validation functionality.
+
+Warning:
+    It is planned to change from Schema-based to Data-based Codelist validation. As such, this module will change significantly.
+"""
 from lxml import etree
 
 
@@ -8,6 +12,9 @@ def is_valid(dataset, schema):
     Args:
         dataset (iati.core.data.Dataset): The Dataset to check validity of.
         schema (iati.core.schemas.Schema): The Schema to validate the Dataset against.
+
+    Warning:
+        It is planned to change from Schema-based to Data-based Codelist validation. As such, this function may be removed or change significantly.
 
     Todo:
         Auto-detect Schema version.
