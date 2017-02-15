@@ -107,8 +107,8 @@ class Schema(object):
                 tree.getroot().append(codelist.xsd_tree())
 
             try:
-                a = iati.core.utilities.convert_tree_to_schema(tree)
-                return a
+                updated_schema = iati.core.utilities.convert_tree_to_schema(tree)
+                return updated_schema
             except etree.XMLSchemaParseError as err:
                 iati.core.utilities.log_error(err)
         else:
