@@ -28,6 +28,9 @@ class Schema(object):
             TypeError: The type of the provided name is incorrect.
             iati.core.exceptions.SchemaError: An error occurred during the creation of the Schema.
 
+        Warning:
+            The format of the constructor is likely to change. It needs to be less reliant on the name acting as a UID, and allow for other attributes to be provided at this point.
+
         Todo:
             Allow for generation of schemas outside the IATI SSOT.
 
@@ -63,6 +66,9 @@ class Schema(object):
 
         Returns:
             etree.XMLSchema: A schema that can be used for validation.
+
+        Warning:
+            It is planned to change from Schema-based to Data-based Codelist validation. As such, it is highly likely that this function will be removed.
 
         Todo:
             Implement Codelist content checking.
