@@ -7,7 +7,13 @@ IATI_FOLDER = iati/
 # useful constants
 LINE_SEP = ---
 
-all: test lint docs
+all: test lint complexity docs
+
+
+complexity: $(IATI_FOLDER)
+	radon mi $(IATI_FOLDER) -nb
+	echo $(LINE_SEP)
+	radon cc $(IATI_FOLDER) --no-assert -nc
 
 
 docs: $(IATI_FOLDER) $(DOCS_FOLDER_SOURCE)
@@ -22,8 +28,6 @@ lint: $(IATI_FOLDER)
 	-flake8 $(IATI_FOLDER)
 	echo $(LINE_SEP)
 	pydocstyle $(IATI_FOLDER)
-	echo $(LINE_SEP)
-	radon mi $(IATI_FOLDER) -nb
 
 
 test: $(IATI_FOLDER)

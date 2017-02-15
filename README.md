@@ -59,7 +59,11 @@ pylint iati
 flake8 iati/
 pydocstyle iati/
 # OR
-pylint iati; echo; flake8 iati/; echo; pydocstyle iati/; echo; radon mi iati/ -nb
+pylint iati; echo; flake8 iati/; echo; pydocstyle iati/
+
+# to run the complexity and maintainability checks
+radon mi iati/ -nb
+radon cc iati --no-assert -nc
 
 # to build the documentation
 sphinx-apidoc -f -o docs/source/ iati/
@@ -71,6 +75,7 @@ Alternatively, the Makefile can be used.
 ```
 make tests
 make lint
+make complexity
 make docs
 
 # OR
