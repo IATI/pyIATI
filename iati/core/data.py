@@ -19,6 +19,8 @@ class Dataset(object):
 
         `xml_str` and `xml_tree` are not great names. They are also too tied together. It should be determined whether this close relationship is really desired.
 
+        Does not fully hide the lxml internal workings.
+
     Todo:
         Implement getters and setters for attributes.
 
@@ -88,6 +90,9 @@ class Dataset(object):
 
         Raises:
             TypeError: If a value that is being assigned is not an ElementTree.
+
+        Warning:
+            Does not fully hide the lxml internal workings.
         """
         return self._xml_tree
 

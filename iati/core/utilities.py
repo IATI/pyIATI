@@ -19,6 +19,8 @@ def convert_tree_to_schema(tree):
 
         Needs to better distinguish between an `etree.XMLSchema` and an `iati.core.schemas.Schema`.
 
+        Does not fully hide the lxml internal workings.
+
     Todo:
         Surround schema conversion with error handling.
     """
@@ -35,7 +37,7 @@ def convert_xml_to_tree(xml):
         etree._Element: An lxml element tree representing the provided XML.
 
     Warning:
-        Propogates implementation details - lxml exceptions.
+        Does not fully hide the lxml internal workings.
 
     Raises:
         ValueError: The XML provided was something other than a string.

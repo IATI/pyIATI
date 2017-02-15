@@ -104,6 +104,8 @@ def find_all_schema_paths(version=0):
 
     Todo:
         Handle versions, including errors.
+
+        Implement for more than a single specified activity schema.
     """
     return [path_schema(FILE_SCHEMA_ACTIVITY_NAME)]
 
@@ -226,6 +228,8 @@ def load_as_tree(path):
 
     Warning:
         There should be errors raised when the request is to load something that is not valid XML.
+
+        Does not fully hide the lxml internal workings. This includes making reference to a private lxml type.
 
     Todo:
         Handle when the specified file can be accessed without issue, but it does not contain valid XML.

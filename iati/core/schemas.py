@@ -31,6 +31,10 @@ class Schema(object):
         Warning:
             The format of the constructor is likely to change. It needs to be less reliant on the name acting as a UID, and allow for other attributes to be provided at this point.
 
+            The raised exceptions are likely to change upon review of IATI-specific exceptions.
+
+            Need to define a good API for accessing public and private attributes. Requiring something along the lines of `schema.schema` is likely not ideal. An improved understanding of use cases will be required for this.
+
         Todo:
             Allow for generation of schemas outside the IATI SSOT.
 
@@ -69,6 +73,8 @@ class Schema(object):
 
         Warning:
             It is planned to change from Schema-based to Data-based Codelist validation. As such, it is highly likely that this function will be removed.
+
+            Does not fully hide the lxml internal workings.
 
         Todo:
             Implement Codelist content checking.

@@ -81,10 +81,15 @@ class Codelist(object):
         def parse_from_xml(xml):
             """Parse a Codelist from the XML that defines it.
 
+            Warning:
+                In modifying the parameters required for creating an instance of the class, this is likely to move in some manner.
+
             Todo:
                 Define relevant tests and error handling.
 
                 Handle Codelists without description or name elements.
+
+                Better document side-effects.
             """
             tree = iati.core.utilities.convert_xml_to_tree(xml)
 
@@ -137,7 +142,7 @@ class Codelist(object):
             code (iati.core.codelists.Code): The Code to add to the Codelist.
 
         Warning:
-            At present this is merely acting as a wrapper for a list. The current state of the TODO indicates that it may be better as a set.
+            At present this is merely acting as a wrapper for a list. The current state of the TODO indicates that it may be better as a set. In that instance, this function may not be required.
 
         Todo:
             Prohibit duplicate Codes being added to a Codelist.
@@ -157,6 +162,8 @@ class Codelist(object):
             It is planned to change from Schema-based to Data-based Codelist validation. As such, this function may be removed.
 
             The name attribute of the generated type is not good and needs changing.
+
+            Does not fully hide the lxml internal workings.
 
         Todo:
             See whether there are only Codelists of a type other than string.
@@ -225,6 +232,8 @@ class Code(object):
 
         Warning:
             It is planned to change from Schema-based to Data-based Codelist validation. As such, this function may be removed.
+
+            Does not fully hide the lxml internal workings.
 
         Todo:
             Rename this function, potentially making it a property.
