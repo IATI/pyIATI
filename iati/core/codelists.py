@@ -46,6 +46,11 @@ class Codelist(object):
     Note:
         The _path attribute may be removed.
 
+    Warning:
+        There are currently a large number of attributes that have been taken straight from the XML without being implemented in code. Some of these may change during implementation.
+
+        The `codes` attribute is currently a list. While this class is called a CodeLIST, a list may not be the most appropriate datatype - something like a dict or set may be better.
+
     Todo:
         Provide functionality to allow XML to be loaded from a parameter-defined path.
 
@@ -63,6 +68,12 @@ class Codelist(object):
             name (str): The name of the codelist being initialised.
             path (str): A path to a file containing a valid codelist in XML format.
             xml (str): An XML representation of a codelist.
+
+        Note:
+            Instances of a Codelist should remain independent of a particular version of the IATI Standard. Versioning should be handled elsewhere.
+
+        Warning:
+            The format of the constructor is likely to change. It needs to be less reliant on the name acting as a UID,  and allow for other attributes to be defined.
 
         Todo:
             Raise warnings or errors if the Codelist is unable to initialise correctly.
@@ -125,6 +136,9 @@ class Codelist(object):
         Args:
             code (iati.core.codelists.Code): The Code to add to the Codelist.
 
+        Warning:
+            At present this is merely acting as a wrapper for a list. The current state of the TODO indicates that it may be better as a set.
+
         Todo:
             Prohibit duplicate Codes being added to a Codelist.
         """
@@ -138,6 +152,11 @@ class Codelist(object):
 
         Returns:
             etree.Element: An XSD simpleType representing this Codelist.
+
+        Warning:
+            It is planned to change from Schema-based to Data-based Codelist validation. As such, this function may be removed.
+
+            The name attribute of the generated type is not good and needs changing.
 
         Todo:
             See whether there are only Codelists of a type other than string.
@@ -183,6 +202,12 @@ class Code(object):
         Args:
             name (str): The name of the code being initialised.
             value (str): The value of the code being initialised.
+
+        Note:
+            Instances of a Code should remain independent of a particular version of the IATI Standard. Versioning should be handled elsewhere.
+
+        Warning:
+            The format of the constructor is likely to change. It should include mandatory parameters, and allow for other attributes to be defined.
         """
         self.name = name
         self.value = value
@@ -197,6 +222,9 @@ class Code(object):
 
     def xsd_tree(self):
         """Output the Code as an etree enumeration element.
+
+        Warning:
+            It is planned to change from Schema-based to Data-based Codelist validation. As such, this function may be removed.
 
         Todo:
             Rename this function, potentially making it a property.
