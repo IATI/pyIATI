@@ -37,7 +37,7 @@ class TestUtilities(object):
         not_xml = "this is not XML"
 
         try:
-            tree = iati.core.utilities.convert_xml_to_tree(not_xml)
+            _ = iati.core.utilities.convert_xml_to_tree(not_xml)
         except etree.XMLSyntaxError:
             assert True
         else:  # pragma: no cover
@@ -48,7 +48,7 @@ class TestUtilities(object):
         """Check that an invalid string raises an error when an attempt is made to convert it to an etree.
         """
         try:
-            tree = iati.core.utilities.convert_xml_to_tree(not_xml)
+            _ = iati.core.utilities.convert_xml_to_tree(not_xml)
         except ValueError:
             assert True
         else:  # pragma: no cover

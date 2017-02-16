@@ -1,5 +1,14 @@
 """A module to provide a way of locating resources within the IATI library.
 
+`pkg_resources` is used to allow resources to be located however the package is distributed. If using the standard `os` functionality, resources may not be locatable if, for example, the package is distributed as an egg.
+
+Warning:
+    The contents of this module are likely to change. This is due to them expecting that there is a single version of the Standard. When this assumption changes, so will the contents of this module.
+
+    Many of the constants in this module should be deemed private to the IATI library.
+
+    The location of SSOT content may change. It may also require network access to perform certain tasks.
+
 Todo:
     Determine how to distribute SSOT content - with package, or separately (being downloaded at runtime)
 """
@@ -23,6 +32,8 @@ BASE_PATH_CODELISTS_EMBEDDED = os.sep.join((BASE_PATH_CODELISTS, 'embedded'))
 """The relative location of the folder containing embedded codelists from the SSOT."""
 BASE_PATH_CODELISTS_NON_EMBEDDED = os.sep.join((BASE_PATH_CODELISTS, 'non_embedded'))
 """The relative location of the folder containing non-embedded codelists from the SSOT."""
+BASE_PATH_DATA = os.sep.join((BASE_PATH, 'data'))
+"""The relative location of the folder containing IATI data files."""
 BASE_PATH_SCHEMAS = os.sep.join((BASE_PATH, 'schemas'))
 """The relative location of the folder containing schemas from the SSOT."""
 BASE_PATH_SCHEMAS_202 = os.sep.join((BASE_PATH_SCHEMAS, '202'))
@@ -33,6 +44,9 @@ PATH_CODELIST_MAPPINGS = os.sep.join((BASE_PATH_CODELISTS, 'mapping.xml'))
 
 FILE_CODELIST_EXTENSION = '.xml'
 """The extension of a file containing a Codelist."""
+
+FILE_DATA_EXTENSION = '.xml'
+"""The extension of a file containing IATI data."""
 
 FILE_SCHEMA_ACTIVITY_NAME = 'iati-activities-schema'
 """The name of a file containing an Activity Schema."""
@@ -53,6 +67,9 @@ def find_all_codelist_paths(version=0):
 
     Returns:
         list: A list of paths to all of the Codelists at the specified version of the Standard.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
     Todo:
         Handle versions, including errors.
@@ -82,8 +99,13 @@ def find_all_schema_paths(version=0):
     Returns:
         list: A list of paths to all of the Schemas at the specified version of the Standard.
 
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
     Todo:
         Handle versions, including errors.
+
+        Implement for more than a single specified activity schema.
     """
     return [path_schema(FILE_SCHEMA_ACTIVITY_NAME)]
 
@@ -104,8 +126,17 @@ def path_codelist(name, location='non-embedded'):
     Raises:
         ValueError: If the specified location of Codelist is not valid.
 
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+        Use of magic strings in the `location` parameter is not a tidy interface.
+
+        It needs to be determined how best to locate a user-defined Codelist that is available at a URL that needs fetching.
+
     Todo:
         Provide a better interface for specifying whether a codelist is Embedded or Non-Embedded, keeping in mind user-defined codelists.
+
+        Test this.
     """
     if name[-4:] == FILE_CODELIST_EXTENSION:
         name = name[:-4]
@@ -120,6 +151,27 @@ def path_codelist(name, location='non-embedded'):
         raise ValueError(msg)
 
 
+def path_data(name):
+    """Determine the path of an IATI data file with the given name.
+
+    Args:
+        name (str): The name of the data file to locate.
+
+    Returns:
+        str: The path to a file containing the specified data.
+
+    Note:
+        Does not check whether the specified data file actually exists.
+
+    Warning:
+        Needs to handle a more complex file structure than a single flat directory.
+
+    Todo:
+        Test this.
+    """
+    return os.sep.join((BASE_PATH_DATA, '{0}'.format(name) + FILE_DATA_EXTENSION))
+
+
 def path_schema(name):
     """Determine the path of a schema with the given name.
 
@@ -132,8 +184,13 @@ def path_schema(name):
     Note:
         Does not check whether the specified schema actually exists.
 
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
     Todo:
         Handle versions of the standard other than 2.02.
+
+        Test this.
     """
     return os.sep.join((BASE_PATH_SCHEMAS_202, '{0}'.format(name) + FILE_SCHEMA_EXTENSION))
 
@@ -146,6 +203,9 @@ def load_as_string(path):
 
     Returns:
         str: The contents of the file at the specified location.
+
+    Warning:
+        Should raise Exceptions when there are problems loading the requested data.
 
     Todo:
         Add error handling for when the specified file does not exist.
@@ -165,6 +225,11 @@ def load_as_tree(path):
 
     Raises:
         OSError: An error occurred accessing the specified file.
+
+    Warning:
+        There should be errors raised when the request is to load something that is not valid XML.
+
+        Does not fully hide the lxml internal workings. This includes making reference to a private lxml type.
 
     Todo:
         Handle when the specified file can be accessed without issue, but it does not contain valid XML.
@@ -188,5 +253,8 @@ def resource_filename(path):
 
     Note:
         Does not check to see that the specified file exists.
+
+    Warning:
+        When other functions in this module are reviewed, this will be too.
     """
     return pkg_resources.resource_filename(PACKAGE, path)

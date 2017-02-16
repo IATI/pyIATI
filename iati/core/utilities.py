@@ -14,6 +14,13 @@ def convert_tree_to_schema(tree):
     Returns:
         etree.XMLSchema: The XML schema that the provided tree represented.
 
+    Warning:
+        Should raise exceptions when there are errors during execution.
+
+        Needs to better distinguish between an `etree.XMLSchema` and an `iati.core.schemas.Schema`.
+
+        Does not fully hide the lxml internal workings.
+
     Todo:
         Surround schema conversion with error handling.
     """
@@ -28,6 +35,9 @@ def convert_xml_to_tree(xml):
 
     Returns:
         etree._Element: An lxml element tree representing the provided XML.
+
+    Warning:
+        Does not fully hide the lxml internal workings.
 
     Raises:
         ValueError: The XML provided was something other than a string.
@@ -54,6 +64,15 @@ def log(lvl, msg, *args, **kwargs):
         msg (str): The message that is to be logged.
         *args
         **kwargs
+
+    Warning:
+        Potentially too tightly coupled to the Python `logging` module.
+
+        Logging needs to be defined in a much more useful and configurable manner.
+
+        Logging should not fill up logfiles at lightspeed unless this is specifically desired.
+
+        Outputs should be more easily parsable.
     """
     logging.basicConfig(
         filename=os.path.join(iati.core.constants.LOG_FILE_NAME),
@@ -71,6 +90,9 @@ def log_error(msg, *args, **kwargs):
         msg (str): The message that is to be logged.
         *args
         **kwargs
+
+    Warning:
+        Potentially too tightly coupled to the Python `logging` module.
     """
     log(logging.ERROR, msg, *args, **kwargs)
 
@@ -84,6 +106,9 @@ def log_exception(msg, *args, **kwargs):
         msg (str): The message that is to be logged.
         *args
         **kwargs
+
+    Warning:
+        Potentially too tightly coupled to the Python `logging` module.
     """
     log(logging.ERROR, msg, exc_info=True, *args, **kwargs)
 
@@ -95,5 +120,8 @@ def log_warning(msg, *args, **kwargs):
         msg (str): The message that is to be logged.
         *args
         **kwargs
+
+    Warning:
+        Potentially too tightly coupled to the Python `logging` module.
     """
     log(logging.WARN, msg, *args, **kwargs)

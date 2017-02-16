@@ -7,7 +7,13 @@ IATI_FOLDER = iati/
 # useful constants
 LINE_SEP = ---
 
-all: test lint docs
+all: test lint complexity docs
+
+
+complexity: $(IATI_FOLDER)
+	radon mi $(IATI_FOLDER) -nb
+	echo $(LINE_SEP)
+	radon cc $(IATI_FOLDER) --no-assert -nc
 
 
 docs: $(IATI_FOLDER) $(DOCS_FOLDER_SOURCE)
