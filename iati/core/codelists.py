@@ -52,6 +52,8 @@ class Codelist(object):
 
         The `codes` attribute is currently a set. While functionally correct, it may be slightly confusing because the class is a CodeLIST.
 
+        A Codelist may change to directly inherit from a set.
+
     Todo:
         Create a custom class inheriting from set that only allows Codes to be added.
 
