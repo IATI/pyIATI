@@ -38,7 +38,7 @@ class Codelist(object):
     """Representation of a Codelist as defined within the IATI SSOT.
 
     Attributes:
-        codes (:obj:`list` of :obj:`iati.core.codelists.Code`): The codes demonstrating the range of values that the Codelist may represent.
+        codes (:obj:`set` of :obj:`iati.core.codelists.Code`): The codes demonstrating the range of values that the Codelist may represent.
         name (str): The name of the Codelist.
 
     Private Attributes:
@@ -50,9 +50,11 @@ class Codelist(object):
     Warning:
         There are currently a large number of attributes that have been taken straight from the XML without being implemented in code. Some of these may change during implementation.
 
-        The `codes` attribute is currently a list. While this class is called a CodeLIST, a list may not be the most appropriate datatype - something like a dict or set may be better.
+        The `codes` attribute is currently a set. While functionally correct, it may be slightly confusing because the class is a CodeLIST.
 
     Todo:
+        Create a custom class inheriting from set that only allows Codes to be added.
+
         Provide functionality to allow XML to be loaded from a parameter-defined path.
 
         Implement and document attributes that are not yet implemented and documented.
@@ -99,9 +101,9 @@ class Codelist(object):
                 value = code_el.find('code').text
                 name = 'tmp'
                 # name = code_el.find('description/narrative').text
-                self.add_code(iati.core.codelists.Code(value, name))
+                self.codes.add(iati.core.codelists.Code(value, name))
 
-        self.codes = []
+        self.codes = set()
         self.name = name
         self._path = path
 
@@ -135,21 +137,6 @@ class Codelist(object):
             Utilise all attributes as part of the equality process.
         """
         return hash((self.name, tuple(self.codes)))
-
-    def add_code(self, code):
-        """Add a Code to the Codelist.
-
-        Args:
-            code (iati.core.codelists.Code): The Code to add to the Codelist.
-
-        Warning:
-            At present this is merely acting as a wrapper for a list. The current state of the TODO indicates that it may be better as a set. In that instance, this function may not be required.
-
-        Todo:
-            Prohibit duplicate Codes being added to a Codelist.
-        """
-        if isinstance(code, Code):
-            self.codes.append(code)
 
     def xsd_tree(self):
         """Output the Codelist as an XSD etree type.
