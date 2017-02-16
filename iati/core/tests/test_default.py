@@ -24,7 +24,7 @@ class TestDefault(object):
         for code in codelist.codes:
             assert isinstance(code, iati.core.codelists.Code)
 
-    @pytest.mark.parametrize("name", iati.core.test.utilities.find_parameter_by_type(['str'], False))
+    @pytest.mark.parametrize("name", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_default_codelist_invalid(self, name):
         """Check that trying to find a default Codelist with an invalid name raises an error."""
         try:

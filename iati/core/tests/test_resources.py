@@ -77,7 +77,7 @@ class TestResources(object):
         """Check that an error is raised when attempting to find a codelist of invalid type.
 
         Todo:
-            Fuzz with iati.core.test.utilities.find_parameter_by_type(['str'], False)
+            Fuzz with iati.core.tests.utilities.find_parameter_by_type(['str'], False)
         """
         try:
             _ = iati.core.resources.path_codelist(name, location)
