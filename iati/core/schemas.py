@@ -13,8 +13,13 @@ class Schema(object):
         name (str): The name of the Schema.
         codelists (set): The Codelists asspciated with this Schema. This is a read-only attribute.
 
+    Warning:
+        The private attribute allowing access to the base Schema Tree is likely to change in determining a good way of accessing the contained schema content.
+
     Todo:
         Create a custom dictionary type that prevents overwriting values and only allows the correct types to be added.
+
+        Determine how to distinguish and handle the different types of Schema - activity, organisation, codelist, other.
     """
 
     def __init__(self, name=None):
