@@ -101,8 +101,9 @@ class Codelist(object):
             self.name = tree.attrib['name']
             for code_el in tree.findall('codelist-items/codelist-item'):
                 value = code_el.find('code').text
-                name = 'tmp'
-                # name = code_el.find('description/narrative').text
+                name = code_el.findtext('description/narrative')
+                if name is None:
+                    name = ''
                 self.codes.add(iati.core.codelists.Code(value, name))
 
         self.codes = set()
