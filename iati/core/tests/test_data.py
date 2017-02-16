@@ -34,6 +34,14 @@ class TestDatasets(object):
         assert data.xml_str == iati.core.tests.utilities.XML_STR_VALID
         assert etree.tostring(data.xml_tree) == etree.tostring(iati.core.tests.utilities.XML_TREE_VALID)
 
+    def test_dataset_xml_string_leading_whitespace(self):
+        """Test Dataset creation with a valid XML string that is not IATI data."""
+        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_LEADING_WHITESPACE)
+        tree = etree.fromstring(iati.core.tests.utilities.XML_STR_LEADING_WHITESPACE.strip())
+
+        assert data.xml_str == iati.core.tests.utilities.XML_STR_LEADING_WHITESPACE.strip()
+        assert etree.tostring(data.xml_tree) == etree.tostring(tree)
+
     def test_dataset_valid_iati_string(self):
         """Test Dataset creation with a valid IATI XML string."""
         pass
