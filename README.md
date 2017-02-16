@@ -84,7 +84,7 @@ for _, codelist in iati.core.default.codelists().items():
 
 ### Loading Rulesets
 
-`Todo`: This functionality is not yet implemented.
+**Note:** This functionality is not yet implemented.
 
 
 ### Working with IATI datasets
