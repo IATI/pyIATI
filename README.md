@@ -27,7 +27,7 @@ General Installation for System Use
 
 ```
 # install software dependencies
-apt-get install python-pip
+apt-get install python-pip libxml2-dev libxslt-dev python-dev
 
 # install this package
 python setup.py install
