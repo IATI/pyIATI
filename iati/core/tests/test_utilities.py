@@ -2,7 +2,7 @@
 from lxml import etree
 import pytest
 import iati.core.resources
-import iati.core.test.utilities
+import iati.core.tests.utilities
 import iati.core.utilities
 
 
@@ -43,7 +43,7 @@ class TestUtilities(object):
         else:  # pragma: no cover
             assert False
 
-    @pytest.mark.parametrize("not_xml", iati.core.test.utilities.find_parameter_by_type(['str'], False))
+    @pytest.mark.parametrize("not_xml", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_convert_xml_to_tree_not_str(self, not_xml):
         """Check that an invalid string raises an error when an attempt is made to convert it to an etree.
         """
