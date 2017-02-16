@@ -114,15 +114,15 @@ The `Dataset` object contains an `xml_tree` attribute (itself an `lxml.etree` ob
 # WARNING: The following examples assume the source dataset file is produced in IATI v2.x format
 
 # Show the activities contained within the dataset
-dataset.xml_tree.xpath('iati-activity')
+> dataset.xml_tree.xpath('iati-activity')
 [<Element iati-activity at 0x2c5a5f0>, <Element iati-activity at 0x2c5ac68>, <Element iati-activity at 0x2c5acf8>, <Element iati-activity at 0x2c5ad40>]
 
 # Show the titles for each project
-dataset.xml_tree.xpath('iati-activity/title/narrative/text()')
+> dataset.xml_tree.xpath('iati-activity/title/narrative/text()')
 ['IMPROVING MATERNAL HEALTH AND REDUCING CHILD MORTALITY THROUGH DEVELOPING HEALTH SERVICE DELIVERY FOR THE POOR AND MARGINALISED COMMUNITY OF BAGHBANAN, NORTH WEST PAKISTAN']
 
 # For the first activity only, show the planned start date (i.e. activity date type = 2)
-dataset.xml_tree.xpath('iati-activity[1]/activity-date[@type=2]/@iso-date')
+> dataset.xml_tree.xpath('iati-activity[1]/activity-date[@type=2]/@iso-date')
 ['2014-01-01']
 ```
 
