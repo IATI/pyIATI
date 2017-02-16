@@ -117,9 +117,9 @@ The `Dataset` object contains an `xml_tree` attribute (itself an `lxml.etree` ob
 > dataset.xml_tree.xpath('iati-activity')
 [<Element iati-activity at 0x2c5a5f0>, <Element iati-activity at 0x2c5ac68>, <Element iati-activity at 0x2c5acf8>, <Element iati-activity at 0x2c5ad40>]
 
-# Show the titles for each project
+# Show the title for each project
 > dataset.xml_tree.xpath('iati-activity/title/narrative/text()')
-['IMPROVING MATERNAL HEALTH AND REDUCING CHILD MORTALITY THROUGH DEVELOPING HEALTH SERVICE DELIVERY FOR THE POOR AND MARGINALISED COMMUNITY OF BAGHBANAN, NORTH WEST PAKISTAN']
+['\nIMPROVING MATERNAL HEALTH AND REDUCING CHILD MORTALITY THROUGH DEVELOPING HEALTH SERVICE DELIVERY FOR THE POOR AND MARGINALISED COMMUNITY OF BAGHBANAN, NORTH WEST PAKISTAN\n', '\nIMPROVING MATERNAL HEALTH AND REDUCING CHILD MORTALITY THROUGH DEVELOPING HEALTH SERVICE DELIVERY FOR THE POOR AND MARGINALISED COMMUNITY OF BAGHBANAN, NORTH WEST PAKISTAN\n', '\nImproving maternal health and reducing child mortality through developing health service delivery for the poor and marginalised community in Baghbanan, North West Pakistan\n', '\nIMPROVED HEALTH SERVICE DELIVERY IN NORTH WEST PAKISTAN (\n']
 
 # For the first activity only, show the planned start date (i.e. activity date type = 2)
 > dataset.xml_tree.xpath('iati-activity[1]/activity-date[@type=2]/@iso-date')
