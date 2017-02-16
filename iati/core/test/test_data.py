@@ -48,10 +48,11 @@ class TestDatasets(object):
             # a ValueError should be raised when creating without valid XML
             assert False
 
-    def test_dataset_number_not_xml(self):
+    @pytest.mark.parametrize("not_xml", iati.core.test.utilities.find_parameter_by_type(['str'], False))
+    def test_dataset_number_not_xml(self, not_xml):
         """Test Dataset creation when it's passed a number rather than a string or etree."""
         try:
-            _ = iati.core.data.Dataset(17)
+            _ = iati.core.data.Dataset(not_xml)
         except TypeError:
             assert True
         else:  # pragma: no cover
@@ -107,11 +108,12 @@ class TestDatasets(object):
             # a TypeError should be raised when creating without valid XML
             assert False
 
-    def test_dataset_xml_str_assignment_invalid_value(self, dataset_initialised):
+    @pytest.mark.parametrize("invalid_value", iati.core.test.utilities.find_parameter_by_type(['str'], False))
+    def test_dataset_xml_str_assignment_invalid_value(self, dataset_initialised, invalid_value):
         """Test assignment to the xml_str property with a value that is very much not valid."""
         data = dataset_initialised
         try:
-            data.xml_str = 785
+            data.xml_str = invalid_value
         except TypeError:
             assert True
         else:  # pragma: no cover
@@ -148,11 +150,12 @@ class TestDatasets(object):
             # a TypeError should be raised when creating without a tree
             assert False
 
-    def test_dataset_xml_tree_assignment_invalid_value(self, dataset_initialised):
+    @pytest.mark.parametrize("invalid_value", iati.core.test.utilities.find_parameter_by_type(['str'], False))
+    def test_dataset_xml_tree_assignment_invalid_value(self, dataset_initialised, invalid_value):
         """Test assignment to the xml_tree property with a value that is very much not valid."""
         data = dataset_initialised
         try:
-            data.xml_tree = {}
+            data.xml_tree = invalid_value
         except TypeError:
             assert True
         else:  # pragma: no cover

@@ -36,15 +36,20 @@ class Codelist(object):
     Attributes:
         codes (:obj:`list` of :obj:`iati.core.codelists.Code`): The codes demonstrating the range of values that the Codelist may represent.
         name (str): The name of the Codelist.
-        path (str): A path to a file containing a Codelist in XML form.
+
+    Private Attributes:
+        _path (str): A path to a file containing a Codelist in XML form.
 
     Note:
-        The path attribute may be removed.
+        The _path attribute may be removed.
 
     Todo:
         Provide functionality to allow XML to be loaded from a parameter-defined path.
+
+        Implement and document attributes that are not yet implemented and documented.
     """
 
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, name, path=None, xml=None):
         """Initialise a Codelist.
 
@@ -78,7 +83,15 @@ class Codelist(object):
 
         self.codes = []
         self.name = name
-        self.path = path
+        self._path = path
+
+        self.name_prose = None
+        self.description = None
+        self.language = None
+        self.url = None
+        self.ref = None
+        self.category_codelist = None
+        self.complete = None
 
         if xml:
             parse_from_xml(xml)
@@ -154,9 +167,10 @@ class Code(object):
         value (str): The value of the code.
 
     Todo:
-        Add other possible attributes.
+        Implement and document attributes that are not yet implemented and documented.
     """
 
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, value=None, name=None):
         """Initialise a Code.
 
@@ -166,6 +180,14 @@ class Code(object):
         """
         self.name = name
         self.value = value
+
+        self.description = None
+        self.category = None
+        self.url = None
+        self.public_database = False
+        self.status = None
+        self.activation_date = None
+        self.withdrawal_date = None
 
     def xsd_tree(self):
         """Output the Code as an etree enumeration element.

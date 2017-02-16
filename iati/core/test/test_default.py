@@ -27,9 +27,12 @@ class TestDefault(object):
 
         Todo:
             Check internal values beyond the schemas being the correct type.
+
+            Check for the correct number of Schemas.
         """
         schemas = iati.core.default.schemas()
 
         assert isinstance(schemas, dict)
+        assert len(schemas) == 1
         for _, schema in schemas.items():
             assert isinstance(schema, iati.core.schemas.Schema)
