@@ -227,6 +227,26 @@ class Code(object):
         self.activation_date = None
         self.withdrawal_date = None
 
+    def __eq__(self, other):
+        """Check Code equality.
+
+        This allows uniqueness to be correctly defined upon insertion into a set.
+
+        Todo:
+            Utilise all attributes equality process.
+        """
+        return ((self.name) == (other.name)) and ((self.value) == (other.value))
+
+    def __hash__(self):
+        """Hash the Code.
+
+        This allows uniqueness to be correctly defined upon insertion into a set.
+
+        Todo:
+            Utilise all attributes as part of the hashing process.
+        """
+        return hash((self.name, self.value))
+
     def xsd_tree(self):
         """Output the Code as an etree enumeration element.
 
