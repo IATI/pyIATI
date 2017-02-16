@@ -4,7 +4,7 @@ setup(
     name = 'iati.core',
     version = '0.1dev',
     description = 'Python library representing the IATI Schemas, Codelists and Rulesets',
-    author = 'IATI Technical Team and other contributors',
+    author = 'IATI Technical Team and other authors',
     author_email = 'code@iatistandard.org',
     licence = 'MIT',
     packages = find_packages(exclude='iati/core/tests'),
