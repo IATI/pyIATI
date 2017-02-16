@@ -45,7 +45,7 @@ class TestSchemas(object):
         """Check that a Schema can be generated from an XSD definition"""
         schema = schema_initialised
 
-        assert schema.name == iati.core.test.utilities.SCHEMA_NAME_VALID
+        assert schema.name == iati.core.tests.utilities.SCHEMA_NAME_VALID
         assert isinstance(schema.codelists, set)
         assert len(schema.codelists) == 0
 
