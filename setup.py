@@ -6,6 +6,7 @@ setup(
     description = 'Python library representing the IATI Schemas, Codelists and Rulesets',
     author = 'IATI Technical Team and other authors',
     author_email = 'code@iatistandard.org',
+    url='http://iatistandard.org/',
     licence = 'MIT',
     packages = find_packages(exclude='iati/core/tests'),
     install_requires=[
