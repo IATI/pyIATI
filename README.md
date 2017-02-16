@@ -96,7 +96,7 @@ import iati.core.data
 
 # Load a local file
 with open('path/to/iati-activites.xml', 'r') as xml_file_object:
-    dataset_as_string = xml_file_object.read().replace('\n', '')
+    dataset_as_string = xml_file_object.read()
 
 # Load a remote file
 # Assumes the Requests library is installed: http://docs.python-requests.org/
