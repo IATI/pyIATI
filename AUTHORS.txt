@@ -1,4 +1,4 @@
-Contributors ordered in alphabetical order.
+Authors ordered in alphabetical order.
 
 Dale Potter
 Hayden Field <https://github.com/hayfield>
