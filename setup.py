@@ -7,7 +7,6 @@ setup(
     author = 'IATI Technical Team and other authors',
     author_email = 'code@iatistandard.org',
     url='http://iatistandard.org/',
-    licence = 'MIT',
     packages = find_packages(exclude='iati/core/tests'),
     install_requires=[
         'lxml==3.6.0'
