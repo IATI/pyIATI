@@ -1,0 +1,5 @@
+Contributors ordered in alphabetical order.
+
+Dale Potter
+Hayden Field <https://github.com/hayfield>
+IATI Technical Team <code@iatistandard.org>
