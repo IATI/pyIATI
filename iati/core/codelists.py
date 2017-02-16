@@ -101,9 +101,14 @@ class Codelist(object):
             self.name = tree.attrib['name']
             for code_el in tree.findall('codelist-items/codelist-item'):
                 value = code_el.findtext('code')
+                name = code_el.findtext('name/narrative')
+
+                if (value is None) and (name is None):
+                    msg = "The provided Codelist ({0}) has a Code that does not contain a name or value.".format(self.name)
+                    iati.core.utilities.log_warning(msg)
+
                 if value is None:
                     value = ''
-                name = code_el.findtext('name/narrative')
                 if name is None:
                     name = ''
                 self.codes.add(iati.core.codelists.Code(value, name))
