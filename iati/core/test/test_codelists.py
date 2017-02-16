@@ -87,11 +87,13 @@ class TestCodelists(object):
         codelist = iati.core.codelists.Codelist(name_to_set, xml=xml_str)
 
         code_names = ['ODA', 'OOF', 'Private grants', 'Private Market', 'Non flow', 'Other flows']
+        code_values = ['10', '20', '30', '35', '40', '50']
 
         assert codelist.name == 'FlowType'
         assert len(codelist.codes) == 6
         for code in codelist.codes:
             assert code.name in code_names
+            assert code.value in code_values
 
     def test_codelist_type_xsd(self, name_to_set):
         """Check that a Codelist can turn itself into a type to use for validation."""

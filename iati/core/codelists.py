@@ -100,7 +100,9 @@ class Codelist(object):
 
             self.name = tree.attrib['name']
             for code_el in tree.findall('codelist-items/codelist-item'):
-                value = code_el.find('code').text
+                value = code_el.findtext('code')
+                if value is None:
+                    value = ''
                 name = code_el.findtext('name/narrative')
                 if name is None:
                     name = ''
