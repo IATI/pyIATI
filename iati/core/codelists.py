@@ -12,6 +12,9 @@ def fetch_mappings():
     Returns:
         dict: A dictionary of mappings from XPaths (keys) to a (ref, condition) tuple (values). The condition part of the tuple is optional, and so will be None if there is no attached condition.
 
+    Warning:
+        The format of the return value is likely to change to better match actual use cases.
+
     Todo:
         Determine alternative formats that the mappings may be returned in, such as the basic string or tree.
 
@@ -43,6 +46,11 @@ class Codelist(object):
     Note:
         The _path attribute may be removed.
 
+    Warning:
+        There are currently a large number of attributes that have been taken straight from the XML without being implemented in code. Some of these may change during implementation.
+
+        The `codes` attribute is currently a list. While this class is called a CodeLIST, a list may not be the most appropriate datatype - something like a dict or set may be better.
+
     Todo:
         Provide functionality to allow XML to be loaded from a parameter-defined path.
 
@@ -61,16 +69,27 @@ class Codelist(object):
             path (str): A path to a file containing a valid codelist in XML format.
             xml (str): An XML representation of a codelist.
 
+        Note:
+            Instances of a Codelist should remain independent of a particular version of the IATI Standard. Versioning should be handled elsewhere.
+
+        Warning:
+            The format of the constructor is likely to change. It needs to be less reliant on the name acting as a UID,  and allow for other attributes to be defined.
+
         Todo:
             Raise warnings or errors if the Codelist is unable to initialise correctly.
         """
         def parse_from_xml(xml):
             """Parse a Codelist from the XML that defines it.
 
+            Warning:
+                In modifying the parameters required for creating an instance of the class, this is likely to move in some manner.
+
             Todo:
                 Define relevant tests and error handling.
 
                 Handle Codelists without description or name elements.
+
+                Better document side-effects.
             """
             tree = iati.core.utilities.convert_xml_to_tree(xml)
 
@@ -122,6 +141,9 @@ class Codelist(object):
         Args:
             code (iati.core.codelists.Code): The Code to add to the Codelist.
 
+        Warning:
+            At present this is merely acting as a wrapper for a list. The current state of the TODO indicates that it may be better as a set. In that instance, this function may not be required.
+
         Todo:
             Prohibit duplicate Codes being added to a Codelist.
         """
@@ -132,6 +154,16 @@ class Codelist(object):
         """Output the Codelist as an XSD etree type.
 
         This tree may be used to specify the type of given elements, allowing insertion and validation within a schema.
+
+        Returns:
+            etree.Element: An XSD simpleType representing this Codelist.
+
+        Warning:
+            It is planned to change from Schema-based to Data-based Codelist validation. As such, this function may be removed.
+
+            The name attribute of the generated type is not good and needs changing.
+
+            Does not fully hide the lxml internal workings.
 
         Todo:
             See whether there are only Codelists of a type other than string.
@@ -177,6 +209,12 @@ class Code(object):
         Args:
             name (str): The name of the code being initialised.
             value (str): The value of the code being initialised.
+
+        Note:
+            Instances of a Code should remain independent of a particular version of the IATI Standard. Versioning should be handled elsewhere.
+
+        Warning:
+            The format of the constructor is likely to change. It should include mandatory parameters, and allow for other attributes to be defined.
         """
         self.name = name
         self.value = value
@@ -191,6 +229,11 @@ class Code(object):
 
     def xsd_tree(self):
         """Output the Code as an etree enumeration element.
+
+        Warning:
+            It is planned to change from Schema-based to Data-based Codelist validation. As such, this function may be removed.
+
+            Does not fully hide the lxml internal workings.
 
         Todo:
             Rename this function, potentially making it a property.

@@ -1,6 +1,5 @@
 """A module containing tests for the library representation of Schemas."""
 import pytest
-from lxml.etree import XMLSchema
 import iati.core.codelists
 import iati.core.exceptions
 import iati.core.schemas
@@ -27,8 +26,7 @@ class TestSchemas(object):
 
         assert schema.name is None
 
-    @pytest.mark.parametrize("invalid_name", iati.core.test.utilities.find_parameter_by_type(['str'], False))
-    @pytest.mark.xfail
+    @pytest.mark.parametrize("invalid_name", iati.core.test.utilities.find_parameter_by_type(['str', 'none'], False))
     def test_schema_name_instance(self, invalid_name):
         """Check that an Error is raised when attempting to load a Schema that does not exist.
 
@@ -37,10 +35,10 @@ class TestSchemas(object):
         """
         try:
             _ = iati.core.schemas.Schema(invalid_name)
-        except iati.core.exceptions.SchemaError:
+        except TypeError:
             assert True
         else:  # pragma: no cover
-            # a ShemaError should be raised, so this point should not be reached
+            # a TypeError should be raised, so this point should not be reached
             assert False
 
     def test_schema_define_from_xsd(self, schema_initialised):
@@ -48,7 +46,6 @@ class TestSchemas(object):
         schema = schema_initialised
 
         assert schema.name == iati.core.test.utilities.SCHEMA_NAME_VALID
-        assert isinstance(schema.schema, XMLSchema)
         assert isinstance(schema.codelists, set)
         assert len(schema.codelists) == 0
 

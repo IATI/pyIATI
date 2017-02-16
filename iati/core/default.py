@@ -19,6 +19,41 @@ This removes the need to repeatedly load a Codelist from disk each time it is ac
 """
 
 
+def codelist(name, version=0):
+    """Locate the default Codelist with the specified name for the specified version of the Standard.
+
+    Args:
+        name (str): The name of the Codelist to locate.
+        version (float): The version of the Standard to return the Codelists for. Defaults to 0. This means that the latest version of the Codelist is returned.
+
+    Raises:
+        ValueError: When a specified name is not a valid Codelist.
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        iati.core.codelists.Codelist: A Codelist with the specified name.
+
+    Warning:
+        A name may not be sufficient to act as a UID.
+
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+    Todo:
+        Actually handle versions, including errors.
+
+        Better distinguish the types of ValueError.
+
+        Better distinguish TypeErrors from KeyErrors - sometimes the latter is raised when the former should have been.
+    """
+    try:
+        codelist_found = codelists()[name]
+        return codelist_found
+    except (KeyError, TypeError):
+        msg = "There is no default Codelist in version {0} of the Standard with the name {1}.".format(version, name)
+        iati.core.utilities.log_warning(msg)
+        raise ValueError(msg)
+
+
 def codelists(version=0, bypass_cache=False):
     """Locate the default Codelists for the specified version of the Standard.
 
@@ -32,10 +67,17 @@ def codelists(version=0, bypass_cache=False):
     Returns:
         dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.core.codelists.Codelist() instances.
 
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+        The `bypass_cache` parameter could potentially be implemented in a cleaner manner. It also shouldn't really exist until a clear use-case is defined - changes elsewhere in the library may make it redundant.
+
     Todo:
         Actually handle versions, including errors.
 
         Test a cache bypass where data is updated.
+
+        Add a function to return a single Codelist by name.
     """
     paths = iati.core.resources.find_all_codelist_paths()
 
@@ -43,8 +85,8 @@ def codelists(version=0, bypass_cache=False):
         name = path.split(os.sep).pop()[:-len(iati.core.resources.FILE_CODELIST_EXTENSION)]
         if (name not in _CODELISTS.keys()) or bypass_cache:
             xml_str = iati.core.resources.load_as_string(path)
-            codelist = iati.core.codelists.Codelist(name, xml=xml_str)
-            _CODELISTS[name] = codelist
+            codelist_found = iati.core.codelists.Codelist(name, xml=xml_str)
+            _CODELISTS[name] = codelist_found
 
     return _CODELISTS
 
@@ -64,6 +106,9 @@ def schemas(bypass_cache=False):
 
     Returns:
         dict: A dictionary containing all the Schemas for versions of the Standard. The version of the Standard is the key. An iati.core.schemas.Schema() is each value.
+
+    Warning:
+        The `bypass_cache` parameter could potentially be implemented in a cleaner manner. It also shouldn't really exist until a clear use-case is defined - changes elsewhere in the library may make it redundant.
 
     Todo:
         Allow creation of Schemas by XML rather than name.

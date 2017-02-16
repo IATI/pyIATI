@@ -5,6 +5,9 @@
 # pyenv folder specified in README
 pyenv/
 
+# defined files to ignore
+ignore_*
+
 ###
 ### Python .gitignore
 ### https://github.com/github/gitignore/tree/7f2ce36bbebaff948bd9fa82b708d233adcb04c6
