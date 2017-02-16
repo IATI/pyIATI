@@ -12,8 +12,13 @@ class Schema(object):
         name (str): The name of the Schema.
         codelists (set): The Codelists asspciated with this Schema. This is a read-only attribute.
 
+    Warning:
+        The private attribute allowing access to the base Schema Tree is likely to change in determining a good way of accessing the contained schema content.
+
     Todo:
         Determine a good API for accessing the XMLSchema that the iati.core.schemas.Schema represents.
+
+        Determine how to distinguish and handle the different types of Schema - activity, organisation, codelist, other.
     """
 
     def __init__(self, name=None):
@@ -26,6 +31,13 @@ class Schema(object):
         Raises:
             TypeError: The type of the provided name is incorrect.
             iati.core.exceptions.SchemaError: An error occurred during the creation of the Schema.
+
+        Warning:
+            The format of the constructor is likely to change. It needs to be less reliant on the name acting as a UID, and allow for other attributes to be provided at this point.
+
+            The raised exceptions are likely to change upon review of IATI-specific exceptions.
+
+            Need to define a good API for accessing public and private attributes. Requiring something along the lines of `schema.schema` is likely not ideal. An improved understanding of use cases will be required for this.
 
         Todo:
             Allow for generation of schemas outside the IATI SSOT.
