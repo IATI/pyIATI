@@ -1,5 +1,4 @@
 """A module containing a core representation of IATI Schemas."""
-from lxml import etree
 import iati.core.codelists
 import iati.core.exceptions
 import iati.core.resources
@@ -13,8 +12,13 @@ class Schema(object):
         name (str): The name of the Schema.
         codelists (set): The Codelists asspciated with this Schema. This is a read-only attribute.
 
+    Warning:
+        The private attribute allowing access to the base Schema Tree is likely to change in determining a good way of accessing the contained schema content.
+
     Todo:
-        Create a custom dictionary type that prevents overwriting values and only allows the correct types to be added.
+        Determine a good API for accessing the XMLSchema that the iati.core.schemas.Schema represents.
+
+        Determine how to distinguish and handle the different types of Schema - activity, organisation, codelist, other.
     """
 
     def __init__(self, name=None):
@@ -27,6 +31,13 @@ class Schema(object):
         Raises:
             TypeError: The type of the provided name is incorrect.
             iati.core.exceptions.SchemaError: An error occurred during the creation of the Schema.
+
+        Warning:
+            The format of the constructor is likely to change. It needs to be less reliant on the name acting as a UID, and allow for other attributes to be provided at this point.
+
+            The raised exceptions are likely to change upon review of IATI-specific exceptions.
+
+            Need to define a good API for accessing public and private attributes. Requiring something along the lines of `schema.schema` is likely not ideal. An improved understanding of use cases will be required for this.
 
         Todo:
             Allow for generation of schemas outside the IATI SSOT.
@@ -55,55 +66,3 @@ class Schema(object):
             msg = "The name of the Schema is an invalid type. Must be a string, though was a {0}.".format(type(name))
             iati.core.utilities.log_error(msg)
             raise TypeError(msg)
-
-    def validator(self):
-        """A schema that can be used for validation.
-
-        Takes the base schema and dynamically injects elements for content checking.
-
-        Returns:
-            etree.XMLSchema: A schema that can be used for validation.
-
-        Todo:
-            Implement Codelist content checking.
-
-            Implement Ruleset content checking.
-
-            Add configuration parameters.
-
-            Make the algorithm relating to mappings not-hideous.
-        """
-        # tree = copy.deepcopy(self._schema_base_tree)
-        tree = self._schema_base_tree
-
-        if len(self.codelists):
-            mappings = iati.core.codelists.fetch_mappings()
-            updated_xpaths = {}
-
-            for xpath, (ref, _) in mappings.items():
-                # the XPaths are for a data file rather than a Schema, so need formatting differently
-                path_sections = xpath.split('/')
-                try:
-                    elements = path_sections[path_sections.index('iati-activity') + 1:-1]
-                    # locate the relevant elements
-                    xpath_sections = ['{http://www.w3.org/2001/XMLSchema}element[@name="' + el + '"]' for el in elements]
-                    # locate the attribute on the final element
-                    xpath_sections.append('{http://www.w3.org/2001/XMLSchema}attribute[@name="' + path_sections[-1:][0][1:] + '"]')
-
-                    updated_xpaths[ref] = '//'.join(xpath_sections)
-                except ValueError:
-                    pass
-
-            for codelist in self.codelists:
-                if codelist.name in updated_xpaths:
-                    thing_to_update = tree.getroot().find(updated_xpaths[codelist.name])
-                    thing_to_update.attrib['type'] = codelist.name + '-type'
-                tree.getroot().append(codelist.xsd_tree())
-
-            try:
-                a = iati.core.utilities.convert_tree_to_schema(tree)
-                return a
-            except etree.XMLSchemaParseError as err:
-                iati.core.utilities.log_error(err)
-        else:
-            return iati.core.utilities.convert_tree_to_schema(tree)

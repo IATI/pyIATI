@@ -8,8 +8,6 @@ class Dataset(object):
     """Representation of an IATI XML file that may be validated against a schema.
 
     Attributes:
-        strictly_valid (bool): Whether the dataset must strictly conform to the IATI standard.
-            If strictly conforming, invalid elements and attributes will be removed.
         xml_str (str): A string representation of the XML being represented.
         xml_tree (ElementTree): A tree representation of the XML being represented.
 
@@ -19,8 +17,13 @@ class Dataset(object):
     Warning:
         The behaviour of simultaneous assignment to both `self.xml_str` and `self.xml_tree` is undefined.
 
+        `xml_str` and `xml_tree` are not great names. They are also too tied together. It should be determined whether this close relationship is really desired.
+
+        Does not fully hide the lxml internal workings.
+
     Todo:
         Implement getters and setters for attributes.
+
         Implement an addition override to allow for combation of datasets.
     """
 
@@ -36,6 +39,9 @@ class Dataset(object):
             ValueError: If a provided XML string is not valid XML.
             iati.core.exceptions.ValidationError:
                 If the provided XML should conform to the IATI standard, but does not.
+
+        Warning:
+            It should be possible to create a dataset from a file. In this situation, having `xml` as a required parameter does not seem sensible. Need to better consider this situation.
 
         Todo:
             Undertake validation.
@@ -85,6 +91,9 @@ class Dataset(object):
 
         Raises:
             TypeError: If a value that is being assigned is not an ElementTree.
+
+        Warning:
+            Does not fully hide the lxml internal workings.
         """
         return self._xml_tree
 
