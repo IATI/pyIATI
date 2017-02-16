@@ -1,4 +1,5 @@
 """A module containing a core representation of IATI Codelists."""
+import collections
 from lxml import etree
 import iati.core.resources
 import iati.core.utilities
@@ -121,9 +122,9 @@ class Codelist(object):
         This allows uniqueness to be correctly defined upon insertion into a set.
 
         Todo:
-            Utilise the contained Codes as part of the equality process.
+            Utilise all attributes as part of the equality process.
         """
-        return (self.name) == (other.name)
+        return ((self.name) == (other.name)) and (collections.Counter(self.codes) == collections.Counter(other.codes))
 
     def __hash__(self):
         """Hash the Codelist.
@@ -131,9 +132,9 @@ class Codelist(object):
         This allows uniqueness to be correctly defined upon insertion into a set.
 
         Todo:
-            Utilise the contained Codes as part of the hashing process.
+            Utilise all attributes as part of the equality process.
         """
-        return hash((self.name))
+        return hash((self.name, tuple(self.codes)))
 
     def add_code(self, code):
         """Add a Code to the Codelist.
@@ -233,7 +234,7 @@ class Code(object):
         This allows uniqueness to be correctly defined upon insertion into a set.
 
         Todo:
-            Utilise all attributes equality process.
+            Utilise all attributes as part of the equality process.
         """
         return ((self.name) == (other.name)) and ((self.value) == (other.value))
 
