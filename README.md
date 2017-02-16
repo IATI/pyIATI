@@ -47,6 +47,92 @@ sphinx-build -b html docs/source/ docs/build/
 The file `docs/build/index.html` serves as the documentation home page.
 
 
+Usage
+=====
+
+WARNING: This `iati.core` library is currently in active development. **All usage examples are subject to change**, as we iteratively improve functionality.  Therefore, the following examples are provided for illustrative purposes only.  As the library matures, this message and other documentation will be updated accordingly!
+
+Once installed, the library provides functionality to represent IATI Schemas, Codelists and publisher datasets as Python objects.  The IATI Standard schemas and codelists are provided out of the box, however this can be manipulated if bespoke versions of the Schemas/Codelists are required.
+
+### Loading an XSD Schema
+
+The `.xsd` schema file should be stored in the folder: `iati.core/iati/core/resources/schemas/202/`
+
+The following example loads the included IATI v2.02 schema at:  `iati.core/iati/core/resources/schemas/202/iati-activities-schema.xsd`.
+
+```
+import iati.core.schemas
+schema = iati.core.schemas.Schema(name='iati-activities-schema')
+```
+
+### Loading codelists
+
+A given IATI codelist can be added to the schema. Example using the [Country](http://iatistandard.org/codelists/Country/) codelist.
+
+```
+import iati.core.default
+schema.codelists.add(iati.core.default.codelist('Country'))
+```
+
+The default collection of IATI codelists can be added using:
+
+```
+import iati.core.default
+for codelist_name in iati.core.default.codelists().keys():
+    schema.codelists.add(iati.core.default.codelist(codelist_name))
+```
+
+### Loading Rulesets
+
+`Todo`: This functionality is not yet implemented.
+
+
+### Working with IATI datasets
+
+#### Loading a dataset
+
+```
+import iati.core.data
+
+# Load a local file
+with open('path/to/iati-activites.xml', 'r') as xml_file_object:
+    dataset_as_string = xml_file_object.read().replace('\n', '')
+
+# Load a remote file
+# Assumes the Requests library is installed: http://docs.python-requests.org/
+import requests
+dataset_as_string = requests.get('http://XML_FILE_URL_HERE').text
+
+dataset = iati.core.data.Dataset(dataset_as_string)
+```
+
+#### Accessing data
+
+The `Dataset` object contains an `xml_tree` attribute (itself an `lxml.etree` object). [XPath expessions](https://www.w3schools.com/xml/xpath_intro.asp) can be used to extract desired information from the dataset.  For example:
+
+```
+# WARNING: The following examples assume the source dataset file is produced in IATI v2.x format
+
+# Show the activities contained within the dataset
+dataset.xml_tree.xpath('iati-activity')
+[<Element iati-activity at 0x2c5a5f0>, <Element iati-activity at 0x2c5ac68>, <Element iati-activity at 0x2c5acf8>, <Element iati-activity at 0x2c5ad40>]
+
+# Show the titles for each project
+dataset.xml_tree.xpath('iati-activity/title/narrative/text()')
+['IMPROVING MATERNAL HEALTH AND REDUCING CHILD MORTALITY THROUGH DEVELOPING HEALTH SERVICE DELIVERY FOR THE POOR AND MARGINALISED COMMUNITY OF BAGHBANAN, NORTH WEST PAKISTAN']
+
+# For the first activity only, show the planned start date (i.e. activity date type = 2)
+dataset.xml_tree.xpath('iati-activity[1]/activity-date[@type=2]/@iso-date')
+['2014-01-01']
+```
+
+
+Python Version Support
+======================
+
+This code supports Python 2.7 and above. We advise use of Python 3.4 (or above) for usage as further library components may make use of version 3 functionality.
+
+
 Dev Installation
 ================
 
