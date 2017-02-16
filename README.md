@@ -130,7 +130,7 @@ The `Dataset` object contains an `xml_tree` attribute (itself an `lxml.etree` ob
 Python Version Support
 ======================
 
-This code supports Python 2.7 and above. We advise use of Python 3.4 (or above) for usage as further library components may make use of version 3 functionality.
+This code supports Python 2.7 and 3.4+. We advise use of Python 3.5 (or above) as these versions of the language provide some rather useful features that will likely be integrated into this codebase.
 
 
 Dev Installation
