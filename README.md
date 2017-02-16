@@ -148,6 +148,7 @@ source pyenv/bin/activate
 pip install -r requirements-dev.txt
 ```
 
+
 Tests
 =====
 
@@ -198,3 +199,9 @@ Overall TODOs
 - Add further tests
 - Add error cases
 - Potentially look at proper fuzzing
+
+
+Licensing
+=========
+
+This software is available under the MIT License (see `LICENSE.txt`), and utilises third party libraries and tools that are distributed under their own terms (see `LICENSE-3RD-PARTY.txt`). Details of the authors of this software are provided in `AUTHORS.txt`.
