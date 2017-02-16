@@ -78,8 +78,8 @@ The default collection of IATI codelists can be added using:
 
 ```
 import iati.core.default
-for codelist_name in iati.core.default.codelists().keys():
-    schema.codelists.add(iati.core.default.codelist(codelist_name))
+for _, codelist in iati.core.default.codelists().items():
+    schema.codelists.add(codelist)
 ```
 
 ### Loading Rulesets
