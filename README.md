@@ -11,15 +11,16 @@ General Information
 
 This is a Python module containing IATI functionality that would otherwise be replicated in many different locations by many different software projects.
 
-The contents of this library is at best unstable, and much is experimental. As such, it must be expected that its contents and API will change over the short-to-medium term future. `Warning` sections in docstrings help flag up some particular known stability concerns. `Todo` sections describe known missing or incorrect features.
+**The contents of this library is at best unstable, and much is experimental**. As such, it must be expected that its contents and API will change over the short-to-medium term future. `Warning` sections in docstrings help flag up some particular known stability concerns. `Todo` sections describe known missing or incorrect features.
 
-**Feedback, suggestions, use-case descriptions, bug reports and so on are much appreciated** - it's far better to know of issues earlier in the development cycle.
+**Feedback, suggestions, use-case descriptions, bug reports and so on are much appreciated** - it's far better to know of issues earlier in the development cycle. Please use [Github Issues](https://github.com/IATI/iati.core/issues) for this.
 
-At present the library (`core`) represents the contents of the [IATI Single Source of Truth(SSOT)](https://github.com/iati/iati-standard-ssot). It is able to handle a single version of the Standard (2.02 by default, although it is possible to change data files). Some placeholder work has been undertaken to deal with multiple standard versions. It is planned that this work will be completed once surrounding APIs are nearer a stable state.
+At present the library (`core`) represents the contents of the [IATI Single Source of Truth (SSOT)](https://github.com/iati/iati-standard-ssot). It is able to handle a single version of the Standard (2.02 by default, although it is possible to change data files). Some placeholder work has been undertaken to deal with multiple standard versions. It is planned that this work will be completed once surrounding APIs are nearer a stable state.
 
 More pleasant API naming, better hiding of underlying `lxml`, full documentation, improved error handling, and a greater number of tests for edge-cases are known key areas for improvement.
 
 It is planned that different sections of the library, such as `validate` are split into their own repositories. They exist within this repository at present to help speed up the iteration process.
+
 
 General Installation for System Use
 ===================================
