@@ -1,5 +1,5 @@
 Authors ordered in alphabetical order.
 
-Dale Potter
+Dale Potter <https://github.com/dalepotter>
 Hayden Field <https://github.com/hayfield>
 IATI Technical Team <code@iatistandard.org>
