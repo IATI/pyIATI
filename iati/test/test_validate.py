@@ -10,6 +10,7 @@ import iati.validate
 class TestValidate(object):
     """A container for tests relating to validation."""
 
+    @pytest.mark.xfail
     def test_basic_validation_valid(self):
         """Perform super simple data validation against a valid dataset"""
         data = iati.core.data.Dataset(iati.core.test.utilities.XML_STR_VALID_IATI)
@@ -17,6 +18,7 @@ class TestValidate(object):
 
         assert iati.validate.is_valid(data, schema)
 
+    @pytest.mark.xfail
     def test_basic_validation_invalid(self):
         """Perform super simple data validation against a valid dataset"""
         data = iati.core.data.Dataset(iati.core.test.utilities.XML_STR_VALID)
@@ -24,6 +26,7 @@ class TestValidate(object):
 
         assert not iati.validate.is_valid(data, schema)
 
+    @pytest.mark.xfail
     def test_basic_validation_codelist_valid(self):
         """Perform data validation against valid IATI XML that has valid Codelist values."""
         data = iati.core.data.Dataset(iati.core.test.utilities.XML_STR_VALID_IATI)

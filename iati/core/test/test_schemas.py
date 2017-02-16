@@ -1,6 +1,5 @@
 """A module containing tests for the library representation of Schemas."""
 import pytest
-from lxml.etree import XMLSchema
 import iati.core.codelists
 import iati.core.exceptions
 import iati.core.schemas
@@ -47,7 +46,6 @@ class TestSchemas(object):
         schema = schema_initialised
 
         assert schema.name == iati.core.test.utilities.SCHEMA_NAME_VALID
-        assert isinstance(schema.validator(), XMLSchema)
         assert isinstance(schema.codelists, set)
         assert len(schema.codelists) == 0
 
