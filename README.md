@@ -50,7 +50,7 @@ The file `docs/build/index.html` serves as the documentation home page.
 Usage
 =====
 
-WARNING: This `iati.core` library is currently in active development. **All usage examples are subject to change**, as we iteratively improve functionality.  Therefore, the following examples are provided for illustrative purposes only.  As the library matures, this message and other documentation will be updated accordingly!
+**WARNING:** This `iati.core` library is currently in active development. **All usage examples are subject to change**, as we iteratively improve functionality.  Therefore, the following examples are provided for illustrative purposes only.  As the library matures, this message and other documentation will be updated accordingly!
 
 Once installed, the library provides functionality to represent IATI Schemas, Codelists and publisher datasets as Python objects.  The IATI Standard schemas and codelists are provided out of the box, however this can be manipulated if bespoke versions of the Schemas/Codelists are required.
 
@@ -78,13 +78,13 @@ The default collection of IATI codelists can be added using:
 
 ```
 import iati.core.default
-for codelist_name in iati.core.default.codelists().keys():
-    schema.codelists.add(iati.core.default.codelist(codelist_name))
+for _, codelist in iati.core.default.codelists().items():
+    schema.codelists.add(codelist)
 ```
 
 ### Loading Rulesets
 
-`Todo`: This functionality is not yet implemented.
+**Note:** This functionality is not yet implemented.
 
 
 ### Working with IATI datasets
@@ -114,15 +114,15 @@ The `Dataset` object contains an `xml_tree` attribute (itself an `lxml.etree` ob
 # WARNING: The following examples assume the source dataset file is produced in IATI v2.x format
 
 # Show the activities contained within the dataset
-dataset.xml_tree.xpath('iati-activity')
+> dataset.xml_tree.xpath('iati-activity')
 [<Element iati-activity at 0x2c5a5f0>, <Element iati-activity at 0x2c5ac68>, <Element iati-activity at 0x2c5acf8>, <Element iati-activity at 0x2c5ad40>]
 
 # Show the titles for each project
-dataset.xml_tree.xpath('iati-activity/title/narrative/text()')
+> dataset.xml_tree.xpath('iati-activity/title/narrative/text()')
 ['IMPROVING MATERNAL HEALTH AND REDUCING CHILD MORTALITY THROUGH DEVELOPING HEALTH SERVICE DELIVERY FOR THE POOR AND MARGINALISED COMMUNITY OF BAGHBANAN, NORTH WEST PAKISTAN']
 
 # For the first activity only, show the planned start date (i.e. activity date type = 2)
-dataset.xml_tree.xpath('iati-activity[1]/activity-date[@type=2]/@iso-date')
+> dataset.xml_tree.xpath('iati-activity[1]/activity-date[@type=2]/@iso-date')
 ['2014-01-01']
 ```
 
@@ -130,7 +130,7 @@ dataset.xml_tree.xpath('iati-activity[1]/activity-date[@type=2]/@iso-date')
 Python Version Support
 ======================
 
-This code supports Python 2.7 and above. We advise use of Python 3.4 (or above) for usage as further library components may make use of version 3 functionality.
+This code supports Python 2.7 and 3.4+. We advise use of Python 3.5 (or above) as these versions of the language provide some rather useful features that will likely be integrated into this codebase.
 
 
 Dev Installation
