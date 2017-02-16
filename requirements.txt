@@ -1,4 +1,4 @@
 #
-# requirements used by library
+# Install this package
 #
-lxml==3.6.0
+-e .

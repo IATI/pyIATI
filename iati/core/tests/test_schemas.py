@@ -1,10 +1,9 @@
 """A module containing tests for the library representation of Schemas."""
 import pytest
-from lxml.etree import XMLSchema
 import iati.core.codelists
 import iati.core.exceptions
 import iati.core.schemas
-import iati.core.test.utilities
+import iati.core.tests.utilities
 
 
 class TestSchemas(object):
@@ -17,7 +16,7 @@ class TestSchemas(object):
         Returns:
             iati.core.schemas.Schema: A Schema that has been initialised with basic values.
         """
-        schema_name = iati.core.test.utilities.SCHEMA_NAME_VALID
+        schema_name = iati.core.tests.utilities.SCHEMA_NAME_VALID
 
         return iati.core.schemas.Schema(name=schema_name)
 
@@ -27,23 +26,26 @@ class TestSchemas(object):
 
         assert schema.name is None
 
-    def test_schema_name_instance(self):
-        """Check that an Error is raised when attempting to load a Schema that does not exist"""
-        name_to_set = "test Schema name"
+    @pytest.mark.parametrize("invalid_name", iati.core.tests.utilities.find_parameter_by_type(['str', 'none'], False))
+    def test_schema_name_instance(self, invalid_name):
+        """Check that an Error is raised when attempting to load a Schema that does not exist.
+
+        Todo:
+            Check for type errors when the type is incorrect.
+        """
         try:
-            _ = iati.core.schemas.Schema(name_to_set)
-        except iati.core.exceptions.SchemaError:
+            _ = iati.core.schemas.Schema(invalid_name)
+        except TypeError:
             assert True
         else:  # pragma: no cover
-            # a ShemaError should be raised, so this point should not be reached
+            # a TypeError should be raised, so this point should not be reached
             assert False
 
     def test_schema_define_from_xsd(self, schema_initialised):
         """Check that a Schema can be generated from an XSD definition"""
         schema = schema_initialised
 
-        assert schema.name == iati.core.test.utilities.SCHEMA_NAME_VALID
-        assert isinstance(schema.schema, XMLSchema)
+        assert schema.name == iati.core.tests.utilities.SCHEMA_NAME_VALID
         assert isinstance(schema.codelists, set)
         assert len(schema.codelists) == 0
 

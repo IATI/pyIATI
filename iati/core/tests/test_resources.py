@@ -62,8 +62,8 @@ class TestResources(object):
         else:
             path = iati.core.resources.path_codelist(name, location)
 
-        assert path[-4:] == '.xml'
-        assert path.count('.xml') == 1
+        assert path[-4:] == iati.core.resources.FILE_CODELIST_EXTENSION
+        assert path.count(iati.core.resources.FILE_CODELIST_EXTENSION) == 1
         if location == 'embedded':
             assert iati.core.resources.BASE_PATH_CODELISTS_EMBEDDED in path
         else:
@@ -74,7 +74,11 @@ class TestResources(object):
         ('Name', 'invalid type')
     ])
     def test_path_codelist_invalid_type(self, name, location):
-        """Check that an error is raised when attempting to find a codelist of invalid type."""
+        """Check that an error is raised when attempting to find a codelist of invalid type.
+
+        Todo:
+            Fuzz with iati.core.tests.utilities.find_parameter_by_type(['str'], False)
+        """
         try:
             _ = iati.core.resources.path_codelist(name, location)
         except ValueError:

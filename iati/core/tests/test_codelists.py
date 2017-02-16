@@ -48,34 +48,33 @@ class TestCodelists(object):
         """Check a Codelist's attributes are correct when defined with only a name"""
         codelist = iati.core.codelists.Codelist(name_to_set)
 
-        assert [] == codelist.codes
+        assert set() == codelist.codes
         assert codelist.name == name_to_set
-        assert codelist.path is None
 
     def test_codelist_name_and_path_instance(self, name_to_set):
         """Check a Codelist's attributes are correct when defined with a name and path"""
         path_to_set = "test Codelist path"
         codelist = iati.core.codelists.Codelist(name_to_set, path_to_set)
 
-        assert [] == codelist.codes
+        assert set() == codelist.codes
         assert codelist.name == name_to_set
-        assert codelist.path == path_to_set
 
     def test_codelist_add_code(self, name_to_set):
         """Check a Code can be added to a Codelist"""
         codelist = iati.core.codelists.Codelist(name_to_set)
         code = iati.core.codelists.Code()
-        codelist.add_code(code)
+        codelist.codes.add(code)
 
         num_codes = len(codelist.codes)
 
         assert num_codes == 1
 
+    @pytest.mark.xfail
     def test_codelist_add_code_decline_non_code(self, name_to_set):
         """Check something that is not a Code cannot be added to a Codelist"""
         codelist = iati.core.codelists.Codelist(name_to_set)
         not_a_code = True
-        codelist.add_code(not_a_code)
+        codelist.codes.add(not_a_code)
 
         num_codes = len(codelist.codes)
 
@@ -87,16 +86,21 @@ class TestCodelists(object):
         xml_str = iati.core.resources.load_as_string(path)
         codelist = iati.core.codelists.Codelist(name_to_set, xml=xml_str)
 
+        code_names = ['ODA', 'OOF', 'Private grants', 'Private Market', 'Non flow', 'Other flows']
+        code_values = ['10', '20', '30', '35', '40', '50']
+
         assert codelist.name == 'FlowType'
         assert len(codelist.codes) == 6
-        assert codelist.codes[0].value == '10'
+        for code in codelist.codes:
+            assert code.name in code_names
+            assert code.value in code_values
 
     def test_codelist_type_xsd(self, name_to_set):
         """Check that a Codelist can turn itself into a type to use for validation."""
         code_value_to_set = "test Code value"
         codelist = iati.core.codelists.Codelist(name_to_set)
         code = iati.core.codelists.Code(code_value_to_set)
-        codelist.add_code(code)
+        codelist.codes.add(code)
 
         type_tree = codelist.xsd_tree()
 

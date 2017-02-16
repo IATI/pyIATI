@@ -14,6 +14,13 @@ def convert_tree_to_schema(tree):
     Returns:
         etree.XMLSchema: The XML schema that the provided tree represented.
 
+    Warning:
+        Should raise exceptions when there are errors during execution.
+
+        Needs to better distinguish between an `etree.XMLSchema` and an `iati.core.schemas.Schema`.
+
+        Does not fully hide the lxml internal workings.
+
     Todo:
         Surround schema conversion with error handling.
     """
@@ -29,14 +36,24 @@ def convert_xml_to_tree(xml):
     Returns:
         etree._Element: An lxml element tree representing the provided XML.
 
-    Todo:
-        Perform actual error handling in the except block.
+    Warning:
+        Does not fully hide the lxml internal workings.
+
+    Raises:
+        ValueError: The XML provided was something other than a string.
+        lxml.etree.XMLSyntaxError: There was an error with the syntax of the provided XML.
     """
     try:
         tree = etree.fromstring(xml)
         return tree
-    except Exception as err:
-        pass
+    except etree.XMLSyntaxError as xml_syntax_err:
+        msg = "There was a problem with the provided XML, and it could therefore not be turned into a tree."
+        iati.core.utilities.log_error(msg)
+        raise xml_syntax_err
+    except ValueError:
+        msg = "To parse XML into a tree, the XML must be a string, not a {0}.".format(type(xml))
+        iati.core.utilities.log_error(msg)
+        raise ValueError(msg)
 
 
 def log(lvl, msg, *args, **kwargs):
@@ -47,6 +64,15 @@ def log(lvl, msg, *args, **kwargs):
         msg (str): The message that is to be logged.
         *args
         **kwargs
+
+    Warning:
+        Potentially too tightly coupled to the Python `logging` module.
+
+        Logging needs to be defined in a much more useful and configurable manner.
+
+        Logging should not fill up logfiles at lightspeed unless this is specifically desired.
+
+        Outputs should be more easily parsable.
     """
     logging.basicConfig(
         filename=os.path.join(iati.core.constants.LOG_FILE_NAME),
@@ -64,6 +90,9 @@ def log_error(msg, *args, **kwargs):
         msg (str): The message that is to be logged.
         *args
         **kwargs
+
+    Warning:
+        Potentially too tightly coupled to the Python `logging` module.
     """
     log(logging.ERROR, msg, *args, **kwargs)
 
@@ -77,6 +106,9 @@ def log_exception(msg, *args, **kwargs):
         msg (str): The message that is to be logged.
         *args
         **kwargs
+
+    Warning:
+        Potentially too tightly coupled to the Python `logging` module.
     """
     log(logging.ERROR, msg, exc_info=True, *args, **kwargs)
 
@@ -88,5 +120,8 @@ def log_warning(msg, *args, **kwargs):
         msg (str): The message that is to be logged.
         *args
         **kwargs
+
+    Warning:
+        Potentially too tightly coupled to the Python `logging` module.
     """
     log(logging.WARN, msg, *args, **kwargs)
