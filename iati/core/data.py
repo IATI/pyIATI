@@ -67,13 +67,14 @@ class Dataset(object):
             raise TypeError(msg)
         else:
             try:
-                self.xml_tree = etree.fromstring(value)
-                self._xml_str = value
+                value_stripped = value.strip()
+                self.xml_tree = etree.fromstring(value_stripped)
+                self._xml_str = value_stripped
             except etree.XMLSyntaxError:
                 msg = "The string provided to create a Dataset from is not valid XML."
                 iati.core.utilities.log_error(msg)
                 raise ValueError(msg)
-            except ValueError:
+            except (AttributeError, ValueError):
                 msg = "Datasets can only be ElementTrees or strings containing valid XML, using the xml_tree and xml_str attributes respectively. Actual type: {0}".format(type(value))
                 iati.core.utilities.log_error(msg)
                 raise TypeError(msg)
