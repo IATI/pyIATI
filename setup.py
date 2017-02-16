@@ -8,10 +8,10 @@ setup(
     author_email = 'code@iatistandard.org',
     url='http://iatistandard.org/',
     packages = find_packages(exclude='iati/core/tests'),
-    install_requires=[
+    install_requires = [
         'lxml==3.6.0'
         ],
-    classifiers=[
+    classifiers = [
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
