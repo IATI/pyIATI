@@ -19,7 +19,7 @@ XML_STR_VALID_IATI_INVALID_CODE = iati.core.resources.load_as_string(iati.core.r
 XML_STR_INVALID = 'This is a string that is not valid XML'
 """A string that is not valid XML."""
 XML_STR_LEADING_WHITESPACE = iati.core.resources.load_as_string(iati.core.resources.path_data('leading_whitespace_xml'))
-"""A string containing valid XML apart form leading whitepace before an `<xml` declaration."""
+"""A string containing valid XML apart form leading whitepace before an `<?xml` declaration."""
 
 XML_TREE_VALID = etree.fromstring(XML_STR_VALID)
 """An etree that is not valid IATI data."""
