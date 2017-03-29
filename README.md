@@ -2,7 +2,7 @@
 
 The iati.core Python module.
 
-[![Build Status](https://travis-ci.com/IATI/iati.core.svg?token=jGz3fUUcXxQNh1U6Jsyp&branch=master)](https://travis-ci.com/IATI/iati.core)
+[![Build Status](https://travis-ci.org/IATI/iati.core.svg?branch=master)](https://travis-ci.com/IATI/iati.core)
 
 Varying between: [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges) and [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges) (see docstrings)
 
