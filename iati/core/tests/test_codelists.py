@@ -11,7 +11,6 @@ class TestCodelistsNonClass(object):
         There was once functionality regarding mapping files here. That was removed.
     """
 
-
     pass
 
 
