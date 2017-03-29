@@ -26,7 +26,7 @@ class TestResources(object):
         assert len(paths) == 62
         for path in paths:
             assert path[-4:] == iati.core.resources.FILE_CODELIST_EXTENSION
-            assert iati.core.resources.BASE_PATH_CODELISTS in path
+            assert iati.core.resources.PATH_CODELISTS in path
 
     def test_find_schema_paths(self):
         """Check that all schema paths are being found.
@@ -41,7 +41,7 @@ class TestResources(object):
         assert len(paths) == 1
         for path in paths:
             assert path[-4:] == iati.core.resources.FILE_SCHEMA_EXTENSION
-            assert iati.core.resources.BASE_PATH_SCHEMAS_202 in path
+            assert iati.core.resources.PATH_SCHEMAS_202 in path
 
     @pytest.mark.parametrize('name,location', [
         ('Name', None),
@@ -65,9 +65,9 @@ class TestResources(object):
         assert path[-4:] == iati.core.resources.FILE_CODELIST_EXTENSION
         assert path.count(iati.core.resources.FILE_CODELIST_EXTENSION) == 1
         if location == 'embedded':
-            assert iati.core.resources.BASE_PATH_CODELISTS_EMBEDDED in path
+            assert iati.core.resources.PATH_CODELISTS_EMBEDDED in path
         else:
-            assert iati.core.resources.BASE_PATH_CODELISTS_NON_EMBEDDED in path
+            assert iati.core.resources.PATH_CODELISTS_NON_EMBEDDED in path
 
     @pytest.mark.parametrize('name,location', [
         ('Name', 23487),
@@ -93,7 +93,7 @@ class TestResources(object):
         Todo:
             Implement better assertions.
         """
-        path = iati.core.resources.BASE_PATH_SCHEMAS
+        path = iati.core.resources.PATH_SCHEMAS
         filename = iati.core.resources.resource_filename(path)
 
         assert len(filename) > len(path)
