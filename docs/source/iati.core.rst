@@ -6,7 +6,7 @@ Subpackages
 
 .. toctree::
 
-    iati.core.test
+    iati.core.tests
 
 Submodules
 ----------

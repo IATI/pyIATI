@@ -56,11 +56,11 @@ FILE_SCHEMA_EXTENSION = '.xsd'
 """The extension of a file containing a Schema."""
 
 
-def find_all_codelist_paths(version=0):
+def find_all_codelist_paths(version=None):
     """Find the paths for all codelists.
 
     Args:
-        version (float): The version of the Standard to return the Codelists for. Defaults to 0. This means that the latest version of the Codelist is returned.
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that paths to the latest version of the Codelists are returned.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -87,11 +87,11 @@ def find_all_codelist_paths(version=0):
     return paths_all
 
 
-def find_all_schema_paths(version=0):
+def find_all_schema_paths(version=None):
     """Find the paths for all schemas.
 
     Args:
-        version (float): The version of the Standard to return the Schemas for. Defaults to 0. This means that the latest version of the Schema is returned.
+        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
