@@ -4,6 +4,8 @@ Warning:
     It is planned to change from Schema-based to Data-based Codelist validation. As such, this module will change significantly.
 """
 
+from lxml import etree
+
 
 def is_valid(dataset, schema):
     """Determine whether a given Dataset is valid against the specified Schema.
@@ -14,8 +16,9 @@ def is_valid(dataset, schema):
 
     Warning:
         Parameters are likely to change in some manner.
-
-    Todo:
-        Implement Data-based Codelist validation.
     """
-    pass
+    try:
+        schema.validator().assertValid(dataset.xml_tree)
+        return True
+    except etree.DocumentInvalid:
+        return False

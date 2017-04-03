@@ -1,4 +1,5 @@
 """A module containing a core representation of IATI Schemas."""
+from lxml import etree
 import iati.core.codelists
 import iati.core.exceptions
 import iati.core.resources
@@ -66,3 +67,34 @@ class Schema(object):
             msg = "The name of the Schema is an invalid type. Must be a string, though was a {0}.".format(type(name))
             iati.core.utilities.log_error(msg)
             raise TypeError(msg)
+
+    def validator(self):
+        """A schema that can be used for validation.
+
+        Takes the base schema and dynamically injects elements for content checking.
+        Returns:
+            etree.XMLSchema: A schema that can be used for validation.
+        Todo:
+            Implement Codelist content checking.
+            Implement Ruleset content checking.
+            Add configuration parameters.
+        """
+        # tree = copy.deepcopy(self._schema_base_tree)
+        tree = self._schema_base_tree
+
+        if len(self.codelists):
+            xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'iati-activities' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="version"]')
+            # import pdb;pdb.set_trace()
+            el_to_update = tree.getroot().find(xpath)
+            el_to_update.attrib['type'] = 'Version-type'
+
+            for codelist in self.codelists:
+                if codelist.name == 'Version':
+                    tree.getroot().append(codelist.xsd_tree())
+
+            try:
+                return iati.core.utilities.convert_tree_to_schema(tree)
+            except etree.XMLSchemaParseError as err:
+                iati.core.utilities.log_error(err)
+        else:
+            return iati.core.utilities.convert_tree_to_schema(tree)
