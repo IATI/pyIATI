@@ -55,12 +55,9 @@ class TestValidate(object):
     """A container for tests relating to validation."""
 
     def test_basic_validation_valid(self):
-        """Perform a super simple data validation against a valid Dataset constrained by only one codelist."""
+        """Perform a super simple data validation against a valid Dataset."""
         data = iati.core.data.Dataset(VALID_XML)
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        codelist = iati.core.default.codelists()['Version']
-
-        schema.codelists.add(codelist)
 
         assert iati.validate.is_valid(data, schema)
 
@@ -72,26 +69,22 @@ class TestValidate(object):
 
     #     assert not iati.validate.is_valid(data, schema)
 
-    # @pytest.mark.xfail
-    # def test_basic_validation_codelist_valid(self):
-    #     """Perform data validation against valid IATI XML that has valid Codelist values."""
-    #     data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
-    #     schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
-    #     schema.codelists.add(iati.core.default.codelists()['Country'])
+    def test_basic_validation_codelist_valid(self):
+        """Perform data validation against valid IATI XML that has valid Codelist values."""
+        data = iati.core.data.Dataset(VALID_XML)
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist = iati.core.default.codelists()['Version']
 
-    #     assert len(schema.codelists) == 1
-    #     assert iati.validate.is_valid(data, schema)
+        schema.codelists.add(codelist)
 
-    # @pytest.mark.xfail
-    # def test_basic_validation_codelist_invalid(self):
-    #     """Perform data validation against valid IATI XML that has an invalid Codelist value.
+        assert iati.validate.is_valid(data, schema)
 
-    #     Todo:
-    #         Determine why this test is flaky.
-    #     """
-    #     data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE)
-    #     schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
-    #     schema.codelists.add(iati.core.default.codelist('Country'))
+    def test_basic_validation_codelist_invalid(self):
+        """Perform data validation against valid IATI XML that has invalid Codelist values."""
+        data = iati.core.data.Dataset(INVALID_XML)
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist = iati.core.default.codelists()['Version']
 
-    #     assert len(schema.codelists) == 1
-    #     assert not iati.validate.is_valid(data, schema)
+        schema.codelists.add(codelist)
+
+        assert not iati.validate.is_valid(data, schema)
