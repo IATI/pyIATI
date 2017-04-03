@@ -59,11 +59,11 @@ FILE_SCHEMA_EXTENSION = '.xsd'
 """The extension of a file containing a Schema."""
 
 
-def find_all_codelist_paths(version=0):
+def find_all_codelist_paths(version=None):
     """Find the paths for all codelists.
 
     Args:
-        version (float): The version of the Standard to return the Codelists for. Defaults to 0. This means that the latest version of the Codelist is returned.
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that paths to the latest version of the Codelists are returned.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -90,11 +90,11 @@ def find_all_codelist_paths(version=0):
     return paths_all
 
 
-def find_all_schema_paths(version=0):
+def find_all_schema_paths(version=None):
     """Find the paths for all schemas.
 
     Args:
-        version (float): The version of the Standard to return the Schemas for. Defaults to 0. This means that the latest version of the Schema is returned.
+        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -113,13 +113,13 @@ def find_all_schema_paths(version=0):
     return [path_schema(FILE_SCHEMA_ACTIVITY_NAME, version)]
 
 
-def path_codelist(name, location='non-embedded', version=0):
+def path_codelist(name, location='non-embedded', version=None):
     """Determine the path of a codelist with the given name.
 
     Args:
         name (str): The name of the codelist to locate. Should the name end in '.xml', this shall be removed to determine the name.
         location (str): The location of the codelist. Either 'embedded' or 'non-embedded'. Defaults to 'non-embedded'.
-        version (float): The version of the Standard to return the Schemas for. Defaults to 0. This means that the latest version of the Schema is returned.
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that paths to the latest version of the Codelists are returned.
 
     Returns:
         str: The path to a file containing the specified codelist.
@@ -177,12 +177,12 @@ def path_data(name):
     return os.sep.join((PATH_DATA, '{0}'.format(name) + FILE_DATA_EXTENSION))
 
 
-def path_schema(name, version=0):
+def path_schema(name, version=None):
     """Determine the path of a schema with the given name.
 
     Args:
         name (str): The name of the schema to locate.
-        version (float): The version of the Standard to return the Schemas for. Defaults to 0. This means that the latest version of the Schema is returned.
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that paths to the latest version of the Codelists are returned.
 
     Returns:
         str: The path to a file containing the specified schema.
@@ -201,12 +201,12 @@ def path_schema(name, version=0):
     return path_for_version(os.sep.join((PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION)), version)
 
 
-def path_for_version(path, version=0):
+def path_for_version(path, version=None):
     """Determine the relative location of a specified path at the specified version of the IATI Standard.
 
     Args:
         path (str): The path to the file that is to be read in.
-        version (float): The version of the IATI Standard to locate data for.
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that paths to the latest version of the Codelists are returned.
 
     Returns:
         str: The relative path to a file at the specified version of the standard.
