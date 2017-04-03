@@ -5,35 +5,6 @@ import iati.core.resources
 import iati.core.utilities
 
 
-def fetch_mappings():
-    """Fetch the mappings between Codelists and XPaths.
-
-    These mappings make it possible to work out which attributes within the Schema are to be validated against a given Codelist.
-
-    Returns:
-        dict: A dictionary of mappings from XPaths (keys) to a (ref, condition) tuple (values). The condition part of the tuple is optional, and so will be None if there is no attached condition.
-
-    Warning:
-        The format of the return value is likely to change to better match actual use cases.
-
-    Todo:
-        Determine alternative formats that the mappings may be returned in, such as the basic string or tree.
-
-        Error handling.
-
-        Add parsing of the (optional) 'condition' element.
-    """
-    tree = iati.core.resources.load_as_tree(iati.core.resources.PATH_CODELIST_MAPPINGS)
-
-    mappings = {}
-    for mapping_el in tree.findall('mapping'):
-        path = mapping_el.find('path').text
-        ref = mapping_el.find('codelist').get('ref')
-        mappings[path] = (ref, None)
-
-    return mappings
-
-
 class Codelist(object):
     """Representation of a Codelist as defined within the IATI SSOT.
 

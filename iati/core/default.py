@@ -19,12 +19,12 @@ This removes the need to repeatedly load a Codelist from disk each time it is ac
 """
 
 
-def codelist(name, version=0):
+def codelist(name, version=None):
     """Locate the default Codelist with the specified name for the specified version of the Standard.
 
     Args:
         name (str): The name of the Codelist to locate.
-        version (float): The version of the Standard to return the Codelists for. Defaults to 0. This means that the latest version of the Codelist is returned.
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelist is returned.
 
     Raises:
         ValueError: When a specified name is not a valid Codelist.
@@ -54,11 +54,11 @@ def codelist(name, version=0):
         raise ValueError(msg)
 
 
-def codelists(version=0, bypass_cache=False):
+def codelists(version=None, bypass_cache=False):
     """Locate the default Codelists for the specified version of the Standard.
 
     Args:
-        version (float): The version of the Standard to return the Codelists for. Defaults to 0. This means that the latest version of the Codelist is returned.
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelist is returned.
         bypass_cache (bool): Whether the cache should be bypassed, instead reloading data from disk even if it's already been loaded.
 
     Raises:
