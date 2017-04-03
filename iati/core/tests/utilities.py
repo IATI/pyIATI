@@ -10,7 +10,7 @@ import iati.core.resources
 SCHEMA_NAME_VALID = 'iati-activities-schema'
 """A string containing a valid Schema name."""
 
-XML_STR_VALID = '<parent><child attribute="value" /></parent>'
+XML_STR_VALID_NOT_IATI = '<parent><child attribute="value" /></parent>'
 """A string containing valid XML that is not valid against the IATI schema."""
 XML_STR_VALID_IATI = iati.core.resources.load_as_string(iati.core.resources.path_data('valid'))
 """A string containing valid IATI XML."""
@@ -21,7 +21,7 @@ XML_STR_INVALID = iati.core.resources.load_as_string(iati.core.resources.path_da
 XML_STR_LEADING_WHITESPACE = iati.core.resources.load_as_string(iati.core.resources.path_data('leading_whitespace_xml'))
 """A string containing valid XML apart form leading whitepace before an `<?xml` declaration."""
 
-XML_TREE_VALID = etree.fromstring(XML_STR_VALID)
+XML_TREE_VALID = etree.fromstring(XML_STR_VALID_NOT_IATI)
 """An etree that is not valid IATI data."""
 XML_TREE_VALID_IATI = etree.fromstring(XML_STR_VALID_IATI)
 """A valid IATI etree."""
@@ -45,7 +45,7 @@ TYPE_TEST_DATA = {
     'other': [NotImplemented],
     'range': [range(3, 4)],
     'set': [set(range(20)), set(['hello', 23]), frozenset(range(20)), frozenset(['hello', 23])],
-    'str': [SCHEMA_NAME_VALID, XML_STR_VALID, XML_STR_INVALID, b'\x80abc', b'\x80abc', '\N{GREEK CAPITAL LETTER DELTA}', '\u0394', '\U00000394'],
+    'str': [SCHEMA_NAME_VALID, XML_STR_VALID_NOT_IATI, XML_STR_INVALID, b'\x80abc', b'\x80abc', '\N{GREEK CAPITAL LETTER DELTA}', '\u0394', '\U00000394'],
     'tuple': [(), (1, 2)],
     'type': [type(1), type('string')],
     'unicode': [],  # counts as a string, so moed there
