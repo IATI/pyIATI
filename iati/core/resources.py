@@ -26,21 +26,24 @@ Used to locate resources when the package is distributed in certain ways that do
 
 BASE_PATH = 'resources'
 """The relative location of the resources folder."""
-BASE_PATH_CODELISTS = os.sep.join((BASE_PATH, 'codelists'))
-"""The relative location of the folder containing codelists from the SSOT."""
-BASE_PATH_CODELISTS_EMBEDDED = os.sep.join((BASE_PATH_CODELISTS, 'embedded'))
-"""The relative location of the folder containing embedded codelists from the SSOT."""
-BASE_PATH_CODELISTS_NON_EMBEDDED = os.sep.join((BASE_PATH_CODELISTS, 'non_embedded'))
-"""The relative location of the folder containing non-embedded codelists from the SSOT."""
-BASE_PATH_DATA = os.sep.join((BASE_PATH, 'data'))
-"""The relative location of the folder containing IATI data files."""
-BASE_PATH_SCHEMAS = os.sep.join((BASE_PATH, 'schemas'))
-"""The relative location of the folder containing schemas from the SSOT."""
-BASE_PATH_SCHEMAS_202 = os.sep.join((BASE_PATH_SCHEMAS, '202'))
-"""The relative location of the folder containing schemas from the SSOT, version 2.02 of the IATI standard."""
+BASE_PATH_202 = os.sep.join((BASE_PATH, '202'))
+"""The relative location of the resources folder for version 2.02 of the IATI Standard."""
+PATH_CODELISTS = 'codelists'
+"""The location of the folder containing codelists from the SSOT."""
+PATH_CODELISTS_EMBEDDED = os.sep.join((PATH_CODELISTS, 'embedded'))
+"""The location of the folder containing embedded codelists from the SSOT."""
+PATH_CODELISTS_NON_EMBEDDED = os.sep.join((PATH_CODELISTS, 'non_embedded'))
+"""The location of the folder containing non-embedded codelists from the SSOT.
 
-PATH_CODELIST_MAPPINGS = os.sep.join((BASE_PATH_CODELISTS, 'mapping.xml'))
-"""The relative location of the file containing mappings between Schema XPaths and Codelists."""
+Todo:
+    Utilise symlinks for locating the folder for non-embedded Codelists.
+"""
+PATH_DATA = os.sep.join((BASE_PATH, 'data'))
+"""The relative location of the folder containing IATI data files."""
+PATH_SCHEMAS = 'schemas'
+"""The location of the folder containing schemas from the SSOT."""
+PATH_SCHEMAS_202 = os.sep.join((BASE_PATH_202, PATH_SCHEMAS))
+"""The relative location of the folder containing schemas from the SSOT, version 2.02 of the IATI standard."""
 
 FILE_CODELIST_EXTENSION = '.xml'
 """The extension of a file containing a Codelist."""
@@ -76,11 +79,11 @@ def find_all_codelist_paths(version=0):
 
         Provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
     """
-    files_embedded = pkg_resources.resource_listdir(PACKAGE, BASE_PATH_CODELISTS_EMBEDDED)
-    files_non_embedded = pkg_resources.resource_listdir(PACKAGE, BASE_PATH_CODELISTS_NON_EMBEDDED)
+    files_embedded = pkg_resources.resource_listdir(PACKAGE, path_for_version(PATH_CODELISTS_EMBEDDED, version))
+    files_non_embedded = pkg_resources.resource_listdir(PACKAGE, path_for_version(PATH_CODELISTS_NON_EMBEDDED, version))
 
-    paths_embedded = [path_codelist(file, 'embedded') for file in files_embedded]
-    paths_non_embedded = [path_codelist(file, 'non-embedded') for file in files_non_embedded]
+    paths_embedded = [path_codelist(file, 'embedded', version) for file in files_embedded]
+    paths_non_embedded = [path_codelist(file, 'non-embedded', version) for file in files_non_embedded]
 
     paths_all = [path for path in paths_embedded + paths_non_embedded if path[-4:] == FILE_CODELIST_EXTENSION]
 
@@ -107,15 +110,16 @@ def find_all_schema_paths(version=0):
 
         Implement for more than a single specified activity schema.
     """
-    return [path_schema(FILE_SCHEMA_ACTIVITY_NAME)]
+    return [path_schema(FILE_SCHEMA_ACTIVITY_NAME, version)]
 
 
-def path_codelist(name, location='non-embedded'):
+def path_codelist(name, location='non-embedded', version=0):
     """Determine the path of a codelist with the given name.
 
     Args:
         name (str): The name of the codelist to locate. Should the name end in '.xml', this shall be removed to determine the name.
         location (str): The location of the codelist. Either 'embedded' or 'non-embedded'. Defaults to 'non-embedded'.
+        version (float): The version of the Standard to return the Schemas for. Defaults to 0. This means that the latest version of the Schema is returned.
 
     Returns:
         str: The path to a file containing the specified codelist.
@@ -142,9 +146,9 @@ def path_codelist(name, location='non-embedded'):
         name = name[:-4]
 
     if location == 'embedded':
-        return os.sep.join((BASE_PATH_CODELISTS_EMBEDDED, '{0}'.format(name) + FILE_CODELIST_EXTENSION))
+        return path_for_version(os.sep.join((PATH_CODELISTS_EMBEDDED, '{0}'.format(name) + FILE_CODELIST_EXTENSION)), version)
     elif location == 'non-embedded':
-        return os.sep.join((BASE_PATH_CODELISTS_NON_EMBEDDED, '{0}'.format(name) + FILE_CODELIST_EXTENSION))
+        return path_for_version(os.sep.join((PATH_CODELISTS_NON_EMBEDDED, '{0}'.format(name) + FILE_CODELIST_EXTENSION)), version)
     else:
         msg = "The location of a Codelist must be a string equal to either 'embedded' or 'non-embedded'"
         iati.core.utilities.log_error(msg)
@@ -156,6 +160,7 @@ def path_data(name):
 
     Args:
         name (str): The name of the data file to locate.
+        version (float): The version of the Standard to return the Schemas for. Defaults to 0. This means that the latest version of the Schema is returned.
 
     Returns:
         str: The path to a file containing the specified data.
@@ -169,14 +174,15 @@ def path_data(name):
     Todo:
         Test this.
     """
-    return os.sep.join((BASE_PATH_DATA, '{0}'.format(name) + FILE_DATA_EXTENSION))
+    return os.sep.join((PATH_DATA, '{0}'.format(name) + FILE_DATA_EXTENSION))
 
 
-def path_schema(name):
+def path_schema(name, version=0):
     """Determine the path of a schema with the given name.
 
     Args:
         name (str): The name of the schema to locate.
+        version (float): The version of the Standard to return the Schemas for. Defaults to 0. This means that the latest version of the Schema is returned.
 
     Returns:
         str: The path to a file containing the specified schema.
@@ -192,7 +198,28 @@ def path_schema(name):
 
         Test this.
     """
-    return os.sep.join((BASE_PATH_SCHEMAS_202, '{0}'.format(name) + FILE_SCHEMA_EXTENSION))
+    return path_for_version(os.sep.join((PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION)), version)
+
+
+def path_for_version(path, version=0):
+    """Determine the relative location of a specified path at the specified version of the IATI Standard.
+
+    Args:
+        path (str): The path to the file that is to be read in.
+        version (float): The version of the IATI Standard to locate data for.
+
+    Returns:
+        str: The relative path to a file at the specified version of the standard.
+
+    Note:
+        Does not check whether anything exists at the specified path.
+
+    Todo:
+        Handle versions of the standard other than 2.02.
+
+        Test this.
+    """
+    return os.sep.join((BASE_PATH_202, path))
 
 
 def load_as_string(path):

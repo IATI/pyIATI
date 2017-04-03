@@ -5,21 +5,14 @@ import iati.core.codelists
 
 
 class TestCodelistsNonClass(object):
-    """Test codelists functionality that is not contained within a class."""
+    """Test codelists functionality that is not contained within a class.
 
-    def test_mappings(self):
-        """Check that the mappings are correctly loaded.
+    Note:
+        There was once functionality regarding mapping files here. That was removed.
+    """
 
-        Todo:
-            Test a Codelist that contains a condition.
-        """
-        mappings = iati.core.codelists.fetch_mappings()
 
-        assert len(mappings) == 92
-        # non-embedded Codelist
-        assert mappings['//iati-activity/default-finance-type/@code'] == ('FinanceType', None)
-        # embedded Codelist
-        assert mappings['//iati-activity/planned-disbursement/@type'] == ('BudgetType', None)
+    pass
 
 
 class TestCodelists(object):
