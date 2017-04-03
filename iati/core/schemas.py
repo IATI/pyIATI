@@ -84,13 +84,12 @@ class Schema(object):
 
         if len(self.codelists):
             xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'iati-activities' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="version"]')
-            # import pdb;pdb.set_trace()
+
             el_to_update = tree.getroot().find(xpath)
             el_to_update.attrib['type'] = 'Version-type'
 
             for codelist in self.codelists:
-                if codelist.name == 'Version':
-                    tree.getroot().append(codelist.xsd_tree())
+                tree.getroot().append(codelist.xsd_tree())
 
             try:
                 return iati.core.utilities.convert_tree_to_schema(tree)
