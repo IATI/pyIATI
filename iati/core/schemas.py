@@ -84,7 +84,6 @@ class Schema(object):
             Add configuration parameters.
             Add tests when dataset is not provided.
         """
-
         def get_sector_vocab(dataset):
             """Find the sector vocabulary within a Dataset.
 
@@ -97,7 +96,6 @@ class Schema(object):
             Todo:
                 Add exception documentation.
             """
-
             if dataset is None:
                 vocab = '1'  # TODO: Lose the magic number for default
             elif isinstance(dataset, iati.core.data.Dataset):
@@ -134,8 +132,6 @@ class Schema(object):
                     xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'sector' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="vocabulary"]')
                     vocab = get_sector_vocab(dataset)
                     if vocab == '99':
-                        # If there is a @vocabulary-uri:
-                        #vocabulary_uri =
                         try:
                             vocab_uri = dataset.xml_tree.find('//iati-activity/sector').get('vocabulary-uri')
 
