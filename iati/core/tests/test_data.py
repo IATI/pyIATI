@@ -72,7 +72,7 @@ class TestDatasets(object):
         tree = iati.core.tests.utilities.XML_TREE_VALID
         data = iati.core.data.Dataset(tree)
 
-        assert data.xml_tree == tree
+        assert etree.tostring(data.xml_tree, pretty_print=True) == etree.tostring(tree, pretty_print=True)
         assert data.xml_str == etree.tostring(tree, pretty_print=True)
 
     def test_dataset_iati_tree(self):

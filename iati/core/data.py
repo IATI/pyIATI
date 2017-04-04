@@ -94,8 +94,11 @@ class Dataset(object):
 
         Warning:
             Does not fully hide the lxml internal workings.
+
+        Todo:
+            Check use of ElementTree in setter
         """
-        return self._xml_tree
+        return self._xml_tree.getroottree()
 
     @xml_tree.setter
     def xml_tree(self, value):
