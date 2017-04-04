@@ -1,4 +1,5 @@
 """A module containing tests for data validation."""
+import pytest
 import iati.core.data
 import iati.core.default
 import iati.core.schemas
@@ -128,7 +129,11 @@ class TestValidate(object):
         assert iati.validate.is_valid(data, schema)
 
     def test_validation_codelist_vocab_user_defined_with_uri_readable_bad_code(self):
-        """Perform data validation against valid IATI XML with a user-defined vocabulary. A URI is defined, and points to a machine-readable codelist. As such, the code can be checked. The @code is not in the list."""
+        """Perform data validation against valid IATI XML with a user-defined vocabulary. A URI is defined, and points to a machine-readable codelist. As such, the code can be checked. The @code is not in the list.
+
+        Todo:
+            Check that this is a legitimate check to be performed, given the contents and guidance given in the Standard.
+        """
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE_BAD_CODE)
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
         codelist_1 = iati.core.default.codelists()['SectorVocabulary']
@@ -140,3 +145,22 @@ class TestValidate(object):
         schema.codelists.add(codelist_3)
 
         assert not iati.validate.is_valid(data, schema)
+
+    @pytest.mark.xfail(strict=True)
+    def test_validation_codelist_vocab_user_defined_with_uri_unreadable(self):
+        """Perform data validation against valid IATI XML with a user-defined vocabulary. A URI is defined, and points to a non-machine-readable codelist. As such, the @code cannot be checked. The @code is valid.
+
+        Todo:
+            Remove xfail and work on functionality to fully fetch and parse user-defined codelists after higher priority functionality is finished.
+        """
+        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_UNREADABLE)
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.core.default.codelists()['Sector']
+        codelist_3 = iati.core.default.codelists()['SectorCategory']
+
+        schema.codelists.add(codelist_1)
+        schema.codelists.add(codelist_2)
+        schema.codelists.add(codelist_3)
+
+        assert iati.validate.is_valid(data, schema)
