@@ -84,6 +84,34 @@ class Schema(object):
             Add configuration parameters.
             Add tests when dataset is not provided.
         """
+
+        def get_sector_vocab(dataset):
+            """Find the sector vocabulary within a Dataset.
+
+            Params:
+                dataset (iati.core.data.Dataset): A Dataset to find a sector vocabulary within.
+
+            Returns:
+                str: The vocabulary to be used.
+
+            Todo:
+                Add exception documentation.
+            """
+
+            if dataset is None:
+                vocab = '1'  # TODO: Lose the magic number for default
+            elif isinstance(dataset, iati.core.data.Dataset):
+                try:
+                    vocab = dataset.xml_tree.find('//iati-activity/sector').get('vocabulary')
+                except Exception as e:  # TODO: Use a less general exception
+                    # cannot find @vocabulary, so use default vocab
+                    vocab = '1'
+            else:
+                # TODO: Raise TypeError
+                pass
+
+            return vocab
+
         # tree = copy.deepcopy(self._schema_base_tree)
         tree = self._schema_base_tree
 
@@ -93,37 +121,45 @@ class Schema(object):
                     xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'iati-activities' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="version"]')
                 elif codelist.name == 'Sector' or codelist.name == 'SectorCategory':
                     xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'sector' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="code"]')
-                    xpath_vocab_in_data = '//iati-activity/sector/@vocabulary'
-
-                    if dataset is None:
-                        vocab = '1'  # TODO: Lose the magic number for default
-                    elif isinstance(dataset, iati.core.data.Dataset):
-                        try:
-                            # TODO: See if this can be done with .find()
-                            vocab = dataset.xml_tree.xpath(xpath_vocab_in_data)
-                            if len(vocab) > 0:
-                                vocab = vocab[0]
-                            else:
-                                vocab = '1'
-                        except Exception as e:  # TODO: Use a less general exception
-                            # cannot find @vocabulary, so use default vocab
-                            vocab = '1'
-                    else:
-                        # TODO: Raise TypeError
-                        pass
+                    vocab = get_sector_vocab(dataset)
 
                     if codelist.name == 'Sector' and vocab is not '1':
+                        # The Sector codelist is only used when a @vocabulary of "1" is used
                         continue
                     if codelist.name == 'SectorCategory' and vocab is not '2':
+                        # The SectorCategory codelist is only used when a @vocabulary of "2" is used
                         continue
 
                 elif codelist.name == 'SectorVocabulary':
-                    continue
+                    xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'sector' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="vocabulary"]')
+                    vocab = get_sector_vocab(dataset)
+                    if vocab == '99':
+                        # If there is a @vocabulary-uri:
+                        #vocabulary_uri =
+                        try:
+                            vocab_uri = dataset.xml_tree.find('//iati-activity/sector').get('vocabulary-uri')
+
+                        except Exception as e:  # TODO: Use a less general exception
+                            # cannot find @vocabulary-uri, so perform no checks
+                            continue
+
+                        if vocab_uri is None:
+                            continue
+
+                        # TODO Fetch user-defined codelist
+                        # TODO Parse user-defined codelist
+                        # TODO Set user_defined_cl as the parsed codelist
+                        user_defined_cl = iati.core.default.codelists()['Sector']
+                        codelist = user_defined_cl
+
+                        # At this point, the vocab used is a valid value (i.e. '99'). There is a user-defined codelist that requires validation against. As such, the xpath for @code needs to be set for further validation
+                        xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'sector' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="code"]')
+
                 else:
                     return False
 
                 el_to_update = tree.getroot().find(xpath)
-                el_to_update.attrib['type'] = codelist.name + '-type'
+                el_to_update.attrib['type'] = '{0}-type'.format(codelist.name)
 
                 tree.getroot().append(codelist.xsd_tree())
 

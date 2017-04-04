@@ -98,3 +98,45 @@ class TestValidate(object):
         schema.codelists.add(codelist_3)
 
         assert iati.validate.is_valid(data, schema)
+
+    def test_validation_codelist_vocab_user_defined(self):
+        """Perform data validation against valid IATI XML with a user-defined vocabulary. No URI is defined, so the code cannot be checked."""
+        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED)
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.core.default.codelists()['Sector']
+        codelist_3 = iati.core.default.codelists()['SectorCategory']
+
+        schema.codelists.add(codelist_1)
+        schema.codelists.add(codelist_2)
+        schema.codelists.add(codelist_3)
+
+        assert iati.validate.is_valid(data, schema)
+
+    def test_validation_codelist_vocab_user_defined_with_uri_readable(self):
+        """Perform data validation against valid IATI XML with a user-defined vocabulary. A URI is defined, and points to a machine-readable codelist. As such, the code can be checked. The @code is valid."""
+        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE)
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.core.default.codelists()['Sector']
+        codelist_3 = iati.core.default.codelists()['SectorCategory']
+
+        schema.codelists.add(codelist_1)
+        schema.codelists.add(codelist_2)
+        schema.codelists.add(codelist_3)
+
+        assert iati.validate.is_valid(data, schema)
+
+    def test_validation_codelist_vocab_user_defined_with_uri_readable_bad_code(self):
+        """Perform data validation against valid IATI XML with a user-defined vocabulary. A URI is defined, and points to a machine-readable codelist. As such, the code can be checked. The @code is not in the list."""
+        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE_BAD_CODE)
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.core.default.codelists()['Sector']
+        codelist_3 = iati.core.default.codelists()['SectorCategory']
+
+        schema.codelists.add(codelist_1)
+        schema.codelists.add(codelist_2)
+        schema.codelists.add(codelist_3)
+
+        assert not iati.validate.is_valid(data, schema)
