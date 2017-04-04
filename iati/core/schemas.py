@@ -68,16 +68,21 @@ class Schema(object):
             iati.core.utilities.log_error(msg)
             raise TypeError(msg)
 
-    def validator(self):
+    def validator(self, dataset):
         """A schema that can be used for validation.
 
         Takes the base schema and dynamically injects elements for content checking.
+
+        Params:
+            dataset (iati.core.data.Dataset): A Dataset to create a validator for. This makes it possible to deal with vocabularies.
+
         Returns:
             etree.XMLSchema: A schema that can be used for validation.
         Todo:
             Implement Codelist content checking.
             Implement Ruleset content checking.
             Add configuration parameters.
+            Add tests when dataset is not provided.
         """
         # tree = copy.deepcopy(self._schema_base_tree)
         tree = self._schema_base_tree
@@ -86,8 +91,29 @@ class Schema(object):
             for codelist in self.codelists:
                 if codelist.name == 'Version':
                     xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'iati-activities' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="version"]')
-                else:  # TODO: elif
+                elif codelist.name == 'Sector' or codelist.name == 'SectorCategory':
                     xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'sector' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="code"]')
+                    xpath_vocab_in_data = '//iati-activity/sector/@vocabulary'
+                    if dataset is None:
+                        vocab = '1'  # TODO: Lose the magic number for default
+                    elif isinstance(dataset, iati.core.data.Dataset):
+                        try:
+                            vocab = dataset.xml_tree.find(xpath_vocab_in_data)
+                        except Exception as e:  # TODO: Use a less general exception
+                            # cannot find @vocabulary, so use default vocab
+                            vocab = '1'
+                    else:
+                        # TODO: Raise TypeError
+                        pass
+                    if codelist.name == 'Sector' and vocab is not '1':
+                        continue
+                    if codelist.name == 'SectorCategory' and vocab is not '2':
+                        continue
+
+                elif codelist.name == 'SectorVocabulary':
+                    continue
+                else:
+                    return False
 
                 el_to_update = tree.getroot().find(xpath)
                 el_to_update.attrib['type'] = codelist.name + '-type'
