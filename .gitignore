@@ -5,15 +5,8 @@
 # pyenv folder specified in README
 pyenv/
 
-# pyenv folder that needs to be hidden on Mac
-.pyenv
-
 # defined files to ignore
 ignore_*
-
-# Mac .DS_Store files
-.DS_Store
-
 
 ###
 ### Python .gitignore
