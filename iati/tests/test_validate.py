@@ -72,8 +72,22 @@ class TestValidate(object):
         assert iati.validate.is_valid(data, schema)
 
     def test_validation_codelist_vocab_default_explicit(self):
-        """Perform data validation against valid IATI XML with a vocabulary that has been explicitly set."""
+        """Perform data validation against valid IATI XML with a vocabulary that has been explicitly set as the default value."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_DEFAULT_EXPLICIT)
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.core.default.codelists()['Sector']
+        codelist_3 = iati.core.default.codelists()['SectorCategory']
+
+        schema.codelists.add(codelist_1)
+        schema.codelists.add(codelist_2)
+        schema.codelists.add(codelist_3)
+
+        assert iati.validate.is_valid(data, schema)
+
+    def test_validation_codelist_vocab_non_default(self):
+        """Perform data validation against valid IATI XML with a vocabulary that has been explicitly set as a valid non-default value. The code is valid against this non-default vocabulary."""
+        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_NON_DEFAULT)
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
         codelist_1 = iati.core.default.codelists()['SectorVocabulary']
         codelist_2 = iati.core.default.codelists()['Sector']
