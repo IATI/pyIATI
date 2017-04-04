@@ -21,6 +21,23 @@ XML_STR_INVALID = iati.core.resources.load_as_string(iati.core.resources.path_da
 XML_STR_LEADING_WHITESPACE = iati.core.resources.load_as_string(iati.core.resources.path_data('leading_whitespace_xml'))
 """A string containing valid XML apart form leading whitepace before an `<?xml` declaration."""
 
+XML_STR_VALID_IATI_VOCAB_DEFAULT_EXPLICIT = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_default_explicit'))
+"""A string contains valid IATI XML containing an element that uses vocabularies. Explicitly defines default vocab and uses code from that list."""
+XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_default_implicit'))
+"""A string contains valid IATI XML containing an element that uses vocabularies. Implicitly assumes default vocab and uses code from that list."""
+XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT_INVALID_CODE = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_default_implicit_invalid_code'))
+"""A string contains valid IATI XML containing an element that uses vocabularies. Implicitly assumes default vocab and uses code not in list."""
+XML_STR_VALID_IATI_VOCAB_NON_DEFAULT = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_non_default'))
+"""A string contains valid IATI XML containing an element that uses vocabularies. Explicitly defines non-default vocab and uses code from that list."""
+XML_STR_VALID_IATI_VOCAB_USER_DEFINED = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_user_defined'))
+"""A string contains valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. No URI specified."""
+XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_user_defined_with_uri_readable'))
+"""A string contains valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and machine readable. Uses code from this list."""
+XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE_BAD_CODE = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_user_defined_with_uri_readable_bad_code'))
+"""A string contains valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and machine readable. Uses code not in list."""
+XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_UNREADABLE = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_user_defined_with_uri_unreadable'))
+"""A string contains valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and not machine readable."""
+
 XML_TREE_VALID = etree.fromstring(XML_STR_VALID_NOT_IATI)
 """An etree that is not valid IATI data."""
 XML_TREE_VALID_IATI = etree.fromstring(XML_STR_VALID_IATI)
