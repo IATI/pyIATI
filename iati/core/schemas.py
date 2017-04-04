@@ -83,12 +83,15 @@ class Schema(object):
         tree = self._schema_base_tree
 
         if len(self.codelists):
-            xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'iati-activities' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="version"]')
-
-            el_to_update = tree.getroot().find(xpath)
-            el_to_update.attrib['type'] = 'Version-type'
-
             for codelist in self.codelists:
+                if codelist.name == 'Version':
+                    xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'iati-activities' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="version"]')
+                else:  # TODO: elif
+                    xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'sector' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="code"]')
+
+                el_to_update = tree.getroot().find(xpath)
+                el_to_update.attrib['type'] = codelist.name + '-type'
+
                 tree.getroot().append(codelist.xsd_tree())
 
             try:
