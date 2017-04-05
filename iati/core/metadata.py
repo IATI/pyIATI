@@ -2,7 +2,11 @@
 
 
 class Metadata(object):
-    """A base metadata class for all forms of IATI SSOT objects."""
+    """A base metadata class for all forms of IATI SSOT objects.
+
+    Todo:
+        Add documentation for class attributes.
+    """
 
     def __init__(self, **kwargs):
         """Set class attributes."""
@@ -13,7 +17,11 @@ class Metadata(object):
 
 
 class MetadataCodelist(Metadata):
-    """A metadata class for codelist.Codelist objects."""
+    """A metadata class for codelist.Codelist objects.
+
+    Todo:
+        Add documentation for class attributes.
+    """
 
     def __init__(self, **kwargs):
         """Set class attributes."""
@@ -29,7 +37,11 @@ class MetadataCodelist(Metadata):
 
 
 class MetadataCode(Metadata):
-    """A metadata class for codelist.Code objects."""
+    """A metadata class for codelist.Code objects.
+
+    Todo:
+        Add documentation for class attributes.
+    """
 
     def __init__(self, **kwargs):
         """Set class attributes."""
@@ -41,7 +53,11 @@ class MetadataCode(Metadata):
 
 
 class MetadataDataset(Metadata):
-    """A metadata class for data.Dataset objects."""
+    """A metadata class for data.Dataset objects.
+
+    Todo:
+        Add documentation for class attributes.
+    """
 
     def __init__(self, **kwargs):
         """Set class attributes."""
@@ -54,7 +70,11 @@ class MetadataDataset(Metadata):
 
 
 class MetadataRuleset(Metadata):
-    """A metadata class for rulesets.Rulesets objects."""
+    """A metadata class for rulesets.Rulesets objects.
+
+    Todo:
+        Add documentation for class attributes.
+    """
 
     def __init__(self, **kwargs):
         """Set class attributes."""
@@ -72,7 +92,11 @@ class MetadataRule(Metadata):
 
 
 class MetadataSchema(Metadata):
-    """A metadata class for schemas.Schema objects."""
+    """A metadata class for schemas.Schema objects.
+
+    Todo:
+        Add documentation for class attributes.
+    """
 
     def __init__(self, **kwargs):
         """Set class attributes."""
