@@ -63,12 +63,12 @@ class MetadataRuleset(Metadata):
 
 
 class MetadataRule(Metadata):
-    """A metadata class for rulesets.Rule objects."""
+    """A metadata class for rulesets.Rule objects.
 
-    def __init__(self, **kwargs):
-        """Set class attributes."""
-        self.type = kwargs.pop('type', None)
-        Metadata.__init__(self, **kwargs)
+    No further metadata is required for rulesets.Rule objects, but this is added for completeness.
+    """
+
+    pass
 
 
 class MetadataSchema(Metadata):
