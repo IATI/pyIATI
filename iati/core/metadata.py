@@ -2,7 +2,7 @@
 
 
 class Metadata(object):
-    """A base metadata class for all types of IATI SSOT objects."""
+    """A base metadata class for all forms of IATI SSOT objects."""
 
     def __init__(self, **kwargs):
         """Set class attributes."""
@@ -19,11 +19,11 @@ class MetadataCodelist(Metadata):
         """Set class attributes."""
         self.category_codelist = kwargs.pop('category_codelist', None)
         self.codelist_name = kwargs.pop('codelist_name', None)
+        self.codelist_type = kwargs.pop('codelist_type', None)
         self.complete = kwargs.pop('complete', None)
         self.ref = kwargs.pop('ref', None)
         self.revision = kwargs.pop('revision', None)
         self.source = kwargs.pop('source', None)
-        self.type = kwargs.pop('type', None)
         self.url = kwargs.pop('url', None)
         Metadata.__init__(self, **kwargs)
 
@@ -45,11 +45,11 @@ class MetadataDataset(Metadata):
 
     def __init__(self, **kwargs):
         """Set class attributes."""
+        self.dataset_type = kwargs.pop('dataset_type', None)
         self.default_language = kwargs.pop('default_language', None)
         self.languages_contained = set()
         self.registry_metadata = dict()  # TODO Add when functionality is added to fetch data directy from the IATI Registry.
         self.stats = None  # TODO Add when functionality is added to generate statistics from the library
-        self.type = kwargs.pop('type', None)
         Metadata.__init__(self, **kwargs)
 
 
@@ -58,7 +58,7 @@ class MetadataRuleset(Metadata):
 
     def __init__(self, **kwargs):
         """Set class attributes."""
-        self.type = kwargs.pop('type', None)
+        self.ruleset_type = kwargs.pop('ruleset_type', None)
         Metadata.__init__(self, **kwargs)
 
 
@@ -78,5 +78,5 @@ class MetadataSchema(Metadata):
         """Set class attributes."""
         self.default_language = kwargs.pop('default_language', None)
         self.languages_contained = set()
-        self.type = kwargs.pop('type', None)
+        self.schema_type = kwargs.pop('schema_type', None)
         Metadata.__init__(self, **kwargs)

@@ -38,11 +38,11 @@ class TestMetadata(object):
 
     def test_metadata_ruleset_instantiation(self):
         """Check that the MetadataRuleset class can be created and at least one attribute can be set"""
-        metadata_ruleset = iati.core.metadata.MetadataRuleset(version='2.02', type='Embedded')
+        metadata_ruleset = iati.core.metadata.MetadataRuleset(version='2.02', ruleset_type='Embedded')
 
         assert isinstance(metadata_ruleset, iati.core.metadata.MetadataRuleset)
         assert metadata_ruleset.version == '2.02'
-        assert metadata_ruleset.type == 'Embedded'
+        assert metadata_ruleset.ruleset_type == 'Embedded'
 
     def test_metadata_rule_instantiation(self):
         """Check that the MetadataRule class can be created and at least one attribute can be set"""
