@@ -6,10 +6,10 @@ class Metadata(object):
 
     def __init__(self, **kwargs):
         """Set class attributes."""
-        self.version = kwargs.pop('version', None)
+        self.description = kwargs.pop('description', None)
         self.orginality = kwargs.pop('orginality', None)
         self.title = kwargs.pop('title', None)
-        self.description = kwargs.pop('description', None)
+        self.version = kwargs.pop('version', None)
 
 
 class MetadataCodelist(Metadata):
