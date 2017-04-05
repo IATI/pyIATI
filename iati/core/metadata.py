@@ -4,59 +4,79 @@
 class Metadata(object):
     """A base metadata class for all types of IATI SSOT objects."""
 
-    version = None
-    orginality = None
-    title = None
-    description = None
+    def __init__(self, **kwargs):
+        """Set class attributes."""
+        self.version = kwargs.pop('version', None)
+        self.orginality = kwargs.pop('orginality', None)
+        self.title = kwargs.pop('title', None)
+        self.description = kwargs.pop('description', None)
 
 
 class MetadataCodelist(Metadata):
     """A metadata class for codelist.Codelist objects."""
 
-    category_codelist = None
-    codelist_name = None
-    complete = None
-    ref = None
-    revision = None
-    source = None
-    type = None
-    url = None
+    def __init__(self, **kwargs):
+        """Set class attributes."""
+        self.category_codelist = kwargs.pop('category_codelist', None)
+        self.codelist_name = kwargs.pop('codelist_name', None)
+        self.complete = kwargs.pop('complete', None)
+        self.ref = kwargs.pop('ref', None)
+        self.revision = kwargs.pop('revision', None)
+        self.source = kwargs.pop('source', None)
+        self.type = kwargs.pop('type', None)
+        self.url = kwargs.pop('url', None)
+        Metadata.__init__(self, **kwargs)
 
 
 class MetadataCode(Metadata):
     """A metadata class for codelist.Code objects."""
 
-    activation_date = None
-    public_database = None
-    status = None
-    withdrawl_date = None
+    def __init__(self, **kwargs):
+        """Set class attributes."""
+        self.activation_date = kwargs.pop('activation_date', None)
+        self.public_database = kwargs.pop('public_database', None)
+        self.status = kwargs.pop('status', None)
+        self.withdrawl_date = kwargs.pop('withdrawl_date', None)
+        Metadata.__init__(self, **kwargs)
 
 
 class MetadataDataset(Metadata):
     """A metadata class for data.Dataset objects."""
 
-    default_language = None
-    languages_contained = set()
-    registry_metadata = None  # TODO Add when functionality is added to fetch data directy from the IATI Registry.
-    stats = None  # TODO Add when functionality is added to generate statistics from the library
-    type = None
+    def __init__(self, **kwargs):
+        """Set class attributes."""
+        self.default_language = kwargs.pop('default_language', None)
+        self.languages_contained = set()
+        self.registry_metadata = dict()  # TODO Add when functionality is added to fetch data directy from the IATI Registry.
+        self.stats = None  # TODO Add when functionality is added to generate statistics from the library
+        self.type = kwargs.pop('type', None)
+        Metadata.__init__(self, **kwargs)
 
 
 class MetadataRuleset(Metadata):
     """A metadata class for rulesets.Rulesets objects."""
 
-    type = None
+    def __init__(self, **kwargs):
+        """Set class attributes."""
+        self.type = kwargs.pop('type', None)
+        Metadata.__init__(self, **kwargs)
 
 
 class MetadataRule(Metadata):
     """A metadata class for rulesets.Rule objects."""
 
-    type = None
+    def __init__(self, **kwargs):
+        """Set class attributes."""
+        self.type = kwargs.pop('type', None)
+        Metadata.__init__(self, **kwargs)
 
 
 class MetadataSchema(Metadata):
     """A metadata class for schemas.Schema objects."""
 
-    default_language = None
-    languages_contained = set()
-    type = None
+    def __init__(self, **kwargs):
+        """Set class attributes."""
+        self.default_language = kwargs.pop('default_language', None)
+        self.languages_contained = set()
+        self.type = kwargs.pop('type', None)
+        Metadata.__init__(self, **kwargs)
