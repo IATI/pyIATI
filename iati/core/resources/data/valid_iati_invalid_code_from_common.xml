@@ -3,7 +3,7 @@
 <iati-activities version="2.02">
   <iati-activity>
     <iati-identifier></iati-identifier>
-    <reporting-org type="40" ref="AA-AAA-123456789">
+    <reporting-org type="not-a-valid-value" ref="AA-AAA-123456789"> <!-- A value for @type that is not on the OrganisationType Codelist. <reporting-org> is defined as a common element in the schema -->
       <narrative>Organisation name</narrative>
     </reporting-org>
     <title>
@@ -15,6 +15,5 @@
     <participating-org role="2"></participating-org>
     <activity-status code="2"/>
     <activity-date type="1" iso-date="2023-11-27"/>
-    <reporting-org ref="xxxx" type="10">Xxxxxxxxx</reporting-org> <!-- A value for @type that is not on the OrganisationType Codelist. <reporting-org> is defined as a common element in the schema -->
   </iati-activity>
 </iati-activities>

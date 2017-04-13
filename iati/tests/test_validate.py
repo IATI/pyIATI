@@ -24,6 +24,20 @@ class TestValidate(object):
 
         assert not iati.validate.is_valid(data, schema)
 
+    def test_basic_validation_invalid_missing_required_element(self):
+        """Perform a super simple data validation against a Dataset that is invalid due to a missing required element."""
+        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT)
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+
+        assert not iati.validate.is_valid(data, schema)
+
+    def test_basic_validation_invalid_missing_required_element_from_common(self):
+        """Perform a super simple data validation against a Dataset that is invalid due to a missing required element that is defined in iati-common.xsd."""
+        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT_COMMON)
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+
+        assert not iati.validate.is_valid(data, schema)
+
     def test_basic_validation_codelist_valid(self):
         """Perform data validation against valid IATI XML that has valid Codelist values."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
