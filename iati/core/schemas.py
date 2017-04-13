@@ -118,6 +118,9 @@ class Schema(object):
             for codelist in self.codelists:
                 if codelist.name == 'Version':
                     xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'iati-activities' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="version"]')
+                elif codelist.name == 'OrganisationType':
+                    xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'reporting-org' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="type"]')
+                    # import pdb;pdb.set_trace()
                 elif codelist.name == 'Sector' or codelist.name == 'SectorCategory':
                     xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
                     vocab = get_sector_vocab(dataset)
@@ -139,6 +142,7 @@ class Schema(object):
                         except Exception as e:  # TODO: Use a less general exception
                             # cannot find @vocabulary-uri, so perform no checks
                             continue
+
 
                         if vocab_uri is None:
                             continue

@@ -21,6 +21,11 @@ XML_STR_INVALID = iati.core.resources.load_as_string(iati.core.resources.path_da
 XML_STR_LEADING_WHITESPACE = iati.core.resources.load_as_string(iati.core.resources.path_data('leading_whitespace_xml'))
 """A string containing valid XML apart form leading whitepace before an `<?xml` declaration."""
 
+XML_STR_VALID_IATI_VALID_CODE_FROM_COMMON = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_valid_code_from_common'))
+"""A string contains valid IATI XML containing an element that is defined in common.xsd - it has an attribute with a value on the appropriate Codelist."""
+XML_STR_VALID_IATI_INVALID_CODE_FROM_COMMON = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_invalid_code_from_common'))
+"""A string contains valid IATI XML containing an element that is defined in common.xsd - it has an attribute with a value that is not on the appropriate Codelist."""
+
 XML_STR_VALID_IATI_VOCAB_DEFAULT_EXPLICIT = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_default_explicit'))
 """A string contains valid IATI XML containing an element that uses vocabularies. Explicitly defines default vocab and uses code from that list."""
 XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_default_implicit'))
