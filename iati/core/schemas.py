@@ -143,7 +143,6 @@ class Schema(object):
                             # cannot find @vocabulary-uri, so perform no checks
                             continue
 
-
                         if vocab_uri is None:
                             continue
 
@@ -154,7 +153,7 @@ class Schema(object):
                         codelist = user_defined_cl
 
                         # At this point, the vocab used is a valid value (i.e. '99'). There is a user-defined codelist that requires validation against. As such, the xpath for @code needs to be set for further validation
-                        xpath = (iati.core.constants.NAMESPACE +  'element[@name="' + 'sector' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
+                        xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
 
                 else:
                     return False
