@@ -1,6 +1,7 @@
 """A module containing a core representation of IATI Schemas."""
 from lxml import etree
 import iati.core.codelists
+import iati.core.constants
 import iati.core.exceptions
 import iati.core.resources
 import iati.core.utilities
@@ -116,9 +117,9 @@ class Schema(object):
         if len(self.codelists):
             for codelist in self.codelists:
                 if codelist.name == 'Version':
-                    xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'iati-activities' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="version"]')
+                    xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'iati-activities' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="version"]')
                 elif codelist.name == 'Sector' or codelist.name == 'SectorCategory':
-                    xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'sector' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="code"]')
+                    xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
                     vocab = get_sector_vocab(dataset)
 
                     if codelist.name == 'Sector' and vocab is not '1':
@@ -129,7 +130,7 @@ class Schema(object):
                         continue
 
                 elif codelist.name == 'SectorVocabulary':
-                    xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'sector' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="vocabulary"]')
+                    xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="vocabulary"]')
                     vocab = get_sector_vocab(dataset)
                     if vocab == '99':
                         try:
@@ -149,7 +150,7 @@ class Schema(object):
                         codelist = user_defined_cl
 
                         # At this point, the vocab used is a valid value (i.e. '99'). There is a user-defined codelist that requires validation against. As such, the xpath for @code needs to be set for further validation
-                        xpath = ('{http://www.w3.org/2001/XMLSchema}element[@name="' + 'sector' + '"]//{http://www.w3.org/2001/XMLSchema}attribute[@name="code"]')
+                        xpath = (iati.core.constants.NAMESPACE +  'element[@name="' + 'sector' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
 
                 else:
                     return False
