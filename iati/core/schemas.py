@@ -106,10 +106,23 @@ class Schema(object):
             parse='xml',
             nsmap=new_nsmap
         )
-        self._schema_base_tree.getroot().append(xinclude_el)
+        # import pdb;pdb.set_trace()
+        self._schema_base_tree.getroot().insert(include_el.getparent().index(include_el), xinclude_el)
 
         # remove the old element
         etree.strip_elements(self._schema_base_tree.getroot(), include_xpath)
+
+    def flatten_includes(self):
+        """Flatten includes so that all nodes are accessible through lxml.
+
+        It identifies the contents of files defined as `<xsd:include schemaLocation="NAME.xsd" />` and brings in the contents.
+        """
+        # change the include to a format that lxml can read
+        self._change_include_to_xinclude()
+
+        # import pdb;pdb.set_trace()
+        # adopt the included elements
+        self._schema_base_tree.xinclude()
 
     def validator(self, dataset):
         """A schema that can be used for validation.

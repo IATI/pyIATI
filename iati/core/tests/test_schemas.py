@@ -55,6 +55,9 @@ class TestSchemas(object):
 
         lxml does not contain functionality to access elements within imports defined along the lines of:
         `<xsd:include schemaLocation="NAME.xsd" />`
+
+        Todo:
+            Simplify asserts
         """
         schema = schema_initialised
         local_element = 'iati-activities'
@@ -99,6 +102,7 @@ class TestSchemas(object):
         # check that the old element has been removed
         assert include_node_after is None
 
+    @pytest.mark.xfail(strict=True)
     def test_schema_flattened_includes(self, schema_initialised):
         """Check that includes are flattened correctly.
 
@@ -107,11 +111,24 @@ class TestSchemas(object):
         This checks that the flattened xsd is valid and that included elements can be accessed.
 
         Todo:
-            Add asserts
+            Simplify asserts
         """
         schema = schema_initialised
+        local_element = 'iati-activities'
+        included_element = 'reporting-org'
 
-        assert 1
+        include_location_xpath = (iati.core.constants.NAMESPACE + 'include')
+        xi_location_xpath = ('{http://www.w3.org/2001/XInclude}include')
+        local_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + local_element + '"]')
+        included_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
+
+        schema.flatten_includes()
+
+        assert schema._schema_base_tree.getroot().find(include_location_xpath) is None
+        assert schema._schema_base_tree.getroot().find(xi_location_xpath) is None
+        assert isinstance(schema._schema_base_tree.getroot().find(local_xpath), etree._Element)
+        assert isinstance(schema._schema_base_tree.getroot().find(included_xpath), etree._Element)
+
 
     def test_schema_codelists_add(self, schema_initialised):
         """Check that it is possible to add Codelists to the Schema."""
