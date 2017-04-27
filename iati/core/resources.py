@@ -26,7 +26,9 @@ Used to locate resources when the package is distributed in certain ways that do
 
 BASE_PATH = 'resources'
 """The relative location of the resources folder."""
-BASE_PATH_202 = os.sep.join((BASE_PATH, '202'))
+BASE_PATH_STANDARD = os.sep.join((BASE_PATH, 'standard'))
+"""The relative location of resources related to the IATI Standard."""
+BASE_PATH_202 = os.sep.join((BASE_PATH_STANDARD, '202'))
 """The relative location of the resources folder for version 2.02 of the IATI Standard."""
 PATH_CODELISTS = 'codelists'
 """The location of the folder containing codelists from the SSOT."""
@@ -38,7 +40,7 @@ PATH_CODELISTS_NON_EMBEDDED = os.sep.join((PATH_CODELISTS, 'non_embedded'))
 Todo:
     Utilise symlinks for locating the folder for non-embedded Codelists.
 """
-PATH_DATA = os.sep.join((BASE_PATH, 'data'))
+PATH_DATA = os.sep.join((BASE_PATH, 'test_data'))
 """The relative location of the folder containing IATI data files."""
 PATH_SCHEMAS = 'schemas'
 """The location of the folder containing schemas from the SSOT."""
