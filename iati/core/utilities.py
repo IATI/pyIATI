@@ -13,14 +13,16 @@ def add_namespace(schema, new_ns_name, new_ns_uri):
     """Add a namespace to a Schema.
 
     Params:
-        schema ()
+        schema (iati.core.schemas.Schema): The Schema to add a namespace to.
+        new_ns_name (str): The name of the new namespace. Must be valid against https://www.w3.org/TR/REC-xml-names/#NT-NSAttName
+        new_ns_uri (str): The URI for the new namespace. Must be non-empty and valid against https://www.ietf.org/rfc/rfc2396.txt
 
     Returns:
         iati.core.schemas.Schema: The provided Schema, modified to include the specified namespace.
 
     Raises:
         TypeError: If an attempt it made to add a namespace to something other than a Schema.
-        ValueError: If the namespace name or uri are invalid values.
+        ValueError: If the namespace name or URI are invalid values.
         ValueError: If the namespace name already exists.
 
     Note:
