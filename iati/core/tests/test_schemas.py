@@ -99,6 +99,8 @@ class TestSchemas(object):
         assert isinstance(xi_node, etree._Element)
         assert xi_node.attrib['href'][-len(include_location):] == include_location
         assert xi_node.attrib['parse'] == 'xml'
+        assert isinstance(tree.getroot().find(local_xpath), etree._Element)
+        assert not isinstance(tree.getroot().find(included_xpath), etree._Element)
         # check that the old element has been removed
         assert include_node_after is None
 
@@ -133,7 +135,6 @@ class TestSchemas(object):
         assert isinstance(tree.getroot().find(local_xpath), etree._Element)
         assert isinstance(tree.getroot().find(included_xpath), etree._Element)
         assert iati.core.utilities.convert_tree_to_schema(tree)
-
 
     def test_schema_codelists_add(self, schema_initialised):
         """Check that it is possible to add Codelists to the Schema."""
