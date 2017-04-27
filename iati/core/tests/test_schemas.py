@@ -60,9 +60,11 @@ class TestSchemas(object):
         local_element = 'iati-activities'
         included_element = 'reporting-org'
 
+        include_location_xpath = (iati.core.constants.NAMESPACE + 'include')
         local_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + local_element + '"]')
         included_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
 
+        assert schema._schema_base_tree.getroot().find(include_location_xpath).attrib['schemaLocation'] == 'iati-common.xsd'
         assert isinstance(schema._schema_base_tree.getroot().find(local_xpath), etree._Element)
         assert schema._schema_base_tree.getroot().find(included_xpath) is None
 
