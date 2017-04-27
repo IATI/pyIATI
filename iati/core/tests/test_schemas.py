@@ -1,4 +1,5 @@
 """A module containing tests for the library representation of Schemas."""
+from lxml import etree
 import pytest
 import iati.core.codelists
 import iati.core.exceptions
@@ -50,14 +51,22 @@ class TestSchemas(object):
         assert len(schema.codelists) == 0
 
     def test_schema_unmodified_includes(self, schema_initialised):
-        """Check that imported elements within unmodified Schema includes cannot be accessed.
+        """Check that local elements can be accessed, but imported elements within unmodified Schema includes cannot be accessed.
 
         lxml does not contain functionality to access elements within imports defined along the lines of:
         `<xsd:include schemaLocation="NAME.xsd" />`
         """
         schema = schema_initialised
+        local_element = 'iati-activities'
+        local_attr = 'version'
+        included_element = 'reporting-org'
+        included_attr = 'type'
 
-        assert 1
+        local_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + local_element + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="' + local_attr + '"]')
+        included_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + included_element + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="' + included_attr + '"]')
+
+        assert isinstance(schema._schema_base_tree.getroot().find(local_xpath), etree._Element)
+        assert schema._schema_base_tree.getroot().find(included_xpath) is None
 
     def test_schema_modified_includes(self, schema_initialised):
         """Check that elements within unflattened modified Schema includes cannot be accessed.
