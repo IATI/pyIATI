@@ -58,12 +58,10 @@ class TestSchemas(object):
         """
         schema = schema_initialised
         local_element = 'iati-activities'
-        local_attr = 'version'
         included_element = 'reporting-org'
-        included_attr = 'type'
 
-        local_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + local_element + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="' + local_attr + '"]')
-        included_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + included_element + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="' + included_attr + '"]')
+        local_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + local_element + '"]')
+        included_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
 
         assert isinstance(schema._schema_base_tree.getroot().find(local_xpath), etree._Element)
         assert schema._schema_base_tree.getroot().find(included_xpath) is None
