@@ -43,7 +43,7 @@ class TestResources(object):
             assert path[-4:] == iati.core.resources.FILE_SCHEMA_EXTENSION
             assert iati.core.resources.PATH_SCHEMAS_202 in path
 
-    @pytest.mark.parametrize('name', [
+    @pytest.mark.parametrize('codelist', [
         'Name',
         'Name',
         'Name',
@@ -51,9 +51,9 @@ class TestResources(object):
         'Name.xml',
         'Name.xml',
     ])
-    def test_get_codelist_path_name(self, name):
+    def test_get_codelist_path_name(self, codelist):
         """Check that a codelist path is found from just a name."""
-        path = iati.core.resources.get_codelist_path(name)
+        path = iati.core.resources.get_codelist_path(codelist)
 
         assert path[-4:] == iati.core.resources.FILE_CODELIST_EXTENSION
         assert path.count(iati.core.resources.FILE_CODELIST_EXTENSION) == 1

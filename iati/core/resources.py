@@ -103,11 +103,11 @@ def find_all_schema_paths(version=None):
     return [path_schema(FILE_SCHEMA_ACTIVITY_NAME, version)]
 
 
-def get_codelist_path(name, version=None):
+def get_codelist_path(codelist_name, version=None):
     """Determine the path of a codelist with the given name.
 
     Args:
-        name (str): The name of the codelist to locate. Should the name end in '.xml', this shall be removed to determine the name.
+        codelist_name (str): The name of the codelist to locate. Should the name end in '.xml', this shall be removed to determine the name.
         version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that paths to the latest version of the Codelists are returned.
 
     Returns:
@@ -127,10 +127,10 @@ def get_codelist_path(name, version=None):
     Todo:
         Test this.
     """
-    if name[-4:] == FILE_CODELIST_EXTENSION:
-        name = name[:-4]
+    if codelist_name[-4:] == FILE_CODELIST_EXTENSION:
+        codelist_name = codelist_name[:-4]
 
-    return path_for_version(os.sep.join((PATH_CODELISTS, '{0}'.format(name) + FILE_CODELIST_EXTENSION)), version)
+    return path_for_version(os.sep.join((PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION)), version)
 
 
 def path_data(name):
