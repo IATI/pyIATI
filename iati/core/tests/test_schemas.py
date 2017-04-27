@@ -102,7 +102,6 @@ class TestSchemas(object):
         # check that the old element has been removed
         assert include_node_after is None
 
-    @pytest.mark.xfail(strict=True)
     def test_schema_flattened_includes(self, schema_initialised):
         """Check that includes are flattened correctly.
 
@@ -112,6 +111,8 @@ class TestSchemas(object):
 
         Todo:
             Simplify asserts
+
+            assert that the flattened XML is a valid Schema
         """
         schema = schema_initialised
         local_element = 'iati-activities'

@@ -124,6 +124,17 @@ class Schema(object):
         # adopt the included elements
         self._schema_base_tree.xinclude()
 
+        # remove nested schema elements
+        schema_xpath = (iati.core.constants.NAMESPACE + 'schema')
+        while self._schema_base_tree.getroot().find(schema_xpath) is not None:
+            nested_schema_el = self._schema_base_tree.getroot().find(schema_xpath)
+            if isinstance(nested_schema_el, etree._Element):
+                # move contents of nested schema elements up a level
+                for el in nested_schema_el[:]:
+                    self._schema_base_tree.getroot().insert(nested_schema_el.getparent().index(nested_schema_el), el)
+                # remove the nested schema elements
+                etree.strip_elements(self._schema_base_tree.getroot(), schema_xpath)
+
     def validator(self, dataset):
         """A schema that can be used for validation.
 
