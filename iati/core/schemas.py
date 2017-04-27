@@ -81,9 +81,7 @@ class Schema(object):
         Todo:
             Check whether this is safe in the general case, so allowing it to be performed in __init__().
         """
-        # add the namespace
-        self._schema_base_tree.getroot().nsmap['xi'] = 'http://www.w3.org/2001/XInclude'
-        # import pdb;pdb.set_trace()
+        iati.core.utilities.add_namespace(self, 'xi', 'http://www.w3.org/2001/XInclude')
 
     def validator(self, dataset):
         """A schema that can be used for validation.
