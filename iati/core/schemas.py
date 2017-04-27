@@ -70,7 +70,7 @@ class Schema(object):
             raise TypeError(msg)
 
     def _change_include_to_xinclude(self):
-        """Changes the method in which common elements are included.
+        """Change the method in which common elements are included.
 
         lxml does not contain functionality to access elements within imports defined along the lines of: `<xsd:include schemaLocation="NAME.xsd" />`
         It does, however, contains functionality to access elements within imports defined along the lines of: `<xi:include href="NAME.xsd" parse="xml" />`

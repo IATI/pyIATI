@@ -60,7 +60,6 @@ class TestUtilities(object):
         ns_name = 'xsd'
         ns_uri = 'http://www.w3.org/2001/XMLSchema-different'
 
-        initial_nsmap = schema._schema_base_tree.getroot().nsmap
         try:
             _ = iati.core.utilities.add_namespace(schema, ns_name, ns_uri)
         except ValueError:
@@ -109,7 +108,7 @@ class TestUtilities(object):
             assert False
 
     @pytest.mark.parametrize("ns_uri", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
-    def test_add_namespace_nsname_non_str(self, ns_uri):
+    def test_add_namespace_nsuri_non_str(self, ns_uri):
         """Check that attempting to add a namespace uri that is not a string acts correctly.
 
         Todo:
@@ -118,7 +117,7 @@ class TestUtilities(object):
         pass
 
     @pytest.mark.parametrize("ns_uri", [''])
-    def test_add_namespace_nsname_invalid_str(self, ns_uri):
+    def test_add_namespace_nsuri_invalid_str(self, ns_uri):
         """Check that attempting to add a namespace that is an invalid string.
 
         Note:
