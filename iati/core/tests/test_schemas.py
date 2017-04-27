@@ -83,11 +83,22 @@ class TestSchemas(object):
         included_element = 'reporting-org'
 
         include_location_xpath = (iati.core.constants.NAMESPACE + 'include')
-        xinclude_location_xpath = (iati.core.constants.NAMESPACE + 'include')
+        xi_location_xpath = ('{http://www.w3.org/2001/XInclude}include')
         local_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + local_element + '"]')
         included_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
 
+        include_location = schema._schema_base_tree.getroot().find(include_location_xpath).attrib['schemaLocation']
         schema._change_include_to_xinclude()
+        xi_node = schema._schema_base_tree.getroot().find(xi_location_xpath)
+        include_node_after = schema._schema_base_tree.getroot().find(include_location_xpath)
+
+        # check that the new element has been added
+        assert isinstance(xi_node, etree._Element)
+        assert xi_node.attrib['href'] == include_location
+        assert xi_node.attrib['parse'] == 'xml'
+        # check that the old element has been removed
+        assert include_node_after is None
+
 
     def test_schema_flattened_includes(self, schema_initialised):
         """Check that includes are flattened correctly.

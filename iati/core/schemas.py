@@ -80,8 +80,37 @@ class Schema(object):
 
         Todo:
             Check whether this is safe in the general case, so allowing it to be performed in __init__().
+
+            Modify so that it creates and returns something new rather than corrupting the base information within the Schema.
         """
-        iati.core.utilities.add_namespace(self, 'xi', 'http://www.w3.org/2001/XInclude')
+        # identify the old info
+        include_xpath = (iati.core.constants.NAMESPACE + 'include')
+        include_el = self._schema_base_tree.getroot().find(include_xpath)
+        if include_el is None:
+            return
+        include_location = include_el.attrib['schemaLocation']
+
+        # add namespace for XInclude
+        xi_name = 'xi'
+        xi_uri = 'http://www.w3.org/2001/XInclude'
+        iati.core.utilities.add_namespace(self, xi_name, xi_uri)
+        new_nsmap = {}
+        for k, v in iati.core.constants.NSMAP.items():
+            new_nsmap[k] = v
+        new_nsmap[xi_name] = xi_uri
+
+        # create and insert a new element
+        xinclude_el = etree.Element(
+            '{' + xi_uri + '}include',
+            href=include_location,
+            parse='xml',
+            nsmap=new_nsmap
+        )
+        self._schema_base_tree.getroot().append(xinclude_el)
+
+        # remove the old element
+        etree.strip_elements(self._schema_base_tree.getroot(), include_xpath)
+
 
     def validator(self, dataset):
         """A schema that can be used for validation.
