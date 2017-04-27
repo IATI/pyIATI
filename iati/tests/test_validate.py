@@ -58,7 +58,7 @@ class TestValidate(object):
 
         assert not iati.validate.is_valid(data, schema)
 
-    @pytest.mark.xfail(strict=True)
+    # @pytest.mark.xfail(strict=True)
     def test_basic_validation_codelist_valid_from_common(self):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested is on an element defined in common.xsd"""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VALID_CODE_FROM_COMMON)

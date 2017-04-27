@@ -9,11 +9,11 @@ from lxml import etree
 import iati.core.constants
 
 
-def add_namespace(schema, new_ns_name, new_ns_uri):
+def add_namespace(tree, new_ns_name, new_ns_uri):
     """Add a namespace to a Schema.
 
     Params:
-        schema (iati.core.schemas.Schema): The Schema to add a namespace to.
+        tree (etree._ElementTree): The ElementTree to add a namespace to.
         new_ns_name (str): The name of the new namespace. Must be valid against https://www.w3.org/TR/REC-xml-names/#NT-NSAttName
         new_ns_uri (str): The URI for the new namespace. Must be non-empty and valid against https://www.ietf.org/rfc/rfc2396.txt
 
@@ -35,42 +35,40 @@ def add_namespace(schema, new_ns_name, new_ns_uri):
 
         Add checks for the format of new_ns_uri - for syntax, see: https://www.ietf.org/rfc/rfc2396.txt
     """
-    if not isinstance(schema, iati.core.schemas.Schema):
-        msg = "The `schema` parameter must be of type `iati.core.schemas.Schema - it was of type {0}".format(type(schema))
+    if not isinstance(tree, etree._ElementTree):
+        msg = "The `tree` parameter must be of type `etree._ElementTree` - it was of type {0}".format(type(tree))
         iati.core.utilities.log_error(msg)
-        raise TypeError
+        raise TypeError(msg)
     if not isinstance(new_ns_name, str) or len(new_ns_name) == 0:
         msg = "The `new_ns_name` parameter must be a non-empty string."
         iati.core.utilities.log_error(msg)
-        raise ValueError
+        raise ValueError(msg)
     if not isinstance(new_ns_uri, str) or len(new_ns_uri) == 0:
         msg = "The `new_ns_name` parameter must be a valid URI."
         iati.core.utilities.log_error(msg)
-        raise ValueError
+        raise ValueError(msg)
 
-    initial_nsmap = schema._schema_base_tree.getroot().nsmap
+    initial_nsmap = tree.getroot().nsmap
     # prevent modification of existing namespaces
     if new_ns_name in initial_nsmap:
         if new_ns_uri == initial_nsmap[new_ns_name]:
-            return schema
+            return tree
         else:
             msg = "There is already a namespace called {0}.".format(new_ns_name)
             iati.core.utilities.log_error(msg)
-            raise ValueError
+            raise ValueError(msg)
 
     # to add new namespace, use algorithm from http://stackoverflow.com/a/11350061
-    schema_str = etree.tostring(schema._schema_base_tree.getroot(), pretty_print=True).decode('unicode_escape')
-    tree = etree.ElementTree(element=None, file=StringIO(schema_str))
-    root = tree.getroot()
+    schema_str = etree.tostring(tree.getroot(), pretty_print=True).decode('unicode_escape')
+    interim_tree = etree.ElementTree(element=None, file=StringIO(schema_str))
+    root = interim_tree.getroot()
     nsmap = root.nsmap
     nsmap[new_ns_name] = new_ns_uri
     new_root = etree.Element(root.tag, nsmap=nsmap)
     new_root[:] = root[:]
     new_tree = etree.ElementTree(new_root)
 
-    schema._schema_base_tree = new_tree
-
-    return schema
+    return new_tree
 
 
 def convert_tree_to_schema(tree):

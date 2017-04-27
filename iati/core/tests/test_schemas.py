@@ -91,9 +91,9 @@ class TestSchemas(object):
         included_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
 
         include_location = schema._schema_base_tree.getroot().find(include_location_xpath).attrib['schemaLocation']
-        schema._change_include_to_xinclude()
-        xi_node = schema._schema_base_tree.getroot().find(xi_location_xpath)
-        include_node_after = schema._schema_base_tree.getroot().find(include_location_xpath)
+        tree = schema._change_include_to_xinclude(schema._schema_base_tree)
+        xi_node = tree.getroot().find(xi_location_xpath)
+        include_node_after = tree.getroot().find(include_location_xpath)
 
         # check that the new element has been added
         assert isinstance(xi_node, etree._Element)
@@ -123,12 +123,16 @@ class TestSchemas(object):
         local_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + local_element + '"]')
         included_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
 
-        schema.flatten_includes()
+        tree = schema.flatten_includes(schema._schema_base_tree)
 
-        assert schema._schema_base_tree.getroot().find(include_location_xpath) is None
-        assert schema._schema_base_tree.getroot().find(xi_location_xpath) is None
-        assert isinstance(schema._schema_base_tree.getroot().find(local_xpath), etree._Element)
-        assert isinstance(schema._schema_base_tree.getroot().find(included_xpath), etree._Element)
+        # import pdb;pdb.set_trace()
+        # etree.tostring(tree.getroot()).decode('unicode_escape').split('\n')
+
+        assert tree.getroot().find(include_location_xpath) is None
+        assert tree.getroot().find(xi_location_xpath) is None
+        assert isinstance(tree.getroot().find(local_xpath), etree._Element)
+        assert isinstance(tree.getroot().find(included_xpath), etree._Element)
+        assert iati.core.utilities.convert_tree_to_schema(tree)
 
 
     def test_schema_codelists_add(self, schema_initialised):

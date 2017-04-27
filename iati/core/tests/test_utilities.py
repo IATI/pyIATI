@@ -17,13 +17,13 @@ class TestUtilities(object):
 
             Add a similar test for Datasets.
         """
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        tree = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)._schema_base_tree
         ns_name = 'xi'
         ns_uri = 'http://www.w3.org/2001/XInclude'
 
-        initial_nsmap = schema._schema_base_tree.getroot().nsmap
-        schema = iati.core.utilities.add_namespace(schema, ns_name, ns_uri)
-        new_nsmap = schema._schema_base_tree.getroot().nsmap
+        initial_nsmap = tree.getroot().nsmap
+        tree = iati.core.utilities.add_namespace(tree, ns_name, ns_uri)
+        new_nsmap = tree.getroot().nsmap
 
         assert len(new_nsmap) == len(initial_nsmap) + 1
         assert ns_name not in initial_nsmap
@@ -36,13 +36,13 @@ class TestUtilities(object):
         Todo:
             Add a similar test for Datasets.
         """
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        tree = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)._schema_base_tree
         ns_name = 'xsd'
         ns_uri = 'http://www.w3.org/2001/XMLSchema'
 
-        initial_nsmap = schema._schema_base_tree.getroot().nsmap
-        schema = iati.core.utilities.add_namespace(schema, ns_name, ns_uri)
-        new_nsmap = schema._schema_base_tree.getroot().nsmap
+        initial_nsmap = tree.getroot().nsmap
+        tree = iati.core.utilities.add_namespace(tree, ns_name, ns_uri)
+        new_nsmap = tree.getroot().nsmap
 
         assert len(new_nsmap) == len(initial_nsmap)
         assert ns_name in initial_nsmap
@@ -56,25 +56,25 @@ class TestUtilities(object):
         Todo:
             Add a similar test for Datasets.
         """
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        tree = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)._schema_base_tree
         ns_name = 'xsd'
         ns_uri = 'http://www.w3.org/2001/XMLSchema-different'
 
         try:
-            _ = iati.core.utilities.add_namespace(schema, ns_name, ns_uri)
+            _ = iati.core.utilities.add_namespace(tree, ns_name, ns_uri)
         except ValueError:
             assert True
         else:  # pragma: no cover
             assert False
 
-    @pytest.mark.parametrize("not_a_schema", iati.core.tests.utilities.find_parameter_by_type([], False))
-    def test_add_namespace_no_schema(self, not_a_schema):
+    @pytest.mark.parametrize("not_a_tree", iati.core.tests.utilities.find_parameter_by_type([], False))
+    def test_add_namespace_no_schema(self, not_a_tree):
         """Check that attempting to add a namespace to something that isn't a Schema raises an error."""
         ns_name = 'xsd'
         ns_uri = 'http://www.w3.org/2001/XMLSchema'
 
         try:
-            _ = iati.core.utilities.add_namespace(not_a_schema, ns_name, ns_uri)
+            _ = iati.core.utilities.add_namespace(not_a_tree, ns_name, ns_uri)
         except TypeError:
             assert True
         else:  # pragma: no cover
@@ -97,11 +97,11 @@ class TestUtilities(object):
             Add more tests - for syntax, see:
                 https://www.w3.org/TR/REC-xml-names/#NT-NSAttName
         """
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        tree = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)._schema_base_tree
         ns_uri = 'http://www.w3.org/2001/XMLSchema'
 
         try:
-            _ = iati.core.utilities.add_namespace(schema, ns_name, ns_uri)
+            _ = iati.core.utilities.add_namespace(tree, ns_name, ns_uri)
         except ValueError:
             assert True
         else:  # pragma: no cover
@@ -126,11 +126,11 @@ class TestUtilities(object):
         Todo:
 
         """
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        tree = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)._schema_base_tree
         ns_name = 'testname'
 
         try:
-            _ = iati.core.utilities.add_namespace(schema, ns_name, ns_uri)
+            _ = iati.core.utilities.add_namespace(tree, ns_name, ns_uri)
         except ValueError:
             assert True
         else:  # pragma: no cover
