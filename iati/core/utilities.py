@@ -1,6 +1,10 @@
 """A module containing utility functions."""
 import logging
 import os
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 from lxml import etree
 import iati.core.constants
 
@@ -17,6 +21,7 @@ def add_namespace(schema, new_ns_name, new_ns_uri):
     Raises:
         TypeError: If an attempt it made to add a namespace to something other than a Schema.
         ValueError: If the namespace name or uri are invalid values.
+        ValueError: If the namespace name already exists.
 
     Note:
         lxml does not allow modification of namespaces within a tree that already exists. As such, string manipulation is used. https://bugs.launchpad.net/lxml/+bug/555602
@@ -42,6 +47,28 @@ def add_namespace(schema, new_ns_name, new_ns_uri):
         raise ValueError
 
     initial_nsmap = schema._schema_base_tree.getroot().nsmap
+    # prevent modification of existing namespaces
+    if new_ns_name in initial_nsmap:
+        if new_ns_uri == initial_nsmap[new_ns_name]:
+            return schema
+        else:
+            msg = "There is already a namespace called {0}.".format(new_ns_name)
+            iati.core.utilities.log_error(msg)
+            raise ValueError
+
+    # to add new namespace, use algorithm from http://stackoverflow.com/a/11350061
+    schema_str = etree.tostring(schema._schema_base_tree.getroot(), pretty_print=True).decode('unicode_escape')
+    tree = etree.ElementTree(element=None, file=StringIO(schema_str))
+    root = tree.getroot()
+    nsmap = root.nsmap
+    nsmap[new_ns_name] = new_ns_uri
+    new_root = etree.Element(root.tag, nsmap=nsmap)
+    new_root[:] = root[:]
+    new_tree = etree.ElementTree(new_root)
+
+    schema._schema_base_tree = new_tree
+
+    return schema
 
 
 def convert_tree_to_schema(tree):

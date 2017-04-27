@@ -31,7 +31,7 @@ class TestUtilities(object):
         assert new_nsmap[ns_name] == ns_uri
 
     def test_add_namespace_schema_already_present(self):
-        """Check that attempting to add a namespace that already exists to a Schema does not modify the nsmap.
+        """Check that attempting to add a namespace that already exists changes nothing if the new URI is the same.
 
         Todo:
             Add a similar test for Datasets.
@@ -49,6 +49,24 @@ class TestUtilities(object):
         assert ns_name in new_nsmap
         assert initial_nsmap[ns_name] == ns_uri
         assert new_nsmap[ns_name] == ns_uri
+
+    def test_add_namespace_schema_already_present_diff_value(self):
+        """Check that attempting to add a namespace that already exists to a Schema raises an error rather than leading to modification.
+
+        Todo:
+            Add a similar test for Datasets.
+        """
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        ns_name = 'xsd'
+        ns_uri = 'http://www.w3.org/2001/XMLSchema-different'
+
+        initial_nsmap = schema._schema_base_tree.getroot().nsmap
+        try:
+            _ = iati.core.utilities.add_namespace(schema, ns_name, ns_uri)
+        except ValueError:
+            assert True
+        else:  # pragma: no cover
+            assert False
 
     @pytest.mark.parametrize("not_a_schema", iati.core.tests.utilities.find_parameter_by_type([], False))
     def test_add_namespace_no_schema(self, not_a_schema):
