@@ -42,12 +42,47 @@ class TestSchemas(object):
             assert False
 
     def test_schema_define_from_xsd(self, schema_initialised):
-        """Check that a Schema can be generated from an XSD definition"""
+        """Check that a Schema can be generated from an XSD definition."""
         schema = schema_initialised
 
         assert schema.name == iati.core.tests.utilities.SCHEMA_NAME_VALID
         assert isinstance(schema.codelists, set)
         assert len(schema.codelists) == 0
+
+    def test_schema_unmodified_includes(self, schema_initialised):
+        """Check that imported elements within unmodified Schema includes cannot be accessed.
+
+        lxml does not contain functionality to access elements within imports defined along the lines of:
+        `<xsd:include schemaLocation="NAME.xsd" />`
+        """
+        schema = schema_initialised
+
+        assert 1
+
+    def test_schema_modified_includes(self, schema_initialised):
+        """Check that elements within unflattened modified Schema includes cannot be accessed.
+
+        lxml contains functionality to access elements within imports defined along the lines of:
+        `<xi:include href="NAME.xsd" parse="xml" />`
+        when there is a namespace defined against the root schema element as `xmlns:xi="http://www.w3.org/2001/XInclude"`
+
+        Todo:
+            Check what can be accessed like this.
+        """
+        schema = schema_initialised
+
+        assert 1
+
+    def test_schema_flattened_includes(self, schema_initialised):
+        """Check that includes are flattened correctly.
+
+        In a full flatten of included elements as `<xi:include href="NAME.xsd" parse="xml" />`, there may be nested `schema` elements and other situations that are not permitted.
+
+        This checks that the flattened xsd is valid and that included elements can be accessed.
+        """
+        schema = schema_initialised
+
+        assert 1
 
     def test_schema_codelists_add(self, schema_initialised):
         """Check that it is possible to add Codelists to the Schema."""
