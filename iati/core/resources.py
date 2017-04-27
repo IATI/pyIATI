@@ -32,14 +32,6 @@ BASE_PATH_202 = os.sep.join((BASE_PATH_STANDARD, '202'))
 """The relative location of the resources folder for version 2.02 of the IATI Standard."""
 PATH_CODELISTS = 'codelists'
 """The location of the folder containing codelists from the SSOT."""
-PATH_CODELISTS_EMBEDDED = os.sep.join((PATH_CODELISTS, 'embedded'))
-"""The location of the folder containing embedded codelists from the SSOT."""
-PATH_CODELISTS_NON_EMBEDDED = os.sep.join((PATH_CODELISTS, 'non_embedded'))
-"""The location of the folder containing non-embedded codelists from the SSOT.
-
-Todo:
-    Utilise symlinks for locating the folder for non-embedded Codelists.
-"""
 PATH_DATA = os.sep.join((BASE_PATH, 'test_data'))
 """The relative location of the folder containing IATI data files."""
 PATH_SCHEMAS = 'schemas'
@@ -81,15 +73,11 @@ def find_all_codelist_paths(version=None):
 
         Provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
     """
-    files_embedded = pkg_resources.resource_listdir(PACKAGE, path_for_version(PATH_CODELISTS_EMBEDDED, version))
-    files_non_embedded = pkg_resources.resource_listdir(PACKAGE, path_for_version(PATH_CODELISTS_NON_EMBEDDED, version))
+    files = pkg_resources.resource_listdir(PACKAGE, path_for_version(PATH_CODELISTS, version))
+    paths = [path_codelist(file, version) for file in files]
+    paths_codelists_only = [path for path in paths if path[-4:] == FILE_CODELIST_EXTENSION]
 
-    paths_embedded = [path_codelist(file, 'embedded', version) for file in files_embedded]
-    paths_non_embedded = [path_codelist(file, 'non-embedded', version) for file in files_non_embedded]
-
-    paths_all = [path for path in paths_embedded + paths_non_embedded if path[-4:] == FILE_CODELIST_EXTENSION]
-
-    return paths_all
+    return paths_codelists_only
 
 
 def find_all_schema_paths(version=None):
@@ -115,12 +103,11 @@ def find_all_schema_paths(version=None):
     return [path_schema(FILE_SCHEMA_ACTIVITY_NAME, version)]
 
 
-def path_codelist(name, location='non-embedded', version=None):
+def path_codelist(name, version=None):
     """Determine the path of a codelist with the given name.
 
     Args:
         name (str): The name of the codelist to locate. Should the name end in '.xml', this shall be removed to determine the name.
-        location (str): The location of the codelist. Either 'embedded' or 'non-embedded'. Defaults to 'non-embedded'.
         version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that paths to the latest version of the Codelists are returned.
 
     Returns:
@@ -135,26 +122,15 @@ def path_codelist(name, location='non-embedded', version=None):
     Warning:
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
-        Use of magic strings in the `location` parameter is not a tidy interface.
-
         It needs to be determined how best to locate a user-defined Codelist that is available at a URL that needs fetching.
 
     Todo:
-        Provide a better interface for specifying whether a codelist is Embedded or Non-Embedded, keeping in mind user-defined codelists.
-
         Test this.
     """
     if name[-4:] == FILE_CODELIST_EXTENSION:
         name = name[:-4]
 
-    if location == 'embedded':
-        return path_for_version(os.sep.join((PATH_CODELISTS_EMBEDDED, '{0}'.format(name) + FILE_CODELIST_EXTENSION)), version)
-    elif location == 'non-embedded':
-        return path_for_version(os.sep.join((PATH_CODELISTS_NON_EMBEDDED, '{0}'.format(name) + FILE_CODELIST_EXTENSION)), version)
-    else:
-        msg = "The location of a Codelist must be a string equal to either 'embedded' or 'non-embedded'"
-        iati.core.utilities.log_error(msg)
-        raise ValueError(msg)
+    return path_for_version(os.sep.join((PATH_CODELISTS, '{0}'.format(name) + FILE_CODELIST_EXTENSION)), version)
 
 
 def path_data(name):

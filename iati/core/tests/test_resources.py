@@ -43,49 +43,21 @@ class TestResources(object):
             assert path[-4:] == iati.core.resources.FILE_SCHEMA_EXTENSION
             assert iati.core.resources.PATH_SCHEMAS_202 in path
 
-    @pytest.mark.parametrize('name,location', [
-        ('Name', None),
-        ('Name', 'embedded'),
-        ('Name', 'non-embedded'),
-        ('Name.xml', None),
-        ('Name.xml', 'embedded'),
-        ('Name.xml', 'non-embedded'),
+    @pytest.mark.parametrize('name', [
+        'Name',
+        'Name',
+        'Name',
+        'Name.xml',
+        'Name.xml',
+        'Name.xml',
     ])
-    def test_path_codelist_name(self, name, location):
-        """Check that a codelist path is found from just a name.
-
-        Todo:
-            Tidy up if-else mess.
-        """
-        if location is None:
-            path = iati.core.resources.path_codelist(name)
-        else:
-            path = iati.core.resources.path_codelist(name, location)
+    def test_path_codelist_name(self, name):
+        """Check that a codelist path is found from just a name."""
+        path = iati.core.resources.path_codelist(name)
 
         assert path[-4:] == iati.core.resources.FILE_CODELIST_EXTENSION
         assert path.count(iati.core.resources.FILE_CODELIST_EXTENSION) == 1
-        if location == 'embedded':
-            assert iati.core.resources.PATH_CODELISTS_EMBEDDED in path
-        else:
-            assert iati.core.resources.PATH_CODELISTS_NON_EMBEDDED in path
-
-    @pytest.mark.parametrize('name,location', [
-        ('Name', 23487),
-        ('Name', 'invalid type')
-    ])
-    def test_path_codelist_invalid_type(self, name, location):
-        """Check that an error is raised when attempting to find a codelist of invalid type.
-
-        Todo:
-            Fuzz with iati.core.tests.utilities.find_parameter_by_type(['str'], False)
-        """
-        try:
-            _ = iati.core.resources.path_codelist(name, location)
-        except ValueError:
-            assert True
-        else:  # pragma: no cover
-            # a ValueError should be raised, meaning this is not reached
-            assert False
+        assert iati.core.resources.PATH_CODELISTS in path
 
     def test_resource_filename(self):
         """Check that resource file names are found correctly
