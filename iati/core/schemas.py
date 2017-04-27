@@ -95,8 +95,8 @@ class Schema(object):
         xi_uri = 'http://www.w3.org/2001/XInclude'
         iati.core.utilities.add_namespace(self, xi_name, xi_uri)
         new_nsmap = {}
-        for k, v in iati.core.constants.NSMAP.items():
-            new_nsmap[k] = v
+        for key, value in iati.core.constants.NSMAP.items():
+            new_nsmap[key] = value
         new_nsmap[xi_name] = xi_uri
 
         # create and insert a new element
