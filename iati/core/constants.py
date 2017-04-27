@@ -1,5 +1,7 @@
 """A module containing constants required throughout IATI library code.
 
+The contents of this file are not designed to be user-editable. Only edit if you know what you are doing!
+
 Warning:
     This contents of this module should currently be deemed private.
 
