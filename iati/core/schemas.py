@@ -111,7 +111,6 @@ class Schema(object):
         # remove the old element
         etree.strip_elements(self._schema_base_tree.getroot(), include_xpath)
 
-
     def validator(self, dataset):
         """A schema that can be used for validation.
 

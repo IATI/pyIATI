@@ -99,7 +99,6 @@ class TestSchemas(object):
         # check that the old element has been removed
         assert include_node_after is None
 
-
     def test_schema_flattened_includes(self, schema_initialised):
         """Check that includes are flattened correctly.
 
