@@ -127,9 +127,6 @@ class TestSchemas(object):
 
         tree = schema.flatten_includes(schema._schema_base_tree)
 
-        # import pdb;pdb.set_trace()
-        # etree.tostring(tree.getroot()).decode('unicode_escape').split('\n')
-
         assert tree.getroot().find(include_location_xpath) is None
         assert tree.getroot().find(xi_location_xpath) is None
         assert isinstance(tree.getroot().find(local_xpath), etree._Element)
