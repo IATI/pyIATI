@@ -87,9 +87,11 @@ class Schema(object):
         Todo:
             Check whether this is safe in the general case, so allowing it to be performed in __init__().
 
-            Modify so that it creates and returns something new rather than corrupting the base information within the Schema.
+            Make resource locations more able to handle the general case.
 
-            Make xi:include/@href more able to handle the general case.
+            Consider moving this out of Schema().
+
+            Tidy this up.
         """
         # identify the old info
         include_xpath = (iati.core.constants.NAMESPACE + 'include')
@@ -138,6 +140,11 @@ class Schema(object):
 
         Returns:
             etree._ElementTree: The flattened tree.
+
+        Todo:
+            Consider moving this out of Schema().
+
+            Tidy this up.
         """
         # change the include to a format that lxml can read
         tree = self._change_include_to_xinclude(tree)
@@ -153,6 +160,7 @@ class Schema(object):
             if isinstance(nested_schema_el, etree._Element):
                 # move contents of nested schema elements up a level
                 for el in nested_schema_el[:]:
+                    # do not duplicate an import statement
                     if 'schemaLocation' in el.attrib:
                         continue
                     tree.getroot().insert(nested_schema_el.getparent().index(nested_schema_el) + 1, el)
