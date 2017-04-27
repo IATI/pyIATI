@@ -5,6 +5,45 @@ from lxml import etree
 import iati.core.constants
 
 
+def add_namespace(schema, new_ns_name, new_ns_uri):
+    """Add a namespace to a Schema.
+
+    Params:
+        schema ()
+
+    Returns:
+        iati.core.schemas.Schema: The provided Schema, modified to include the specified namespace.
+
+    Raises:
+        TypeError: If an attempt it made to add a namespace to something other than a Schema.
+        ValueError: If the namespace name or uri are invalid values.
+
+    Note:
+        lxml does not allow modification of namespaces within a tree that already exists. As such, string manipulation is used. https://bugs.launchpad.net/lxml/+bug/555602
+
+    Todo:
+        Also add new namespaces to Datasets.
+
+        Add checks for the format of new_ns_name - for syntax, see: https://www.w3.org/TR/REC-xml-names/#NT-NSAttName
+
+        Add checks for the format of new_ns_uri - for syntax, see: https://www.ietf.org/rfc/rfc2396.txt
+    """
+    if not isinstance(schema, iati.core.schemas.Schema):
+        msg = "The `schema` parameter must be of type `iati.core.schemas.Schema - it was of type {0}".format(type(schema))
+        iati.core.utilities.log_error(msg)
+        raise TypeError
+    if not isinstance(new_ns_name, str) or len(new_ns_name) == 0:
+        msg = "The `new_ns_name` parameter must be a non-empty string."
+        iati.core.utilities.log_error(msg)
+        raise ValueError
+    if not isinstance(new_ns_uri, str) or len(new_ns_uri) == 0:
+        msg = "The `new_ns_name` parameter must be a valid URI."
+        iati.core.utilities.log_error(msg)
+        raise ValueError
+
+    initial_nsmap = schema._schema_base_tree.getroot().nsmap
+
+
 def convert_tree_to_schema(tree):
     """Convert an etree to a schema.
 

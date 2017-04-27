@@ -69,6 +69,22 @@ class Schema(object):
             iati.core.utilities.log_error(msg)
             raise TypeError(msg)
 
+    def _change_include_to_xinclude(self):
+        """Changes the method in which common elements are included.
+
+        lxml does not contain functionality to access elements within imports defined along the lines of: `<xsd:include schemaLocation="NAME.xsd" />`
+        It does, however, contains functionality to access elements within imports defined along the lines of: `<xi:include href="NAME.xsd" parse="xml" />`
+        when there is a namespace defined against the root schema element as `xmlns:xi="http://www.w3.org/2001/XInclude"`
+
+        This changes instances of the former to the latter.
+
+        Todo:
+            Check whether this is safe in the general case, so allowing it to be performed in __init__().
+        """
+        # add the namespace
+        self._schema_base_tree.getroot().nsmap['xi'] = 'http://www.w3.org/2001/XInclude'
+        # import pdb;pdb.set_trace()
+
     def validator(self, dataset):
         """A schema that can be used for validation.
 

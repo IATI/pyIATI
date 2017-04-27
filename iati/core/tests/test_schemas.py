@@ -76,11 +76,18 @@ class TestSchemas(object):
         when there is a namespace defined against the root schema element as `xmlns:xi="http://www.w3.org/2001/XInclude"`
 
         Todo:
-            Check what can be accessed like this.
+            Add asserts
         """
         schema = schema_initialised
+        local_element = 'iati-activities'
+        included_element = 'reporting-org'
 
-        assert 1
+        include_location_xpath = (iati.core.constants.NAMESPACE + 'include')
+        xinclude_location_xpath = (iati.core.constants.NAMESPACE + 'include')
+        local_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + local_element + '"]')
+        included_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
+
+        schema._change_include_to_xinclude()
 
     def test_schema_flattened_includes(self, schema_initialised):
         """Check that includes are flattened correctly.
@@ -88,6 +95,9 @@ class TestSchemas(object):
         In a full flatten of included elements as `<xi:include href="NAME.xsd" parse="xml" />`, there may be nested `schema` elements and other situations that are not permitted.
 
         This checks that the flattened xsd is valid and that included elements can be accessed.
+
+        Todo:
+            Add asserts
         """
         schema = schema_initialised
 
