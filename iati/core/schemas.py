@@ -82,6 +82,8 @@ class Schema(object):
             Check whether this is safe in the general case, so allowing it to be performed in __init__().
 
             Modify so that it creates and returns something new rather than corrupting the base information within the Schema.
+
+            Make xi:include/@href more able to handle the general case.
         """
         # identify the old info
         include_xpath = (iati.core.constants.NAMESPACE + 'include')
@@ -102,11 +104,10 @@ class Schema(object):
         # create and insert a new element
         xinclude_el = etree.Element(
             '{' + xi_uri + '}include',
-            href=include_location,
+            href=iati.core.resources.resource_filename(iati.core.resources.path_schema(include_location[:-4])),
             parse='xml',
             nsmap=new_nsmap
         )
-        # import pdb;pdb.set_trace()
         self._schema_base_tree.getroot().insert(include_el.getparent().index(include_el), xinclude_el)
 
         # remove the old element
@@ -115,12 +116,11 @@ class Schema(object):
     def flatten_includes(self):
         """Flatten includes so that all nodes are accessible through lxml.
 
-        It identifies the contents of files defined as `<xsd:include schemaLocation="NAME.xsd" />` and brings in the contents.
+        Identify the contents of files defined as `<xsd:include schemaLocation="NAME.xsd" />` and bring in the contents.
         """
         # change the include to a format that lxml can read
         self._change_include_to_xinclude()
 
-        # import pdb;pdb.set_trace()
         # adopt the included elements
         self._schema_base_tree.xinclude()
 

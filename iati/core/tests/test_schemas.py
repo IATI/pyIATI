@@ -97,7 +97,7 @@ class TestSchemas(object):
 
         # check that the new element has been added
         assert isinstance(xi_node, etree._Element)
-        assert xi_node.attrib['href'] == include_location
+        assert xi_node.attrib['href'][-len(include_location):] == include_location
         assert xi_node.attrib['parse'] == 'xml'
         # check that the old element has been removed
         assert include_node_after is None
