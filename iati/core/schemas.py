@@ -107,16 +107,21 @@ class Schema(object):
             new_nsmap[key] = value
         new_nsmap[xi_name] = xi_uri
 
-        # create and insert a new element
+        # create a new element
         xinclude_el = etree.Element(
             '{' + xi_uri + '}include',
             href=iati.core.resources.resource_filename(iati.core.resources.path_schema(include_location[:-4])),
             parse='xml',
             nsmap=new_nsmap
         )
+
+        # make the path to `xml.xsd` reference the correct file
         import_xpath = (iati.core.constants.NAMESPACE + 'import')
         import_el = tree.getroot().find(import_xpath)
-        tree.getroot().insert(import_el.getparent().index(import_el), xinclude_el)
+        import_el.attrib['schemaLocation'] = iati.core.resources.resource_filename(iati.core.resources.path_schema('xml'))
+
+        # insert the new element
+        tree.getroot().insert(import_el.getparent().index(import_el) + 1, xinclude_el)
 
         # remove the old element
         etree.strip_elements(tree.getroot(), include_xpath)
@@ -148,7 +153,9 @@ class Schema(object):
             if isinstance(nested_schema_el, etree._Element):
                 # move contents of nested schema elements up a level
                 for el in nested_schema_el[:]:
-                    tree.getroot().insert(nested_schema_el.getparent().index(nested_schema_el), el)
+                    if 'schemaLocation' in el.attrib:
+                        continue
+                    tree.getroot().insert(nested_schema_el.getparent().index(nested_schema_el) + 1, el)
         # remove the nested schema elements
         etree.strip_elements(tree.getroot(), schema_xpath)
 
@@ -206,7 +213,6 @@ class Schema(object):
                 elif codelist.name == 'OrganisationType':
                     xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'reporting-org' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="type"]')
                     tree = self.flatten_includes(tree)
-                    # import pdb;pdb.set_trace()
                 elif codelist.name == 'Sector' or codelist.name == 'SectorCategory':
                     xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
                     vocab = get_sector_vocab(dataset)
