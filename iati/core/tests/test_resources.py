@@ -45,10 +45,6 @@ class TestResources(object):
 
     @pytest.mark.parametrize('codelist', [
         'Name',
-        'Name',
-        'Name',
-        'Name.xml',
-        'Name.xml',
         'Name.xml',
     ])
     def test_get_codelist_path_name(self, codelist):
