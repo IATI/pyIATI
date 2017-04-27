@@ -100,7 +100,7 @@ def find_all_schema_paths(version=None):
 
         Implement for more than a single specified activity schema.
     """
-    return [path_schema(FILE_SCHEMA_ACTIVITY_NAME, version)]
+    return [get_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version)]
 
 
 def get_codelist_path(codelist_name, version=None):
@@ -155,7 +155,7 @@ def path_data(name):
     return os.sep.join((PATH_DATA, '{0}'.format(name) + FILE_DATA_EXTENSION))
 
 
-def path_schema(name, version=None):
+def get_schema_path(name, version=None):
     """Determine the path of a schema with the given name.
 
     Args:
