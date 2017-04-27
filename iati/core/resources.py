@@ -35,8 +35,6 @@ PATH_DATA = os.path.join(BASE_PATH, 'test_data')
 """The relative location of the folder containing IATI data files."""
 PATH_SCHEMAS = 'schemas'
 """The location of the folder containing schemas from the SSOT."""
-PATH_SCHEMAS_202 = os.path.join(BASE_PATH_202, PATH_SCHEMAS)
-"""The relative location of the folder containing schemas from the SSOT, version 2.02 of the IATI standard."""
 
 FILE_CODELIST_EXTENSION = '.xml'
 """The extension of a file containing a Codelist."""

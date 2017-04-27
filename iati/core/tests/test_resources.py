@@ -41,7 +41,6 @@ class TestResources(object):
         assert len(paths) == 1
         for path in paths:
             assert path[-4:] == iati.core.resources.FILE_SCHEMA_EXTENSION
-            assert iati.core.resources.PATH_SCHEMAS_202 in path
 
     @pytest.mark.parametrize('codelist', [
         'Name',
