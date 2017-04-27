@@ -25,17 +25,17 @@ Used to locate resources when the package is distributed in certain ways that do
 
 BASE_PATH = 'resources'
 """The relative location of the resources folder."""
-BASE_PATH_STANDARD = os.sep.join((BASE_PATH, 'standard'))
+BASE_PATH_STANDARD = os.path.join(BASE_PATH, 'standard')
 """The relative location of resources related to the IATI Standard."""
-BASE_PATH_202 = os.sep.join((BASE_PATH_STANDARD, '202'))
+BASE_PATH_202 = os.path.join(BASE_PATH_STANDARD, '202')
 """The relative location of the resources folder for version 2.02 of the IATI Standard."""
 PATH_CODELISTS = 'codelists'
 """The location of the folder containing codelists from the SSOT."""
-PATH_DATA = os.sep.join((BASE_PATH, 'test_data'))
+PATH_DATA = os.path.join(BASE_PATH, 'test_data')
 """The relative location of the folder containing IATI data files."""
 PATH_SCHEMAS = 'schemas'
 """The location of the folder containing schemas from the SSOT."""
-PATH_SCHEMAS_202 = os.sep.join((BASE_PATH_202, PATH_SCHEMAS))
+PATH_SCHEMAS_202 = os.path.join(BASE_PATH_202, PATH_SCHEMAS)
 """The relative location of the folder containing schemas from the SSOT, version 2.02 of the IATI standard."""
 
 FILE_CODELIST_EXTENSION = '.xml'
@@ -129,7 +129,7 @@ def get_codelist_path(codelist_name, version=None):
     if codelist_name[-4:] == FILE_CODELIST_EXTENSION:
         codelist_name = codelist_name[:-4]
 
-    return path_for_version(os.sep.join((PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION)), version)
+    return path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
 
 
 def path_data(name):
@@ -151,7 +151,7 @@ def path_data(name):
     Todo:
         Test this.
     """
-    return os.sep.join((PATH_DATA, '{0}'.format(name) + FILE_DATA_EXTENSION))
+    return os.path.join(PATH_DATA, '{0}'.format(name) + FILE_DATA_EXTENSION)
 
 
 def get_schema_path(name, version=None):
@@ -175,7 +175,7 @@ def get_schema_path(name, version=None):
 
         Test this.
     """
-    return path_for_version(os.sep.join((PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION)), version)
+    return path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
 
 def path_for_version(path, version=None):
@@ -196,7 +196,7 @@ def path_for_version(path, version=None):
 
         Test this.
     """
-    return os.sep.join((BASE_PATH_202, path))
+    return os.path.join(BASE_PATH_202, path)
 
 
 def load_as_string(path):
