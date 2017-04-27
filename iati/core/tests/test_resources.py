@@ -9,7 +9,7 @@ class TestResources(object):
 
     def test_codelist_flow_type(self):
         """Check that the FlowType codelist contains content"""
-        path = iati.core.resources.path_codelist('FlowType')
+        path = iati.core.resources.get_codelist_path('FlowType')
 
         content = iati.core.resources.load_as_string(path)
 
@@ -51,9 +51,9 @@ class TestResources(object):
         'Name.xml',
         'Name.xml',
     ])
-    def test_path_codelist_name(self, name):
+    def test_get_codelist_path_name(self, name):
         """Check that a codelist path is found from just a name."""
-        path = iati.core.resources.path_codelist(name)
+        path = iati.core.resources.get_codelist_path(name)
 
         assert path[-4:] == iati.core.resources.FILE_CODELIST_EXTENSION
         assert path.count(iati.core.resources.FILE_CODELIST_EXTENSION) == 1

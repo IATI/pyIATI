@@ -74,7 +74,7 @@ def find_all_codelist_paths(version=None):
         Provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
     """
     files = pkg_resources.resource_listdir(PACKAGE, path_for_version(PATH_CODELISTS, version))
-    paths = [path_codelist(file, version) for file in files]
+    paths = [get_codelist_path(file, version) for file in files]
     paths_codelists_only = [path for path in paths if path[-4:] == FILE_CODELIST_EXTENSION]
 
     return paths_codelists_only
@@ -103,7 +103,7 @@ def find_all_schema_paths(version=None):
     return [path_schema(FILE_SCHEMA_ACTIVITY_NAME, version)]
 
 
-def path_codelist(name, version=None):
+def get_codelist_path(name, version=None):
     """Determine the path of a codelist with the given name.
 
     Args:
