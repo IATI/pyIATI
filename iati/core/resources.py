@@ -69,7 +69,7 @@ def find_all_codelist_paths(version=None):
 
         Provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
     """
-    files = pkg_resources.resource_listdir(PACKAGE, path_for_version(PATH_CODELISTS, version))
+    files = pkg_resources.resource_listdir(PACKAGE, get_path_for_version(PATH_CODELISTS, version))
     paths = [get_codelist_path(file, version) for file in files]
     paths_codelists_only = [path for path in paths if path[-4:] == FILE_CODELIST_EXTENSION]
 
@@ -126,7 +126,7 @@ def get_codelist_path(codelist_name, version=None):
     if codelist_name[-4:] == FILE_CODELIST_EXTENSION:
         codelist_name = codelist_name[:-4]
 
-    return path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
+    return get_path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
 
 
 def get_data_path(name):
@@ -172,7 +172,7 @@ def get_schema_path(name, version=None):
 
         Test this.
     """
-    return path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
+    return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
 
 def get_folder_path_for_version(version=None):
@@ -194,8 +194,8 @@ def get_folder_path_for_version(version=None):
         raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
 
 
-def path_for_version(path, version=None):
-    """Determine the relative location of a specified path at the specified version of the IATI Standard.
+def get_path_for_version(path, version=None):
+    """Return the relative location of a specified path at the specified version of the IATI Standard.
 
     Args:
         path (str): The path to the file that is to be read in.
