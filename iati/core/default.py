@@ -82,8 +82,8 @@ def codelists(version=None, bypass_cache=False):
     paths = iati.core.resources.find_all_codelist_paths()
 
     for path in paths:
-        head, tail = os.path.split(path)
-        name = tail[:-len(iati.core.resources.FILE_CODELIST_EXTENSION)] # Get the name of the codelist, without the '.xml' file extension
+        _, filename = os.path.split(path)
+        name = filename[:-len(iati.core.resources.FILE_CODELIST_EXTENSION)]  # Get the name of the codelist, without the '.xml' file extension
         if (name not in _CODELISTS.keys()) or bypass_cache:
             xml_str = iati.core.resources.load_as_string(path)
             codelist_found = iati.core.codelists.Codelist(name, xml=xml_str)
