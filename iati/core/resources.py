@@ -151,6 +151,27 @@ def get_data_path(name):
     return os.path.join(PATH_DATA, '{0}'.format(name) + FILE_DATA_EXTENSION)
 
 
+def get_folder_name_for_version(version=None):
+    """Return the folder name for a given version of the Standard.
+
+    Args:
+        version (str): The version of the Standard to return the folder path for. Defaults to None. This means that the folder name corresponding to the latest version of the Standard is returned.
+
+    Returns:
+        str: The folder name for the specified version of the Standard.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+    """
+    if version is None:
+        version = iati.core.constants.STANDARD_VERSION_LATEST
+
+    if version in iati.core.constants.STANDARD_VERSIONS:
+        return version.replace('.', '')
+    else:
+        raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
+
+
 def get_schema_path(name, version=None):
     """Determine the path of a schema with the given name.
 
@@ -183,18 +204,8 @@ def get_folder_path_for_version(version=None):
 
     Returns:
         str: The relative path to the folder for containing SSOT data the specified version of the Standard.
-
-    Raises:
-        ValueError: When a specified version is not a valid version of the IATI Standard.
     """
-    if version is None:
-        version = iati.core.constants.STANDARD_VERSION_LATEST
-
-    if version in iati.core.constants.STANDARD_VERSIONS:
-        version_folder_name = version.replace('.', '')
-        return os.path.join(BASE_PATH_STANDARD, version_folder_name)
-    else:
-        raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
+    return os.path.join(BASE_PATH_STANDARD, get_folder_name_for_version(version))
 
 
 def get_path_for_version(path, version=None):
