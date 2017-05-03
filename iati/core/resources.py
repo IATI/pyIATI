@@ -30,7 +30,7 @@ BASE_PATH_STANDARD = os.path.join(BASE_PATH, 'standard')
 """The relative location of resources related to the IATI Standard."""
 PATH_CODELISTS = 'codelists'
 """The location of the folder containing codelists from the SSOT."""
-PATH_DATA = os.path.join(BASE_PATH, 'test_data')
+PATH_TEST_DATA = os.path.join(BASE_PATH, 'test_data')
 """The relative location of the folder containing IATI data files."""
 PATH_SCHEMAS = 'schemas'
 """The location of the folder containing schemas from the SSOT."""
@@ -148,7 +148,7 @@ def get_data_path(name, version=None):
     Todo:
         Test this.
     """
-    return os.path.join(PATH_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
+    return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
 
 
 def get_folder_name_for_version(version=None):
