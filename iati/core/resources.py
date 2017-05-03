@@ -129,7 +129,7 @@ def get_codelist_path(codelist_name, version=None):
     return get_path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
 
 
-def get_data_path(name, version=None):
+def get_test_data_path(name, version=None):
     """Determine the path of an IATI data file with the given filename.
 
     Args:
