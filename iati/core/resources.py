@@ -134,7 +134,7 @@ def get_data_path(name):
 
     Args:
         name (str): The name of the data file to locate.
-        version (float): The version of the Standard to return the Schemas for. Defaults to 0. This means that the latest version of the Schema is returned.
+        version (float): The version of the Standard to return the data files for. Defaults to 0. This means that data files for the latest version of the Standard is returned.
 
     Returns:
         str: The path to a file containing the specified data.
@@ -156,7 +156,7 @@ def get_schema_path(name, version=None):
 
     Args:
         name (str): The name of the schema to locate.
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that paths to the latest version of the Codelists are returned.
+        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
 
     Returns:
         str: The path to a file containing the specified schema.
@@ -179,7 +179,10 @@ def get_folder_path_for_version(version=None):
     """Return the path for the folder containing SSOT data (schemas, codelists etc) for a given version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that paths to the latest version of the Codelists are returned.
+        version (str): The version of the Standard to return the folder path for. Defaults to None. This means that the path corresponding to the latest version of the Standard is returned.
+
+    Returns:
+        str: The relative path to the folder for containing SSOT data the specified version of the Standard.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -199,10 +202,10 @@ def get_path_for_version(path, version=None):
 
     Args:
         path (str): The path to the file that is to be read in.
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that paths to the latest version of the Codelists are returned.
+        version (str): The version of the Standard to return the folder path for. Defaults to None. This means that the path corresponding to the latest version of the Standard is returned.
 
     Returns:
-        str: The relative path to a file at the specified version of the standard.
+        str: The relative path to a file at the specified version of the Standard.
 
     Note:
         Does not check whether anything exists at the specified path.
