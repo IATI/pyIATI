@@ -129,12 +129,12 @@ def get_codelist_path(codelist_name, version=None):
     return get_path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
 
 
-def get_data_path(name):
+def get_data_path(name, version=None):
     """Determine the path of an IATI data file with the given filename.
 
     Args:
         name (str): The name of the data file to locate. The filename must not contain the '.xml' file extension.
-        version (float): The version of the Standard to return the data files for. Defaults to 0. This means that data files for the latest version of the Standard is returned.
+        version (float): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
 
     Returns:
         str: The path to a file containing the specified data.
@@ -148,7 +148,7 @@ def get_data_path(name):
     Todo:
         Test this.
     """
-    return os.path.join(PATH_DATA, '{0}'.format(name) + FILE_DATA_EXTENSION)
+    return os.path.join(PATH_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
 
 
 def get_folder_name_for_version(version=None):
