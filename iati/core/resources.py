@@ -15,6 +15,7 @@ Todo:
 import os
 import pkg_resources
 from lxml import etree
+import iati.core.constants
 
 
 PACKAGE = __name__
@@ -27,8 +28,6 @@ BASE_PATH = 'resources'
 """The relative location of the resources folder."""
 BASE_PATH_STANDARD = os.path.join(BASE_PATH, 'standard')
 """The relative location of resources related to the IATI Standard."""
-BASE_PATH_202 = os.path.join(BASE_PATH_STANDARD, '202')
-"""The relative location of the resources folder for version 2.02 of the IATI Standard."""
 PATH_CODELISTS = 'codelists'
 """The location of the folder containing codelists from the SSOT."""
 PATH_DATA = os.path.join(BASE_PATH, 'test_data')
@@ -176,6 +175,25 @@ def get_schema_path(name, version=None):
     return path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
 
+def get_folder_path_for_version(version=None):
+    """Return the path for the folder containing SSOT data (schemas, codelists etc) for a given version of the Standard.
+
+    Args:
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that paths to the latest version of the Codelists are returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+    """
+    if version is None:
+        version = iati.core.constants.STANDARD_VERSION_LATEST
+
+    if version in iati.core.constants.STANDARD_VERSIONS:
+        version_folder_name = version.replace('.', '')
+        return os.path.join(BASE_PATH_STANDARD, version_folder_name)
+    else:
+        raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
+
+
 def path_for_version(path, version=None):
     """Determine the relative location of a specified path at the specified version of the IATI Standard.
 
@@ -190,11 +208,9 @@ def path_for_version(path, version=None):
         Does not check whether anything exists at the specified path.
 
     Todo:
-        Handle versions of the standard other than 2.02.
-
         Test this.
     """
-    return os.path.join(BASE_PATH_202, path)
+    return os.path.join(get_folder_path_for_version(version), path)
 
 
 def load_as_string(path):

@@ -7,6 +7,32 @@ import iati.core.resources
 class TestResources(object):
     """A container for tests relating to resources"""
 
+    @pytest.mark.parametrize('version, expected_version_foldername', [
+        ('2.02', '202')
+    ])
+    @pytest.mark.parametrize('path_component', [
+        'resources',
+        'standard'
+    ])
+    def test_get_folder_path_for_version(self, version, expected_version_foldername, path_component):
+        """Check that expected components are present within folder paths"""
+        path = iati.core.resources.get_folder_path_for_version(version)
+
+        assert expected_version_foldername in path
+        assert path_component in path
+
+    @pytest.mark.parametrize('version', [
+        '1.00',
+        '1',
+        1,
+        1.01,  # A verion must be specified as a string
+        'string'
+    ])
+    def test_get_folder_path_for_version_invalid_version(self, version):
+        """Check that an invalid version of the Standard raises a ValueError exception"""
+        with pytest.raises(ValueError):
+            iati.core.resources.get_folder_path_for_version(version)
+
     def test_codelist_flow_type(self):
         """Check that the FlowType codelist contains content"""
         path = iati.core.resources.get_codelist_path('FlowType')
