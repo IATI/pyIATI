@@ -130,10 +130,10 @@ def get_codelist_path(codelist_name, version=None):
 
 
 def get_data_path(name):
-    """Determine the path of an IATI data file with the given name.
+    """Determine the path of an IATI data file with the given filename.
 
     Args:
-        name (str): The name of the data file to locate.
+        name (str): The name of the data file to locate. The filename must not contain the '.xml' file extension.
         version (float): The version of the Standard to return the data files for. Defaults to 0. This means that data files for the latest version of the Standard is returned.
 
     Returns:
