@@ -96,7 +96,7 @@ class TestValidate(object):
 
     def test_validation_codelist_vocab_default_implicit_invalid_code(self):
         """Perform data validation against valid IATI XML with a vocabulary that has been implicitly set. The code is invalid."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT)
+        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT_INVALID_CODE)
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
         codelist_1 = iati.core.default.codelists()['SectorVocabulary']
         codelist_2 = iati.core.default.codelists()['Sector']
