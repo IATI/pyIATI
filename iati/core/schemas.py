@@ -102,6 +102,8 @@ class Schema(object):
             elif isinstance(dataset, iati.core.data.Dataset):
                 try:
                     vocab = dataset.xml_tree.find('//iati-activity/sector').get('vocabulary')
+                    if vocab is None:
+                        vocab = '1'
                 except Exception as e:  # TODO: Use a less general exception
                     # cannot find @vocabulary, so use default vocab
                     vocab = '1'
@@ -120,7 +122,6 @@ class Schema(object):
                     xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'iati-activities' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="version"]')
                 elif codelist.name == 'OrganisationType':
                     xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'reporting-org' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="type"]')
-                    # import pdb;pdb.set_trace()
                 elif codelist.name == 'Sector' or codelist.name == 'SectorCategory':
                     xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
                     vocab = get_sector_vocab(dataset)
