@@ -106,7 +106,7 @@ class TestValidate(object):
         schema.codelists.add(codelist_2)
         schema.codelists.add(codelist_3)
 
-        assert iati.validate.is_valid(data, schema)
+        assert not iati.validate.is_valid(data, schema)
 
     def test_validation_codelist_vocab_default_explicit(self):
         """Perform data validation against valid IATI XML with a vocabulary that has been explicitly set as the default value."""
