@@ -1,5 +1,7 @@
 """A module containing metadata classes for IATI SSOT objects."""
 
+from enum import Enum
+
 
 class Metadata(object):
     """A base metadata class for all forms of IATI SSOT objects.
@@ -8,6 +10,8 @@ class Metadata(object):
         Add documentation for class attributes.
     """
 
+    OrginalityTypes = Enum('OrginalityTypes', 'original modified', module=__name__)
+
     def __init__(self, **kwargs):
         """Set class attributes."""
         self.description = kwargs.pop('description', None)
@@ -15,6 +19,39 @@ class Metadata(object):
         self.title = kwargs.pop('title', None)
         self.version = kwargs.pop('version', None)
 
+    def is_in_enum(self, value, Enum):
+        """Verify that a value is contained within a defined Enum object.
+
+        Params:
+            value (str): Value to be checked.
+            Enum (Enum): Enum object containing allowed values.
+
+        Returns:
+            True: If the Enum is contained within the defined Enum.
+
+        Raises:
+            ValueError: If the value is not contained within the defined Enum.
+        """
+        if value in Enum.__members__:
+            return True
+        else:
+            raise ValueError("Value {0} not in Enum list.".format(value))
+
+    def set_attr_by_enum(self, value, Enum):
+        """Helper function to set a class attribute to None (if the input value is None), or to a value (if it is contained within an input Enum).
+
+        Params:
+            value (str): Value to be checked.
+            Enum (Enum): Enum object containing allowed values.
+
+        Returns:
+            None: If the input value is None
+            Value: If the input value is contained within the Enum
+        """
+        if value is None:
+            return None
+        elif self.is_in_enum(value, Enum):
+            return value  # is_in_enum() raises a ValueError exception if not True
 
 class MetadataCodelist(Metadata):
     """A metadata class for codelist.Codelist objects.
@@ -23,11 +60,14 @@ class MetadataCodelist(Metadata):
         Add documentation for class attributes.
     """
 
+    CodelistTypes = Enum('CodelistTypes', 'embedded non-embedded user-defined', module=__name__)
+    SourceTypes = Enum('SourceTypes', 'iati replicated user-defined', module=__name__)
+
     def __init__(self, **kwargs):
         """Set class attributes."""
         self.category_codelist = kwargs.pop('category_codelist', None)
         self.codelist_name = kwargs.pop('codelist_name', None)
-        self.codelist_type = kwargs.pop('codelist_type', None)
+        self.codelist_type = self.set_attr_by_enum(kwargs.pop('codelist_type', None), self.CodelistTypes)
         self.complete = kwargs.pop('complete', None)
         self.ref = kwargs.pop('ref', None)
         self.revision = kwargs.pop('revision', None)
@@ -59,6 +99,8 @@ class MetadataDataset(Metadata):
         Add documentation for class attributes.
     """
 
+    DatasetTypes = Enum('DatasetTypes', 'activity activity-partial organisation organisation-partial', module=__name__)
+
     def __init__(self, **kwargs):
         """Set class attributes."""
         self.dataset_type = kwargs.pop('dataset_type', None)
@@ -75,6 +117,8 @@ class MetadataRuleset(Metadata):
     Todo:
         Add documentation for class attributes.
     """
+
+    RulesetTypes = Enum('RulesetTypes', 'embedded user-defined', module=__name__)
 
     def __init__(self, **kwargs):
         """Set class attributes."""
@@ -97,6 +141,8 @@ class MetadataSchema(Metadata):
     Todo:
         Add documentation for class attributes.
     """
+
+    SchemaTypes = Enum('SchemaTypes', 'activity codelist common organisation', module=__name__)
 
     def __init__(self, **kwargs):
         """Set class attributes."""

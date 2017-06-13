@@ -1,5 +1,6 @@
 """A module containing tests for Metadata classes."""
 import iati.core.metadata
+import pytest
 
 
 class TestMetadata(object):
@@ -19,6 +20,17 @@ class TestMetadata(object):
         assert isinstance(metadata_codelist, iati.core.metadata.MetadataCodelist)
         assert metadata_codelist.version == '2.02'
         assert metadata_codelist.category_codelist == 'BudgetIdentifierSector'
+
+    def test_enum_valid_input(self):
+        """Check that a value (contained within the CodelistTypes Enum) is correctly set"""
+        metadata_codelist = iati.core.metadata.MetadataCodelist(codelist_type='embedded')
+
+        assert metadata_codelist.codelist_type == 'embedded'
+
+    def test_enum_invalid_input_raises_error(self):
+        """Check that adding a value not within the CodelistTypes Enum raises an ValueError"""
+        with pytest.raises(ValueError):
+            iati.core.metadata.MetadataCodelist(codelist_type='invalid codelist type')
 
     def test_metadata_code_instantiation(self):
         """Check that the MetadataCode class can be created and at least one attribute can be set"""
