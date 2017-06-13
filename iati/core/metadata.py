@@ -7,6 +7,7 @@ class Metadata(object):
     """A base metadata class for all forms of IATI SSOT objects.
 
     Todo:
+        Incorportate advice on Enum usage from stackexchange post: https://codereview.stackexchange.com/questions/162513/enum-usage-to-restrict-class-attribute-values/
         Add documentation for class attributes.
     """
 
