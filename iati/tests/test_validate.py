@@ -150,6 +150,7 @@ class TestValidate(object):
 
         assert iati.validate.is_valid(data, schema)
 
+    @pytest.mark.xfail(strict=True)
     def test_validation_codelist_vocab_multiple_different_valid(self):
         """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is different. The codes are valid against the vocabularies."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_DIFFERENT_VALID)

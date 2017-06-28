@@ -1,4 +1,6 @@
 """A module containing a core representation of IATI Schemas."""
+import copy
+import uuid
 from lxml import etree
 import iati.core.codelists
 import iati.core.constants
@@ -115,6 +117,31 @@ class Schema(object):
 
         # tree = copy.deepcopy(self._schema_base_tree)
         tree = self._schema_base_tree
+
+        # locate the various values provided for vocabularies and create a mapping
+        sector_vocab_uuids = dict()
+        sectors = dataset.xml_tree.findall('//sector')
+        for sector in sectors:
+            try:
+                vocab = sector.attrib['vocabulary']
+            except KeyError:
+                continue
+            sector_vocab_uuids[vocab] = uuid.uuid4().hex
+
+        # duplicate schema sector elements for each vocab value
+        sector_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector' + '"]')
+        schema_sector = tree.getroot().find(sector_xpath)
+        for vocab, new_uuid in sector_vocab_uuids.items():
+            new_schema_sector = copy.deepcopy(schema_sector)
+            new_schema_sector.attrib['name'] = 'sector-' + new_uuid
+            tree.getroot().append(new_schema_sector)
+
+        # modify dataset elements to refer to new sector element names
+        sector_xpath = '//sector[@vocabulary="{0}"]'
+        for vocab, new_uuid in sector_vocab_uuids.items():
+            sector_el = dataset.xml_tree.find(sector_xpath.format(vocab))
+            # for sector_el in sectors_with_vocab:
+            sector_el.tag = 'sector-' + new_uuid
 
         if len(self.codelists):
             for codelist in self.codelists:

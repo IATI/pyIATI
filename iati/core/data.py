@@ -63,7 +63,7 @@ class Dataset(object):
             ValueError: If a value that is being assigned is not a valid XML string.
             TypeError: If a value that is being assigned is not a string at all.
         """
-        return self._xml_str
+        return etree.tostring(self._xml_tree, pretty_print=True).decode('utf-8')
 
     @xml_str.setter
     def xml_str(self, value):
