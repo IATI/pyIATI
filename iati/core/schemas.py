@@ -131,10 +131,18 @@ class Schema(object):
         # duplicate schema sector elements for each vocab value
         sector_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector' + '"]')
         schema_sector = tree.getroot().find(sector_xpath)
+        sector_home_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'iati-activity' + '"]//' + iati.core.constants.NAMESPACE + 'element[@ref="sector"]')
+        sector_home = tree.getroot().find(sector_home_xpath)
         for vocab, new_uuid in sector_vocab_uuids.items():
+            # the main element
             new_schema_sector = copy.deepcopy(schema_sector)
             new_schema_sector.attrib['name'] = 'sector-' + new_uuid
             tree.getroot().append(new_schema_sector)
+
+            # state that it can be under iati-activity
+            new_sector_home = copy.deepcopy(sector_home)
+            new_sector_home.attrib['ref'] = 'sector-' + new_uuid
+            sector_home.getparent().append(new_sector_home)
 
         # modify dataset elements to refer to new sector element names
         sector_xpath = '//sector[@vocabulary="{0}"]'
