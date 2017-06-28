@@ -22,5 +22,5 @@ def is_valid(dataset, schema):
         if validator is not False:
             validator.assertValid(dataset.xml_tree)
         return True
-    except etree.DocumentInvalid:
+    except etree.DocumentInvalid as exception_obj:
         return False

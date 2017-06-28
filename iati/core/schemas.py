@@ -149,16 +149,16 @@ class Schema(object):
                     xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'iati-activities' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="version"]')
                 elif codelist.name == 'OrganisationType':
                     xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'reporting-org' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="type"]')
-                elif codelist.name == 'Sector' or codelist.name == 'SectorCategory':
-                    xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
-                    vocab = get_sector_vocab(dataset)
+                elif codelist.name == 'Sector':
+                    xpath_default = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
+                    try:
+                        xpath_explicit = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector-' + sector_vocab_uuids['1'] + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
+                        xpath = xpath_explicit
+                    except KeyError:
+                        xpath = xpath_default
 
-                    if codelist.name == 'Sector' and vocab is not '1':
-                        # The Sector codelist is only used when a @vocabulary of "1" is used
-                        continue
-                    if codelist.name == 'SectorCategory' and vocab is not '2':
-                        # The SectorCategory codelist is only used when a @vocabulary of "2" is used
-                        continue
+                elif codelist.name == 'SectorCategory':
+                    xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector-' + sector_vocab_uuids['2'] + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
 
                 elif codelist.name == 'SectorVocabulary':
                     xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="vocabulary"]')

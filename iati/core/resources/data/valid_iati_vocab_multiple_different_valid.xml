@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <iati-activities version="2.02">
-  <iati-activity pdb="1">
+  <iati-activity>
     <iati-identifier></iati-identifier>
     <reporting-org type="40" ref="AA-AAA-123456789">
       <narrative>Organisation name</narrative>
