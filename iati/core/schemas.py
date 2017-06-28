@@ -166,7 +166,10 @@ class Schema(object):
                         xpath = xpath_default
 
                 elif codelist.name == 'SectorCategory':
-                    xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector-' + sector_vocab_uuids['2'] + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
+                    try:
+                        xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector-' + sector_vocab_uuids['2'] + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
+                    except KeyError:
+                        continue
 
                 elif codelist.name == 'SectorVocabulary':
                     xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="vocabulary"]')
