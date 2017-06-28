@@ -119,13 +119,14 @@ class Schema(object):
         tree = self._schema_base_tree
 
         # locate the various values provided for vocabularies and create a mapping
+        # ensure there is a value set for the default vocab
         sector_vocab_uuids = dict()
         sectors = dataset.xml_tree.findall('//sector')
         for sector in sectors:
             try:
                 vocab = sector.attrib['vocabulary']
             except KeyError:
-                continue
+                vocab = ''
             sector_vocab_uuids[vocab] = uuid.uuid4().hex
 
         # duplicate schema sector elements for each vocab value
@@ -145,11 +146,13 @@ class Schema(object):
             sector_home.getparent().append(new_sector_home)
 
         # modify dataset elements to refer to new sector element names
-        sector_xpath = '//sector[@vocabulary="{0}"]'
-        for vocab, new_uuid in sector_vocab_uuids.items():
-            sector_el = dataset.xml_tree.find(sector_xpath.format(vocab))
-            # for sector_el in sectors_with_vocab:
-            sector_el.tag = 'sector-' + new_uuid
+        sector_xpath = '//sector'
+        sector_els = dataset.xml_tree.findall(sector_xpath)
+        for el in sector_els:
+            vocab = el.get('vocabulary')
+            if vocab is None:
+                vocab = ''
+            el.tag = 'sector-' + sector_vocab_uuids[vocab]
 
         if len(self.codelists):
             for codelist in self.codelists:
@@ -158,7 +161,10 @@ class Schema(object):
                 elif codelist.name == 'OrganisationType':
                     xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'reporting-org' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="type"]')
                 elif codelist.name == 'Sector':
-                    xpath_default = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
+                    try:
+                        xpath_default = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector-' + sector_vocab_uuids[''] + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
+                    except KeyError:
+                        xpath_default = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
                     try:
                         xpath_explicit = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector-' + sector_vocab_uuids['1'] + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
                         xpath = xpath_explicit

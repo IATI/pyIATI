@@ -16,7 +16,8 @@
     <activity-status code="2"/>
     <activity-date type="1" iso-date="2023-11-27"/>
     <!-- Multiple sector elements, each specifying a different code from different vocabs. -->
-    <sector vocabulary="1" code="11110" /><!-- No vocabulary set, so default vocab assumed. @code value taken from default vocab. -->
+    <sector code="11110" /><!-- No vocabulary set, so default vocab assumed. @code value taken from default vocab. -->
     <sector vocabulary="2" code="112" /><!-- Non-default vocabulary set. @code value taken from this vocab. -->
+    <sector vocabulary="1" code="11110" /><!-- Default vocabulary mentioned explicitly. @code value taken from this vocab. -->
   </iati-activity>
 </iati-activities>
