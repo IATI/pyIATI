@@ -92,6 +92,8 @@ class Schema(object):
             Consider moving this out of Schema().
 
             Tidy this up.
+
+            Consider using XSLT.
         """
         # identify the old info
         include_xpath = (iati.core.constants.NAMESPACE + 'include')
