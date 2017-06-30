@@ -9,7 +9,11 @@ import iati.core.utilities
 class TestUtilities(object):
     """A container for tests relating to utilities"""
 
-    def test_add_namespace_schema_new(self):
+    @pytest.fixture
+    def schema_base_tree(self):
+        return iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)._schema_base_tree
+
+    def test_add_namespace_schema_new(self, schema_base_tree):
         """Check that an additional namespace can be added to a Schema.
 
         Todo:
@@ -17,12 +21,11 @@ class TestUtilities(object):
 
             Add a similar test for Datasets.
         """
-        tree = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)._schema_base_tree
-        initial_nsmap = tree.getroot().nsmap
+        initial_nsmap = schema_base_tree.getroot().nsmap
         ns_name = 'xi'
         ns_uri = 'http://www.w3.org/2001/XInclude'
 
-        tree = iati.core.utilities.add_namespace(tree, ns_name, ns_uri)
+        tree = iati.core.utilities.add_namespace(schema_base_tree, ns_name, ns_uri)
         new_nsmap = tree.getroot().nsmap
 
         assert len(new_nsmap) == len(initial_nsmap) + 1
@@ -30,18 +33,17 @@ class TestUtilities(object):
         assert ns_name in new_nsmap
         assert new_nsmap[ns_name] == ns_uri
 
-    def test_add_namespace_schema_already_present(self):
+    def test_add_namespace_schema_already_present(self, schema_base_tree):
         """Check that attempting to add a namespace that already exists changes nothing if the new URI is the same.
 
         Todo:
             Add a similar test for Datasets.
         """
-        tree = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)._schema_base_tree
-        initial_nsmap = tree.getroot().nsmap
+        initial_nsmap = schema_base_tree.getroot().nsmap
         ns_name = 'xsd'
         ns_uri = 'http://www.w3.org/2001/XMLSchema'
 
-        tree = iati.core.utilities.add_namespace(tree, ns_name, ns_uri)
+        tree = iati.core.utilities.add_namespace(schema_base_tree, ns_name, ns_uri)
         new_nsmap = tree.getroot().nsmap
 
         assert len(new_nsmap) == len(initial_nsmap)
@@ -50,18 +52,17 @@ class TestUtilities(object):
         assert initial_nsmap[ns_name] == ns_uri
         assert new_nsmap[ns_name] == ns_uri
 
-    def test_add_namespace_schema_already_present_diff_value(self):
+    def test_add_namespace_schema_already_present_diff_value(self, schema_base_tree):
         """Check that attempting to add a namespace that already exists to a Schema raises an error rather than leading to modification.
 
         Todo:
             Add a similar test for Datasets.
         """
-        tree = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)._schema_base_tree
         ns_name = 'xsd'
         ns_uri = 'http://www.w3.org/2001/XMLSchema-different'
 
         try:
-            _ = iati.core.utilities.add_namespace(tree, ns_name, ns_uri)
+            _ = iati.core.utilities.add_namespace(schema_base_tree, ns_name, ns_uri)
         except ValueError:
             assert True
         else:  # pragma: no cover
@@ -90,18 +91,17 @@ class TestUtilities(object):
         pass
 
     @pytest.mark.parametrize("ns_name", [''])
-    def test_add_namespace_nsname_invalid_str(self, ns_name):
+    def test_add_namespace_nsname_invalid_str(self, ns_name, schema_base_tree):
         """Check that attempting to add a namespace with a name that is an invalid string raises an appropriate error.
 
         Todo:
             Add more tests - for syntax, see:
                 https://www.w3.org/TR/REC-xml-names/#NT-NSAttName
         """
-        tree = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)._schema_base_tree
         ns_uri = 'http://www.w3.org/2001/XMLSchema'
 
         try:
-            _ = iati.core.utilities.add_namespace(tree, ns_name, ns_uri)
+            _ = iati.core.utilities.add_namespace(schema_base_tree, ns_name, ns_uri)
         except ValueError:
             assert True
         else:  # pragma: no cover
@@ -117,7 +117,7 @@ class TestUtilities(object):
         pass
 
     @pytest.mark.parametrize("ns_uri", [''])
-    def test_add_namespace_nsuri_invalid_str(self, ns_uri):
+    def test_add_namespace_nsuri_invalid_str(self, ns_uri, schema_base_tree):
         """Check that attempting to add a namespace that is an invalid string raises an appropriate error.
 
         Note:
@@ -126,11 +126,10 @@ class TestUtilities(object):
         Todo:
 
         """
-        tree = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)._schema_base_tree
         ns_name = 'testname'
 
         try:
-            _ = iati.core.utilities.add_namespace(tree, ns_name, ns_uri)
+            _ = iati.core.utilities.add_namespace(schema_base_tree, ns_name, ns_uri)
         except ValueError:
             assert True
         else:  # pragma: no cover
