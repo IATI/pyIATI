@@ -79,7 +79,9 @@ class TestSchemas(object):
         when there is a namespace defined against the root schema element as `xmlns:xi="http://www.w3.org/2001/XInclude"`
 
         Todo:
-            Add asserts
+            Simplify asserts
+
+            Consider consolidating variables shared between multiple tests.
         """
         schema = schema_initialised
         local_element = 'iati-activities'

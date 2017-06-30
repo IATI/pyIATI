@@ -21,7 +21,7 @@ def add_namespace(tree, new_ns_name, new_ns_uri):
         iati.core.schemas.Schema: The provided Schema, modified to include the specified namespace.
 
     Raises:
-        TypeError: If an attempt it made to add a namespace to something other than a Schema.
+        TypeError: If an attempt is made to add a namespace to something other than a Schema.
         ValueError: If the namespace name or URI are invalid values.
         ValueError: If the namespace name already exists.
 

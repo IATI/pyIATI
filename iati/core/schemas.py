@@ -79,7 +79,7 @@ class Schema(object):
         This changes instances of the former to the latter.
 
         Params:
-            tree (etree._ElementTree): The tree to change xsd:include to xi:include in.
+            tree (etree._ElementTree): The tree within which xsd:include is to be changed to xi:include.
 
         Returns:
             etree._ElementTree: The modified tree.

@@ -18,10 +18,10 @@ class TestUtilities(object):
             Add a similar test for Datasets.
         """
         tree = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)._schema_base_tree
+        initial_nsmap = tree.getroot().nsmap
         ns_name = 'xi'
         ns_uri = 'http://www.w3.org/2001/XInclude'
 
-        initial_nsmap = tree.getroot().nsmap
         tree = iati.core.utilities.add_namespace(tree, ns_name, ns_uri)
         new_nsmap = tree.getroot().nsmap
 
@@ -37,10 +37,10 @@ class TestUtilities(object):
             Add a similar test for Datasets.
         """
         tree = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)._schema_base_tree
+        initial_nsmap = tree.getroot().nsmap
         ns_name = 'xsd'
         ns_uri = 'http://www.w3.org/2001/XMLSchema'
 
-        initial_nsmap = tree.getroot().nsmap
         tree = iati.core.utilities.add_namespace(tree, ns_name, ns_uri)
         new_nsmap = tree.getroot().nsmap
 
@@ -91,7 +91,7 @@ class TestUtilities(object):
 
     @pytest.mark.parametrize("ns_name", [''])
     def test_add_namespace_nsname_invalid_str(self, ns_name):
-        """Check that attempting to add a namespace with a name that is an invalid string.
+        """Check that attempting to add a namespace with a name that is an invalid string raises an appropriate error.
 
         Todo:
             Add more tests - for syntax, see:
@@ -118,7 +118,7 @@ class TestUtilities(object):
 
     @pytest.mark.parametrize("ns_uri", [''])
     def test_add_namespace_nsuri_invalid_str(self, ns_uri):
-        """Check that attempting to add a namespace that is an invalid string.
+        """Check that attempting to add a namespace that is an invalid string raises an appropriate error.
 
         Note:
             While a valid URI, an empty string is not a valid namespace - https://www.w3.org/TR/REC-xml-names/#iri-use https://www.ietf.org/rfc/rfc2396.txt
