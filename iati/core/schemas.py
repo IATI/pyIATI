@@ -202,6 +202,8 @@ class Schema(object):
             elif isinstance(dataset, iati.core.data.Dataset):
                 try:
                     vocab = dataset.xml_tree.find('//iati-activity/sector').get('vocabulary')
+                    if vocab is None:
+                        vocab = '1'
                 except Exception as e:  # TODO: Use a less general exception
                     # cannot find @vocabulary, so use default vocab
                     vocab = '1'
