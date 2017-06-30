@@ -156,7 +156,6 @@ class Schema(object):
 
         # remove nested schema elements
         schema_xpath = (iati.core.constants.NAMESPACE + 'schema')
-        # import pdb;pdb.set_trace()
         for nested_schema_el in tree.getroot().findall(schema_xpath):
             # nested_schema_el = tree.getroot().find(schema_xpath)
             if isinstance(nested_schema_el, etree._Element):
