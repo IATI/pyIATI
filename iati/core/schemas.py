@@ -157,7 +157,6 @@ class Schema(object):
         # remove nested schema elements
         schema_xpath = (iati.core.constants.NAMESPACE + 'schema')
         for nested_schema_el in tree.getroot().findall(schema_xpath):
-            # nested_schema_el = tree.getroot().find(schema_xpath)
             if isinstance(nested_schema_el, etree._Element):
                 # move contents of nested schema elements up a level
                 for el in nested_schema_el[:]:
