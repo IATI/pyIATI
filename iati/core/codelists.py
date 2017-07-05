@@ -12,12 +12,6 @@ class Codelist(object):
         codes (:obj:`set` of :obj:`iati.core.codelists.Code`): The codes demonstrating the range of values that the Codelist may represent.
         name (str): The name of the Codelist.
 
-    Private Attributes:
-        _path (str): A path to a file containing a Codelist in XML form.
-
-    Note:
-        The _path attribute may be removed.
-
     Warning:
         There are currently a large number of attributes that have been taken straight from the XML without being implemented in code. Some of these may change during implementation.
 
@@ -26,21 +20,17 @@ class Codelist(object):
     Todo:
         Create a custom class inheriting from set that only allows Codes to be added.
 
-        Provide functionality to allow XML to be loaded from a parameter-defined path.
-
         Implement and document attributes that are not yet implemented and documented.
     """
 
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, name, path=None, xml=None):
+    def __init__(self, name, xml=None):
         """Initialise a Codelist.
 
         Any Codes contained within the specified XML are added.
-        Any Codes contained within the file at the specified path are added.
 
         Args:
             name (str): The name of the codelist being initialised.
-            path (str): A path to a file containing a valid codelist in XML format.
             xml (str): An XML representation of a codelist.
 
         Note:
@@ -84,7 +74,6 @@ class Codelist(object):
 
         self.codes = set()
         self.name = name
-        self._path = path
 
         self.name_prose = None
         self.description = None
