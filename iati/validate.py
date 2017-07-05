@@ -17,8 +17,4 @@ def is_valid(dataset, schema):
     Warning:
         Parameters are likely to change in some manner.
     """
-    try:
-        schema.validator(dataset).assertValid(dataset.xml_tree)
-        return True
-    except etree.DocumentInvalid:
-        return False
+    raise NotImplementedError
