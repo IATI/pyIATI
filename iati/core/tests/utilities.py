@@ -39,6 +39,14 @@ XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT_INVALID_CODE = iati.core.resources.loa
 """A string contains valid IATI XML containing an element that uses vocabularies. Implicitly assumes default vocab and uses code not in list."""
 XML_STR_VALID_IATI_VOCAB_NON_DEFAULT = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_non_default'))
 """A string contains valid IATI XML containing an element that uses vocabularies. Explicitly defines non-default vocab and uses code from that list."""
+XML_STR_VALID_IATI_VOCAB_MULTIPLE_SAME_VALID = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_multiple_same_valid'))
+"""A string contains valid IATI XML containing an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is the same. @code values are valid. Percentages add up to 100."""
+XML_STR_VALID_IATI_VOCAB_MULTIPLE_DIFFERENT_VALID = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_multiple_different_valid'))
+"""A string contains valid IATI XML containing an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is different. @code values are valid."""
+XML_STR_VALID_IATI_VOCAB_MULTIPLE_SAME_INVALID_CODE = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_multiple_same_invalid_code'))
+"""A string contains valid IATI XML containing an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is the same. @code values are not valid. Percentages add up to 100."""
+XML_STR_VALID_IATI_VOCAB_MULTIPLE_DIFFERENT_INVALID_CODE = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_multiple_different_invalid_code'))
+"""A string contains valid IATI XML containing an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is different. @code values are not valid."""
 XML_STR_VALID_IATI_VOCAB_USER_DEFINED = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_user_defined'))
 """A string contains valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. No URI specified."""
 XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE = iati.core.resources.load_as_string(iati.core.resources.path_data('valid_iati_vocab_user_defined_with_uri_readable'))
