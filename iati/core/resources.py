@@ -112,9 +112,6 @@ def get_codelist_path(codelist_name, version=None):
     Note:
         Does not check whether the specified codelist actually exists.
 
-    Raises:
-        ValueError: If the specified location of Codelist is not valid.
-
     Warning:
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
