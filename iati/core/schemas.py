@@ -55,7 +55,7 @@ class Schema(object):
         self.codelists = set()
 
         if isinstance(name, str):
-            path = iati.core.resources.path_schema(self.name)
+            path = iati.core.resources.get_schema_path(self.name)
             try:
                 loaded_tree = iati.core.resources.load_as_tree(path)
             except (IOError, OSError):
