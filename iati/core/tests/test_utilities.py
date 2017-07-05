@@ -11,7 +11,7 @@ class TestUtilities(object):
 
     def test_convert_tree_to_schema(self):
         """Check that an etree can be converted to a schema."""
-        path = iati.core.resources.path_schema('iati-activities-schema')
+        path = iati.core.resources.get_schema_path('iati-activities-schema')
 
         tree = iati.core.resources.load_as_tree(path)
         if not tree:  # pragma: no cover

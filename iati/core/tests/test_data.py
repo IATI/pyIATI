@@ -15,7 +15,7 @@ class TestDatasets(object):
     @pytest.fixture
     def dataset_initialised(self):
         """An initialised dataset to work from in other tests."""
-        return iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID)
+        return iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_NOT_IATI)
 
     def test_dataset_no_params(self):
         """Test Dataset creation with no parameters."""
@@ -29,9 +29,9 @@ class TestDatasets(object):
 
     def test_dataset_valid_xml_string(self):
         """Test Dataset creation with a valid XML string that is not IATI data."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID)
+        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_NOT_IATI)
 
-        assert data.xml_str == iati.core.tests.utilities.XML_STR_VALID
+        assert data.xml_str == iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
         assert etree.tostring(data.xml_tree) == etree.tostring(iati.core.tests.utilities.XML_TREE_VALID)
 
     def test_dataset_xml_string_leading_whitespace(self):
@@ -72,7 +72,7 @@ class TestDatasets(object):
         tree = iati.core.tests.utilities.XML_TREE_VALID
         data = iati.core.data.Dataset(tree)
 
-        assert data.xml_tree == tree
+        assert etree.tostring(data.xml_tree, pretty_print=True) == etree.tostring(tree, pretty_print=True)
         assert data.xml_str == etree.tostring(tree, pretty_print=True)
 
     def test_dataset_iati_tree(self):
@@ -90,9 +90,9 @@ class TestDatasets(object):
             Check that the tree is updated correctly.
         """
         data = dataset_initialised
-        data.xml_str = iati.core.tests.utilities.XML_STR_VALID
+        data.xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
 
-        assert data.xml_str == iati.core.tests.utilities.XML_STR_VALID
+        assert data.xml_str == iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
 
     def test_dataset_xml_str_assignment_invalid_str(self, dataset_initialised):
         """Test assignment to the xml_str property with an invalid XML string."""
@@ -151,7 +151,7 @@ class TestDatasets(object):
         """Test assignment to the xml_tree property with an XML string."""
         data = dataset_initialised
         try:
-            data.xml_tree = iati.core.tests.utilities.XML_STR_VALID
+            data.xml_tree = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
         except TypeError:
             assert True
         else:  # pragma: no cover
