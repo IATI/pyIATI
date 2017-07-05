@@ -69,6 +69,106 @@ class Schema(object):
             iati.core.utilities.log_error(msg)
             raise TypeError(msg)
 
+    def _change_include_to_xinclude(self, tree):
+        """Change the method in which common elements are included.
+
+        lxml does not contain functionality to access elements within imports defined along the lines of: `<xsd:include schemaLocation="NAME.xsd" />`
+        It does, however, contains functionality to access elements within imports defined along the lines of: `<xi:include href="NAME.xsd" parse="xml" />`
+        when there is a namespace defined against the root schema element as `xmlns:xi="http://www.w3.org/2001/XInclude"`
+
+        This changes instances of the former to the latter.
+
+        Params:
+            tree (etree._ElementTree): The tree within which xsd:include is to be changed to xi:include.
+
+        Returns:
+            etree._ElementTree: The modified tree.
+
+        Todo:
+            Check whether this is safe in the general case, so allowing it to be performed in __init__().
+
+            Make resource locations more able to handle the general case.
+
+            Consider moving this out of Schema().
+
+            Tidy this up.
+
+            Consider using XSLT.
+        """
+        # identify the old info
+        include_xpath = (iati.core.constants.NAMESPACE + 'include')
+        include_el = tree.getroot().find(include_xpath)
+        if include_el is None:
+            return
+        include_location = include_el.attrib['schemaLocation']
+
+        # add namespace for XInclude
+        xi_name = 'xi'
+        xi_uri = 'http://www.w3.org/2001/XInclude'
+        iati.core.utilities.add_namespace(tree, xi_name, xi_uri)
+        new_nsmap = {}
+        for key, value in iati.core.constants.NSMAP.items():
+            new_nsmap[key] = value
+        new_nsmap[xi_name] = xi_uri
+
+        # create a new element
+        xinclude_el = etree.Element(
+            '{' + xi_uri + '}include',
+            href=iati.core.resources.resource_filename(iati.core.resources.path_schema(include_location[:-4])),
+            parse='xml',
+            nsmap=new_nsmap
+        )
+
+        # make the path to `xml.xsd` reference the correct file
+        import_xpath = (iati.core.constants.NAMESPACE + 'import')
+        import_el = tree.getroot().find(import_xpath)
+        import_el.attrib['schemaLocation'] = iati.core.resources.resource_filename(iati.core.resources.path_schema('xml'))
+
+        # insert the new element
+        tree.getroot().insert(import_el.getparent().index(import_el) + 1, xinclude_el)
+
+        # remove the old element
+        etree.strip_elements(tree.getroot(), include_xpath)
+
+        return tree
+
+    def flatten_includes(self, tree):
+        """Flatten includes so that all nodes are accessible through lxml.
+
+        Identify the contents of files defined as `<xsd:include schemaLocation="NAME.xsd" />` and bring in the contents.
+
+        Params:
+            tree (etree._ElementTree): The tree to flatten.
+
+        Returns:
+            etree._ElementTree: The flattened tree.
+
+        Todo:
+            Consider moving this out of Schema().
+
+            Tidy this up.
+        """
+        # change the include to a format that lxml can read
+        tree = self._change_include_to_xinclude(tree)
+
+        # adopt the included elements
+        tree.xinclude()
+
+        # remove nested schema elements
+        schema_xpath = (iati.core.constants.NAMESPACE + 'schema')
+        for nested_schema_el in tree.getroot().findall(schema_xpath):
+            if isinstance(nested_schema_el, etree._Element):
+                # move contents of nested schema elements up a level
+                for el in nested_schema_el[:]:
+                    # do not duplicate an import statement
+                    if 'schemaLocation' in el.attrib:
+                        continue
+                    tree.getroot().insert(nested_schema_el.getparent().index(nested_schema_el) + 1, el)
+        # remove the nested schema elements
+        etree.strip_elements(tree.getroot(), schema_xpath)
+
+        return tree
+
     def validator(self, dataset):
         """A schema that can be used for validation.
 
@@ -102,6 +202,8 @@ class Schema(object):
             elif isinstance(dataset, iati.core.data.Dataset):
                 try:
                     vocab = dataset.xml_tree.find('//iati-activity/sector').get('vocabulary')
+                    if vocab is None:
+                        vocab = '1'
                 except Exception as e:  # TODO: Use a less general exception
                     # cannot find @vocabulary, so use default vocab
                     vocab = '1'
@@ -120,7 +222,7 @@ class Schema(object):
                     xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'iati-activities' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="version"]')
                 elif codelist.name == 'OrganisationType':
                     xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'reporting-org' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="type"]')
-                    # import pdb;pdb.set_trace()
+                    tree = self.flatten_includes(tree)
                 elif codelist.name == 'Sector' or codelist.name == 'SectorCategory':
                     xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + 'sector' + '"]//' + iati.core.constants.NAMESPACE + 'attribute[@name="code"]')
                     vocab = get_sector_vocab(dataset)

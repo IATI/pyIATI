@@ -15,6 +15,5 @@
     <participating-org role="2"></participating-org>
     <activity-status code="2"/>
     <activity-date type="1" iso-date="2023-11-27"/>
-    <reporting-org ref="xxxx" type="10">Xxxxxxxxx</reporting-org>
   </iati-activity>
 </iati-activities>
