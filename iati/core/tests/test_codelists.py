@@ -43,14 +43,6 @@ class TestCodelists(object):
         assert set() == codelist.codes
         assert codelist.name == name_to_set
 
-    def test_codelist_name_and_path_instance(self, name_to_set):
-        """Check a Codelist's attributes are correct when defined with a name and path"""
-        path_to_set = "test Codelist path"
-        codelist = iati.core.codelists.Codelist(name_to_set, path_to_set)
-
-        assert set() == codelist.codes
-        assert codelist.name == name_to_set
-
     def test_codelist_add_code(self, name_to_set):
         """Check a Code can be added to a Codelist"""
         codelist = iati.core.codelists.Codelist(name_to_set)
