@@ -78,6 +78,7 @@ def find_all_codelist_paths(version=None):
         Handle versions, including errors.
 
         Provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
+
     """
     files_embedded = pkg_resources.resource_listdir(PACKAGE, path_for_version(PATH_CODELISTS_EMBEDDED, version))
     files_non_embedded = pkg_resources.resource_listdir(PACKAGE, path_for_version(PATH_CODELISTS_NON_EMBEDDED, version))
@@ -109,6 +110,7 @@ def find_all_schema_paths(version=None):
         Handle versions, including errors.
 
         Implement for more than a single specified activity schema.
+
     """
     return [path_schema(FILE_SCHEMA_ACTIVITY_NAME, version)]
 
@@ -141,6 +143,7 @@ def path_codelist(name, location='non-embedded', version=None):
         Provide a better interface for specifying whether a codelist is Embedded or Non-Embedded, keeping in mind user-defined codelists.
 
         Test this.
+
     """
     if name[-4:] == FILE_CODELIST_EXTENSION:
         name = name[:-4]
@@ -173,6 +176,7 @@ def path_data(name):
 
     Todo:
         Test this.
+
     """
     return os.sep.join((PATH_DATA, '{0}'.format(name) + FILE_DATA_EXTENSION))
 
@@ -197,6 +201,7 @@ def path_schema(name, version=None):
         Handle versions of the standard other than 2.02.
 
         Test this.
+
     """
     return path_for_version(os.sep.join((PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION)), version)
 
@@ -218,6 +223,7 @@ def path_for_version(path, version=None):
         Handle versions of the standard other than 2.02.
 
         Test this.
+
     """
     return os.sep.join((BASE_PATH_202, path))
 
@@ -236,6 +242,7 @@ def load_as_string(path):
 
     Todo:
         Add error handling for when the specified file does not exist.
+
     """
     return pkg_resources.resource_string(PACKAGE, path)
 
@@ -260,6 +267,7 @@ def load_as_tree(path):
 
     Todo:
         Handle when the specified file can be accessed without issue, but it does not contain valid XML.
+
     """
     path_filename = resource_filename(path)
     try:
@@ -283,5 +291,6 @@ def resource_filename(path):
 
     Warning:
         When other functions in this module are reviewed, this will be too.
+
     """
     return pkg_resources.resource_filename(PACKAGE, path)

@@ -21,6 +21,7 @@ class Codelist(object):
         Create a custom class inheriting from set that only allows Codes to be added.
 
         Implement and document attributes that are not yet implemented and documented.
+
     """
 
     # pylint: disable=too-many-instance-attributes
@@ -41,6 +42,7 @@ class Codelist(object):
 
         Todo:
             Raise warnings or errors if the Codelist is unable to initialise correctly.
+
         """
         def parse_from_xml(xml):
             """Parse a Codelist from the XML that defines it.
@@ -54,6 +56,7 @@ class Codelist(object):
                 Handle Codelists without description or name elements.
 
                 Better document side-effects.
+
             """
             tree = iati.core.utilities.convert_xml_to_tree(xml)
 
@@ -93,6 +96,7 @@ class Codelist(object):
 
         Todo:
             Utilise all attributes as part of the equality process.
+
         """
         return ((self.name) == (other.name)) and (collections.Counter(self.codes) == collections.Counter(other.codes))
 
@@ -103,6 +107,7 @@ class Codelist(object):
 
         Todo:
             Utilise all attributes as part of the equality process.
+
         """
         return hash((self.name, tuple(self.codes)))
 
@@ -127,6 +132,7 @@ class Codelist(object):
             Improve naming of the type to reduce potential of clashes.
 
             Rename this function, potentially making it a property.
+
         """
         type_base_el = etree.Element(
             iati.core.constants.NAMESPACE + 'simpleType',
@@ -156,6 +162,7 @@ class Code(object):
 
     Todo:
         Implement and document attributes that are not yet implemented and documented.
+
     """
 
     # pylint: disable=too-many-instance-attributes
@@ -171,6 +178,7 @@ class Code(object):
 
         Warning:
             The format of the constructor is likely to change. It should include mandatory parameters, and allow for other attributes to be defined.
+
         """
         self.name = name
         self.value = value
@@ -190,6 +198,7 @@ class Code(object):
 
         Todo:
             Utilise all attributes as part of the equality process.
+
         """
         return ((self.name) == (other.name)) and ((self.value) == (other.value))
 
@@ -200,6 +209,7 @@ class Code(object):
 
         Todo:
             Utilise all attributes as part of the hashing process.
+
         """
         return hash((self.name, self.value))
 
@@ -213,6 +223,7 @@ class Code(object):
 
         Todo:
             Rename this function, potentially making it a property.
+
         """
         return etree.Element(
             iati.core.constants.NAMESPACE + 'enumeration',

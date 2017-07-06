@@ -63,6 +63,7 @@ def find_parameter_by_type(types, type_as_specified=True):
 
     Returns:
         list: A list of values to pass to the test function.
+
     """
     valid_keys_as_specified = [key for key in types if key in TYPE_TEST_DATA]
     if not type_as_specified:

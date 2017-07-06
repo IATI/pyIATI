@@ -12,7 +12,7 @@ class TestValidate(object):
 
     @pytest.mark.xfail
     def test_basic_validation_valid(self):
-        """Perform super simple data validation against a valid dataset"""
+        """Perform super simple data validation against a valid dataset."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
@@ -20,7 +20,7 @@ class TestValidate(object):
 
     @pytest.mark.xfail
     def test_basic_validation_invalid(self):
-        """Perform super simple data validation against a valid dataset"""
+        """Perform super simple data validation against a valid dataset."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID)
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
@@ -42,6 +42,7 @@ class TestValidate(object):
 
         Todo:
             Determine why this test is flaky.
+
         """
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE)
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
