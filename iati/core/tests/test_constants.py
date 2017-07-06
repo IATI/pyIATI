@@ -3,7 +3,7 @@ import iati.core.constants
 
 
 class TestConstants(object):
-    """A container for tests relating to IATI software constants."""
+    """A container for tests relating to IATI software constants"""
 
     def test_namespace(self):
         """Check that the NAMESPACE constant is a string."""

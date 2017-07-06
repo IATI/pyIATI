@@ -25,7 +25,6 @@ class Dataset(object):
         Implement getters and setters for attributes.
 
         Implement an addition override to allow for combation of datasets.
-
     """
 
     def __init__(self, xml):
@@ -47,7 +46,6 @@ class Dataset(object):
         Todo:
             Undertake validation.
             Add a way to determine whether a dataset fully conforms to the IATI standard and / or modify the dataset so that it does.
-
         """
         self._xml_str = None
         self._xml_tree = None
@@ -59,12 +57,11 @@ class Dataset(object):
 
     @property
     def xml_str(self):
-        """Return a string representation of the XML being represented.
+        """A string representation of the XML being represented.
 
         Raises:
             ValueError: If a value that is being assigned is not a valid XML string.
             TypeError: If a value that is being assigned is not a string at all.
-
         """
         return self._xml_str
 
@@ -90,14 +87,13 @@ class Dataset(object):
 
     @property
     def xml_tree(self):
-        """Return a tree representation of the XML being represented.
+        """A tree representation of the XML being represented.
 
         Raises:
             TypeError: If a value that is being assigned is not an ElementTree.
 
         Warning:
             Does not fully hide the lxml internal workings.
-
         """
         return self._xml_tree
 
