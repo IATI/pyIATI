@@ -8,21 +8,21 @@
 #
 
 # linters
-flake8==3.2.1
-pydocstyle==1.1.1
-pylint==1.6.5
+flake8==3.2.1 # rq.filter: <4.0
+pydocstyle==2.0.0 # rq.filter: <3.0
+pylint==1.6.5 # rq.filter: <2.0
 
 # code complexity
-radon==1.4.2
+radon==2.0.2 # rq.filter: <3.0
 
 # testing tools
-pytest==3.0.5
-pytest-cov==2.4.0
+pytest==3.0.5 # rq.filter: <4.0
+pytest-cov==2.4.0 # rq.filter: <3.0
 
 #
 # distribution requirements
 #
 
 # documentation
-Sphinx==1.5.2
-sphinx_rtd_theme==0.1.9
+Sphinx==1.5.2 # rq.filter: <2.0
+sphinx_rtd_theme==0.1.9 # rq.filter: <1.0

@@ -5,10 +5,10 @@ import iati.core.resources
 
 
 class TestResources(object):
-    """A container for tests relating to resources"""
+    """A container for tests relating to resources."""
 
     def test_codelist_flow_type(self):
-        """Check that the FlowType codelist contains content"""
+        """Check that the FlowType codelist contains content."""
         path = iati.core.resources.path_codelist('FlowType')
 
         content = iati.core.resources.load_as_string(path)
@@ -20,6 +20,7 @@ class TestResources(object):
 
         Todo:
             Add other tests relating to specific versions of the Standard.
+
         """
         paths = iati.core.resources.find_all_codelist_paths()
 
@@ -35,6 +36,7 @@ class TestResources(object):
             Add other tests relating to specific versions of the Standard.
 
             Handle all paths to schemas being found correctly.
+
         """
         paths = iati.core.resources.find_all_schema_paths()
 
@@ -56,6 +58,7 @@ class TestResources(object):
 
         Todo:
             Tidy up if-else mess.
+
         """
         if location is None:
             path = iati.core.resources.path_codelist(name)
@@ -78,6 +81,7 @@ class TestResources(object):
 
         Todo:
             Fuzz with iati.core.tests.utilities.find_parameter_by_type(['str'], False)
+
         """
         try:
             _ = iati.core.resources.path_codelist(name, location)
@@ -88,10 +92,11 @@ class TestResources(object):
             assert False
 
     def test_resource_filename(self):
-        """Check that resource file names are found correctly
+        """Check that resource file names are found correctly.
 
         Todo:
             Implement better assertions.
+
         """
         path = iati.core.resources.PATH_SCHEMAS
         filename = iati.core.resources.resource_filename(path)
@@ -100,7 +105,7 @@ class TestResources(object):
         assert filename.endswith(path)
 
     def test_schema_activity_string(self):
-        """Check that the Activity schema file contains content"""
+        """Check that the Activity schema file contains content."""
         path = iati.core.resources.path_schema('iati-activities-schema')
 
         content = iati.core.resources.load_as_string(path)
@@ -108,9 +113,10 @@ class TestResources(object):
         assert len(content) > 130000
 
     def test_schema_activity_tree(self):
-        """Check that the Activity schema loads into an XML Tree
+        """Check that the Activity schema loads into an XML Tree.
 
         This additionally involves checking that imported schemas also work.
+
         """
         path = iati.core.resources.path_schema('iati-activities-schema')
         schema = iati.core.resources.load_as_tree(path)
