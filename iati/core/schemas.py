@@ -21,6 +21,7 @@ class Schema(object):
         Determine a good API for accessing the XMLSchema that the iati.core.schemas.Schema represents.
 
         Determine how to distinguish and handle the different types of Schema - activity, organisation, codelist, other.
+
     """
 
     def __init__(self, name=None):
@@ -49,6 +50,7 @@ class Schema(object):
             Allow the base schema to be modified after initialisation.
 
             Create test instance where the SchemaError is raised.
+
         """
         self.name = name
         self._schema_base_tree = None

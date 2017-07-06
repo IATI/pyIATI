@@ -68,6 +68,7 @@ def find_all_codelist_paths(version=None):
         Handle versions, including errors.
 
         Provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
+
     """
     files = pkg_resources.resource_listdir(PACKAGE, get_path_for_version(PATH_CODELISTS, version))
     paths = [get_codelist_path(file, version) for file in files]
@@ -95,6 +96,7 @@ def find_all_schema_paths(version=None):
         Handle versions, including errors.
 
         Implement for more than a single specified activity schema.
+
     """
     return [get_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version)]
 
@@ -119,6 +121,7 @@ def get_codelist_path(codelist_name, version=None):
 
     Todo:
         Test this.
+
     """
     if codelist_name[-4:] == FILE_CODELIST_EXTENSION:
         codelist_name = codelist_name[:-4]
@@ -144,6 +147,7 @@ def get_test_data_path(name, version=None):
 
     Todo:
         Test this.
+
     """
     return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
 
@@ -189,6 +193,7 @@ def get_schema_path(name, version=None):
         Handle versions of the standard other than 2.02.
 
         Test this.
+
     """
     return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
@@ -220,6 +225,7 @@ def get_path_for_version(path, version=None):
 
     Todo:
         Test this.
+
     """
     return os.path.join(get_folder_path_for_version(version), path)
 
@@ -238,6 +244,7 @@ def load_as_string(path):
 
     Todo:
         Add error handling for when the specified file does not exist.
+
     """
     return pkg_resources.resource_string(PACKAGE, path)
 
@@ -262,6 +269,7 @@ def load_as_tree(path):
 
     Todo:
         Handle when the specified file can be accessed without issue, but it does not contain valid XML.
+
     """
     path_filename = resource_filename(path)
     try:
@@ -285,5 +293,6 @@ def resource_filename(path):
 
     Warning:
         When other functions in this module are reviewed, this will be too.
+
     """
     return pkg_resources.resource_filename(PACKAGE, path)
