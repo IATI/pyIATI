@@ -75,7 +75,7 @@ TYPE_TEST_DATA = {
     'str': [SCHEMA_NAME_VALID, XML_STR_VALID_NOT_IATI, XML_STR_INVALID, b'\x80abc', b'\x80abc', '\N{GREEK CAPITAL LETTER DELTA}', '\u0394', '\U00000394'],
     'tuple': [(), (1, 2)],
     'type': [type(1), type('string')],
-    'unicode': [],  # counts as a string, so moed there
+    'unicode': [],  # counts as a string, so moved there
     'view': [{}.keys(), dict(zip(['one', 'two', 'three'], [1, 2, 3])).items(), dict(one=1, two=2, three=3).values()]
 }
 """Generic test data of various Python builtin types."""
