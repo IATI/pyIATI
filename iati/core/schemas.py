@@ -96,6 +96,7 @@ class Schema(object):
             Tidy this up.
 
             Consider using XSLT.
+
         """
         # identify the old info
         include_xpath = (iati.core.constants.NAMESPACE + 'include')
@@ -149,6 +150,7 @@ class Schema(object):
             Consider moving this out of Schema().
 
             Tidy this up.
+
         """
         # change the include to a format that lxml can read
         tree = self._change_include_to_xinclude(tree)

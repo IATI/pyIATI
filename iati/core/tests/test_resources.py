@@ -11,7 +11,7 @@ class TestResources(object):
         ('2.02', '202')
     ])
     def test_get_folder_name_for_version(self, version, expected_version_foldername):
-        """Check that expected components are present within folder paths"""
+        """Check that expected components are present within folder paths."""
         path = iati.core.resources.get_folder_name_for_version(version)
         assert expected_version_foldername == path
 
@@ -23,7 +23,7 @@ class TestResources(object):
         'string'
     ])
     def test_get_folder_name_for_version_invalid_version(self, version):
-        """Check that an invalid version of the Standard raises a ValueError exception"""
+        """Check that an invalid version of the Standard raises a ValueError exception."""
         with pytest.raises(ValueError):
             iati.core.resources.get_folder_name_for_version(version)
 
@@ -35,7 +35,7 @@ class TestResources(object):
         'standard'
     ])
     def test_get_folder_path_for_version(self, version, path_component):
-        """Check that expected components are present within folder paths"""
+        """Check that expected components are present within folder paths."""
         path = iati.core.resources.get_folder_path_for_version(version)
         assert path_component in path
 

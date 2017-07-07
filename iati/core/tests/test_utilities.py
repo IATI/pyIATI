@@ -11,6 +11,7 @@ class TestUtilities(object):
 
     @pytest.fixture
     def schema_base_tree(self):
+        """Return schema_base_tree."""
         return iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)._schema_base_tree
 
     def test_add_namespace_schema_new(self, schema_base_tree):

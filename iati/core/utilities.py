@@ -36,6 +36,7 @@ def add_namespace(tree, new_ns_name, new_ns_uri):
         Add checks for the format of new_ns_uri - for syntax, see: https://www.ietf.org/rfc/rfc2396.txt
 
         Tidy this up.
+
     """
     if not isinstance(tree, etree._ElementTree):
         msg = "The `tree` parameter must be of type `etree._ElementTree` - it was of type {0}".format(type(tree))
