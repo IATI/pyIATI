@@ -10,7 +10,8 @@ Warning:
     The location of SSOT content may change. It may also require network access to perform certain tasks.
 
 Todo:
-    Determine how to distribute SSOT content - with package, or separately (being downloaded at runtime)
+    Determine how to distribute SSOT content - with package, or separately (being downloaded at runtime).
+
 """
 import os
 import pkg_resources
@@ -22,6 +23,7 @@ PACKAGE = __name__
 """The name of the resources package.
 
 Used to locate resources when the package is distributed in certain ways that do not provide a standard filesystem.
+
 """
 
 BASE_PATH = 'resources'
@@ -159,6 +161,7 @@ def get_folder_name_for_version(version=None):
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
+
     """
     if version is None:
         version = iati.core.constants.STANDARD_VERSION_LATEST
@@ -201,6 +204,7 @@ def get_folder_path_for_version(version=None):
 
     Returns:
         str: The relative path to the folder for containing SSOT data the specified version of the Standard.
+
     """
     return os.path.join(BASE_PATH_STANDARD, get_folder_name_for_version(version))
 
