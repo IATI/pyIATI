@@ -163,11 +163,11 @@ class Schema(object):
         for nested_schema_el in tree.getroot().findall(schema_xpath):
             if isinstance(nested_schema_el, etree._Element):
                 # move contents of nested schema elements up a level
-                for el in nested_schema_el[:]:
+                for elem in nested_schema_el[:]:
                     # do not duplicate an import statement
-                    if 'schemaLocation' in el.attrib:
+                    if 'schemaLocation' in elem.attrib:
                         continue
-                    tree.getroot().insert(nested_schema_el.getparent().index(nested_schema_el) + 1, el)
+                    tree.getroot().insert(nested_schema_el.getparent().index(nested_schema_el) + 1, elem)
         # remove the nested schema elements
         etree.strip_elements(tree.getroot(), schema_xpath)
 
