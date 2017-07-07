@@ -73,8 +73,8 @@ class TestCodelists(object):
         assert num_codes == 0
 
     def test_codelist_define_from_xml(self, name_to_set):
-        """Check that a Codelist can be generated from an XML codelist definition"""
-        path = iati.core.resources.path_codelist('FlowType')
+        """Check that a Codelist can be generated from an XML codelist definition."""
+        path = iati.core.resources.get_codelist_path('FlowType')
         xml_str = iati.core.resources.load_as_string(path)
         codelist = iati.core.codelists.Codelist(name_to_set, xml=xml_str)
 

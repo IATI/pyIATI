@@ -5,11 +5,43 @@ import iati.core.resources
 
 
 class TestResources(object):
-    """A container for tests relating to resources"""
+    """A container for tests relating to resources."""
+
+    @pytest.mark.parametrize('version, expected_version_foldername', [
+        ('2.02', '202')
+    ])
+    def test_get_folder_name_for_version(self, version, expected_version_foldername):
+        """Check that expected components are present within folder paths."""
+        path = iati.core.resources.get_folder_name_for_version(version)
+        assert expected_version_foldername == path
+
+    @pytest.mark.parametrize('version', [
+        '1.00',
+        '1',
+        1,
+        1.01,  # A verion must be specified as a string
+        'string'
+    ])
+    def test_get_folder_name_for_version_invalid_version(self, version):
+        """Check that an invalid version of the Standard raises a ValueError exception."""
+        with pytest.raises(ValueError):
+            iati.core.resources.get_folder_name_for_version(version)
+
+    @pytest.mark.parametrize('version', [
+        '2.02',
+    ])
+    @pytest.mark.parametrize('path_component', [
+        'resources',
+        'standard'
+    ])
+    def test_get_folder_path_for_version(self, version, path_component):
+        """Check that expected components are present within folder paths."""
+        path = iati.core.resources.get_folder_path_for_version(version)
+        assert path_component in path
 
     def test_codelist_flow_type(self):
-        """Check that the FlowType codelist contains content"""
-        path = iati.core.resources.path_codelist('FlowType')
+        """Check that the FlowType codelist contains content."""
+        path = iati.core.resources.get_codelist_path('FlowType')
 
         content = iati.core.resources.load_as_string(path)
 
@@ -41,57 +73,25 @@ class TestResources(object):
         assert len(paths) == 1
         for path in paths:
             assert path[-4:] == iati.core.resources.FILE_SCHEMA_EXTENSION
-            assert iati.core.resources.PATH_SCHEMAS_202 in path
 
-    @pytest.mark.parametrize('name,location', [
-        ('Name', None),
-        ('Name', 'embedded'),
-        ('Name', 'non-embedded'),
-        ('Name.xml', None),
-        ('Name.xml', 'embedded'),
-        ('Name.xml', 'non-embedded'),
+    @pytest.mark.parametrize('codelist', [
+        'Name',
+        'Name.xml',
     ])
-    def test_path_codelist_name(self, name, location):
-        """Check that a codelist path is found from just a name.
-
-        Todo:
-            Tidy up if-else mess.
-        """
-        if location is None:
-            path = iati.core.resources.path_codelist(name)
-        else:
-            path = iati.core.resources.path_codelist(name, location)
+    def test_get_codelist_path_name(self, codelist):
+        """Check that a codelist path is found from just a name."""
+        path = iati.core.resources.get_codelist_path(codelist)
 
         assert path[-4:] == iati.core.resources.FILE_CODELIST_EXTENSION
         assert path.count(iati.core.resources.FILE_CODELIST_EXTENSION) == 1
-        if location == 'embedded':
-            assert iati.core.resources.PATH_CODELISTS_EMBEDDED in path
-        else:
-            assert iati.core.resources.PATH_CODELISTS_NON_EMBEDDED in path
-
-    @pytest.mark.parametrize('name,location', [
-        ('Name', 23487),
-        ('Name', 'invalid type')
-    ])
-    def test_path_codelist_invalid_type(self, name, location):
-        """Check that an error is raised when attempting to find a codelist of invalid type.
-
-        Todo:
-            Fuzz with iati.core.tests.utilities.find_parameter_by_type(['str'], False)
-        """
-        try:
-            _ = iati.core.resources.path_codelist(name, location)
-        except ValueError:
-            assert True
-        else:  # pragma: no cover
-            # a ValueError should be raised, meaning this is not reached
-            assert False
+        assert iati.core.resources.PATH_CODELISTS in path
 
     def test_resource_filename(self):
-        """Check that resource file names are found correctly
+        """Check that resource file names are found correctly.
 
         Todo:
             Implement better assertions.
+
         """
         path = iati.core.resources.PATH_SCHEMAS
         filename = iati.core.resources.resource_filename(path)
@@ -100,19 +100,20 @@ class TestResources(object):
         assert filename.endswith(path)
 
     def test_schema_activity_string(self):
-        """Check that the Activity schema file contains content"""
-        path = iati.core.resources.path_schema('iati-activities-schema')
+        """Check that the Activity schema file contains content."""
+        path = iati.core.resources.get_schema_path('iati-activities-schema')
 
         content = iati.core.resources.load_as_string(path)
 
         assert len(content) > 130000
 
     def test_schema_activity_tree(self):
-        """Check that the Activity schema loads into an XML Tree
+        """Check that the Activity schema loads into an XML Tree.
 
         This additionally involves checking that imported schemas also work.
+
         """
-        path = iati.core.resources.path_schema('iati-activities-schema')
+        path = iati.core.resources.get_schema_path('iati-activities-schema')
         schema = iati.core.resources.load_as_tree(path)
 
         assert isinstance(schema, etree._ElementTree)  # pylint: disable=protected-access
