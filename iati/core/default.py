@@ -16,6 +16,7 @@ _CODELISTS = {}
 """A cache of loaded Codelists.
 
 This removes the need to repeatedly load a Codelist from disk each time it is accessed.
+
 """
 
 
@@ -44,6 +45,7 @@ def codelist(name, version=None):
         Better distinguish the types of ValueError.
 
         Better distinguish TypeErrors from KeyErrors - sometimes the latter is raised when the former should have been.
+
     """
     try:
         codelist_found = codelists()[name]
@@ -78,6 +80,7 @@ def codelists(version=None, bypass_cache=False):
         Test a cache bypass where data is updated.
 
         Add a function to return a single Codelist by name.
+
     """
     paths = iati.core.resources.find_all_codelist_paths()
 
@@ -121,6 +124,7 @@ def schemas(bypass_cache=False):
         Test a cache bypass where data is updated.
 
         Load the Schemas.
+
     """
     paths = iati.core.resources.find_all_schema_paths()
 

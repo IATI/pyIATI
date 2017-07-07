@@ -8,7 +8,7 @@ import iati.core.tests.utilities
 
 
 class TestSchemas(object):
-    """A container for tests relating to Schemas"""
+    """A container for tests relating to Schemas."""
 
     @pytest.fixture
     def schema_initialised(self):
@@ -16,13 +16,14 @@ class TestSchemas(object):
 
         Returns:
             iati.core.schemas.Schema: A Schema that has been initialised with basic values.
+
         """
         schema_name = iati.core.tests.utilities.SCHEMA_NAME_VALID
 
         return iati.core.schemas.Schema(name=schema_name)
 
     def test_schema_default_attributes(self):
-        """Check a Schema's default attributes are correct"""
+        """Check a Schema's default attributes are correct."""
         schema = iati.core.schemas.Schema()
 
         assert schema.name is None
@@ -33,6 +34,7 @@ class TestSchemas(object):
 
         Todo:
             Check for type errors when the type is incorrect.
+
         """
         try:
             _ = iati.core.schemas.Schema(invalid_name)

@@ -36,6 +36,7 @@ def add_namespace(tree, new_ns_name, new_ns_uri):
         Add checks for the format of new_ns_uri - for syntax, see: https://www.ietf.org/rfc/rfc2396.txt
 
         Tidy this up.
+
     """
     if not isinstance(tree, etree._ElementTree):
         msg = "The `tree` parameter must be of type `etree._ElementTree` - it was of type {0}".format(type(tree))
@@ -91,6 +92,7 @@ def convert_tree_to_schema(tree):
 
     Todo:
         Surround schema conversion with error handling.
+
     """
     return etree.XMLSchema(tree)
 
@@ -110,6 +112,7 @@ def convert_xml_to_tree(xml):
     Raises:
         ValueError: The XML provided was something other than a string.
         lxml.etree.XMLSyntaxError: There was an error with the syntax of the provided XML.
+
     """
     try:
         tree = etree.fromstring(xml)
@@ -141,6 +144,7 @@ def log(lvl, msg, *args, **kwargs):
         Logging should not fill up logfiles at lightspeed unless this is specifically desired.
 
         Outputs should be more easily parsable.
+
     """
     logging.basicConfig(
         filename=os.path.join(iati.core.constants.LOG_FILE_NAME),
@@ -161,6 +165,7 @@ def log_error(msg, *args, **kwargs):
 
     Warning:
         Potentially too tightly coupled to the Python `logging` module.
+
     """
     log(logging.ERROR, msg, *args, **kwargs)
 
@@ -177,6 +182,7 @@ def log_exception(msg, *args, **kwargs):
 
     Warning:
         Potentially too tightly coupled to the Python `logging` module.
+
     """
     log(logging.ERROR, msg, exc_info=True, *args, **kwargs)
 
@@ -191,5 +197,6 @@ def log_warning(msg, *args, **kwargs):
 
     Warning:
         Potentially too tightly coupled to the Python `logging` module.
+
     """
     log(logging.WARN, msg, *args, **kwargs)

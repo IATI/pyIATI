@@ -21,6 +21,7 @@ class Schema(object):
         Determine a good API for accessing the XMLSchema that the iati.core.schemas.Schema represents.
 
         Determine how to distinguish and handle the different types of Schema - activity, organisation, codelist, other.
+
     """
 
     def __init__(self, name=None):
@@ -49,6 +50,7 @@ class Schema(object):
             Allow the base schema to be modified after initialisation.
 
             Create test instance where the SchemaError is raised.
+
         """
         self.name = name
         self._schema_base_tree = None
@@ -94,6 +96,7 @@ class Schema(object):
             Tidy this up.
 
             Consider using XSLT.
+
         """
         # identify the old info
         include_xpath = (iati.core.constants.NAMESPACE + 'include')
@@ -147,6 +150,7 @@ class Schema(object):
             Consider moving this out of Schema().
 
             Tidy this up.
+
         """
         # change the include to a format that lxml can read
         tree = self._change_include_to_xinclude(tree)
@@ -159,11 +163,11 @@ class Schema(object):
         for nested_schema_el in tree.getroot().findall(schema_xpath):
             if isinstance(nested_schema_el, etree._Element):
                 # move contents of nested schema elements up a level
-                for el in nested_schema_el[:]:
+                for elem in nested_schema_el[:]:
                     # do not duplicate an import statement
-                    if 'schemaLocation' in el.attrib:
+                    if 'schemaLocation' in elem.attrib:
                         continue
-                    tree.getroot().insert(nested_schema_el.getparent().index(nested_schema_el) + 1, el)
+                    tree.getroot().insert(nested_schema_el.getparent().index(nested_schema_el) + 1, elem)
         # remove the nested schema elements
         etree.strip_elements(tree.getroot(), schema_xpath)
 
