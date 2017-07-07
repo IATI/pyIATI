@@ -7,7 +7,7 @@ import iati.core.utilities
 
 
 class TestUtilities(object):
-    """A container for tests relating to utilities."""
+    """A container for tests relating to utilities"""
 
     @pytest.fixture
     def schema_base_tree(self):
@@ -172,7 +172,8 @@ class TestUtilities(object):
 
     @pytest.mark.parametrize("not_xml", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_convert_xml_to_tree_not_str(self, not_xml):
-        """Check that an invalid string raises an error when an attempt is made to convert it to an etree."""
+        """Check that an invalid string raises an error when an attempt is made to convert it to an etree.
+        """
         try:
             _ = iati.core.utilities.convert_xml_to_tree(not_xml)
         except ValueError:

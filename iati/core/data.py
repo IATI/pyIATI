@@ -99,7 +99,7 @@ class Dataset(object):
             Does not fully hide the lxml internal workings.
 
         Todo:
-            Check use of ElementTree in setter
+            Check use of ElementTree in setter.
 
         """
         return self._xml_tree.getroottree()

@@ -10,7 +10,7 @@ import iati.core.tests.utilities
 
 
 class TestDatasets(object):
-    """A container for tests relating to Datasets."""
+    """A container for tests relating to Datasets"""
 
     @pytest.fixture
     def dataset_initialised(self):
@@ -80,7 +80,6 @@ class TestDatasets(object):
 
         Todo:
             Implement this function.
-
         """
         pass
 
@@ -89,7 +88,6 @@ class TestDatasets(object):
 
         Todo:
             Check that the tree is updated correctly.
-
         """
         data = dataset_initialised
         data.xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
@@ -135,7 +133,6 @@ class TestDatasets(object):
 
         Todo:
             Check that the xml_tree attribute is updated to the new tree.
-
         """
         data = dataset_initialised
         data.xml_tree = iati.core.tests.utilities.XML_TREE_VALID
@@ -147,7 +144,6 @@ class TestDatasets(object):
 
         Todo:
             Create an invalid tree and test it.
-
         """
         pass
 
