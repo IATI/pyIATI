@@ -169,3 +169,35 @@ class TestDatasets(object):
         else:  # pragma: no cover
             # a TypeError should be raised when creating without a tree
             assert False
+
+    def test_instantiate_dataset_from_string(self):
+        """Test that a dataset instatantiated directly from a string (rather than a file) correctly creates an iati.core.data.Dataset and the input data is contained within the object."""
+        xml = """<?xml version="1.0"?>
+        <iati-activities version="xx">
+          <iati-activity>
+             <iati-identifier></iati-identifier>
+         </iati-activity>
+        </iati-activities>"""
+
+        dataset = iati.core.data.Dataset(xml)
+
+        assert isinstance(dataset, iati.core.data.Dataset)
+        assert dataset.xml_str == xml
+
+    @pytest.mark.parametrize("encoding", ["UTF-8", "utf-8", "UTF-16", "utf-16"])
+    def test_instantiate_dataset_from_string_with_encoding(self, encoding):
+        """Test that an encoded dataset instatantiated directly from a string (rather than a file) correctly creates an iati.core.data.Dataset and the input data is contained within the object.
+        Only UTF-8 or UTF-16 are specified as these are those strongly recommended in IATI Guidance: http://iatistandard.org/202/guidance/how-to-publish/select-data-to-publish/
+        """
+        xml = """<?xml version="1.0" encoding="{}"?>
+        <iati-activities version="xx">
+          <iati-activity>
+             <iati-identifier></iati-identifier>
+         </iati-activity>
+        </iati-activities>""".format(encoding)
+        xml_encoded = xml.encode(encoding)  # Encode the whole string in line with the specified encoding
+
+        dataset = iati.core.data.Dataset(xml_encoded)
+
+        assert isinstance(dataset, iati.core.data.Dataset)
+        assert dataset.xml_str == xml_encoded
