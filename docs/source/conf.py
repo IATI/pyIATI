@@ -32,13 +32,13 @@ print sys.path
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.autodoc',
-    'sphinx.ext.doctest',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.ifconfig',
-    'sphinx.ext.napoleon']
+              'sphinx.ext.doctest',
+              'sphinx.ext.intersphinx',
+              'sphinx.ext.todo',
+              'sphinx.ext.coverage',
+              'sphinx.ext.mathjax',
+              'sphinx.ext.ifconfig',
+              'sphinx.ext.napoleon']
 
 # napoleon configuration
 napoleon_include_init_with_doc = True
