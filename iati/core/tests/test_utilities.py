@@ -7,7 +7,7 @@ import iati.core.utilities
 
 
 class TestUtilities(object):
-    """A container for tests relating to utilities"""
+    """A container for tests relating to utilities."""
 
     @pytest.fixture
     def schema_base_tree(self):
@@ -21,6 +21,7 @@ class TestUtilities(object):
             Deal with required changes to iati.core.constants.NSMAP.
 
             Add a similar test for Datasets.
+
         """
         initial_nsmap = schema_base_tree.getroot().nsmap
         ns_name = 'xi'
@@ -39,6 +40,7 @@ class TestUtilities(object):
 
         Todo:
             Add a similar test for Datasets.
+
         """
         initial_nsmap = schema_base_tree.getroot().nsmap
         ns_name = 'xsd'
@@ -58,6 +60,7 @@ class TestUtilities(object):
 
         Todo:
             Add a similar test for Datasets.
+
         """
         ns_name = 'xsd'
         ns_uri = 'http://www.w3.org/2001/XMLSchema-different'
@@ -88,6 +91,7 @@ class TestUtilities(object):
 
         Todo:
             Determine whether to attempt cast to string or raise an error.
+
         """
         pass
 
@@ -98,6 +102,7 @@ class TestUtilities(object):
         Todo:
             Add more tests - for syntax, see:
                 https://www.w3.org/TR/REC-xml-names/#NT-NSAttName
+
         """
         ns_uri = 'http://www.w3.org/2001/XMLSchema'
 
@@ -172,8 +177,7 @@ class TestUtilities(object):
 
     @pytest.mark.parametrize("not_xml", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_convert_xml_to_tree_not_str(self, not_xml):
-        """Check that an invalid string raises an error when an attempt is made to convert it to an etree.
-        """
+        """Check that an invalid string raises an error when an attempt is made to convert it to an etree."""
         try:
             _ = iati.core.utilities.convert_xml_to_tree(not_xml)
         except ValueError:
