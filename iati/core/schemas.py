@@ -170,3 +170,21 @@ class Schema(object):
         etree.strip_elements(tree.getroot(), schema_xpath)
 
         return tree
+
+    def validator(self):
+        """A schema that can be used for validation.
+
+        Takes the base schema and converts it into an object that lxml can deal with.
+
+        Returns:
+            etree.XMLSchema: A schema that can be used for validation.
+
+        Raises:
+            iati.core.exceptions.SchemaError: An error occurred in the creation of the validator.
+
+        """
+        try:
+            return iati.core.utilities.convert_tree_to_schema(self._schema_base_tree)
+        except etree.XMLSchemaParseError as err:
+            iati.core.utilities.log_error(err)
+            raise iati.core.exceptions.SchemaError('Problem parsing Schema')

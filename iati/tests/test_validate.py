@@ -17,7 +17,6 @@ class TestValidate(object):
 
         assert iati.validate.is_valid(data, schema)
 
-    @pytest.mark.skip(reason="Not yet implemented")
     def test_basic_validation_invalid(self):
         """Perform a super simple data validation against an invalid Dataset."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_NOT_IATI)
