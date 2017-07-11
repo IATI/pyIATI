@@ -49,6 +49,33 @@ class TestDefault(object):
         for _, codelist in codelists.items():
             assert isinstance(codelist, iati.core.codelists.Codelist)
 
+    def test_codelist_mapping_condition(self):
+        """Check that the Codelist mapping file is being read correctly.
+
+        Todo:
+            Split into multiple tests.
+        """
+        mapping = iati.core.default.codelist_mapping()
+
+        assert mapping['Sector']['condition'] == "@vocabulary = '1' or not(@vocabulary)"
+        assert mapping['Version']['condition'] is None
+
+    def test_codelist_mapping_xpath(self):
+        """Check that the Codelist mapping file is being read correctly.
+
+        Todo:
+            Split into multiple tests.
+        """
+        mapping = iati.core.default.codelist_mapping()
+
+        assert mapping['Version']['xpath'] == '//iati-activities/@version'
+        try:
+            _ = mapping['InvalidCodelistName']['xpath']
+        except KeyError:
+            assert True
+        else:  # pragma: no cover
+            assert False
+
     def test_default_schemas(self):
         """Check that the default Schemas are correct.
 

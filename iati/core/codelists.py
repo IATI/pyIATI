@@ -170,7 +170,7 @@ class Code(object):
     """
 
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, value=None, name=None):
+    def __init__(self, value=None, name=''):
         """Initialise a Code.
 
         Args:

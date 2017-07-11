@@ -8,6 +8,7 @@ Todo:
     Implement more than Codelists.
 """
 import os
+from lxml import etree
 import iati.core.codelists
 import iati.core.resources
 
@@ -90,6 +91,41 @@ def codelists(version=None, bypass_cache=False):
             _CODELISTS[name] = codelist_found
 
     return _CODELISTS
+
+
+def codelist_mapping(version=None):
+    """Defines the mapping process which states where in a Dataset you should find values on a given Codelist.
+
+    version (str): The version of the Standard to return the data files for. Defaults to None. This means that the mapping file is returned for the latest version of the Standard.
+
+    Returns:
+        dict of dict: A dictionary containing mapping information. Keys in the first dictionary are Codelist names. Keys in the second dictionary are `xpath` and `condition`. The condition is `None` if there is no condition.
+
+    Todo:
+        Test this.
+        Stop filtering out filters for org files.
+
+    """
+    path = iati.core.resources.get_codelist_mapping_path()
+    mapping_tree = iati.core.resources.load_as_tree(path)
+    mappings = dict()
+
+    for mapping in mapping_tree.getroot().xpath('//mapping'):
+        codelist_name = mapping.find('codelist').attrib['ref']
+        codelist_location = mapping.find('path').text
+        if 'organisation' in codelist_location:
+            continue
+        try:
+            condition = mapping.find('condition').text
+        except AttributeError as no_condition:
+            condition = None
+
+        mappings[codelist_name] = {
+            'xpath': codelist_location,
+            'condition': condition
+        }
+
+    return mappings
 
 
 _SCHEMAS = {}

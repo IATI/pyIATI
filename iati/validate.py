@@ -5,6 +5,34 @@ Warning:
 """
 
 from lxml import etree
+import iati.core.default
+
+
+def _correct_codelist_values(dataset, codelist_name):
+    """Determine whether a given Dataset has values from the specified Codelist where expected.
+
+    Args:
+        dataset (iati.core.data.Dataset): The Dataset to check Codelist values within.
+        codelist_name (str): The name of the Codelist to check values from.
+
+    Returns:
+        bool: A boolean indicating whether the given Dataset has values from the specified Codelist where they should be.
+
+    Todo:
+        Test invalid Codelist name.
+        Test something with a condition
+
+    """
+    mappings = iati.core.default.codelist_mapping()
+    codelist = iati.core.default.codelist(codelist_name)
+    xpath = mappings[codelist_name]['xpath']
+    codes_to_check = [iati.core.codelists.Code(value) for value in dataset.xml_tree.xpath(xpath)]
+
+    for code_to_check in codes_to_check:
+        if code_to_check not in codelist.codes:
+            return False
+
+    return True
 
 
 def is_valid(dataset, schema):
@@ -34,6 +62,6 @@ def is_valid(dataset, schema):
 
     try:
         validator.assertValid(dataset.xml_tree)
-        return True
+        return _correct_codelist_values(dataset, 'Version')
     except etree.DocumentInvalid as exception_obj:
         return False
