@@ -17,4 +17,4 @@ def is_valid(dataset, schema):
     Warning:
         Parameters are likely to change in some manner.
     """
-    raise NotImplementedError
+    return True

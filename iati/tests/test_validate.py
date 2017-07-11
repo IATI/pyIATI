@@ -10,7 +10,6 @@ import iati.validate
 class TestValidate(object):
     """A container for tests relating to validation."""
 
-    @pytest.mark.skip(reason="Not yet implemented")
     def test_basic_validation_valid(self):
         """Perform a super simple data validation against a valid Dataset."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
