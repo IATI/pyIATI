@@ -39,6 +39,8 @@ PATH_SCHEMAS = 'schemas'
 
 FILE_CODELIST_EXTENSION = '.xml'
 """The extension of a file containing a Codelist."""
+FILE_CODELIST_MAPPING = 'codelist-mapping.xml'
+"""The name of a file containing definitions of how Codelist values map to data."""
 
 FILE_DATA_EXTENSION = '.xml'
 """The extension of a file containing IATI data."""
@@ -128,12 +130,26 @@ def get_codelist_path(codelist_name, version=None):
     return get_path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
 
 
+def get_codelist_mapping_path(version=None):
+    """Determine the path of the Codelist mapping file.
+
+    version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+
+    Returns:
+        str: The path to a file containing the mapping file.
+
+    Todo:
+        Test this.
+
+    """
+    return get_path_for_version(FILE_CODELIST_MAPPING, version)
+
 def get_test_data_path(name, version=None):
     """Determine the path of an IATI data file with the given filename.
 
     Args:
         name (str): The name of the data file to locate. The filename must not contain the '.xml' file extension.
-        version (float): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
 
     Returns:
         str: The path to a file containing the specified data.

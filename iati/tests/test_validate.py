@@ -38,7 +38,6 @@ class TestValidate(object):
 
         assert not iati.validate.is_valid(data, schema)
 
-    @pytest.mark.skip(reason="Not yet implemented")
     def test_basic_validation_codelist_valid(self):
         """Perform data validation against valid IATI XML that has valid Codelist values."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
@@ -49,7 +48,6 @@ class TestValidate(object):
 
         assert iati.validate.is_valid(data, schema)
 
-    @pytest.mark.skip(reason="Not yet implemented")
     def test_basic_validation_codelist_invalid(self):
         """Perform data validation against valid IATI XML that has invalid Codelist values."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE)
