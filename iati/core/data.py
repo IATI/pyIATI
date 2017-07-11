@@ -77,7 +77,14 @@ class Dataset(object):
         else:
             try:
                 value_stripped = value.strip()
-                self.xml_tree = etree.fromstring(value_stripped)
+
+                # Convert the input to bytes, as etree.fromstring works most consistently with bytes objects, especially if an XML encoding declaration has been used.
+                if isinstance(value_stripped, str):
+                    value_stripped_bytes = value_stripped.encode()
+                else:
+                    value_stripped_bytes = value_stripped
+
+                self.xml_tree = etree.fromstring(value_stripped_bytes)
                 self._xml_str = value_stripped
             except etree.XMLSyntaxError:
                 msg = "The string provided to create a Dataset from is not valid XML."
