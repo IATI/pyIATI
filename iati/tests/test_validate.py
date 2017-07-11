@@ -24,7 +24,6 @@ class TestValidate(object):
 
         assert not iati.validate.is_valid(data, schema)
 
-    @pytest.mark.skip(reason="Not yet implemented")
     def test_basic_validation_invalid_missing_required_element(self):
         """Perform a super simple data validation against a Dataset that is invalid due to a missing required element."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT)
