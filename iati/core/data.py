@@ -81,7 +81,7 @@ class Dataset(object):
 
                 # Convert the input to bytes, as etree.fromstring works most consistently with bytes objects, especially if an XML encoding declaration has been used.
                 if (isinstance(value_stripped, str)
-                    and sys.version_info.major > 2):  # Python v2 treats strings as byte objects by default
+                        and sys.version_info.major > 2):  # Python v2 treats strings as byte objects by default
                     value_stripped_bytes = value_stripped.encode()
                 else:
                     value_stripped_bytes = value_stripped
