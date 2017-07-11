@@ -31,7 +31,7 @@ def codelist(name, version=None):
         ValueError: When a specified version is not a valid version of the IATI Standard.
 
     Returns:
-        iati.core.codelists.Codelist: A Codelist with the specified name.
+        iati.core.Codelist: A Codelist with the specified name.
 
     Warning:
         A name may not be sufficient to act as a UID.
@@ -65,7 +65,7 @@ def codelists(version=None, bypass_cache=False):
         ValueError: When a specified version is not a valid version of the IATI Standard.
 
     Returns:
-        dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.core.codelists.Codelist() instances.
+        dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.core.Codelist() instances.
 
     Warning:
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
@@ -86,7 +86,7 @@ def codelists(version=None, bypass_cache=False):
         name = filename[:-len(iati.core.resources.FILE_CODELIST_EXTENSION)]  # Get the name of the codelist, without the '.xml' file extension
         if (name not in _CODELISTS.keys()) or bypass_cache:
             xml_str = iati.core.resources.load_as_string(path)
-            codelist_found = iati.core.codelists.Codelist(name, xml=xml_str)
+            codelist_found = iati.core.Codelist(name, xml=xml_str)
             _CODELISTS[name] = codelist_found
 
     return _CODELISTS
@@ -106,7 +106,7 @@ def schemas(bypass_cache=False):
         bypass_cache (bool): Whether the cache should be bypassed, instead reloading data from disk even if it's already been loaded.
 
     Returns:
-        dict: A dictionary containing all the Schemas for versions of the Standard. The version of the Standard is the key. An iati.core.schemas.Schema() is each value.
+        dict: A dictionary containing all the Schemas for versions of the Standard. The version of the Standard is the key. An iati.core.Schema() is each value.
 
     Warning:
         The `bypass_cache` parameter could potentially be implemented in a cleaner manner. It also shouldn't really exist until a clear use-case is defined - changes elsewhere in the library may make it redundant.
@@ -127,7 +127,7 @@ def schemas(bypass_cache=False):
     for path in paths:
         name = path.split(os.sep).pop()[:-len(iati.core.resources.FILE_SCHEMA_EXTENSION)]
         if (name not in _SCHEMAS.keys()) or bypass_cache:
-            schema = iati.core.schemas.Schema(name)
+            schema = iati.core.Schema(name)
             _SCHEMAS[name] = schema
 
     return _SCHEMAS

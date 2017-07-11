@@ -9,7 +9,7 @@ class Codelist(object):
     """Representation of a Codelist as defined within the IATI SSOT.
 
     Attributes:
-        codes (:obj:`set` of :obj:`iati.core.codelists.Code`): The codes demonstrating the range of values that the Codelist may represent.
+        codes (:obj:`set` of :obj:`iati.core.Code`): The codes demonstrating the range of values that the Codelist may represent.
         name (str): The name of the Codelist.
 
     Private Attributes:
@@ -80,7 +80,7 @@ class Codelist(object):
                     value = ''
                 if name is None:
                     name = ''
-                self.codes.add(iati.core.codelists.Code(value, name))
+                self.codes.add(iati.core.Code(value, name))
 
         self.codes = set()
         self.name = name
