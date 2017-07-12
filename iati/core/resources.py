@@ -243,10 +243,8 @@ def load_as_bytes(path):
     Returns:
         bytes: The contents of the file at the specified location.
 
-    Warning:
-        Should raise Exceptions when there are problems loading the requested data.
-
     Todo:
+        Should raise Exceptions when there are problems loading the requested data.
         Add error handling for when the specified file does not exist.
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
 
@@ -263,10 +261,8 @@ def load_as_string(path):
     Returns:
         str (python3) / unicode (python2): The contents of the file at the specified location.
 
-    Warning:
-        Should raise Exceptions when there are problems loading the requested data.
-
     Todo:
+        Should raise Exceptions when there are problems loading the requested data.
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
 
     """
