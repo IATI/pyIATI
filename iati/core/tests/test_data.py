@@ -184,8 +184,8 @@ class TestDatasets(object):
         assert isinstance(dataset, iati.core.data.Dataset)
         assert dataset.xml_str == xml
 
-    @pytest.mark.parametrize("encoding", ["UTF-8", "UTF-16", "ASCII",
-                                          "ISO-8859-1", "ISO-8859-2",
+    @pytest.mark.parametrize("encoding", ["UTF-8", "utf-8", "UTF-16", "utf-16",
+                                          "ASCII", "ISO-8859-1", "ISO-8859-2",
                                           "BIG5", "EUC-JP"])
     def test_instantiate_dataset_from_string_with_encoding(self, encoding):
         """Test that an encoded dataset instantiated directly from a string (rather than a file) correctly creates an iati.core.data.Dataset and the input data is contained within the object.
