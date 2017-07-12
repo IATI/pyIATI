@@ -9,7 +9,7 @@ setup(
     url='http://iatistandard.org/',
     packages = find_packages(exclude='iati/core/tests'),
     install_requires = [
-        'lxml==3.6.0'
+        'lxml==3.8.0'
         ],
     classifiers = [
         'Development Status :: 2 - Pre-Alpha',

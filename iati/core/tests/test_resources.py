@@ -52,6 +52,7 @@ class TestResources(object):
 
         Todo:
             Add other tests relating to specific versions of the Standard.
+
         """
         paths = iati.core.resources.find_all_codelist_paths()
 
@@ -67,6 +68,7 @@ class TestResources(object):
             Add other tests relating to specific versions of the Standard.
 
             Handle all paths to schemas being found correctly.
+
         """
         paths = iati.core.resources.find_all_schema_paths()
 
