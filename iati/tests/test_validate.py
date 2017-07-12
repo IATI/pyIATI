@@ -99,7 +99,6 @@ class TestValidate(object):
 
         assert not iati.validate.is_valid(data, schema)
 
-    @pytest.mark.skip(reason="Not yet implemented")
     def test_validation_codelist_vocab_default_implicit(self):
         """Perform data validation against valid IATI XML with a vocabulary that has been implicitly set."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT)
@@ -114,7 +113,6 @@ class TestValidate(object):
 
         assert iati.validate.is_valid(data, schema)
 
-    @pytest.mark.skip(reason="Not yet implemented")
     def test_validation_codelist_vocab_default_implicit_invalid_code(self):
         """Perform data validation against valid IATI XML with a vocabulary that has been implicitly set. The code is invalid."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT_INVALID_CODE)
@@ -129,7 +127,6 @@ class TestValidate(object):
 
         assert not iati.validate.is_valid(data, schema)
 
-    @pytest.mark.skip(reason="Not yet implemented")
     def test_validation_codelist_vocab_default_explicit(self):
         """Perform data validation against valid IATI XML with a vocabulary that has been explicitly set as the default value."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_DEFAULT_EXPLICIT)
