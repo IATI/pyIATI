@@ -169,7 +169,7 @@ class TestValidate(object):
 
         assert iati.validate.is_valid(data, schema)
 
-    @pytest.mark.skip(reason="Not yet implemented")
+    @pytest.mark.skip(reason="Not yet implemented - need to be able to load Codelists from URLs")
     def test_validation_codelist_vocab_user_defined_with_uri_readable(self):
         """Perform data validation against valid IATI XML with a user-defined vocabulary. A URI is defined, and points to a machine-readable codelist. As such, the code can be checked. The @code is valid."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE)
@@ -184,7 +184,7 @@ class TestValidate(object):
 
         assert iati.validate.is_valid(data, schema)
 
-    @pytest.mark.skip(reason="Not yet implemented")
+    @pytest.mark.skip(reason="Not yet implemented - need to be able to load Codelists from URLs")
     def test_validation_codelist_vocab_user_defined_with_uri_readable_bad_code(self):
         """Perform data validation against valid IATI XML with a user-defined vocabulary. A URI is defined, and points to a machine-readable codelist. As such, the code can be checked. The @code is not in the list.
 
@@ -203,7 +203,7 @@ class TestValidate(object):
 
         assert not iati.validate.is_valid(data, schema)
 
-    @pytest.mark.skip(reason="Not yet implemented")
+    @pytest.mark.skip(reason="Not yet implemented - need to be able to load Codelists from URLs")
     def test_validation_codelist_vocab_user_defined_with_uri_unreadable(self):
         """Perform data validation against valid IATI XML with a user-defined vocabulary. A URI is defined, and points to a non-machine-readable codelist. As such, the @code cannot be checked. The @code is valid.
 
