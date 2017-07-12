@@ -92,6 +92,29 @@ def codelists(version=None, bypass_cache=False):
     return _CODELISTS
 
 
+def ruleset(version=None):
+    """Locate the default Ruleset.
+
+    Args:
+        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that the latest version of the Ruleset is returned.
+
+    Returns:
+        str: A string.
+
+    Todo:
+        Parse string into a Ruleset.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    """
+    name = 'standard_ruleset'
+
+    path = iati.core.resources.get_ruleset_path(name, version)
+    ruleset_str = iati.core.resources.load_as_string(path)
+    return ruleset_str
+
+
 _SCHEMAS = {}
 """A cache of loaded Schemas.
 

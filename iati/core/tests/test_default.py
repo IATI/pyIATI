@@ -49,6 +49,21 @@ class TestDefault(object):
         for _, codelist in codelists.items():
             assert isinstance(codelist, iati.core.codelists.Codelist)
 
+    def test_default_ruleset(self):
+        """Check that the default Ruleset is correct.
+
+        Todo:
+            Handle multiple versions.
+
+            Check internal values beyond the ruleset being the correct type.
+        """
+        ruleset = iati.core.default.ruleset()
+
+        assert isinstance(ruleset, bytes)
+        assert len(ruleset) > 2700
+        assert len(ruleset) < 3500
+        # assert isinstance(ruleset, iati.core.rulesets.Ruleset)
+
     def test_default_schemas(self):
         """Check that the default Schemas are correct.
 

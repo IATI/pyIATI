@@ -36,12 +36,17 @@ PATH_TEST_DATA = os.path.join(BASE_PATH, 'test_data')
 """The relative location of the folder containing IATI data files."""
 PATH_SCHEMAS = 'schemas'
 """The location of the folder containing schemas from the SSOT."""
+PATH_RULESETS = 'rulesets'
+"""The location of the folder containing rulesets from the SSOT."""
 
 FILE_CODELIST_EXTENSION = '.xml'
 """The extension of a file containing a Codelist."""
 
 FILE_DATA_EXTENSION = '.xml'
 """The extension of a file containing IATI data."""
+
+FILE_RULESET_EXTENSION = '.json'
+"""The extension of a file containing a Ruleset."""
 
 FILE_SCHEMA_ACTIVITY_NAME = 'iati-activities-schema'
 """The name of a file containing an Activity Schema."""
@@ -170,6 +175,26 @@ def get_folder_name_for_version(version=None):
         return version.replace('.', '')
     else:
         raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
+
+
+def get_ruleset_path(name, version=None):
+    """Determine the path of a ruleset with the given name.
+
+    Args:
+        name (str): The name of the ruleset to locate.
+        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that paths to the latest version of the Ruleset are returned.
+
+    Returns:
+        str: The path to a file containing the specified ruleset.
+
+    Note:
+        Does not check whether the specified ruleset actually exists.
+
+    Todo:
+        Test this.
+
+    """
+    return get_path_for_version(os.path.join(PATH_RULESETS, '{0}'.format(name) + FILE_RULESET_EXTENSION), version)
 
 
 def get_schema_path(name, version=None):
