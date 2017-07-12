@@ -7,7 +7,6 @@ import iati.core.tests.utilities
 import iati.validate
 
 
-# pylint: disable=R0904
 class TestValidate(object):
     """A container for tests relating to validation."""
 
@@ -38,6 +37,10 @@ class TestValidate(object):
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
         assert not iati.validate.is_valid(data, schema)
+
+
+class TestValidateCodelist(object):
+    """A container for tests relating to validation of Codelists."""
 
     def test_basic_validation_codelist_valid(self):
         """Perform data validation against valid IATI XML that has valid Codelist values."""
@@ -99,6 +102,11 @@ class TestValidate(object):
         schema.codelists.add(codelist)
 
         assert not iati.validate.is_valid(data, schema)
+
+
+
+class TestValidateVocabularies(object):
+    """A container for tests relating to validation of vocabularies and associated Codelists."""
 
     def test_validation_codelist_vocab_default_implicit(self):
         """Perform data validation against valid IATI XML with a vocabulary that has been implicitly set."""
