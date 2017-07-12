@@ -60,7 +60,7 @@ class TestValidate(object):
         assert not iati.validate.is_valid(data, schema)
 
     def test_basic_validation_codelist_valid_from_common(self):
-        """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested is on an element defined in common.xsd"""
+        """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested is on an element defined in common.xsd."""
         data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VALID_CODE_FROM_COMMON)
         schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
         codelist = iati.core.default.codelists()['OrganisationType']
@@ -70,7 +70,7 @@ class TestValidate(object):
         assert iati.validate.is_valid(data, schema)
 
     def test_basic_validation_codelist_invalid_from_common(self):
-        """Perform data validation against valid IATI XML that has invalid Codelist values. The attribute being tested is on an element defined in common.xsd"""
+        """Perform data validation against valid IATI XML that has invalid Codelist values. The attribute being tested is on an element defined in common.xsd."""
         data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE_FROM_COMMON)
         schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
         codelist = iati.core.default.codelists()['OrganisationType']

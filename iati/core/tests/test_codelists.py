@@ -15,19 +15,20 @@ class TestCodelistsNonClass(object):
 
 
 class TestCodelists(object):
-    """A container for tests relating to Codelists"""
+    """A container for tests relating to Codelists."""
 
     @pytest.fixture
     def name_to_set(self):
-        """A name to give Codelists.
+        """Set a name to give Codelists.
 
         Returns:
             str: Something that can be provided as a name to Codelists.
+
         """
         return "test Codelist name"
 
     def test_codelist_default_attributes(self):
-        """Check a Codelist's default attributes are correct"""
+        """Check a Codelist's default attributes are correct."""
         try:
             _ = iati.core.Codelist()  # pylint: disable=E1120
         except TypeError:
@@ -37,22 +38,14 @@ class TestCodelists(object):
             assert False
 
     def test_codelist_name_instance(self, name_to_set):
-        """Check a Codelist's attributes are correct when defined with only a name"""
+        """Check a Codelist's attributes are correct when defined with only a name."""
         codelist = iati.core.Codelist(name_to_set)
 
         assert set() == codelist.codes
         assert codelist.name == name_to_set
 
-    def test_codelist_name_and_path_instance(self, name_to_set):
-        """Check a Codelist's attributes are correct when defined with a name and path"""
-        path_to_set = "test Codelist path"
-        codelist = iati.core.Codelist(name_to_set, path_to_set)
-
-        assert set() == codelist.codes
-        assert codelist.name == name_to_set
-
     def test_codelist_add_code(self, name_to_set):
-        """Check a Code can be added to a Codelist"""
+        """Check a Code can be added to a Codelist."""
         codelist = iati.core.Codelist(name_to_set)
         code = iati.core.Code()
         codelist.codes.add(code)
@@ -63,7 +56,7 @@ class TestCodelists(object):
 
     @pytest.mark.xfail
     def test_codelist_add_code_decline_non_code(self, name_to_set):
-        """Check something that is not a Code cannot be added to a Codelist"""
+        """Check something that is not a Code cannot be added to a Codelist."""
         codelist = iati.core.Codelist(name_to_set)
         not_a_code = True
         codelist.codes.add(not_a_code)
@@ -112,17 +105,17 @@ class TestCodelists(object):
 
 
 class TestCodes(object):
-    """A container for tests relating to Codes"""
+    """A container for tests relating to Codes."""
 
     def test_code_default_attributes(self):
-        """Check a Code's default attributes are correct"""
+        """Check a Code's default attributes are correct."""
         code = iati.core.Code()
 
         assert code.name is None
         assert code.value is None
 
     def test_code_value_instance(self):
-        """Check a Code's attributes are correct when being defined with only a value"""
+        """Check a Code's attributes are correct when being defined with only a value."""
         value_to_set = "test Code value"
         code = iati.core.Code(value_to_set)
 
@@ -130,7 +123,7 @@ class TestCodes(object):
         assert code.value == value_to_set
 
     def test_code_value_and_name_instance(self):
-        """Check a Code's attributes are correct when being defined with a value and name"""
+        """Check a Code's attributes are correct when being defined with a value and name."""
         value_to_set = "test Code value"
         name_to_set = "test Code name"
         code = iati.core.Code(value_to_set, name_to_set)
@@ -143,6 +136,7 @@ class TestCodes(object):
 
         Todo:
             Test enumerating a Code with no value.
+
         """
         value_to_set = "test Code value"
         code = iati.core.Code(value_to_set)
