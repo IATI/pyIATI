@@ -15,16 +15,16 @@ class TestSchemas(object):
         """Create a very basic Schema.
 
         Returns:
-            iati.core.schemas.Schema: A Schema that has been initialised with basic values.
+            iati.core.Schema: A Schema that has been initialised with basic values.
 
         """
         schema_name = iati.core.tests.utilities.SCHEMA_NAME_VALID
 
-        return iati.core.schemas.Schema(name=schema_name)
+        return iati.core.Schema(name=schema_name)
 
     def test_schema_default_attributes(self):
         """Check a Schema's default attributes are correct."""
-        schema = iati.core.schemas.Schema()
+        schema = iati.core.Schema()
 
         assert schema.name is None
 
@@ -37,7 +37,7 @@ class TestSchemas(object):
 
         """
         try:
-            _ = iati.core.schemas.Schema(invalid_name)
+            _ = iati.core.Schema(invalid_name)
         except TypeError:
             assert True
         else:  # pragma: no cover
@@ -144,7 +144,7 @@ class TestSchemas(object):
         """Check that it is possible to add Codelists to the Schema."""
         codelist_name = "a test Codelist name"
         schema = schema_initialised
-        codelist = iati.core.codelists.Codelist(codelist_name)
+        codelist = iati.core.Codelist(codelist_name)
 
         schema.codelists.add(codelist)
 
@@ -154,7 +154,7 @@ class TestSchemas(object):
         """Check that it is not possible to add the same Codelist to a Schema multiple times."""
         codelist_name = "a test Codelist name"
         schema = schema_initialised
-        codelist = iati.core.codelists.Codelist(codelist_name)
+        codelist = iati.core.Codelist(codelist_name)
 
         schema.codelists.add(codelist)
         schema.codelists.add(codelist)
@@ -165,8 +165,8 @@ class TestSchemas(object):
         """Check that it is not possible to add multiple functionally identical Codelists to a Schema."""
         codelist_name = "a test Codelist name"
         schema = schema_initialised
-        codelist = iati.core.codelists.Codelist(codelist_name)
-        codelist2 = iati.core.codelists.Codelist(codelist_name)
+        codelist = iati.core.Codelist(codelist_name)
+        codelist2 = iati.core.Codelist(codelist_name)
 
         schema.codelists.add(codelist)
         schema.codelists.add(codelist2)

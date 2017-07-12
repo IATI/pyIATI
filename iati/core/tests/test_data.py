@@ -15,12 +15,12 @@ class TestDatasets(object):
     @pytest.fixture
     def dataset_initialised(self):
         """Return an initialised dataset to work from in other tests."""
-        return iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_NOT_IATI)
+        return iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_NOT_IATI)
 
     def test_dataset_no_params(self):
         """Test Dataset creation with no parameters."""
         try:
-            _ = iati.core.data.Dataset()  # pylint: disable=E1120
+            _ = iati.core.Dataset()  # pylint: disable=E1120
         except TypeError:
             assert True
         else:  # pragma: no cover
@@ -29,14 +29,14 @@ class TestDatasets(object):
 
     def test_dataset_valid_xml_string(self):
         """Test Dataset creation with a valid XML string that is not IATI data."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_NOT_IATI)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_NOT_IATI)
 
         assert data.xml_str == iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
         assert etree.tostring(data.xml_tree) == etree.tostring(iati.core.tests.utilities.XML_TREE_VALID)
 
     def test_dataset_xml_string_leading_whitespace(self):
         """Test Dataset creation with a valid XML string that is not IATI data."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_LEADING_WHITESPACE)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_LEADING_WHITESPACE)
         tree = etree.fromstring(iati.core.tests.utilities.XML_STR_LEADING_WHITESPACE.strip())
 
         assert data.xml_str == iati.core.tests.utilities.XML_STR_LEADING_WHITESPACE.strip()
@@ -49,7 +49,7 @@ class TestDatasets(object):
     def test_dataset_invalid_xml_string(self):
         """Test Dataset creation with a string that is not valid XML."""
         try:
-            _ = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_INVALID)
+            _ = iati.core.Dataset(iati.core.tests.utilities.XML_STR_INVALID)
         except ValueError:
             assert True
         else:  # pragma: no cover
@@ -60,7 +60,7 @@ class TestDatasets(object):
     def test_dataset_number_not_xml(self, not_xml):
         """Test Dataset creation when it's passed a number rather than a string or etree."""
         try:
-            _ = iati.core.data.Dataset(not_xml)
+            _ = iati.core.Dataset(not_xml)
         except TypeError:
             assert True
         else:  # pragma: no cover
@@ -70,7 +70,7 @@ class TestDatasets(object):
     def test_dataset_tree(self):
         """Test Dataset creation with an etree that is not valid IATI data."""
         tree = iati.core.tests.utilities.XML_TREE_VALID
-        data = iati.core.data.Dataset(tree)
+        data = iati.core.Dataset(tree)
 
         assert etree.tostring(data.xml_tree, pretty_print=True) == etree.tostring(tree, pretty_print=True)
         assert data.xml_str == etree.tostring(tree, pretty_print=True)

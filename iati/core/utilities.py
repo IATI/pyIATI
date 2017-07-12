@@ -15,7 +15,7 @@ def add_namespace(tree, new_ns_name, new_ns_uri):
         new_ns_uri (str): The URI for the new namespace. Must be non-empty and valid against https://www.ietf.org/rfc/rfc2396.txt
 
     Returns:
-        iati.core.schemas.Schema: The provided Schema, modified to include the specified namespace.
+        iati.core.Schema: The provided Schema, modified to include the specified namespace.
 
     Raises:
         TypeError: If an attempt is made to add a namespace to something other than a Schema.
@@ -83,7 +83,7 @@ def convert_tree_to_schema(tree):
     Warning:
         Should raise exceptions when there are errors during execution.
 
-        Needs to better distinguish between an `etree.XMLSchema` and an `iati.core.schemas.Schema`.
+        Needs to better distinguish between an `etree.XMLSchema` and an `iati.core.Schema`.
 
         Does not fully hide the lxml internal workings.
 
