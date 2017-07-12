@@ -155,6 +155,62 @@ class TestValidate(object):
 
         assert iati.validate.is_valid(data, schema)
 
+    def test_validation_codelist_vocab_multiple_same_valid(self):
+        """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is the same. The codes are valid against the vocabularies. Percentages add up to 100."""
+        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_SAME_VALID)
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.core.default.codelists()['Sector']
+        codelist_3 = iati.core.default.codelists()['SectorCategory']
+
+        schema.codelists.add(codelist_1)
+        schema.codelists.add(codelist_2)
+        schema.codelists.add(codelist_3)
+
+        assert iati.validate.is_valid(data, schema)
+
+    def test_validation_codelist_vocab_multiple_different_valid(self):
+        """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is different. The codes are valid against the vocabularies. Percentages add up to 100."""
+        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_DIFFERENT_VALID)
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.core.default.codelists()['Sector']
+        codelist_3 = iati.core.default.codelists()['SectorCategory']
+
+        schema.codelists.add(codelist_1)
+        schema.codelists.add(codelist_2)
+        schema.codelists.add(codelist_3)
+
+        assert iati.validate.is_valid(data, schema)
+
+    def test_validation_codelist_vocab_multiple_same_invalid_code(self):
+        """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is the same. The codes are valid against the vocabularies. Percentages add up to 100."""
+        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_SAME_INVALID_CODE)
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.core.default.codelists()['Sector']
+        codelist_3 = iati.core.default.codelists()['SectorCategory']
+
+        schema.codelists.add(codelist_1)
+        schema.codelists.add(codelist_2)
+        schema.codelists.add(codelist_3)
+
+        assert not iati.validate.is_valid(data, schema)
+
+    def test_validation_codelist_vocab_multiple_different_invalid_code(self):
+        """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is different. The codes are valid against the vocabularies. Percentages add up to 100."""
+        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_DIFFERENT_INVALID_CODE)
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.core.default.codelists()['Sector']
+        codelist_3 = iati.core.default.codelists()['SectorCategory']
+
+        schema.codelists.add(codelist_1)
+        schema.codelists.add(codelist_2)
+        schema.codelists.add(codelist_3)
+
+        assert not iati.validate.is_valid(data, schema)
+
     def test_validation_codelist_vocab_user_defined(self):
         """Perform data validation against valid IATI XML with a user-defined vocabulary. No URI is defined, so the code cannot be checked."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED)
