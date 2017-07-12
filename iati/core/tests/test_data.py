@@ -189,8 +189,10 @@ class TestDatasets(object):
                                           "BIG5", "EUC-JP"])
     def test_instantiate_dataset_from_string_with_encoding(self, encoding):
         """Test that an encoded dataset instantiated directly from a string (rather than a file) correctly creates an iati.core.data.Dataset and the input data is contained within the object.
-        Note: The use of UTF-8 and UTF-16 is strongly recommended for IATI datasets, however other encodings are specificed here to demonstrate compatibility.
-        Note: UTF-32 is deliberately omitted as this causes an error: lxml.etree.XMLSyntaxError: Document is empty
+
+        Note:
+            The use of UTF-8 and UTF-16 is strongly recommended for IATI datasets, however other encodings are specificed here to demonstrate compatibility.
+            UTF-32 is deliberately omitted as this causes an error: lxml.etree.XMLSyntaxError: Document is empty
         """
         xml = """<?xml version="1.0" encoding="{}"?>
         <iati-activities version="xx">
