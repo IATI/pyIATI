@@ -8,7 +8,7 @@ from lxml import etree
 import iati.core.default
 
 
-def _correct_codelist_values(dataset, codelist_name):
+def _correct_codes(dataset, codelist):
     """Determine whether a given Dataset has values from the specified Codelist where expected.
 
     Args:
@@ -20,16 +20,38 @@ def _correct_codelist_values(dataset, codelist_name):
 
     Todo:
         Test invalid Codelist name.
-        Test something with a condition
+        Test something with a condition.
+        Test Codelist that maps to multiple xpaths.
 
     """
     mappings = iati.core.default.codelist_mapping()
-    codelist = iati.core.default.codelist(codelist_name)
-    xpath = mappings[codelist_name]['xpath']
-    codes_to_check = [iati.core.codelists.Code(value) for value in dataset.xml_tree.xpath(xpath)]
+    codes_to_check = []
 
-    for code_to_check in codes_to_check:
-        if code_to_check not in codelist.codes:
+    for mapping in mappings[codelist.name]:
+        xpath = mapping['xpath']
+        codes_to_check = codes_to_check + dataset.xml_tree.xpath(xpath)
+
+    for code in codes_to_check:
+        if code not in codelist.codes:
+            return False
+
+    return True
+
+
+def _correct_codelist_values(dataset, schema):
+    """Determine whether a given Dataset has values from Codelists that have been added to a Schema where expected.
+
+    Args:
+        dataset (iati.core.data.Dataset): The Dataset to check Codelist values within.
+        schema (iati.core.schemas.Schema): The Schema to locate Codelists within.
+
+    Returns:
+        bool: A boolean indicating whether the given Dataset has values from the specified Codelists where they should be.
+
+    """
+    for codelist in schema.codelists:
+        correct_for_codelist = _correct_codes(dataset, codelist)
+        if not correct_for_codelist:
             return False
 
     return True
@@ -62,6 +84,7 @@ def is_valid(dataset, schema):
 
     try:
         validator.assertValid(dataset.xml_tree)
-        return _correct_codelist_values(dataset, 'Version')
     except etree.DocumentInvalid as exception_obj:
         return False
+
+    return _correct_codelist_values(dataset, schema)

@@ -7,6 +7,7 @@ Todo:
 
     Implement more than Codelists.
 """
+from collections import defaultdict
 import os
 from lxml import etree
 import iati.core.codelists
@@ -108,7 +109,7 @@ def codelist_mapping(version=None):
     """
     path = iati.core.resources.get_codelist_mapping_path()
     mapping_tree = iati.core.resources.load_as_tree(path)
-    mappings = dict()
+    mappings = defaultdict(list)
 
     for mapping in mapping_tree.getroot().xpath('//mapping'):
         codelist_name = mapping.find('codelist').attrib['ref']
@@ -120,10 +121,10 @@ def codelist_mapping(version=None):
         except AttributeError as no_condition:
             condition = None
 
-        mappings[codelist_name] = {
+        mappings[codelist_name].append( {
             'xpath': codelist_location,
             'condition': condition
-        }
+        } )
 
     return mappings
 

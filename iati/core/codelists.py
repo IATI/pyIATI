@@ -201,8 +201,13 @@ class Code(object):
 
         Todo:
             Utilise all attributes as part of the equality process.
+
+            Test comparison with strings.
         """
-        return ((self.name) == (other.name)) and ((self.value) == (other.value))
+        if isinstance(other, iati.core.codelists.Code):
+            return ((self.name) == (other.name)) and ((self.value) == (other.value))
+        elif isinstance(other, str):
+            return self.value == other
 
     def __hash__(self):
         """Hash the Code.
@@ -211,8 +216,10 @@ class Code(object):
 
         Todo:
             Utilise all attributes as part of the hashing process.
+
+            Be able to deal with checks against both Codes and strings.
         """
-        return hash((self.name, self.value))
+        return hash((self.value))
 
     def xsd_tree(self):
         """Output the Code as an etree enumeration element.

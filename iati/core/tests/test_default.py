@@ -57,8 +57,8 @@ class TestDefault(object):
         """
         mapping = iati.core.default.codelist_mapping()
 
-        assert mapping['Sector']['condition'] == "@vocabulary = '1' or not(@vocabulary)"
-        assert mapping['Version']['condition'] is None
+        assert mapping['Sector'][0]['condition'] == "@vocabulary = '1' or not(@vocabulary)"
+        assert mapping['Version'][0]['condition'] is None
 
     def test_codelist_mapping_xpath(self):
         """Check that the Codelist mapping file is being read correctly.
@@ -68,13 +68,8 @@ class TestDefault(object):
         """
         mapping = iati.core.default.codelist_mapping()
 
-        assert mapping['Version']['xpath'] == '//iati-activities/@version'
-        try:
-            _ = mapping['InvalidCodelistName']['xpath']
-        except KeyError:
-            assert True
-        else:  # pragma: no cover
-            assert False
+        assert mapping['Version'][0]['xpath'] == '//iati-activities/@version'
+        assert len(mapping['InvalidCodelistName']) == 0
 
     def test_default_schemas(self):
         """Check that the default Schemas are correct.
