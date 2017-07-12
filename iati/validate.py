@@ -92,7 +92,7 @@ def is_valid(dataset, schema):
 
     try:
         validator.assertValid(dataset.xml_tree)
-    except etree.DocumentInvalid as exception_obj:
+    except etree.DocumentInvalid:
         return False
 
     return _correct_codelist_values(dataset, schema)

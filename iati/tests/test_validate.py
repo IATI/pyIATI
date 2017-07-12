@@ -7,6 +7,7 @@ import iati.core.tests.utilities
 import iati.validate
 
 
+# pylint: disable=R0904
 class TestValidate(object):
     """A container for tests relating to validation."""
 
@@ -156,7 +157,12 @@ class TestValidate(object):
         assert iati.validate.is_valid(data, schema)
 
     def test_validation_codelist_vocab_multiple_same_valid(self):
-        """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is the same. The codes are valid against the vocabularies. Percentages add up to 100."""
+        """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies.
+
+        The vocabulary used by each of these elements is the same.
+        The codes are valid against the vocabularies.
+        Percentages add up to 100.
+        """
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_SAME_VALID)
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
         codelist_1 = iati.core.default.codelists()['SectorVocabulary']
@@ -170,7 +176,12 @@ class TestValidate(object):
         assert iati.validate.is_valid(data, schema)
 
     def test_validation_codelist_vocab_multiple_different_valid(self):
-        """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is different. The codes are valid against the vocabularies. Percentages add up to 100."""
+        """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies.
+
+        The vocabulary used by each of these elements is different.
+        The codes are valid against the vocabularies.
+        Percentages add up to 100.
+        """
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_DIFFERENT_VALID)
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
         codelist_1 = iati.core.default.codelists()['SectorVocabulary']
@@ -184,7 +195,12 @@ class TestValidate(object):
         assert iati.validate.is_valid(data, schema)
 
     def test_validation_codelist_vocab_multiple_same_invalid_code(self):
-        """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is the same. The codes are valid against the vocabularies. Percentages add up to 100."""
+        """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies.
+
+        The vocabulary used by each of these elements is the same.
+        The codes are valid against the vocabularies.
+        Percentages add up to 100.
+        """
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_SAME_INVALID_CODE)
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
         codelist_1 = iati.core.default.codelists()['SectorVocabulary']
@@ -198,7 +214,12 @@ class TestValidate(object):
         assert not iati.validate.is_valid(data, schema)
 
     def test_validation_codelist_vocab_multiple_different_invalid_code(self):
-        """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is different. The codes are valid against the vocabularies. Percentages add up to 100."""
+        """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies.
+
+        The vocabulary used by each of these elements is different.
+        The codes are valid against the vocabularies.
+        Percentages add up to 100.
+        """
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_DIFFERENT_INVALID_CODE)
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
         codelist_1 = iati.core.default.codelists()['SectorVocabulary']

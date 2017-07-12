@@ -9,7 +9,6 @@ Todo:
 """
 from collections import defaultdict
 import os
-from lxml import etree
 import iati.core.codelists
 import iati.core.resources
 
@@ -95,7 +94,7 @@ def codelists(version=None, bypass_cache=False):
 
 
 def codelist_mapping(version=None):
-    """Defines the mapping process which states where in a Dataset you should find values on a given Codelist.
+    """Define the mapping process which states where in a Dataset you should find values on a given Codelist.
 
     version (str): The version of the Standard to return the data files for. Defaults to None. This means that the mapping file is returned for the latest version of the Standard.
 
@@ -118,13 +117,13 @@ def codelist_mapping(version=None):
             continue
         try:
             condition = mapping.find('condition').text
-        except AttributeError as no_condition:
+        except AttributeError:  # there is no condition
             condition = None
 
-        mappings[codelist_name].append( {
+        mappings[codelist_name].append({
             'xpath': codelist_location,
             'condition': condition
-        } )
+        })
 
     return mappings
 

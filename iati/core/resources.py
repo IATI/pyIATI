@@ -144,6 +144,7 @@ def get_codelist_mapping_path(version=None):
     """
     return get_path_for_version(FILE_CODELIST_MAPPING, version)
 
+
 def get_test_data_path(name, version=None):
     """Determine the path of an IATI data file with the given filename.
 
