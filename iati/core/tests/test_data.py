@@ -184,10 +184,13 @@ class TestDatasets(object):
         assert isinstance(dataset, iati.core.data.Dataset)
         assert dataset.xml_str == xml
 
-    @pytest.mark.parametrize("encoding", ["UTF-8", "utf-8", "UTF-16", "utf-16"])
+    @pytest.mark.parametrize("encoding", ["UTF-8", "UTF-16", "ASCII",
+                                          "ISO-8859-1", "ISO-8859-2",
+                                          "BIG5", "EUC-JP"])
     def test_instantiate_dataset_from_string_with_encoding(self, encoding):
         """Test that an encoded dataset instantiated directly from a string (rather than a file) correctly creates an iati.core.data.Dataset and the input data is contained within the object.
-        Only UTF-8 or UTF-16 are specified as these are those strongly recommended in IATI Guidance: http://iatistandard.org/202/guidance/how-to-publish/select-data-to-publish/
+        Note: The use of UTF-8 and UTF-16 is strongly recommended for IATI datasets, however other encodings are specificed here to demonstrate compatibility.
+        Note: UTF-32 is deliberately omitted as this causes an error: lxml.etree.XMLSyntaxError: Document is empty
         """
         xml = """<?xml version="1.0" encoding="{}"?>
         <iati-activities version="xx">
