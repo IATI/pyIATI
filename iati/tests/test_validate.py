@@ -155,7 +155,6 @@ class TestValidate(object):
 
         assert iati.validate.is_valid(data, schema)
 
-    @pytest.mark.skip(reason="Not yet implemented")
     def test_validation_codelist_vocab_user_defined(self):
         """Perform data validation against valid IATI XML with a user-defined vocabulary. No URI is defined, so the code cannot be checked."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED)
