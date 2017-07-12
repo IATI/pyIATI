@@ -21,7 +21,6 @@ def _correct_codes(dataset, codelist):
     Todo:
         Test invalid Codelist name.
         Test something with a condition.
-        Test Codelist that maps to multiple xpaths.
 
     """
     mappings = iati.core.default.codelist_mapping()

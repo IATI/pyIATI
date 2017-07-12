@@ -78,6 +78,27 @@ class TestValidate(object):
 
         assert not iati.validate.is_valid(data, schema)
 
+    def test_basic_validation_codes_valid_multi_use_codelist(self):
+        """Perform data validation against valid IATI XML that has valid Codelist values. The attributes being tested are under different elements, but require the same Codelist."""
+        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST)
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist = iati.core.default.codelists()['OrganisationType']
+
+        schema.codelists.add(codelist)
+
+        assert iati.validate.is_valid(data, schema)
+
+    @pytest.mark.parametrize("xml_str", [iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST_FIRST, iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST_SECOND])
+    def test_basic_validation_codes_invalid_multi_use_codelist(self, xml_str):
+        """Perform data validation against valid IATI XML that has invalid Codelist values. The attributes being tested are under different elements, but require the same Codelist."""
+        data = iati.core.data.Dataset(xml_str)
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist = iati.core.default.codelists()['OrganisationType']
+
+        schema.codelists.add(codelist)
+
+        assert not iati.validate.is_valid(data, schema)
+
     @pytest.mark.skip(reason="Not yet implemented")
     def test_validation_codelist_vocab_default_implicit(self):
         """Perform data validation against valid IATI XML with a vocabulary that has been implicitly set."""

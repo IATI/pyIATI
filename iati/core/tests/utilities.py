@@ -31,6 +31,17 @@ XML_STR_VALID_IATI_VALID_CODE_FROM_COMMON = iati.core.resources.load_as_string(i
 XML_STR_VALID_IATI_INVALID_CODE_FROM_COMMON = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_invalid_code_from_common'))
 """A string contains valid IATI XML containing an element that is defined in iati-common.xsd - it has an attribute with a value that is not on the appropriate Codelist."""
 
+XML_STR_VALID_IATI_VALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_valid_codes_multiple_xpaths_for_codelist'))
+"""A string contains valid IATI XML containing attributes on multiple elements that require values from the same Codelist. Each of the values from the Codelist are correct."""
+XML_STR_VALID_IATI_INVALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST_FIRST = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_invalid_codes_multiple_xpaths_for_codelist_first'))
+"""A string contains valid IATI XML containing attributes on multiple elements that require values from the same Codelist.
+
+The first value that should be from the Codelist is valid, while the second is invalid."""
+XML_STR_VALID_IATI_INVALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST_SECOND = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_invalid_codes_multiple_xpaths_for_codelist_second'))
+"""A string contains valid IATI XML containing attributes on multiple elements that require values from the same Codelist.
+
+The first value that should be from the Codelist is invalid, while the second is valid."""
+
 XML_STR_VALID_IATI_VOCAB_DEFAULT_EXPLICIT = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_default_explicit'))
 """A string contains valid IATI XML containing an element that uses vocabularies. Explicitly defines default vocab and uses code from that list."""
 XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_default_implicit'))
