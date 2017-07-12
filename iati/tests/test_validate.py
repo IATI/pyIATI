@@ -10,6 +10,16 @@ import iati.validate
 class TestValidate(object):
     """A container for tests relating to validation."""
 
+    @pytest.mark.parametrize("xml", [iati.core.tests.utilities.XML_STR_VALID_NOT_IATI, iati.core.tests.utilities.XML_STR_VALID_IATI, iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE, iati.core.tests.utilities.XML_STR_LEADING_WHITESPACE])
+    def test_xml_check_valid_xml(self, xml):
+        """Perform check to see whether a parameter is valid XML. The parameter is not valid XML."""
+        assert iati.validate.is_xml(xml)
+
+    @pytest.mark.parametrize("not_xml", iati.core.tests.utilities.find_parameter_by_type(['str'], False) + [iati.core.tests.utilities.XML_STR_INVALID])
+    def test_xml_check_not_xml(self, not_xml):
+        """Perform check to see whether a parameter is valid XML. The parameter is not valid XML."""
+        assert not iati.validate.is_xml(not_xml)
+
     def test_basic_validation_valid(self):
         """Perform a super simple data validation against a valid Dataset."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)

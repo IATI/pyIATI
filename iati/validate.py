@@ -96,3 +96,21 @@ def is_valid(dataset, schema):
         return False
 
     return _correct_codelist_values(dataset, schema)
+
+
+def is_xml(maybe_xml):
+    """Determine whether a given parameter is XML.
+
+
+    Args:
+        maybe_xml (str): An string that may or may not contain valid XML.
+
+    Returns:
+        bool: A boolean indicating whether the given Dataset is valid XML.
+
+    """
+    try:
+        _ = etree.fromstring(maybe_xml.strip())
+        return True
+    except (etree.XMLSyntaxError, AttributeError, TypeError, ValueError):
+        return False
