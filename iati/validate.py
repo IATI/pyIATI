@@ -27,7 +27,16 @@ def _correct_codes(dataset, codelist):
     codes_to_check = []
 
     for mapping in mappings[codelist.name]:
-        xpath = mapping['xpath']
+        base_xpath = mapping['xpath']
+        condition = mapping['condition']
+        if condition is None:
+            xpath = base_xpath
+        else:
+            # insert condition into the xpath
+            split_xpath = base_xpath.split('/')
+            parent_el_xpath = '/'.join(split_xpath[:-1])
+            attr_xpath = split_xpath[-1:][0]
+            xpath = parent_el_xpath + '[' + condition + ']/' + attr_xpath
         codes_to_check = codes_to_check + dataset.xml_tree.xpath(xpath)
 
     for code in codes_to_check:

@@ -141,7 +141,6 @@ class TestValidate(object):
 
         assert iati.validate.is_valid(data, schema)
 
-    @pytest.mark.skip(reason="Not yet implemented")
     def test_validation_codelist_vocab_non_default(self):
         """Perform data validation against valid IATI XML with a vocabulary that has been explicitly set as a valid non-default value. The code is valid against this non-default vocabulary."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_NON_DEFAULT)
