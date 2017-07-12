@@ -136,6 +136,9 @@ def is_xml(maybe_xml):
         bool: A boolean indicating whether the given Dataset is valid XML.
 
     """
+    if isinstance(maybe_xml, iati.core.data.Dataset):
+        maybe_xml = maybe_xml.xml_str
+
     try:
         _ = etree.fromstring(maybe_xml.strip())
         return True
