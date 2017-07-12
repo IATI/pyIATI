@@ -65,8 +65,8 @@ def _correct_codelist_values(dataset, schema):
     return True
 
 
-def is_valid(dataset, schema):
-    """Determine whether a given Dataset is valid against the specified Schema.
+def is_iati_xml(dataset, schema):
+    """Determine whether a given Dataset's XML is valid against the specified Schema.
 
     Args:
         dataset (iati.core.data.Dataset): The Dataset to check validity of.
@@ -76,7 +76,7 @@ def is_valid(dataset, schema):
         Parameters are likely to change in some manner.
 
     Returns:
-        bool: A boolean indicating whether the given Dataset is valid against the given Schema.
+        bool: A boolean indicating whether the given Dataset is valid XML against the given Schema.
 
     Raises:
         iati.core.exceptions.SchemaError: An error occurred in the parsing of the Schema.
@@ -93,6 +93,33 @@ def is_valid(dataset, schema):
     try:
         validator.assertValid(dataset.xml_tree)
     except etree.DocumentInvalid:
+        return False
+
+    return True
+
+
+def is_valid(dataset, schema):
+    """Determine whether a given Dataset is valid against the specified Schema.
+
+    Args:
+        dataset (iati.core.data.Dataset): The Dataset to check validity of.
+        schema (iati.core.schemas.Schema): The Schema to validate the Dataset against.
+
+    Warning:
+        Parameters are likely to change in some manner.
+
+    Returns:
+        bool: A boolean indicating whether the given Dataset is valid against the given Schema.
+
+    Todo:
+        Create test against a bad Schema.
+
+    """
+    try:
+        iati_xml = is_iati_xml(dataset, schema)
+        if not iati_xml:
+            return False
+    except iati.core.exceptions.SchemaError:
         return False
 
     return _correct_codelist_values(dataset, schema)

@@ -25,6 +25,8 @@ class TestValidate(object):
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert iati.validate.is_valid(data, schema)
 
     def test_basic_validation_invalid(self):
@@ -32,6 +34,8 @@ class TestValidate(object):
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_NOT_IATI)
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert not iati.validate.is_iati_xml(data, schema)
         assert not iati.validate.is_valid(data, schema)
 
     def test_basic_validation_invalid_missing_required_element(self):
@@ -39,6 +43,8 @@ class TestValidate(object):
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT)
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert not iati.validate.is_iati_xml(data, schema)
         assert not iati.validate.is_valid(data, schema)
 
     def test_basic_validation_invalid_missing_required_element_from_common(self):
@@ -46,6 +52,8 @@ class TestValidate(object):
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT_COMMON)
         schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert not iati.validate.is_iati_xml(data, schema)
         assert not iati.validate.is_valid(data, schema)
 
 
@@ -60,6 +68,8 @@ class TestValidateCodelist(object):
 
         schema.codelists.add(codelist)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert iati.validate.is_valid(data, schema)
 
     def test_basic_validation_codelist_invalid(self):
@@ -70,6 +80,8 @@ class TestValidateCodelist(object):
 
         schema.codelists.add(codelist)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert not iati.validate.is_valid(data, schema)
 
     def test_basic_validation_codelist_valid_from_common(self):
@@ -80,6 +92,8 @@ class TestValidateCodelist(object):
 
         schema.codelists.add(codelist)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert iati.validate.is_valid(data, schema)
 
     def test_basic_validation_codelist_invalid_from_common(self):
@@ -90,6 +104,8 @@ class TestValidateCodelist(object):
 
         schema.codelists.add(codelist)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert not iati.validate.is_valid(data, schema)
 
     def test_basic_validation_codes_valid_multi_use_codelist(self):
@@ -100,6 +116,8 @@ class TestValidateCodelist(object):
 
         schema.codelists.add(codelist)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert iati.validate.is_valid(data, schema)
 
     @pytest.mark.parametrize("xml_str", [iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST_FIRST, iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST_SECOND])
@@ -111,6 +129,8 @@ class TestValidateCodelist(object):
 
         schema.codelists.add(codelist)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert not iati.validate.is_valid(data, schema)
 
 
@@ -130,6 +150,8 @@ class TestValidateVocabularies(object):
         schema.codelists.add(codelist_2)
         schema.codelists.add(codelist_3)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert iati.validate.is_valid(data, schema)
 
     def test_validation_codelist_vocab_default_implicit_invalid_code(self):
@@ -144,6 +166,8 @@ class TestValidateVocabularies(object):
         schema.codelists.add(codelist_2)
         schema.codelists.add(codelist_3)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert not iati.validate.is_valid(data, schema)
 
     def test_validation_codelist_vocab_default_explicit(self):
@@ -158,6 +182,8 @@ class TestValidateVocabularies(object):
         schema.codelists.add(codelist_2)
         schema.codelists.add(codelist_3)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert iati.validate.is_valid(data, schema)
 
     def test_validation_codelist_vocab_non_default(self):
@@ -172,6 +198,8 @@ class TestValidateVocabularies(object):
         schema.codelists.add(codelist_2)
         schema.codelists.add(codelist_3)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert iati.validate.is_valid(data, schema)
 
     def test_validation_codelist_vocab_multiple_same_valid(self):
@@ -191,6 +219,8 @@ class TestValidateVocabularies(object):
         schema.codelists.add(codelist_2)
         schema.codelists.add(codelist_3)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert iati.validate.is_valid(data, schema)
 
     def test_validation_codelist_vocab_multiple_different_valid(self):
@@ -210,6 +240,8 @@ class TestValidateVocabularies(object):
         schema.codelists.add(codelist_2)
         schema.codelists.add(codelist_3)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert iati.validate.is_valid(data, schema)
 
     def test_validation_codelist_vocab_multiple_same_invalid_code(self):
@@ -229,6 +261,8 @@ class TestValidateVocabularies(object):
         schema.codelists.add(codelist_2)
         schema.codelists.add(codelist_3)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert not iati.validate.is_valid(data, schema)
 
     def test_validation_codelist_vocab_multiple_different_invalid_code(self):
@@ -248,6 +282,8 @@ class TestValidateVocabularies(object):
         schema.codelists.add(codelist_2)
         schema.codelists.add(codelist_3)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert not iati.validate.is_valid(data, schema)
 
     def test_validation_codelist_vocab_user_defined(self):
@@ -262,6 +298,8 @@ class TestValidateVocabularies(object):
         schema.codelists.add(codelist_2)
         schema.codelists.add(codelist_3)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert iati.validate.is_valid(data, schema)
 
     @pytest.mark.skip(reason="Not yet implemented - need to be able to load Codelists from URLs")
@@ -277,6 +315,8 @@ class TestValidateVocabularies(object):
         schema.codelists.add(codelist_2)
         schema.codelists.add(codelist_3)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert iati.validate.is_valid(data, schema)
 
     @pytest.mark.skip(reason="Not yet implemented - need to be able to load Codelists from URLs")
@@ -296,6 +336,8 @@ class TestValidateVocabularies(object):
         schema.codelists.add(codelist_2)
         schema.codelists.add(codelist_3)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert not iati.validate.is_valid(data, schema)
 
     @pytest.mark.skip(reason="Not yet implemented - need to be able to load Codelists from URLs")
@@ -315,4 +357,6 @@ class TestValidateVocabularies(object):
         schema.codelists.add(codelist_2)
         schema.codelists.add(codelist_3)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
         assert iati.validate.is_valid(data, schema)
