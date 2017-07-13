@@ -36,13 +36,11 @@ class TestSchemas(object):
             Check for type errors when the type is incorrect.
 
         """
-        try:
-            _ = iati.core.Schema(invalid_name)
-        except TypeError:
-            assert True
-        else:  # pragma: no cover
-            # a TypeError should be raised, so this point should not be reached
-            assert False
+        with pytest.raises(TypeError) as excinfo:
+            iati.core.Schema(invalid_name)
+
+        assert excinfo.typename == 'TypeError'
+        assert 'The name of the Schema is an invalid type. Must be a string, though was a' in str(excinfo.value)
 
     def test_schema_define_from_xsd(self, schema_initialised):
         """Check that a Schema can be generated from an XSD definition."""

@@ -44,7 +44,7 @@ def add_namespace(tree, new_ns_name, new_ns_uri):
         iati.core.utilities.log_error(msg)
         raise ValueError(msg)
     if not isinstance(new_ns_uri, str) or len(new_ns_uri) == 0:
-        msg = "The `new_ns_name` parameter must be a valid URI."
+        msg = "The `new_ns_uri` parameter must be a valid URI."
         iati.core.utilities.log_error(msg)
         raise ValueError(msg)
 
