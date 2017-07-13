@@ -67,78 +67,84 @@ class TestValidate(object):
 class TestValidateCodelist(object):
     """A container for tests relating to validation of Codelists."""
 
-    def test_basic_validation_codelist_valid(self):
+    @pytest.fixture
+    def schema_version(self):
+        """A schema with the Version Codelist added.
+
+        Returns:
+            A valid activity schema with the Version Codelist added.
+
+        """
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist = iati.core.default.codelists()['Version']
+
+        schema.codelists.add(codelist)
+
+        return schema
+
+    @pytest.fixture
+    def schema_org_type(self):
+        """A schema with the OrganisationType Codelist added.
+
+        Returns:
+            A valid activity schema with the OrganisationType Codelist added.
+
+        """
+        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist = iati.core.default.codelists()['OrganisationType']
+
+        schema.codelists.add(codelist)
+
+        return schema
+
+    def test_basic_validation_codelist_valid(self, schema_version):
         """Perform data validation against valid IATI XML that has valid Codelist values."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        codelist = iati.core.default.codelists()['Version']
-
-        schema.codelists.add(codelist)
 
         assert iati.validate.is_xml(data.xml_str)
-        assert iati.validate.is_iati_xml(data, schema)
-        assert iati.validate.is_valid(data, schema)
+        assert iati.validate.is_iati_xml(data, schema_version)
+        assert iati.validate.is_valid(data, schema_version)
 
-    def test_basic_validation_codelist_invalid(self):
+    def test_basic_validation_codelist_invalid(self, schema_version):
         """Perform data validation against valid IATI XML that has invalid Codelist values."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE)
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        codelist = iati.core.default.codelists()['Version']
-
-        schema.codelists.add(codelist)
 
         assert iati.validate.is_xml(data.xml_str)
-        assert iati.validate.is_iati_xml(data, schema)
-        assert not iati.validate.is_valid(data, schema)
+        assert iati.validate.is_iati_xml(data, schema_version)
+        assert not iati.validate.is_valid(data, schema_version)
 
-    def test_basic_validation_codelist_valid_from_common(self):
+    def test_basic_validation_codelist_valid_from_common(self, schema_org_type):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested is on an element defined in common.xsd."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VALID_CODE_FROM_COMMON)
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        codelist = iati.core.default.codelists()['OrganisationType']
-
-        schema.codelists.add(codelist)
 
         assert iati.validate.is_xml(data.xml_str)
-        assert iati.validate.is_iati_xml(data, schema)
-        assert iati.validate.is_valid(data, schema)
+        assert iati.validate.is_iati_xml(data, schema_org_type)
+        assert iati.validate.is_valid(data, schema_org_type)
 
-    def test_basic_validation_codelist_invalid_from_common(self):
+    def test_basic_validation_codelist_invalid_from_common(self, schema_org_type):
         """Perform data validation against valid IATI XML that has invalid Codelist values. The attribute being tested is on an element defined in common.xsd."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE_FROM_COMMON)
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        codelist = iati.core.default.codelists()['OrganisationType']
-
-        schema.codelists.add(codelist)
 
         assert iati.validate.is_xml(data.xml_str)
-        assert iati.validate.is_iati_xml(data, schema)
-        assert not iati.validate.is_valid(data, schema)
+        assert iati.validate.is_iati_xml(data, schema_org_type)
+        assert not iati.validate.is_valid(data, schema_org_type)
 
-    def test_basic_validation_codes_valid_multi_use_codelist(self):
+    def test_basic_validation_codes_valid_multi_use_codelist(self, schema_org_type):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attributes being tested are under different elements, but require the same Codelist."""
         data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST)
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        codelist = iati.core.default.codelists()['OrganisationType']
-
-        schema.codelists.add(codelist)
 
         assert iati.validate.is_xml(data.xml_str)
-        assert iati.validate.is_iati_xml(data, schema)
-        assert iati.validate.is_valid(data, schema)
+        assert iati.validate.is_iati_xml(data, schema_org_type)
+        assert iati.validate.is_valid(data, schema_org_type)
 
     @pytest.mark.parametrize("xml_str", [iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST_FIRST, iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST_SECOND])
-    def test_basic_validation_codes_invalid_multi_use_codelist(self, xml_str):
+    def test_basic_validation_codes_invalid_multi_use_codelist(self, xml_str, schema_org_type):
         """Perform data validation against valid IATI XML that has invalid Codelist values. The attributes being tested are under different elements, but require the same Codelist."""
         data = iati.core.data.Dataset(xml_str)
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        codelist = iati.core.default.codelists()['OrganisationType']
-
-        schema.codelists.add(codelist)
 
         assert iati.validate.is_xml(data.xml_str)
-        assert iati.validate.is_iati_xml(data, schema)
-        assert not iati.validate.is_valid(data, schema)
+        assert iati.validate.is_iati_xml(data, schema_org_type)
+        assert not iati.validate.is_valid(data, schema_org_type)
 
 
 
