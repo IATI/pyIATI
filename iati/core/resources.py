@@ -234,6 +234,24 @@ def get_path_for_version(path, version=None):
     return os.path.join(get_folder_path_for_version(version), path)
 
 
+def load_as_bytes(path):
+    """Load a resource at the specified path into a bytes object.
+
+    Args:
+        path (str): The path to the file that is to be read in.
+
+    Returns:
+        bytes: The contents of the file at the specified location.
+
+    Todo:
+        Should raise Exceptions when there are problems loading the requested data.
+        Add error handling for when the specified file does not exist.
+        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
+
+    """
+    return pkg_resources.resource_string(PACKAGE, path)
+
+
 def load_as_string(path):
     """Load a resource at the specified path into a string.
 
@@ -241,16 +259,14 @@ def load_as_string(path):
         path (str): The path to the file that is to be read in.
 
     Returns:
-        str: The contents of the file at the specified location.
-
-    Warning:
-        Should raise Exceptions when there are problems loading the requested data.
+        str (python3) / unicode (python2): The contents of the file at the specified location.
 
     Todo:
-        Add error handling for when the specified file does not exist.
+        Should raise Exceptions when there are problems loading the requested data.
+        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
 
     """
-    return pkg_resources.resource_string(PACKAGE, path)
+    return load_as_bytes(path).decode('utf-8')
 
 
 def load_as_tree(path):
