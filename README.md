@@ -62,7 +62,7 @@ The following example loads the included IATI v2.02 schema at:  `iati.core/iati/
 
 ```
 import iati.core.schemas
-schema = iati.core.schemas.Schema(name='iati-activities-schema')
+schema = iati.core.Schema(name='iati-activities-schema')
 ```
 
 ### Loading codelists
@@ -103,7 +103,7 @@ with open('path/to/iati-activites.xml', 'r') as xml_file_object:
 import requests
 dataset_as_string = requests.get('http://XML_FILE_URL_HERE').text
 
-dataset = iati.core.data.Dataset(dataset_as_string)
+dataset = iati.core.Dataset(dataset_as_string)
 ```
 
 #### Accessing data

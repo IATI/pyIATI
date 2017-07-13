@@ -23,14 +23,14 @@ class TestValidate(object):
     @pytest.mark.parametrize("xml", [iati.core.tests.utilities.XML_STR_VALID_NOT_IATI, iati.core.tests.utilities.XML_STR_VALID_IATI, iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE, iati.core.tests.utilities.XML_STR_LEADING_WHITESPACE])
     def test_xml_check_valid_xml(self, xml):
         """Perform check to see whether a Dataset is deemed valid XML."""
-        data = iati.core.data.Dataset(xml)
+        data = iati.core.Dataset(xml)
 
         assert iati.validate.is_xml(data)
 
     def test_basic_validation_valid(self):
         """Perform a super simple data validation against a valid Dataset."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
+        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema)
@@ -38,8 +38,8 @@ class TestValidate(object):
 
     def test_basic_validation_invalid(self):
         """Perform a super simple data validation against an invalid Dataset."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_NOT_IATI)
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_NOT_IATI)
+        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
         assert iati.validate.is_xml(data.xml_str)
         assert not iati.validate.is_iati_xml(data, schema)
@@ -47,8 +47,8 @@ class TestValidate(object):
 
     def test_basic_validation_invalid_missing_required_element(self):
         """Perform a super simple data validation against a Dataset that is invalid due to a missing required element."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT)
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT)
+        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
         assert iati.validate.is_xml(data.xml_str)
         assert not iati.validate.is_iati_xml(data, schema)
@@ -56,8 +56,8 @@ class TestValidate(object):
 
     def test_basic_validation_invalid_missing_required_element_from_common(self):
         """Perform a super simple data validation against a Dataset that is invalid due to a missing required element that is defined in iati-common.xsd."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT_COMMON)
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT_COMMON)
+        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
         assert iati.validate.is_xml(data.xml_str)
         assert not iati.validate.is_iati_xml(data, schema)
@@ -75,7 +75,7 @@ class TestValidateCodelist(object):
             A valid activity schema with the Version Codelist added.
 
         """
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
         codelist = iati.core.default.codelists()['Version']
 
         schema.codelists.add(codelist)
@@ -90,7 +90,7 @@ class TestValidateCodelist(object):
             A valid activity schema with the OrganisationType Codelist added.
 
         """
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
         codelist = iati.core.default.codelists()['OrganisationType']
 
         schema.codelists.add(codelist)
@@ -99,7 +99,7 @@ class TestValidateCodelist(object):
 
     def test_basic_validation_codelist_valid(self, schema_version):
         """Perform data validation against valid IATI XML that has valid Codelist values."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_version)
@@ -107,7 +107,7 @@ class TestValidateCodelist(object):
 
     def test_basic_validation_codelist_invalid(self, schema_version):
         """Perform data validation against valid IATI XML that has invalid Codelist values."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_version)
@@ -115,7 +115,7 @@ class TestValidateCodelist(object):
 
     def test_basic_validation_codelist_valid_from_common(self, schema_org_type):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested is on an element defined in common.xsd."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VALID_CODE_FROM_COMMON)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VALID_CODE_FROM_COMMON)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_org_type)
@@ -123,7 +123,7 @@ class TestValidateCodelist(object):
 
     def test_basic_validation_codelist_invalid_from_common(self, schema_org_type):
         """Perform data validation against valid IATI XML that has invalid Codelist values. The attribute being tested is on an element defined in common.xsd."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE_FROM_COMMON)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE_FROM_COMMON)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_org_type)
@@ -131,7 +131,7 @@ class TestValidateCodelist(object):
 
     def test_basic_validation_codes_valid_multi_use_codelist(self, schema_org_type):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attributes being tested are under different elements, but require the same Codelist."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_org_type)
@@ -140,7 +140,7 @@ class TestValidateCodelist(object):
     @pytest.mark.parametrize("xml_str", [iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST_FIRST, iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST_SECOND])
     def test_basic_validation_codes_invalid_multi_use_codelist(self, xml_str, schema_org_type):
         """Perform data validation against valid IATI XML that has invalid Codelist values. The attributes being tested are under different elements, but require the same Codelist."""
-        data = iati.core.data.Dataset(xml_str)
+        data = iati.core.Dataset(xml_str)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_org_type)
@@ -159,7 +159,8 @@ class TestValidateVocabularies(object):
             A valid activity schema with the DAC Sector Codelists and appropriate vocabulary added.
 
         """
-        schema = iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+
         codelist_1 = iati.core.default.codelists()['SectorVocabulary']
         codelist_2 = iati.core.default.codelists()['Sector']
         codelist_3 = iati.core.default.codelists()['SectorCategory']
@@ -172,7 +173,7 @@ class TestValidateVocabularies(object):
 
     def test_validation_codelist_vocab_default_implicit(self, schema_sectors):
         """Perform data validation against valid IATI XML with a vocabulary that has been implicitly set."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_sectors)
@@ -180,7 +181,7 @@ class TestValidateVocabularies(object):
 
     def test_validation_codelist_vocab_default_implicit_invalid_code(self, schema_sectors):
         """Perform data validation against valid IATI XML with a vocabulary that has been implicitly set. The code is invalid."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT_INVALID_CODE)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT_INVALID_CODE)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_sectors)
@@ -188,7 +189,7 @@ class TestValidateVocabularies(object):
 
     def test_validation_codelist_vocab_default_explicit(self, schema_sectors):
         """Perform data validation against valid IATI XML with a vocabulary that has been explicitly set as the default value."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_DEFAULT_EXPLICIT)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_DEFAULT_EXPLICIT)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_sectors)
@@ -196,7 +197,7 @@ class TestValidateVocabularies(object):
 
     def test_validation_codelist_vocab_non_default(self, schema_sectors):
         """Perform data validation against valid IATI XML with a vocabulary that has been explicitly set as a valid non-default value. The code is valid against this non-default vocabulary."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_NON_DEFAULT)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_NON_DEFAULT)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_sectors)
@@ -209,7 +210,7 @@ class TestValidateVocabularies(object):
         The codes are valid against the vocabularies.
         Percentages add up to 100.
         """
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_SAME_VALID)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_SAME_VALID)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_sectors)
@@ -222,7 +223,7 @@ class TestValidateVocabularies(object):
         The codes are valid against the vocabularies.
         Percentages add up to 100.
         """
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_DIFFERENT_VALID)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_DIFFERENT_VALID)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_sectors)
@@ -235,7 +236,7 @@ class TestValidateVocabularies(object):
         The codes are valid against the vocabularies.
         Percentages add up to 100.
         """
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_SAME_INVALID_CODE)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_SAME_INVALID_CODE)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_sectors)
@@ -248,7 +249,7 @@ class TestValidateVocabularies(object):
         The codes are valid against the vocabularies.
         Percentages add up to 100.
         """
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_DIFFERENT_INVALID_CODE)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_MULTIPLE_DIFFERENT_INVALID_CODE)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_sectors)
@@ -256,7 +257,7 @@ class TestValidateVocabularies(object):
 
     def test_validation_codelist_vocab_user_defined(self, schema_sectors):
         """Perform data validation against valid IATI XML with a user-defined vocabulary. No URI is defined, so the code cannot be checked."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_sectors)
@@ -265,7 +266,7 @@ class TestValidateVocabularies(object):
     @pytest.mark.skip(reason="Not yet implemented - need to be able to load Codelists from URLs")
     def test_validation_codelist_vocab_user_defined_with_uri_readable(self, schema_sectors):
         """Perform data validation against valid IATI XML with a user-defined vocabulary. A URI is defined, and points to a machine-readable codelist. As such, the code can be checked. The @code is valid."""
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_sectors)
@@ -278,7 +279,7 @@ class TestValidateVocabularies(object):
         Todo:
             Check that this is a legitimate check to be performed, given the contents and guidance given in the Standard.
         """
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE_BAD_CODE)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE_BAD_CODE)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_sectors)
@@ -291,7 +292,7 @@ class TestValidateVocabularies(object):
         Todo:
             Remove xfail and work on functionality to fully fetch and parse user-defined codelists after higher priority functionality is finished.
         """
-        data = iati.core.data.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_UNREADABLE)
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_UNREADABLE)
 
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_sectors)

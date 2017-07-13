@@ -19,10 +19,10 @@ class TestDefault(object):
         name = 'Country'
         codelist = iati.core.default.codelist(name)
 
-        assert isinstance(codelist, iati.core.codelists.Codelist)
+        assert isinstance(codelist, iati.core.Codelist)
         assert codelist.name == name
         for code in codelist.codes:
-            assert isinstance(code, iati.core.codelists.Code)
+            assert isinstance(code, iati.core.Code)
 
     @pytest.mark.parametrize("name", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_default_codelist_invalid(self, name):
@@ -47,7 +47,7 @@ class TestDefault(object):
         assert isinstance(codelists, dict)
         assert len(codelists) == 62
         for _, codelist in codelists.items():
-            assert isinstance(codelist, iati.core.codelists.Codelist)
+            assert isinstance(codelist, iati.core.Codelist)
 
     def test_codelist_mapping_condition(self):
         """Check that the Codelist mapping file is being read correctly.
@@ -84,4 +84,4 @@ class TestDefault(object):
         assert isinstance(schemas, dict)
         assert len(schemas) == 1
         for _, schema in schemas.items():
-            assert isinstance(schema, iati.core.schemas.Schema)
+            assert isinstance(schema, iati.core.Schema)
