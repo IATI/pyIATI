@@ -206,3 +206,28 @@ class TestDatasets(object):
 
         assert isinstance(dataset, iati.core.data.Dataset)
         assert dataset.xml_str == xml_encoded
+
+    @pytest.mark.parametrize("encoding_declared, encoding_used", [
+                                          ("UTF-16", "UTF-8"),
+                                          ("UTF-16", "ISO-8859-1"),
+                                          ("UTF-16", "BIG5"),
+                                          ("UTF-16", "EUC-JP"),
+                                          ("ASCII", "UTF-16"),
+                                          ("ISO-8859-1", "UTF-16"),
+                                          ("ISO-8859-2", "UTF-16"),
+                                          ("BIG5", "UTF-16"),
+                                          ("EUC-JP", "UTF-16")])
+    def test_instantiation_dataset_from_string_with_encoding_mismatch(self, encoding_declared, encoding_used):
+        """Test that an error is raised when attempting to create a dataset where a string is encoded significantly differently from what is defined within the XML encoding declaration."""
+        xml = """<?xml version="1.0" encoding="{}"?>
+        <iati-activities version="xx">
+          <iati-activity>
+             <iati-identifier></iati-identifier>
+         </iati-activity>
+        </iati-activities>""".format(encoding_declared)
+        xml_encoded = xml.encode(encoding_used)  # Encode the whole string in line with the specified encoding
+
+        with pytest.raises(ValueError) as excinfo:
+            dataset = iati.core.data.Dataset(xml_encoded)
+
+        assert str(excinfo.value) == 'The string provided to create a Dataset from is not valid XML.'
