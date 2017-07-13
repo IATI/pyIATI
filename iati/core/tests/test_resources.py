@@ -1,7 +1,7 @@
 """A module containing tests for the library implementation of accessing resources."""
 from lxml import etree
 import pytest
-from six import string_types
+import six
 import iati.core.resources
 
 
@@ -104,7 +104,7 @@ class TestResources(object):
 
         result = iati.core.resources.load_as_string(path_test_data)
 
-        assert isinstance(result, string_types)
+        assert isinstance(result, six.string_types)
         assert result == 'This is a string that is not valid XML\n'
 
     def test_resource_filename(self):
