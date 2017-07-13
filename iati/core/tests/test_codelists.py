@@ -33,7 +33,7 @@ class TestCodelists(object):
             iati.core.Codelist()
 
         assert excinfo.typename == 'TypeError'
-        assert ('__init__() missing 1 required positional argument' in str(excinfo.value)) or ('__init__() takes exactly 2 arguments' in str(excinfo.value))
+        assert ('__init__() missing 1 required positional argument' in str(excinfo.value)) or ('__init__() takes at least 2 arguments' in str(excinfo.value))
 
     def test_codelist_name_instance(self, name_to_set):
         """Check a Codelist's attributes are correct when defined with only a name."""
