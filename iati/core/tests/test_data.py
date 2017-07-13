@@ -170,7 +170,7 @@ class TestDatasets(object):
             # a TypeError should be raised when creating without a tree
             assert False
 
-    def test_instantiate_dataset_from_string(self):
+    def test_instantiation_dataset_from_string(self):
         """Test that a dataset instantiated directly from a string (rather than a file) correctly creates an iati.core.data.Dataset and the input data is contained within the object."""
         xml = """<?xml version="1.0"?>
         <iati-activities version="xx">
@@ -187,7 +187,7 @@ class TestDatasets(object):
     @pytest.mark.parametrize("encoding", ["UTF-8", "utf-8", "UTF-16", "utf-16",
                                           "ASCII", "ISO-8859-1", "ISO-8859-2",
                                           "BIG5", "EUC-JP"])
-    def test_instantiate_dataset_from_string_with_encoding(self, encoding):
+    def test_instantiation_dataset_from_string_with_encoding(self, encoding):
         """Test that an encoded dataset instantiated directly from a string (rather than a file) correctly creates an iati.core.data.Dataset and the input data is contained within the object.
 
         Note:
