@@ -39,7 +39,6 @@ class TestSchemas(object):
         with pytest.raises(TypeError) as excinfo:
             iati.core.Schema(invalid_name)
 
-        assert excinfo.typename == 'TypeError'
         assert 'The name of the Schema is an invalid type. Must be a string, though was a' in str(excinfo.value)
 
     def test_schema_define_from_xsd(self, schema_initialised):

@@ -30,7 +30,6 @@ class TestDefault(object):
         with pytest.raises(ValueError) as excinfo:
             iati.core.default.codelist(name)
 
-        assert excinfo.typename == 'ValueError'
         assert 'There is no default Codelist in version' in str(excinfo.value)
 
     def test_default_codelists(self):

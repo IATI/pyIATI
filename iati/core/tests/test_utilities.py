@@ -68,7 +68,6 @@ class TestUtilities(object):
         with pytest.raises(ValueError) as excinfo:
             iati.core.utilities.add_namespace(schema_base_tree, ns_name, ns_uri)
 
-        assert excinfo.typename == 'ValueError'
         assert 'There is already a namespace called' in str(excinfo.value)
 
     @pytest.mark.parametrize("not_a_tree", iati.core.tests.utilities.find_parameter_by_type([], False))
@@ -80,7 +79,6 @@ class TestUtilities(object):
         with pytest.raises(TypeError) as excinfo:
             iati.core.utilities.add_namespace(not_a_tree, ns_name, ns_uri)
 
-        assert excinfo.typename == 'TypeError'
         assert 'The `tree` parameter must be of type `etree._ElementTree` - it was of type' in str(excinfo.value)
 
     @pytest.mark.parametrize("ns_name", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
@@ -107,7 +105,6 @@ class TestUtilities(object):
         with pytest.raises(ValueError) as excinfo:
             iati.core.utilities.add_namespace(schema_base_tree, ns_name, ns_uri)
 
-        assert excinfo.typename == 'ValueError'
         assert 'The `new_ns_name` parameter must be a non-empty string.' in str(excinfo.value)
 
     @pytest.mark.parametrize("ns_uri", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
@@ -134,7 +131,6 @@ class TestUtilities(object):
         with pytest.raises(ValueError) as excinfo:
             iati.core.utilities.add_namespace(schema_base_tree, ns_name, ns_uri)
 
-        assert excinfo.typename == 'ValueError'
         assert 'The `new_ns_uri` parameter must be a valid URI.' in str(excinfo.value)
 
     def test_convert_tree_to_schema(self):
@@ -175,7 +171,6 @@ class TestUtilities(object):
         with pytest.raises(ValueError) as excinfo:
             iati.core.utilities.convert_xml_to_tree(not_xml)
 
-        assert excinfo.typename == 'ValueError'
         assert 'To parse XML into a tree, the XML must be a string, not a' in str(excinfo.value)
 
     def test_log(self):

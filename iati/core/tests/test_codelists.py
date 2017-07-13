@@ -32,7 +32,6 @@ class TestCodelists(object):
         with pytest.raises(TypeError) as excinfo:
             iati.core.Codelist()
 
-        assert excinfo.typename == 'TypeError'
         assert ('__init__() missing 1 required positional argument' in str(excinfo.value)) or ('__init__() takes at least 2 arguments' in str(excinfo.value))
 
     def test_codelist_name_instance(self, name_to_set):
