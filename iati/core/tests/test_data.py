@@ -23,7 +23,7 @@ class TestDatasets(object):
             iati.core.Dataset()
 
         assert excinfo.typename == 'TypeError'
-        assert '__init__() missing 1 required positional argument' in str(excinfo.value)
+        assert ('__init__() missing 1 required positional argument' in str(excinfo.value)) or ('__init__() takes exactly 2 arguments' in str(excinfo.value))
 
     def test_dataset_valid_xml_string(self):
         """Test Dataset creation with a valid XML string that is not IATI data."""
