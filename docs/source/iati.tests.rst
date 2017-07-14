@@ -1,13 +1,13 @@
-iati.test package
-=================
+iati.tests package
+==================
 
 Submodules
 ----------
 
-iati.test.test_validate module
-------------------------------
+iati.tests.test_validate module
+-------------------------------
 
-.. automodule:: iati.test.test_validate
+.. automodule:: iati.tests.test_validate
     :members:
     :undoc-members:
     :show-inheritance:
@@ -16,7 +16,7 @@ iati.test.test_validate module
 Module contents
 ---------------
 
-.. automodule:: iati.test
+.. automodule:: iati.tests
     :members:
     :undoc-members:
     :show-inheritance:

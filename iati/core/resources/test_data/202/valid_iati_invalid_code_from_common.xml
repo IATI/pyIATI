@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<iati-activities version="2.02">
+  <iati-activity>
+    <iati-identifier></iati-identifier>
+    <reporting-org type="not-a-valid-value" ref="AA-AAA-123456789"> <!-- A value for @type that is not on the OrganisationType Codelist. <reporting-org> is defined as a common element in the schema -->
+      <narrative>Organisation name</narrative>
+    </reporting-org>
+    <title>
+      <narrative>Xxxxxxx</narrative>
+    </title>
+    <description>
+      <narrative>Xxxxxxx</narrative>
+    </description>
+    <participating-org role="2"></participating-org>
+    <activity-status code="2"/>
+    <activity-date type="1" iso-date="2023-11-27"/>
+  </iati-activity>
+</iati-activities>
