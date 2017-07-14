@@ -7,9 +7,9 @@ The `get_*_path[s](name)` functions provide information about where to locate pa
 The `load_as_*(path)` functions load the contents of a file at the specified path and return it in the specified format.
 
 Example:
-    To load a test XML file located in `my_test_file` and use it to create a `Dataset`:
+    To load a test XML file located in `my_test_file` and use it to create a `Dataset`::
 
-        $ dataset = iati.core.Dataset(iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('my_test_file')))
+        dataset = iati.core.Dataset(iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('my_test_file')))
 
 Note:
     `pkg_resources` is used to allow resources to be located however the package is distributed. If using the standard `os` functionality, resources may not be locatable if, for example, the package is distributed as an egg.
