@@ -1,4 +1,5 @@
 """A module containing tests for the library representation of Rulesets."""
+import pytest
 import iati.core.default
 import iati.core.rulesets
 import iati.core.resources
@@ -6,6 +7,32 @@ import iati.core.resources
 
 class TestRuleset(object):
     """A container for tests relating to Rulesets."""
+
+    def test_ruleset_init_no_parameters(self):
+        """Check that a Ruleset cannot be created when no parameters are given."""
+        with pytest.raises(TypeError) as excinfo:
+            iati.core.Ruleset()
+
+    def test_ruleset_init_ruleset_str_valid(self):
+        """Check that a Ruleset can be created when given at least one Rule in string format."""
+        ruleset_str = '{"CONTEXT": {"RULE_NAME": {"cases": []]}}}'
+
+        ruleset = iati.core.Ruleset(ruleset_str)
+
+        assert isinstance(ruleset, iati.core.Ruleset)
+
+    @pytest.mark.parametrize("not_a_ruleset", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    def test_ruleset_init_ruleset_str_invalid(self, not_a_ruleset):
+        """Check that a Ruleset cannot be created when given at least one Rule in a non-string format."""
+        with pytest.raises(TypeError) as excinfo:
+            iati.core.Ruleset(not_a_ruleset)
+
+    def test_ruleset_init_ruleset_str_valid(self):
+        """Check that a Ruleset cannot be created when given a string that is not a Ruleset."""
+        not_a_ruleset_str = 'this is not a ruleset: it is a cat'
+
+        with pytest.raises(ValueError) as excinfo:
+            iati.core.Ruleset(not_a_ruleset_str)
 
     def test_ruleset_instantiation(self):
         """Ruleset object correctly instantiates."""
@@ -24,48 +51,48 @@ class TestRuleset(object):
 class TestRules(object):
     """A container for tests relating to Rules."""
 
-    def test_rule_instantiation(self):
-        """Rule object correctly instantiates."""
-        name = 'atleast_one'
-        xpath_base = '//iati-activity'
-        case = {"paths": ["activity-date[@type='1' or @type='2']"]}
-        rule = iati.core.rulesets.RuleAtLeastOne(name, xpath_base, case)
-        assert isinstance(rule, iati.core.rulesets.Rule)
-        assert rule.name == 'atleast_one'
-        assert isinstance(rule.case, dict)
+    # def test_rule_instantiation(self):
+    #     """Rule object correctly instantiates."""
+    #     name = 'atleast_one'
+    #     xpath_base = '//iati-activity'
+    #     case = {"paths": ["activity-date[@type='1' or @type='2']"]}
+    #     rule = iati.core.rulesets.RuleAtLeastOne(name, xpath_base, case)
+    #     assert isinstance(rule, iati.core.rulesets.Rule)
+    #     assert rule.name == 'atleast_one'
+    #     assert isinstance(rule.case, dict)
 
-    def test_RuleNoMoreThanOne_implementation(self):
-        """Rule executes its implementation correctly."""
-        pass
+    # def test_RuleNoMoreThanOne_implementation(self):
+    #     """Rule executes its implementation correctly."""
+    #     pass
 
-    def test_RuleAtLeastOne_implementation(self):
-        """Rule executes its implementation correctly."""
-        pass
+    # def test_RuleAtLeastOne_implementation(self):
+    #     """Rule executes its implementation correctly."""
+    #     pass
 
-    def test_RuleDependent_implementation(self):
-        """Rule executes its implementation correctly."""
-        pass
+    # def test_RuleDependent_implementation(self):
+    #     """Rule executes its implementation correctly."""
+    #     pass
 
-    def test_RuleSum_implementation(self):
-        """Rule executes its implementation correctly."""
-        pass
+    # def test_RuleSum_implementation(self):
+    #     """Rule executes its implementation correctly."""
+    #     pass
 
-    def test_RuleDateOrder_implementation(self):
-        """Rule executes its implementation correctly."""
-        pass
+    # def test_RuleDateOrder_implementation(self):
+    #     """Rule executes its implementation correctly."""
+    #     pass
 
-    def test_RuleRegexMatches_implementation(self):
-        """Rule executes its implementation correctly."""
-        pass
+    # def test_RuleRegexMatches_implementation(self):
+    #     """Rule executes its implementation correctly."""
+    #     pass
 
-    def test_RuleRegexNoMatches_implementation(self):
-        """Rule executes its implementation correctly."""
-        pass
+    # def test_RuleRegexNoMatches_implementation(self):
+    #     """Rule executes its implementation correctly."""
+    #     pass
 
-    def test_RuleStartsWith_implementation(self):
-        """Rule executes its implementation correctly."""
-        pass
+    # def test_RuleStartsWith_implementation(self):
+    #     """Rule executes its implementation correctly."""
+    #     pass
 
-    def test_RuleUnique_implementation(self):
-        """Rule executes its implementation correctly."""
-        pass
+    # def test_RuleUnique_implementation(self):
+    #     """Rule executes its implementation correctly."""
+    #     pass
