@@ -15,24 +15,36 @@ class TestRuleset(object):
 
     def test_ruleset_init_ruleset_str_valid(self):
         """Check that a Ruleset can be created when given at least one Rule in string format."""
-        ruleset_str = '{"CONTEXT": {"RULE_NAME": {"cases": []]}}}'
+        ruleset_str = '{"CONTEXT": {"RULE_NAME": {"cases": []}}}'
 
         ruleset = iati.core.Ruleset(ruleset_str)
 
         assert isinstance(ruleset, iati.core.Ruleset)
+        assert isinstance(ruleset.rules, set)
+        assert len(ruleset.rules) == 0
 
     @pytest.mark.parametrize("not_a_ruleset", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
-    def test_ruleset_init_ruleset_str_invalid(self, not_a_ruleset):
+    def test_ruleset_init_ruleset_str_not_str(self, not_a_ruleset):
         """Check that a Ruleset cannot be created when given at least one Rule in a non-string format."""
         with pytest.raises(TypeError) as excinfo:
             iati.core.Ruleset(not_a_ruleset)
 
-    def test_ruleset_init_ruleset_str_valid(self):
+    def test_ruleset_init_ruleset_str_invalid(self):
         """Check that a Ruleset cannot be created when given a string that is not a Ruleset."""
         not_a_ruleset_str = 'this is not a ruleset: it is a cat'
 
         with pytest.raises(ValueError) as excinfo:
             iati.core.Ruleset(not_a_ruleset_str)
+
+    def test_ruleset_init_ruleset_1_rule(self):
+        """Check that a Ruleset can be created when given at least one Rule in string format."""
+        ruleset_str = '{"CONTEXT": {"RULE_NAME": {"cases": [{"paths": ["test_path"]}]}}}'
+
+        ruleset = iati.core.Ruleset(ruleset_str)
+
+        assert isinstance(ruleset, iati.core.Ruleset)
+        assert isinstance(ruleset.rules, set)
+        assert len(ruleset.rules) == 1
 
     def test_ruleset_instantiation(self):
         """Ruleset object correctly instantiates."""

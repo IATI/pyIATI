@@ -25,7 +25,12 @@ class Ruleset(object):
         if not isinstance(ruleset_str, str):
             raise TypeError
 
-        json.loads(ruleset_str)
+        ruleset = json.loads(ruleset_str)
+
+        self.rules = set()
+
+        if len(ruleset['CONTEXT']['RULE_NAME']['cases']) > 0:
+            self.rules.add('a thing')
 
 # import json
 
