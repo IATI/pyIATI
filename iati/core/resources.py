@@ -1,6 +1,18 @@
 """A module to provide a way of locating resources within the IATI library.
 
-`pkg_resources` is used to allow resources to be located however the package is distributed. If using the standard `os` functionality, resources may not be locatable if, for example, the package is distributed as an egg.
+There are two key groups of functions within this module: `get_*_path[s]()` and `load_as_*()`.
+
+The `get_*_path[s](name)` functions provide information about where to locate particular types of resources with a provided name.
+
+The `load_as_*(path)` functions load the contents of a file at the specified path and return it in the specified format.
+
+Example:
+    To load a test XML file located in `my_test_file` and use it to create a `Dataset`::
+
+        dataset = iati.core.Dataset(iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('my_test_file')))
+
+Note:
+    `pkg_resources` is used to allow resources to be located however the package is distributed. If using the standard `os` functionality, resources may not be locatable if, for example, the package is distributed as an egg.
 
 Warning:
     The contents of this module are likely to change. This is due to them expecting that there is a single version of the Standard. When this assumption changes, so will the contents of this module.
@@ -131,6 +143,31 @@ def get_codelist_path(codelist_name, version=None):
     return get_path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
 
 
+def get_schema_path(name, version=None):
+    """Determine the path of a schema with the given name.
+
+    Args:
+        name (str): The name of the schema to locate.
+        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
+
+    Returns:
+        str: The path to a file containing the specified schema.
+
+    Note:
+        Does not check whether the specified schema actually exists.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+    Todo:
+        Handle versions of the standard other than 2.02.
+
+        Test this.
+
+    """
+    return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
+
+
 def get_test_data_path(name, version=None):
     """Determine the path of an IATI data file with the given filename.
 
@@ -174,31 +211,6 @@ def get_folder_name_for_version(version=None):
         return version.replace('.', '')
     else:
         raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
-
-
-def get_schema_path(name, version=None):
-    """Determine the path of a schema with the given name.
-
-    Args:
-        name (str): The name of the schema to locate.
-        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
-
-    Returns:
-        str: The path to a file containing the specified schema.
-
-    Note:
-        Does not check whether the specified schema actually exists.
-
-    Warning:
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
-
-    Todo:
-        Handle versions of the standard other than 2.02.
-
-        Test this.
-
-    """
-    return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
 
 def get_folder_path_for_version(version=None):
