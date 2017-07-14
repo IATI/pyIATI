@@ -14,10 +14,17 @@ Todo:
 import json
 
 
-_VALID_RULE_TYPES = ['no_more_than_one', 'atleast_one', 'dependent', 'sum', 'date_order', 'regex_matches', 'regex_no_matches', 'startswith', 'unique']
+_VALID_RULE_TYPES = ["no_more_than_one", "atleast_one", "dependent", "sum", "date_order", "regex_matches", "regex_no_matches", "startswith", "unique"]
 
 
 class Ruleset(object):
+    """Representation of a Ruleset as defined within the IATI SSOT.
+
+    Warning:
+        Rulesets have not yet been implemented. They will likely have a similar API to Codelists, although this is yet to be determined.
+
+    """
+
     def __init__(self, ruleset_str):
         """Initialise a Ruleset.
 
@@ -32,8 +39,10 @@ class Ruleset(object):
 
         self.rules = set()
 
-        if len(ruleset['CONTEXT']['RULE_NAME']['cases']) > 0:
-            self.rules.add(Rule('', '', dict()))
+        for xpath_base, rule in ruleset.items():
+            for rule_type, cases in rule.items():
+                if len(cases['cases']) > 0:
+                    self.rules.add(Rule(rule_type, xpath_base, cases))
 
 
 class Rule(object):
@@ -42,12 +51,20 @@ class Rule(object):
     Acts as a base class for specific types of Rule that actually do something.
 
     """
+
     def __init__(self, rule_type, xpath_base, case):
         """Initialise a Rule."""
+        if isinstance(rule_type, bytes):
+            rule_type = str(rule_type)
+
         if not isinstance(rule_type, str) or not isinstance(xpath_base, str) or not isinstance(case, dict):
             raise TypeError
 
-        self.rule_type = rule_type
+        if rule_type in _VALID_RULE_TYPES:
+            self.rule_type = rule_type
+        else:
+            raise ValueError
+
         self.xpath_base = xpath_base
         self.case = case
 

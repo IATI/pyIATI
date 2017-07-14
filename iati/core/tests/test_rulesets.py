@@ -15,7 +15,7 @@ class TestRuleset(object):
 
     def test_ruleset_init_ruleset_str_valid(self):
         """Check that a Ruleset can be created when given a JSON Ruleset in string format."""
-        ruleset_str = '{"CONTEXT": {"RULE_NAME": {"cases": []}}}'
+        ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": []}}}'
 
         ruleset = iati.core.Ruleset(ruleset_str)
 
@@ -38,7 +38,7 @@ class TestRuleset(object):
 
     def test_ruleset_init_ruleset_1_rule(self):
         """Check that a Ruleset can be created when given a JSON Ruleset in string format with at least one Rule."""
-        ruleset_str = '{"CONTEXT": {"RULE_NAME": {"cases": [{"paths": ["test_path"]}]}}}'
+        ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path"]}]}}}'
 
         ruleset = iati.core.Ruleset(ruleset_str)
 
@@ -47,8 +47,8 @@ class TestRuleset(object):
         assert len(ruleset.rules) == 1
         assert isinstance(list(ruleset.rules)[0], iati.core.Rule)
 
-    def test_ruleset_instantiation(self):
-        """Ruleset object correctly instantiates."""
+    # def test_ruleset_instantiation(self):
+    #     """Ruleset object correctly instantiates."""
         # ruleset_str = iati.core.default.ruleset()
         # format_ruleset_str = ruleset_str.decode('utf-8')
         # ruleset = iati.core.rulesets.Ruleset(format_ruleset_str)
@@ -71,7 +71,7 @@ class TestRule(object):
 
     def test_rule_init_valid_parameter_types(self):
         """Check that a Rule can be created when given correct parameters."""
-        rule_type = 'the name of the Rule'
+        rule_type = 'atleast_one'
         xpath_base = 'an xpath'
         case = dict()
 
@@ -120,15 +120,13 @@ class TestRule(object):
         assert isinstance(rule, iati.core.Rule)
 
     @pytest.mark.parametrize("rule_type", iati.core.tests.utilities.find_parameter_by_type(['str']))
-    def test_rule_init_invalid_rule_type_raises_error(self, rule_type):
-        """Check that invalid rule_type values cause an error."""
-        # xpath_base = 'an xpath'
-        # case = dict()
-        #
-        # with pytest.raises(ValueError) as excinfo:
-        #     iati.core.Rule(rule_type, xpath_base, case)
+    def test_rule_init_invalid_string_for_rule_type_raises_error(self, rule_type):
+        """Check that invalid rule_type string value causes an error."""
+        xpath_base = 'an xpath'
+        case = dict()
 
-        pass
+        with pytest.raises(ValueError):
+            iati.core.Rule(rule_type, xpath_base, case)
 
     # def test_rule_instantiation(self):
     #     """Rule object correctly instantiates."""
