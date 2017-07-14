@@ -14,6 +14,9 @@ Todo:
 import json
 
 
+_VALID_RULE_TYPES = ['no_more_than_one', 'atleast_one', 'dependent', 'sum', 'date_order', 'regex_matches', 'regex_no_matches', 'startswith', 'unique']
+
+
 class Ruleset(object):
     def __init__(self, ruleset_str):
         """Initialise a Ruleset.
@@ -30,7 +33,23 @@ class Ruleset(object):
         self.rules = set()
 
         if len(ruleset['CONTEXT']['RULE_NAME']['cases']) > 0:
-            self.rules.add('a thing')
+            self.rules.add(Rule('', '', dict()))
+
+
+class Rule(object):
+    """Representation of a Rule contained within a Ruleset.
+
+    Acts as a base class for specific types of Rule that actually do something.
+
+    """
+    def __init__(self, rule_type, xpath_base, case):
+        """Initialise a Rule."""
+        if not isinstance(rule_type, str) or not isinstance(xpath_base, str) or not isinstance(case, dict):
+            raise TypeError
+
+        self.rule_type = rule_type
+        self.xpath_base = xpath_base
+        self.case = case
 
 # import json
 
@@ -72,21 +91,21 @@ class Ruleset(object):
 #         return possible_rule_names[rule_name](rule_name, xpath_base, case)
 
 
-class Rule(object):
-    """Representation of a Rule contained within a Ruleset.
+# class Rule(object):
+#     """Representation of a Rule contained within a Ruleset.
 
-    Acts as a base class for specific types of Rule that actually do something.
+#     Acts as a base class for specific types of Rule that actually do something.
 
-    Warning:
-        Rules have not yet been implemented. They will likely have a similar API to Codes, although this is yet to be determined. In particular, a Rule will be designed to be a base class for specific types of Rule, while there is only one type of Code.
+#     Warning:
+#         Rules have not yet been implemented. They will likely have a similar API to Codes, although this is yet to be determined. In particular, a Rule will be designed to be a base class for specific types of Rule, while there is only one type of Code.
 
-    """
+#     """
 
-    def __init__(self, name, xpath_base, case):
-        """Initialise a Rule."""
-        self.name = name
-        self.xpath_base = xpath_base
-        self.case = case
+#     def __init__(self, name, xpath_base, case):
+#         """Initialise a Rule."""
+#         self.name = name
+#         self.xpath_base = xpath_base
+#         self.case = case
 
 
 class RuleNoMoreThanOne(Rule):
