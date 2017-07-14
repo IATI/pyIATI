@@ -131,6 +131,31 @@ def get_codelist_path(codelist_name, version=None):
     return get_path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
 
 
+def get_schema_path(name, version=None):
+    """Determine the path of a schema with the given name.
+
+    Args:
+        name (str): The name of the schema to locate.
+        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
+
+    Returns:
+        str: The path to a file containing the specified schema.
+
+    Note:
+        Does not check whether the specified schema actually exists.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+    Todo:
+        Handle versions of the standard other than 2.02.
+
+        Test this.
+
+    """
+    return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
+
+
 def get_test_data_path(name, version=None):
     """Determine the path of an IATI data file with the given filename.
 
@@ -174,31 +199,6 @@ def get_folder_name_for_version(version=None):
         return version.replace('.', '')
     else:
         raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
-
-
-def get_schema_path(name, version=None):
-    """Determine the path of a schema with the given name.
-
-    Args:
-        name (str): The name of the schema to locate.
-        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
-
-    Returns:
-        str: The path to a file containing the specified schema.
-
-    Note:
-        Does not check whether the specified schema actually exists.
-
-    Warning:
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
-
-    Todo:
-        Handle versions of the standard other than 2.02.
-
-        Test this.
-
-    """
-    return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
 
 def get_folder_path_for_version(version=None):
