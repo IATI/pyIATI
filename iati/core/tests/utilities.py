@@ -3,9 +3,10 @@
 A large number of constants containing example file content are contained. These constants are named from left to right, with general properties first, then leading into more specific information. These names indicate what they are used for.
 
 Example:
-    To load a file called `NAME_OF_FILE_TO_LOAD` into a string::
+    To load a file into a string::
 
-        CONSTANT_NAME = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path(NAME_OF_FILE_TO_LOAD))
+        name_of_file = 'a-file-name-without-the-extension'
+        CONSTANT_NAME = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path(name_of_file))
 
 Note:
     The current method of managing test data is known to be sub-optimal. Suggestions for better methods that satisfy requirements are appreciated!
