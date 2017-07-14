@@ -55,7 +55,8 @@ class Rule(object):
     def __init__(self, rule_type, xpath_base, case):
         """Initialise a Rule."""
         if isinstance(rule_type, bytes):
-            rule_type = rule_type.decode('cp437')
+            # import pdb; pdb.set_trace()
+            rule_type = str(rule_type)
 
         if not isinstance(rule_type, str) or not isinstance(xpath_base, str) or not isinstance(case, dict):
             raise TypeError
