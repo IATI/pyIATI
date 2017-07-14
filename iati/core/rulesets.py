@@ -55,7 +55,7 @@ class Rule(object):
     def __init__(self, rule_type, xpath_base, case):
         """Initialise a Rule."""
         if isinstance(rule_type, bytes):
-            rule_type = rule_type.decode('utf-8')
+            rule_type = rule_type.decode('cp437')
 
         if not isinstance(rule_type, str) or not isinstance(xpath_base, str) or not isinstance(case, dict):
             raise TypeError
