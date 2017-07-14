@@ -1,6 +1,18 @@
 """A module to provide a way of locating resources within the IATI library.
 
-`pkg_resources` is used to allow resources to be located however the package is distributed. If using the standard `os` functionality, resources may not be locatable if, for example, the package is distributed as an egg.
+There are two key groups of functions within this module: `get_*_path[s]()` and `load_as_*()`.
+
+The `get_*_path[s](name)` functions provide information about where to locate particular types of resources with a provided name.
+
+The `load_as_*(path)` functions load the contents of a file at the specified path and return it in the specified format.
+
+Example:
+    To load a test XML file located in `my_test_file` and use it to create a `Dataset`:
+
+        $ dataset = iati.core.Dataset(iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('my_test_file')))
+
+Note:
+    `pkg_resources` is used to allow resources to be located however the package is distributed. If using the standard `os` functionality, resources may not be locatable if, for example, the package is distributed as an egg.
 
 Warning:
     The contents of this module are likely to change. This is due to them expecting that there is a single version of the Standard. When this assumption changes, so will the contents of this module.
