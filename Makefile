@@ -27,7 +27,7 @@ lint: $(IATI_FOLDER)
 	echo $(LINE_SEP)
 	-flake8 $(IATI_FOLDER)
 	echo $(LINE_SEP)
-	pydocstyle $(IATI_FOLDER)
+	- pydocstyle $(IATI_FOLDER)
 
 
 test: $(IATI_FOLDER)

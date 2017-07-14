@@ -83,7 +83,7 @@ class Dataset(object):
                 msg = "The string provided to create a Dataset from is not valid XML."
                 iati.core.utilities.log_error(msg)
                 raise ValueError(msg)
-            except (AttributeError, ValueError):
+            except (AttributeError, TypeError, ValueError):
                 msg = "Datasets can only be ElementTrees or strings containing valid XML, using the xml_tree and xml_str attributes respectively. Actual type: {0}".format(type(value))
                 iati.core.utilities.log_error(msg)
                 raise TypeError(msg)

@@ -1,6 +1,18 @@
 """A module to provide a way of locating resources within the IATI library.
 
-`pkg_resources` is used to allow resources to be located however the package is distributed. If using the standard `os` functionality, resources may not be locatable if, for example, the package is distributed as an egg.
+There are two key groups of functions within this module: `get_*_path[s]()` and `load_as_*()`.
+
+The `get_*_path[s](name)` functions provide information about where to locate particular types of resources with a provided name.
+
+The `load_as_*(path)` functions load the contents of a file at the specified path and return it in the specified format.
+
+Example:
+    To load a test XML file located in `my_test_file` and use it to create a `Dataset`::
+
+        dataset = iati.core.Dataset(iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('my_test_file')))
+
+Note:
+    `pkg_resources` is used to allow resources to be located however the package is distributed. If using the standard `os` functionality, resources may not be locatable if, for example, the package is distributed as an egg.
 
 Warning:
     The contents of this module are likely to change. This is due to them expecting that there is a single version of the Standard. When this assumption changes, so will the contents of this module.
@@ -75,6 +87,7 @@ def find_all_codelist_paths(version=None):
         Handle versions, including errors.
 
         Provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
+
     """
     files = pkg_resources.resource_listdir(PACKAGE, get_path_for_version(PATH_CODELISTS, version))
     paths = [get_codelist_path(file, version) for file in files]
@@ -102,6 +115,7 @@ def find_all_schema_paths(version=None):
         Handle versions, including errors.
 
         Implement for more than a single specified activity schema.
+
     """
     return [get_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version)]
 
@@ -126,11 +140,37 @@ def get_codelist_path(codelist_name, version=None):
 
     Todo:
         Test this.
+
     """
     if codelist_name[-4:] == FILE_CODELIST_EXTENSION:
         codelist_name = codelist_name[:-4]
 
     return get_path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
+
+
+def get_schema_path(name, version=None):
+    """Determine the path of a schema with the given name.
+
+    Args:
+        name (str): The name of the schema to locate.
+        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
+
+    Returns:
+        str: The path to a file containing the specified schema.
+
+    Note:
+        Does not check whether the specified schema actually exists.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+    Todo:
+        Handle versions of the standard other than 2.02.
+
+        Test this.
+
+    """
+    return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
 
 def get_test_data_path(name, version=None):
@@ -151,6 +191,7 @@ def get_test_data_path(name, version=None):
 
     Todo:
         Test this.
+
     """
     return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
 
@@ -249,8 +290,27 @@ def get_path_for_version(path, version=None):
 
     Todo:
         Test this.
+
     """
     return os.path.join(get_folder_path_for_version(version), path)
+
+
+def load_as_bytes(path):
+    """Load a resource at the specified path into a bytes object.
+
+    Args:
+        path (str): The path to the file that is to be read in.
+
+    Returns:
+        bytes: The contents of the file at the specified location.
+
+    Todo:
+        Should raise Exceptions when there are problems loading the requested data.
+        Add error handling for when the specified file does not exist.
+        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
+
+    """
+    return pkg_resources.resource_string(PACKAGE, path)
 
 
 def load_as_string(path):
@@ -260,15 +320,14 @@ def load_as_string(path):
         path (str): The path to the file that is to be read in.
 
     Returns:
-        str: The contents of the file at the specified location.
-
-    Warning:
-        Should raise Exceptions when there are problems loading the requested data.
+        str (python3) / unicode (python2): The contents of the file at the specified location.
 
     Todo:
-        Add error handling for when the specified file does not exist.
+        Should raise Exceptions when there are problems loading the requested data.
+        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
+
     """
-    return pkg_resources.resource_string(PACKAGE, path)
+    return load_as_bytes(path).decode('utf-8')
 
 
 def load_as_tree(path):
@@ -291,6 +350,7 @@ def load_as_tree(path):
 
     Todo:
         Handle when the specified file can be accessed without issue, but it does not contain valid XML.
+
     """
     path_filename = resource_filename(path)
     try:
@@ -314,5 +374,6 @@ def resource_filename(path):
 
     Warning:
         When other functions in this module are reviewed, this will be too.
+
     """
     return pkg_resources.resource_filename(PACKAGE, path)
