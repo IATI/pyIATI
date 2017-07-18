@@ -106,11 +106,40 @@ class Rule(object):
             ValueError: When a rule_type is not one of the permitted Rule types.
 
         """
-        # import pdb;pdb.set_trace()
         if not isinstance(xpath_base, six.string_types) or not isinstance(case, dict):
             raise TypeError
 
         self.xpath_base = xpath_base
+
+    def _has_values_in_case(self, case, values):
+        """Check that a case object has the required values.
+
+        Args:
+            case (dict): Specific configuration for this instance of the Rule.
+            values (list of (str, type)): A list of tuples containing the expected keys and type they should be.
+
+        Raises:
+            KeyError: When a required key is not present.
+            TypeError: When a parameter is of an incorrect type.
+            ValueError: When a required key is present, but the type is incorrect.
+
+        Returns:
+            boolean: Whether the case has the required values.
+
+        Todo:
+            Figure out the mix of Value and Type errors.
+
+        """
+        if not isinstance(case, dict) or not isinstance(values, list):
+            raise TypeError
+
+        for (key, expected_type) in values:
+            if key not in case.keys():
+                raise KeyError
+            if not isinstance(case[key], expected_type):
+                raise ValueError
+
+        return True
 
 
 class RuleNoMoreThanOne(Rule):
@@ -124,6 +153,8 @@ class RuleNoMoreThanOne(Rule):
     """
     def __init__(self, xpath_base, case):
         super(RuleNoMoreThanOne, self).__init__(xpath_base, case)
+
+        self._has_values_in_case(case, [('paths', list)])
 
         self.name = "no_more_than_one"
 

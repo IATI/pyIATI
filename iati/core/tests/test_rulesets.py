@@ -126,7 +126,7 @@ class TestRule(object):
     def test_rule_init_valid_parameter_types(self, rule_constructor):
         """Check that a Rule can be created when given correct parameters."""
         xpath_base = 'an xpath'
-        case = dict()
+        case = { 'paths': ['path_1', 'path_2'] }
 
         rule = rule_constructor(xpath_base, case)
 
@@ -160,7 +160,7 @@ class TestRuleNoMoreThanOne(object):
     def basic_rule(self):
         """A basic instantiation of this Rule."""
         xpath_base = 'an xpath'
-        case = dict()
+        case = { 'paths': ['path_1', 'path_2'] }
 
         return iati.core.rulesets.RuleNoMoreThanOne(xpath_base, case)
 
