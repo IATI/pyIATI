@@ -20,6 +20,37 @@ import iati.core.utilities
 _VALID_RULE_TYPES = ["no_more_than_one", "atleast_one", "dependent", "sum", "date_order", "regex_matches", "regex_no_matches", "startswith", "unique"]
 
 
+def locate_constructor_for_rule_type(rule_type):
+    """Locate the constructor for specific rule types.
+
+    Args:
+        rule_type (str): The name of the type of Rule to identify the class for.
+
+    Returns:
+        Rule implementation: A constructor for a class that inherits from Rule.
+
+    Raises:
+        KeyError: When a non-permitted `rule_type` is provided.
+
+    Todo:
+        Determine scope of this function, and how much testing is therefore required.
+
+    """
+    possible_rule_types = {
+        'atleast_one': RuleAtLeastOne,
+        # 'date_order': RuleDateOrder,
+        # 'dependent': RuleDependent,
+        'no_more_than_one': RuleNoMoreThanOne #,
+        # 'regex_matches': RuleRegexMatches,
+        # 'regex_no_matches': RuleRegexNoMatches,
+        # 'startswith': RuleStartsWith,
+        # 'sum': RuleSum,
+        # 'unique': RuleUnique
+    }
+
+    return possible_rule_types[rule_type]
+
+
 class Ruleset(object):
     """Representation of a Ruleset as defined within the IATI SSOT.
 
@@ -51,37 +82,9 @@ class Ruleset(object):
         for xpath_base, rule in ruleset.items():
             for rule_type, cases in rule.items():
                 for case in cases['cases']:
-                    constructor = self._locate_constructor_for_rule_type(rule_type)
+                    constructor = locate_constructor_for_rule_type(rule_type)
                     new_rule = constructor(xpath_base, case)
                     self.rules.add(new_rule)
-
-    def _locate_constructor_for_rule_type(self, rule_type):
-        """Locate the constructor for specific rule types.
-
-        Args:
-            rule_type (str): The name of the type of Rule to identify the class for.
-
-        Returns:
-            Rule implementation: A constructor for a class that inherits from Rule.
-
-        Raises:
-            KeyError: When a non-permitted `rule_type` is provided.
-
-        """
-        possible_rule_types = {
-            'atleast_one': RuleAtLeastOne,
-            # 'date_order': RuleDateOrder,
-            # 'dependent': RuleDependent,
-            'no_more_than_one': RuleNoMoreThanOne #,
-            # 'regex_matches': RuleRegexMatches,
-            # 'regex_no_matches': RuleRegexNoMatches,
-            # 'startswith': RuleStartsWith,
-            # 'sum': RuleSum,
-            # 'unique': RuleUnique
-        }
-
-        return possible_rule_types[rule_type]
-
 
 
 class Rule(object):
@@ -103,6 +106,7 @@ class Rule(object):
             ValueError: When a rule_type is not one of the permitted Rule types.
 
         """
+        # import pdb;pdb.set_trace()
         if not isinstance(xpath_base, six.string_types) or not isinstance(case, dict):
             raise TypeError
 
@@ -119,7 +123,7 @@ class RuleNoMoreThanOne(Rule):
 
     """
     def __init__(self, xpath_base, case):
-        super(Rule, self).__init__()
+        super(RuleNoMoreThanOne, self).__init__(xpath_base, case)
         # super.__init__(xpath_base, case)
         self.name = "no_more_than_one"
         # try:

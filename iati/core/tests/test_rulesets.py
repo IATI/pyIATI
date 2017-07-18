@@ -113,33 +113,46 @@ class TestRuleset(object):
 class TestRule(object):
     """A container for tests relating to Rules."""
 
-    def test_rule_init_no_parameters(self):
+    rule_constructors = list(map(iati.core.rulesets.locate_constructor_for_rule_type, ['atleast_one', 'no_more_than_one'])) + [iati.core.Rule]
+    """A list of constructors for the various types of Rule."""
+
+    @pytest.mark.parametrize("rule_constructor", rule_constructors)
+    def test_rule_init_no_parameters(self, rule_constructor):
         """Check that a Rule cannot be created when no parameters are given."""
         with pytest.raises(TypeError):
-            iati.core.Rule()
+            rule_constructor()
 
-    def test_rule_init_valid_parameter_types(self):
+    @pytest.mark.parametrize("rule_constructor", rule_constructors)
+    def test_rule_init_valid_parameter_types(self, rule_constructor):
         """Check that a Rule can be created when given correct parameters."""
         xpath_base = 'an xpath'
         case = dict()
 
-        rule = iati.core.Rule(xpath_base, case)
+        rule = rule_constructor(xpath_base, case)
 
         assert isinstance(rule, iati.core.Rule)
         assert rule.xpath_base == xpath_base
 
+    @pytest.mark.parametrize("rule_constructor", rule_constructors)
     @pytest.mark.parametrize("xpath_base", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
-    def test_rule_init_invalid_xpath_base(self, xpath_base):
+    def test_rule_init_invalid_xpath_base(self, rule_constructor, xpath_base):
         """Check that a Rule cannot be created when xpath_base is not a string."""
         case = dict()
 
         with pytest.raises(TypeError):
-            iati.core.Rule(xpath_base, case)
+            rule_constructor(xpath_base, case)
 
+    @pytest.mark.parametrize("rule_constructor", rule_constructors)
     @pytest.mark.parametrize("case", iati.core.tests.utilities.find_parameter_by_type(['mapping'], False))
-    def test_rule_init_invalid_case_type(self, case):
+    def test_rule_init_invalid_case_type(self, rule_constructor, case):
         """Check that a Rule cannot be created when case is not a dictionary."""
         xpath_base = 'an xpath'
 
         with pytest.raises(TypeError):
-            iati.core.Rule(xpath_base, case)
+            rule_constructor(xpath_base, case)
+
+
+# class TestRuleNoMoreThanOne(object):
+#     """A container for tests relating to RuleNoMoreThanOne."""
+
+#     def test_rule
