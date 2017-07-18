@@ -35,7 +35,10 @@ class Ruleset(object):
             ruleset_str (str): A string that represents a Ruleset.
 
         Raises:
+            KeyError: When a rule_type within the ruleset_str is not permitted.
             TypeError: When a ruleset_str is not a string.
+            ValueError: When ruleset_str is not a JSON string.
+            ValueError: When keys in the same scope of the ruleset_str are duplicated.
 
         """
         if not isinstance(ruleset_str, str):
@@ -62,7 +65,7 @@ class Ruleset(object):
             Rule implementation: A constructor for a class that inherits from Rule.
 
         Raises:
-            ValueError: When a non-permitted `rule_type` is provided.
+            KeyError: When a non-permitted `rule_type` is provided.
 
         Todo:
             Implement ValueError.

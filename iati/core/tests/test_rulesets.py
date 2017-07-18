@@ -48,6 +48,13 @@ class TestRuleset(object):
         assert isinstance(list(ruleset.rules)[0], iati.core.Rule)
         assert isinstance(list(ruleset.rules)[0], iati.core.rulesets.RuleAtLeastOne)
 
+    def test_ruleset_init_ruleset_1_rule_invalid_type(self):
+        """Check that a Ruleset raises a KeyError when given a JSON Ruleset in string format with an invalid rule_type key."""
+        ruleset_str = '{"CONTEXT": {"invalid_rule_type": {"cases": [{"paths": ["test_path"]}]}}}'
+
+        with pytest.raises(KeyError):
+            iati.core.Ruleset(ruleset_str)
+
     def test_ruleset_init_ruleset_2_rules_single_case(self):
         """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules under a single case."""
         ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}, {"paths": ["test_path_2"]}]}}}'
@@ -62,7 +69,7 @@ class TestRuleset(object):
             assert isinstance(rule, iati.core.rulesets.RuleAtLeastOne)
 
     def test_ruleset_init_ruleset_multiple_cases(self):
-        """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules under a single case."""
+        """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules of different types, each under the same context."""
         ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}, "no_more_than_one": {"cases": [{"paths": ["test_path_2"]}]}}}'
 
         ruleset = iati.core.Ruleset(ruleset_str)
@@ -75,15 +82,22 @@ class TestRuleset(object):
         assert len([rule for rule in ruleset.rules if isinstance(rule, iati.core.rulesets.RuleAtLeastOne)]) == 1
         assert len([rule for rule in ruleset.rules if isinstance(rule, iati.core.rulesets.RuleNoMoreThanOne)]) == 1
 
-    def test_ruleset_init_ruleset_duplicate_cases(self):
-        """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules under a single case."""
+    def test_ruleset_init_ruleset_duplicate_types(self):
+        """Check that a Ruleset raises a ValueError when given a JSON Ruleset in string format with two Rules of the same type, each under the same context."""
         ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}, "atleast_one": {"cases": [{"paths": ["test_path_2"]}]}}}'
 
         with pytest.raises(ValueError):
             iati.core.Ruleset(ruleset_str)
 
+    def test_ruleset_init_ruleset_duplicate_contexts(self):
+        """Check that a Ruleset raises a ValueError when given a JSON Ruleset in string format with two Rules of the same type, each under the same context."""
+        ruleset_str = '{"DUPLICATE_CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}, "DUPLICATE_CONTEXT": {"no_more_than_one": {"cases": [{"paths": ["test_path_2"]}]}}}'
+
+        with pytest.raises(ValueError):
+            iati.core.Ruleset(ruleset_str)
+
     def test_ruleset_init_ruleset_multiple_contexts(self):
-        """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules under a single case."""
+        """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules of the same type, each under a different context."""
         ruleset_str = '{"CONTEXT_1": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}, "CONTEXT_2": {"atleast_one": {"cases": [{"paths": ["test_path_2"]}]}}}'
 
         ruleset = iati.core.Ruleset(ruleset_str)
