@@ -67,9 +67,6 @@ class Ruleset(object):
         Raises:
             KeyError: When a non-permitted `rule_type` is provided.
 
-        Todo:
-            Implement ValueError.
-
         """
         possible_rule_types = {
             'atleast_one': RuleAtLeastOne,
