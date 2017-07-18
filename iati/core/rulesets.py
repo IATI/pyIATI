@@ -33,10 +33,14 @@ class Ruleset(object):
         Args:
             ruleset_str (str): A string that represents a Ruleset.
 
+        Raises:
+            TypeError: When a ruleset_str is not a string.
+
         """
         if not isinstance(ruleset_str, str):
             raise TypeError
 
+        # if parsing fails, raises a ValueError
         ruleset = json.loads(ruleset_str)
 
         self.rules = set()
@@ -55,7 +59,18 @@ class Rule(object):
     """
 
     def __init__(self, rule_type, xpath_base, case):
-        """Initialise a Rule."""
+        """Initialise a Rule.
+
+        Args:
+            rule_type (str): The type of the Rule.
+            xpath_base (str): The base of the XPath that the Rule will act upon.
+            case (dict): Specific configuration for this instance of the Rule.
+
+        Raises:
+            TypeError: When a parameter is of an incorrect type.
+            ValueError: When a rule_type is not one of the permitted Rule types.
+
+        """
         if isinstance(rule_type, bytes):
             rule_type = str(rule_type)
 
