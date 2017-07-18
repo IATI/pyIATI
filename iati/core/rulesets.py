@@ -124,12 +124,8 @@ class RuleNoMoreThanOne(Rule):
     """
     def __init__(self, xpath_base, case):
         super(RuleNoMoreThanOne, self).__init__(xpath_base, case)
-        # super.__init__(xpath_base, case)
+
         self.name = "no_more_than_one"
-        # try:
-        #     self.paths = case['path']
-        # except KeyError:
-        #     raise KeyError("y u no give me a paths D:")
 
 
 class RuleAtLeastOne(Rule):

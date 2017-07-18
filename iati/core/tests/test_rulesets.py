@@ -153,7 +153,14 @@ class TestRule(object):
             rule_constructor(xpath_base, case)
 
 
-# class TestRuleNoMoreThanOne(object):
-#     """A container for tests relating to RuleNoMoreThanOne."""
+class TestRuleNoMoreThanOne(object):
+    """A container for tests relating to RuleNoMoreThanOne."""
 
-#     def test_rule
+    def test_rule_name(self):
+        """Check that a no_more_than_one rule has the expected name."""
+        xpath_base = 'an xpath'
+        case = dict()
+
+        rule = iati.core.rulesets.RuleNoMoreThanOne(xpath_base, case)
+
+        assert rule.name == 'no_more_than_one'
