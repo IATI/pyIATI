@@ -12,6 +12,8 @@ Todo:
 """
 
 import json
+import sys
+import six
 
 
 _VALID_RULE_TYPES = ["no_more_than_one", "atleast_one", "dependent", "sum", "date_order", "regex_matches", "regex_no_matches", "startswith", "unique"]
@@ -58,7 +60,7 @@ class Rule(object):
             # import pdb; pdb.set_trace()
             rule_type = str(rule_type)
 
-        if not isinstance(rule_type, str) or not isinstance(xpath_base, str) or not isinstance(case, dict):
+        if not isinstance(rule_type, six.string_types) or not isinstance(xpath_base, six.string_types) or not isinstance(case, dict):
             raise TypeError
 
         if rule_type in _VALID_RULE_TYPES:
