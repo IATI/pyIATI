@@ -57,7 +57,6 @@ class Rule(object):
     def __init__(self, rule_type, xpath_base, case):
         """Initialise a Rule."""
         if isinstance(rule_type, bytes):
-            # import pdb; pdb.set_trace()
             rule_type = str(rule_type)
 
         if not isinstance(rule_type, six.string_types) or not isinstance(xpath_base, six.string_types) or not isinstance(case, dict):
@@ -70,8 +69,6 @@ class Rule(object):
 
         self.xpath_base = xpath_base
         self.case = case
-
-# import json
 
 
 # class Ruleset(object):
@@ -111,23 +108,6 @@ class Rule(object):
 #         return possible_rule_names[rule_name](rule_name, xpath_base, case)
 
 
-# class Rule(object):
-#     """Representation of a Rule contained within a Ruleset.
-
-#     Acts as a base class for specific types of Rule that actually do something.
-
-#     Warning:
-#         Rules have not yet been implemented. They will likely have a similar API to Codes, although this is yet to be determined. In particular, a Rule will be designed to be a base class for specific types of Rule, while there is only one type of Code.
-
-#     """
-
-#     def __init__(self, name, xpath_base, case):
-#         """Initialise a Rule."""
-#         self.name = name
-#         self.xpath_base = xpath_base
-#         self.case = case
-
-
 class RuleNoMoreThanOne(Rule):
     """Representation of a Rule that checks that there is no more than one Element matching a given XPath.
 
@@ -154,94 +134,3 @@ class RuleNoMoreThanOne(Rule):
 #     def implementation(self, dataset):
 #         """Check activity has at least one instance of a given case."""
 #         pass
-
-
-# class RuleDependent(Rule):
-#     """Representation of a Rule that checks that there is no more than one Element matching a given XPath.
-
-#     Warning:
-#         Rules have not yet been implemented. The structure of specific types of Rule will depend on how the base class is formed.
-
-#         The name of specific types of Rule may better indicate that they are Rules.
-
-#     """
-
-#     pass
-
-
-# class RuleSum(Rule):
-#     """Representation of a Rule that checks that there is no more than one Element matching a given XPath.
-
-#     Warning:
-#         Rules have not yet been implemented. The structure of specific types of Rule will depend on how the base class is formed.
-
-#         The name of specific types of Rule may better indicate that they are Rules.
-
-#     """
-
-#     pass
-
-
-# class RuleDateOrder(Rule):
-#     """Representation of a Rule that checks that there is no more than one Element matching a given XPath.
-
-#     Warning:
-#         Rules have not yet been implemented. The structure of specific types of Rule will depend on how the base class is formed.
-
-#         The name of specific types of Rule may better indicate that they are Rules.
-
-#     """
-
-#     pass
-
-
-# class RuleRegexMatches(Rule):
-#     """Representation of a Rule that checks that there is no more than one Element matching a given XPath.
-
-#     Warning:
-#         Rules have not yet been implemented. The structure of specific types of Rule will depend on how the base class is formed.
-
-#         The name of specific types of Rule may better indicate that they are Rules.
-
-#     """
-
-#     pass
-
-
-# class RuleRegexNoMatches(Rule):
-#     """Representation of a Rule that checks that there is no more than one Element matching a given XPath.
-
-#     Warning:
-#         Rules have not yet been implemented. The structure of specific types of Rule will depend on how the base class is formed.
-
-#         The name of specific types of Rule may better indicate that they are Rules.
-
-#     """
-
-#     pass
-
-
-# class RuleStartsWith(Rule):
-#     """Representation of a Rule that checks that there is no more than one Element matching a given XPath.
-
-#     Warning:
-#         Rules have not yet been implemented. The structure of specific types of Rule will depend on how the base class is formed.
-
-#         The name of specific types of Rule may better indicate that they are Rules.
-
-#     """
-
-#     pass
-
-
-# class RuleUnique(Rule):
-#     """Representation of a Rule that checks that there is no more than one Element matching a given XPath.
-
-#     Warning:
-#         Rules have not yet been implemented. The structure of specific types of Rule will depend on how the base class is formed.
-
-#         The name of specific types of Rule may better indicate that they are Rules.
-
-#     """
-
-#     pass
