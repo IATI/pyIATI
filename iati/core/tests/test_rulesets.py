@@ -52,7 +52,7 @@ class TestRuleset(object):
         """Check that a Ruleset raises a KeyError when given a JSON Ruleset in string format with an invalid rule_type key."""
         ruleset_str = '{"CONTEXT": {"invalid_rule_type": {"cases": [{"paths": ["test_path"]}]}}}'
 
-        with pytest.raises(KeyError):
+        with pytest.raises(ValueError):
             iati.core.Ruleset(ruleset_str)
 
     def test_ruleset_init_ruleset_2_rules_single_case(self):

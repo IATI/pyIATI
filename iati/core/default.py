@@ -8,6 +8,7 @@ Todo:
     Implement more than Codelists.
 
 """
+import json
 import os
 import iati.core.codelists
 import iati.core.resources
@@ -118,6 +119,13 @@ def ruleset(version=None):
     ruleset_str = iati.core.resources.load_as_string(path)
     return ruleset_str
 
+def ruleset_schema(version=None):
+    name = 'ruleset_schema'
+
+    path = iati.core.resources.get_ruleset_path(name, version)
+    schema_str = iati.core.resources.load_as_string(path)
+    schema = json.loads(schema_str)
+    return schema
 
 _SCHEMAS = {}
 """A cache of loaded Schemas.

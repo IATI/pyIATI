@@ -10,10 +10,10 @@ Todo:
     Implement Rulesets (and Rules). Likely worth completing the Codelist implementation first since the two will be similar.
 
 """
-
 import json
-import sys
+import jsonschema
 import six
+import iati.core.default
 import iati.core.utilities
 
 
@@ -66,10 +66,8 @@ class Ruleset(object):
             ruleset_str (str): A string that represents a Ruleset.
 
         Raises:
-            KeyError: When a rule_type within the ruleset_str is not permitted.
             TypeError: When a ruleset_str is not a string.
-            ValueError: When ruleset_str is not a JSON string.
-            ValueError: When keys in the same scope of the ruleset_str are duplicated.
+            ValueError: When ruleset_str does not validate against the ruleset schema.
 
         """
         if not isinstance(ruleset_str, str):
@@ -77,6 +75,10 @@ class Ruleset(object):
 
         # if parsing fails, raises a ValueError
         ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
+        try:
+            jsonschema.validate(ruleset, iati.core.default.ruleset_schema())
+        except jsonschema.ValidationError:
+            raise ValueError
         self.rules = set()
 
         for xpath_base, rule in ruleset.items():
