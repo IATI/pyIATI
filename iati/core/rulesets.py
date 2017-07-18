@@ -48,7 +48,40 @@ class Ruleset(object):
         for xpath_base, rule in ruleset.items():
             for rule_type, cases in rule.items():
                 for case in cases['cases']:
-                    self.rules.add(Rule(rule_type, xpath_base, case))
+                    constructor = self._locate_constructor_for_rule_type(rule_type)
+                    new_rule = constructor(rule_type, xpath_base, case)
+                    self.rules.add(new_rule)
+
+    def _locate_constructor_for_rule_type(self, rule_type):
+        """Locate the constructor for specific rule types.
+
+        Args:
+            rule_type (str): The name of the type of Rule to identify the class for.
+
+        Returns:
+            Rule implementation: A constructor for a class that inherits from Rule.
+
+        Raises:
+            ValueError: When a non-permitted `rule_type` is provided.
+
+        Todo:
+            Implement ValueError.
+
+        """
+        possible_rule_types = {
+            'atleast_one': RuleAtLeastOne,
+            # 'date_order': RuleDateOrder,
+            # 'dependent': RuleDependent,
+            'no_more_than_one': RuleNoMoreThanOne #,
+            # 'regex_matches': RuleRegexMatches,
+            # 'regex_no_matches': RuleRegexNoMatches,
+            # 'startswith': RuleStartsWith,
+            # 'sum': RuleSum,
+            # 'unique': RuleUnique
+        }
+
+        return possible_rule_types[rule_type]
+
 
 
 class Rule(object):
@@ -136,16 +169,16 @@ class RuleNoMoreThanOne(Rule):
     pass
 
 
-# class RuleAtLeastOne(Rule):
-#     """Representation of a Rule that checks that there is at least one Element matching a given XPath.
+class RuleAtLeastOne(Rule):
+    """Representation of a Rule that checks that there is at least one Element matching a given XPath.
 
-#     Warning:
-#         Rules have not yet been implemented. The structure of specific types of Rule will depend on how the base class is formed.
+    Warning:
+        Rules have not yet been implemented. The structure of specific types of Rule will depend on how the base class is formed.
 
-#         The name of specific types of Rule may better indicate that they are Rules.
+        The name of specific types of Rule may better indicate that they are Rules.
 
-#     """
+    """
 
-#     def implementation(self, dataset):
-#         """Check activity has at least one instance of a given case."""
-#         pass
+    def implementation(self, dataset):
+        """Check activity has at least one instance of a given case."""
+        pass

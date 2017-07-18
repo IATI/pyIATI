@@ -46,6 +46,7 @@ class TestRuleset(object):
         assert isinstance(ruleset.rules, set)
         assert len(ruleset.rules) == 1
         assert isinstance(list(ruleset.rules)[0], iati.core.Rule)
+        assert isinstance(list(ruleset.rules)[0], iati.core.rulesets.RuleAtLeastOne)
 
     def test_ruleset_init_ruleset_2_rules_single_case(self):
         """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules under a single case."""
@@ -56,7 +57,9 @@ class TestRuleset(object):
         assert isinstance(ruleset, iati.core.Ruleset)
         assert isinstance(ruleset.rules, set)
         assert len(ruleset.rules) == 2
-        assert isinstance(list(ruleset.rules)[0], iati.core.Rule)
+        for rule in ruleset.rules:
+            assert isinstance(rule, iati.core.Rule)
+            assert isinstance(rule, iati.core.rulesets.RuleAtLeastOne)
 
     def test_ruleset_init_ruleset_multiple_cases(self):
         """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules under a single case."""
@@ -67,7 +70,10 @@ class TestRuleset(object):
         assert isinstance(ruleset, iati.core.Ruleset)
         assert isinstance(ruleset.rules, set)
         assert len(ruleset.rules) == 2
-        assert isinstance(list(ruleset.rules)[0], iati.core.Rule)
+        for rule in ruleset.rules:
+            assert isinstance(rule, iati.core.Rule)
+        assert len([rule for rule in ruleset.rules if isinstance(rule, iati.core.rulesets.RuleAtLeastOne)]) == 1
+        assert len([rule for rule in ruleset.rules if isinstance(rule, iati.core.rulesets.RuleNoMoreThanOne)]) == 1
 
     def test_ruleset_init_ruleset_multiple_contexts(self):
         """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules under a single case."""
@@ -78,10 +84,9 @@ class TestRuleset(object):
         assert isinstance(ruleset, iati.core.Ruleset)
         assert isinstance(ruleset.rules, set)
         assert len(ruleset.rules) == 2
-        assert isinstance(list(ruleset.rules)[0], iati.core.Rule)
-
-    def test_ruleset_implementation(self):
-        """Ruleset rules execute their implemenation correctly as a set."""
+        for rule in ruleset.rules:
+            assert isinstance(rule, iati.core.Rule)
+            assert isinstance(rule, iati.core.rulesets.RuleAtLeastOne)
 
 
 class TestRule(object):
