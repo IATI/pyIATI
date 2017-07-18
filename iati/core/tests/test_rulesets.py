@@ -120,59 +120,26 @@ class TestRule(object):
 
     def test_rule_init_valid_parameter_types(self):
         """Check that a Rule can be created when given correct parameters."""
-        rule_type = 'atleast_one'
         xpath_base = 'an xpath'
         case = dict()
 
-        rule = iati.core.Rule(rule_type, xpath_base, case)
+        rule = iati.core.Rule(xpath_base, case)
 
         assert isinstance(rule, iati.core.Rule)
-        assert rule.rule_type == rule_type
         assert rule.xpath_base == xpath_base
-        assert rule.case == case
-
-    @pytest.mark.parametrize("rule_type", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
-    def test_rule_init_invalid_rule_type(self, rule_type):
-        """Check that a Rule cannot be created when rule_type is not a string."""
-        xpath_base = 'an xpath'
-        case = dict()
-
-        with pytest.raises(TypeError):
-            iati.core.Rule(rule_type, xpath_base, case)
 
     @pytest.mark.parametrize("xpath_base", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_rule_init_invalid_xpath_base(self, xpath_base):
         """Check that a Rule cannot be created when xpath_base is not a string."""
-        rule_type = 'the name of the Rule'
         case = dict()
 
         with pytest.raises(TypeError):
-            iati.core.Rule(rule_type, xpath_base, case)
+            iati.core.Rule(xpath_base, case)
 
     @pytest.mark.parametrize("case", iati.core.tests.utilities.find_parameter_by_type(['mapping'], False))
     def test_rule_init_invalid_case_type(self, case):
         """Check that a Rule cannot be created when case is not a dictionary."""
-        rule_type = 'the name of the Rule'
         xpath_base = 'an xpath'
 
         with pytest.raises(TypeError):
-            iati.core.Rule(rule_type, xpath_base, case)
-
-    @pytest.mark.parametrize("rule_type", iati.core.rulesets._VALID_RULE_TYPES)
-    def test_rule_init_rule_valid_type(self, rule_type):
-        """Check that valid rule_type values may be used in the initialisation of a Rule."""
-        xpath_base = 'an xpath'
-        case = dict()
-
-        rule = iati.core.Rule(rule_type, xpath_base, case)
-
-        assert isinstance(rule, iati.core.Rule)
-
-    @pytest.mark.parametrize("rule_type", iati.core.tests.utilities.find_parameter_by_type(['str']))
-    def test_rule_init_invalid_string_for_rule_type_raises_error(self, rule_type):
-        """Check that invalid rule_type string value causes an error."""
-        xpath_base = 'an xpath'
-        case = dict()
-
-        with pytest.raises(ValueError):
-            iati.core.Rule(rule_type, xpath_base, case)
+            iati.core.Rule(xpath_base, case)

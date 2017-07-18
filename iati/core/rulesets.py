@@ -52,7 +52,7 @@ class Ruleset(object):
             for rule_type, cases in rule.items():
                 for case in cases['cases']:
                     constructor = self._locate_constructor_for_rule_type(rule_type)
-                    new_rule = constructor(rule_type, xpath_base, case)
+                    new_rule = constructor(xpath_base, case)
                     self.rules.add(new_rule)
 
     def _locate_constructor_for_rule_type(self, rule_type):
@@ -91,11 +91,10 @@ class Rule(object):
 
     """
 
-    def __init__(self, rule_type, xpath_base, case):
+    def __init__(self, xpath_base, case):
         """Initialise a Rule.
 
         Args:
-            rule_type (str): The type of the Rule.
             xpath_base (str): The base of the XPath that the Rule will act upon.
             case (dict): Specific configuration for this instance of the Rule.
 
@@ -104,56 +103,10 @@ class Rule(object):
             ValueError: When a rule_type is not one of the permitted Rule types.
 
         """
-        if isinstance(rule_type, bytes):
-            rule_type = str(rule_type)
-
-        if not isinstance(rule_type, six.string_types) or not isinstance(xpath_base, six.string_types) or not isinstance(case, dict):
+        if not isinstance(xpath_base, six.string_types) or not isinstance(case, dict):
             raise TypeError
 
-        if rule_type in _VALID_RULE_TYPES:
-            self.rule_type = rule_type
-        else:
-            raise ValueError
-
         self.xpath_base = xpath_base
-        self.case = case
-
-
-# class Ruleset(object):
-#     """Representation of a Ruleset as defined within the IATI SSOT.
-
-#     Warning:
-#         Rulesets have not yet been implemented. They will likely have a similar API to Codelists, although this is yet to be determined.
-
-#     """
-
-#     def __init__(self, ruleset_str):
-#         """Initialise a Ruleset."""
-#         self._json = json.loads(ruleset_str)
-#         self.rules = set()
-#         self.set_rules()
-
-#     def set_rules(self):
-#         """Add Rules to rules set."""
-#         for xpath_base, rule in self._json.items():
-#             for rule_name, cases in rule.items():
-#                 for case in cases['cases']:
-#                     implement_rule = self.match_rule(rule_name, xpath_base, case)
-#                     self.rules.add(implement_rule)
-
-#     def match_rule(self, rule_name, xpath_base, case):
-#         """Match rule_name to specific Rule implementation."""
-#         possible_rule_names = {'no_more_than_one': RuleNoMoreThanOne,
-#                                'atleast_one': RuleAtLeastOne,
-#                                'dependent': RuleDependent,
-#                                'sum': RuleSum,
-#                                'date_order': RuleDateOrder,
-#                                'regex_matches': RuleRegexMatches,
-#                                'regex_no_matches': RuleRegexNoMatches,
-#                                'startswith': RuleStartsWith,
-#                                'unique': RuleUnique}
-
-#         return possible_rule_names[rule_name](rule_name, xpath_base, case)
 
 
 class RuleNoMoreThanOne(Rule):
@@ -165,8 +118,14 @@ class RuleNoMoreThanOne(Rule):
         The name of specific types of Rule may better indicate that they are Rules.
 
     """
-
-    pass
+    def __init__(self, xpath_base, case):
+        super(Rule, self).__init__()
+        # super.__init__(xpath_base, case)
+        self.name = "no_more_than_one"
+        # try:
+        #     self.paths = case['path']
+        # except KeyError:
+        #     raise KeyError("y u no give me a paths D:")
 
 
 class RuleAtLeastOne(Rule):
