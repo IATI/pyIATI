@@ -47,8 +47,8 @@ class Ruleset(object):
 
         for xpath_base, rule in ruleset.items():
             for rule_type, cases in rule.items():
-                if len(cases['cases']) > 0:
-                    self.rules.add(Rule(rule_type, xpath_base, cases))
+                for case in cases['cases']:
+                    self.rules.add(Rule(rule_type, xpath_base, case))
 
 
 class Rule(object):

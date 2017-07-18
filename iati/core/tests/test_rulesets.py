@@ -37,7 +37,7 @@ class TestRuleset(object):
             iati.core.Ruleset(not_a_ruleset_str)
 
     def test_ruleset_init_ruleset_1_rule(self):
-        """Check that a Ruleset can be created when given a JSON Ruleset in string format with at least one Rule."""
+        """Check that a Ruleset can be created when given a JSON Ruleset in string format with one Rule."""
         ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path"]}]}}}'
 
         ruleset = iati.core.Ruleset(ruleset_str)
@@ -45,6 +45,39 @@ class TestRuleset(object):
         assert isinstance(ruleset, iati.core.Ruleset)
         assert isinstance(ruleset.rules, set)
         assert len(ruleset.rules) == 1
+        assert isinstance(list(ruleset.rules)[0], iati.core.Rule)
+
+    def test_ruleset_init_ruleset_2_rules_single_case(self):
+        """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules under a single case."""
+        ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}, {"paths": ["test_path_2"]}]}}}'
+
+        ruleset = iati.core.Ruleset(ruleset_str)
+
+        assert isinstance(ruleset, iati.core.Ruleset)
+        assert isinstance(ruleset.rules, set)
+        assert len(ruleset.rules) == 2
+        assert isinstance(list(ruleset.rules)[0], iati.core.Rule)
+
+    def test_ruleset_init_ruleset_multiple_cases(self):
+        """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules under a single case."""
+        ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}, "no_more_than_one": {"cases": [{"paths": ["test_path_2"]}]}}}'
+
+        ruleset = iati.core.Ruleset(ruleset_str)
+
+        assert isinstance(ruleset, iati.core.Ruleset)
+        assert isinstance(ruleset.rules, set)
+        assert len(ruleset.rules) == 2
+        assert isinstance(list(ruleset.rules)[0], iati.core.Rule)
+
+    def test_ruleset_init_ruleset_multiple_contexts(self):
+        """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules under a single case."""
+        ruleset_str = '{"CONTEXT_1": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}, "CONTEXT_2": {"atleast_one": {"cases": [{"paths": ["test_path_2"]}]}}}'
+
+        ruleset = iati.core.Ruleset(ruleset_str)
+
+        assert isinstance(ruleset, iati.core.Ruleset)
+        assert isinstance(ruleset.rules, set)
+        assert len(ruleset.rules) == 2
         assert isinstance(list(ruleset.rules)[0], iati.core.Rule)
 
     def test_ruleset_implementation(self):
