@@ -14,6 +14,7 @@ Todo:
 import json
 import sys
 import six
+import iati.core.utilities
 
 
 _VALID_RULE_TYPES = ["no_more_than_one", "atleast_one", "dependent", "sum", "date_order", "regex_matches", "regex_no_matches", "startswith", "unique"]
@@ -41,8 +42,7 @@ class Ruleset(object):
             raise TypeError
 
         # if parsing fails, raises a ValueError
-        ruleset = json.loads(ruleset_str)
-
+        ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
         self.rules = set()
 
         for xpath_base, rule in ruleset.items():
