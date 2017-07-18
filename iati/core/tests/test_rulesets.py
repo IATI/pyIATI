@@ -131,6 +131,7 @@ class TestRule(object):
         rule = rule_constructor(xpath_base, case)
 
         assert isinstance(rule, iati.core.Rule)
+        assert isinstance(rule, rule_constructor)
         assert rule.xpath_base == xpath_base
 
     @pytest.mark.parametrize("rule_constructor", rule_constructors)
