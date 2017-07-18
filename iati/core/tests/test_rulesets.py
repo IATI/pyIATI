@@ -156,11 +156,14 @@ class TestRule(object):
 class TestRuleNoMoreThanOne(object):
     """A container for tests relating to RuleNoMoreThanOne."""
 
-    def test_rule_name(self):
-        """Check that a no_more_than_one rule has the expected name."""
+    @pytest.fixture
+    def basic_rule(self):
+        """A basic instantiation of this Rule."""
         xpath_base = 'an xpath'
         case = dict()
 
-        rule = iati.core.rulesets.RuleNoMoreThanOne(xpath_base, case)
+        return iati.core.rulesets.RuleNoMoreThanOne(xpath_base, case)
 
-        assert rule.name == 'no_more_than_one'
+    def test_rule_name(self, basic_rule):
+        """Check that a no_more_than_one rule has the expected name."""
+        assert basic_rule.name == 'no_more_than_one'
