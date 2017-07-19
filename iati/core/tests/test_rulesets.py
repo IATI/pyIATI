@@ -158,6 +158,15 @@ class TestRule(object):
         with pytest.raises(TypeError):
             rule_constructor(xpath_base, case)
 
+    @pytest.mark.parametrize("rule_constructor", rule_constructors)
+    def test_rule_init_invalid_case_property(self, rule_constructor):
+        """Check that a Rule cannot be created when a case has a property that is not permitted."""
+        xpath_base = 'an xpath'
+        case = {'thisis_an_invalidkey': ['this_is_a_value']}
+
+        with pytest.raises(ValueError):
+            rule_constructor(xpath_base, case)
+
 
 class TestRuleNoMoreThanOne(object):
     """A container for tests relating to RuleNoMoreThanOne."""
