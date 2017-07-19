@@ -120,7 +120,28 @@ class TestRuleset(object):
 class TestRule(object):
     """A container for tests relating to Rules."""
 
-    rule_constructors = list(map(iati.core.rulesets.locate_constructor_for_rule_type, ['atleast_one', 'no_more_than_one']))
+    def test_rule_class_cannot_be_instantiated_directly_without_name(self):
+        """Check that Rule itself cannot be directly instantiated."""
+        xpath_base = 'an xpath'
+        case = { 'paths': ['path_1', 'path_2'] }
+
+        with pytest.raises(AttributeError):
+            iati.core.Rule(xpath_base, case)
+
+    def test_rule_class_cannot_be_instantiated_directly_with_name(self):
+        """Check that Rule itself cannot be directly instantiated with a Rule name."""
+        name = 'atleast_one'
+        xpath_base = 'an xpath'
+        case = { 'paths': ['path_1', 'path_2'] }
+
+        with pytest.raises(TypeError):
+            iati.core.Rule(name, xpath_base, case)
+
+
+class TestRuleSubclasses(object):
+    """A container for tests relating to all Rule subclasses."""
+
+    rule_constructors = list(map(iati.core.rulesets.locate_constructor_for_rule_type, iati.core.rulesets._VALID_RULE_TYPES))
     """A list of constructors for the various types of Rule."""
 
     @pytest.mark.parametrize("rule_constructor", rule_constructors)
@@ -129,16 +150,6 @@ class TestRule(object):
         with pytest.raises(TypeError):
             rule_constructor()
 
-    @pytest.mark.parametrize("rule_constructor", rule_constructors)
-    def test_rule_init_valid_parameter_types(self, rule_constructor):
-        """Check that a Rule can be created when given correct parameters."""
-        xpath_base = 'an xpath'
-        case = { 'paths': ['path_1', 'path_2'] }
-        rule = rule_constructor(xpath_base, case)
-
-        assert isinstance(rule, iati.core.Rule)
-        assert isinstance(rule, rule_constructor)
-        assert rule.xpath_base == xpath_base
 
     @pytest.mark.parametrize("rule_constructor", rule_constructors)
     @pytest.mark.parametrize("xpath_base", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
@@ -168,25 +179,61 @@ class TestRule(object):
             rule_constructor(xpath_base, case)
 
 
-class TestRuleNoMoreThanOne(object):
+class RuleSubclassTestBase(object):
+    """A base class for Rule subclass tests."""
+
+    @pytest.fixture
+    def basic_rule(self, rule_type, valid_case):
+        """Basic instantiation of a Rule subclass."""
+        xpath_base = 'an xpath'
+        rule_constructor = iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
+        return rule_constructor(xpath_base, valid_case)
+
+    # @pytest.fixture
+    # def invalid_case_rule(self, rule_type):
+    #     """Invalid instantiation of a Rule subclass."""
+    #     xpath_base = 'an xpath'
+    #     invalid_case = dict()
+    #     rule_constructor = iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
+    #     return rule_constructor(xpath_base, invalid_case)
+
+    def test_rule_init_valid_parameter_types(self, basic_rule):
+        """Check that Rule subclasses can be instantiated with valid parameter types."""
+        assert isinstance(basic_rule, iati.core.Rule)
+
+    def test_rule_name(self, basic_rule, rule_type):
+        """Check that a Rule subclass has the expected name."""
+        assert basic_rule.name == rule_type
+
+
+class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     """A container for tests relating to RuleNoMoreThanOne."""
 
     @pytest.fixture
-    def basic_rule(self):
-        """Basic instantiation of this Rule."""
-        xpath_base = 'an xpath'
-        case = { 'paths': ['path_1', 'path_2'] }
+    def rule_type(self):
+        return 'no_more_than_one'
 
-        return iati.core.rulesets.RuleNoMoreThanOne(xpath_base, case)
+    @pytest.fixture
+    def valid_case(self):
+        return {'paths': ['path_1', 'path_2']}
 
-    def test_rule_name(self, basic_rule):
-        """Check that a no_more_than_one rule has the expected name."""
-        assert basic_rule.name == 'no_more_than_one'
+    # def test_rule_missing_property_paths(self, invalid_case_rule):
+    #     """Check that a rule cannot be instantiated without the required `paths` property."""
+    #     # xpath_base = 'an xpath'
+    #     # case = dict()
+    #
+    #     with pytest.raises(ValueError):
+    #         pass
+            # iati.core.rulesets.RuleNoMoreThanOne(xpath_base, case)
 
-    def test_rule_missing_property_paths(self):
-        """Check that a rule cannot be instantiated without the required `paths` property."""
-        xpath_base = 'an xpath'
-        case = dict()
 
-        with pytest.raises(ValueError):
-            iati.core.rulesets.RuleNoMoreThanOne(xpath_base, case)
+class TestRuleAtLeastOne(RuleSubclassTestBase):
+    """A container for tests relating to RuleAtLeastOne."""
+
+    @pytest.fixture
+    def rule_type(self):
+        return 'atleast_one'
+
+    @pytest.fixture
+    def valid_case(self):
+        return {'paths': ['path_1', 'path_2']}
