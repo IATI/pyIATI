@@ -120,6 +120,27 @@ class TestRuleset(object):
 class TestRule(object):
     """A container for tests relating to Rules."""
 
+    def test_rule_class_cannot_be_instantiated_directly_without_name(self):
+        """Check that Rule itself cannot be directly instantiated."""
+        xpath_base = 'an xpath'
+        case = { 'paths': ['path_1', 'path_2'] }
+
+        with pytest.raises(AttributeError):
+            iati.core.Rule(xpath_base, case)
+
+    def test_rule_class_cannot_be_instantiated_directly_with_name(self):
+        """Check that Rule itself cannot be directly instantiated with a Rule name."""
+        name = 'atleast_one'
+        xpath_base = 'an xpath'
+        case = { 'paths': ['path_1', 'path_2'] }
+
+        with pytest.raises(TypeError):
+            iati.core.Rule(name, xpath_base, case)
+
+
+class TestRuleSubclasses(object):
+    """A container for tests relating to all Rule subclasses."""
+
     rule_constructors = list(map(iati.core.rulesets.locate_constructor_for_rule_type, ['atleast_one', 'no_more_than_one']))
     """A list of constructors for the various types of Rule."""
 
