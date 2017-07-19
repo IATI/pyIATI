@@ -2,7 +2,7 @@
 
 The iati.core Python module.
 
-[![Build Status](https://travis-ci.org/IATI/iati.core.svg?branch=master)](https://travis-ci.com/IATI/iati.core)
+[![Build Status](https://travis-ci.org/IATI/iati.core.svg?branch=master)](https://travis-ci.com/IATI/iati.core) [![Requirements Status](https://requires.io/github/IATI/iati.core/requirements.svg?branch=master)](https://requires.io/github/IATI/iati.core/requirements/?branch=master)
 
 Varying between: [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges) and [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges) (see docstrings)
 
@@ -62,7 +62,7 @@ The following example loads the included IATI v2.02 schema at:  `iati.core/iati/
 
 ```
 import iati.core.schemas
-schema = iati.core.schemas.Schema(name='iati-activities-schema')
+schema = iati.core.Schema(name='iati-activities-schema')
 ```
 
 ### Loading codelists
@@ -103,7 +103,7 @@ with open('path/to/iati-activites.xml', 'r') as xml_file_object:
 import requests
 dataset_as_string = requests.get('http://XML_FILE_URL_HERE').text
 
-dataset = iati.core.data.Dataset(dataset_as_string)
+dataset = iati.core.Dataset(dataset_as_string)
 ```
 
 #### Accessing data

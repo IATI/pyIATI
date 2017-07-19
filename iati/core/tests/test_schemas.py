@@ -8,22 +8,23 @@ import iati.core.tests.utilities
 
 
 class TestSchemas(object):
-    """A container for tests relating to Schemas"""
+    """A container for tests relating to Schemas."""
 
     @pytest.fixture
     def schema_initialised(self):
         """Create a very basic Schema.
 
         Returns:
-            iati.core.schemas.Schema: A Schema that has been initialised with basic values.
+            iati.core.Schema: A Schema that has been initialised with basic values.
+
         """
         schema_name = iati.core.tests.utilities.SCHEMA_NAME_VALID
 
-        return iati.core.schemas.Schema(name=schema_name)
+        return iati.core.Schema(name=schema_name)
 
     def test_schema_default_attributes(self):
-        """Check a Schema's default attributes are correct"""
-        schema = iati.core.schemas.Schema()
+        """Check a Schema's default attributes are correct."""
+        schema = iati.core.Schema()
 
         assert schema.name is None
 
@@ -33,17 +34,15 @@ class TestSchemas(object):
 
         Todo:
             Check for type errors when the type is incorrect.
+
         """
-        try:
-            _ = iati.core.schemas.Schema(invalid_name)
-        except TypeError:
-            assert True
-        else:  # pragma: no cover
-            # a TypeError should be raised, so this point should not be reached
-            assert False
+        with pytest.raises(TypeError) as excinfo:
+            iati.core.Schema(invalid_name)
+
+        assert 'The name of the Schema is an invalid type. Must be a string, though was a' in str(excinfo.value)
 
     def test_schema_define_from_xsd(self, schema_initialised):
-        """Check that a Schema can be generated from an XSD definition"""
+        """Check that a Schema can be generated from an XSD definition."""
         schema = schema_initialised
 
         assert schema.name == iati.core.tests.utilities.SCHEMA_NAME_VALID
@@ -57,7 +56,8 @@ class TestSchemas(object):
         `<xsd:include schemaLocation="NAME.xsd" />`
 
         Todo:
-            Simplify asserts
+            Simplify asserts.
+
         """
         schema = schema_initialised
         local_element = 'iati-activities'
@@ -79,9 +79,10 @@ class TestSchemas(object):
         when there is a namespace defined against the root schema element as `xmlns:xi="http://www.w3.org/2001/XInclude"`
 
         Todo:
-            Simplify asserts
+            Simplify asserts.
 
             Consider consolidating variables shared between multiple tests.
+
         """
         schema = schema_initialised
         local_element = 'iati-activities'
@@ -114,9 +115,10 @@ class TestSchemas(object):
         This checks that the flattened xsd is valid and that included elements can be accessed.
 
         Todo:
-            Simplify asserts
+            Simplify asserts.
 
-            assert that the flattened XML is a valid Schema
+            Assert that the flattened XML is a valid Schema.
+
         """
         schema = schema_initialised
         local_element = 'iati-activities'
@@ -139,7 +141,7 @@ class TestSchemas(object):
         """Check that it is possible to add Codelists to the Schema."""
         codelist_name = "a test Codelist name"
         schema = schema_initialised
-        codelist = iati.core.codelists.Codelist(codelist_name)
+        codelist = iati.core.Codelist(codelist_name)
 
         schema.codelists.add(codelist)
 
@@ -149,7 +151,7 @@ class TestSchemas(object):
         """Check that it is not possible to add the same Codelist to a Schema multiple times."""
         codelist_name = "a test Codelist name"
         schema = schema_initialised
-        codelist = iati.core.codelists.Codelist(codelist_name)
+        codelist = iati.core.Codelist(codelist_name)
 
         schema.codelists.add(codelist)
         schema.codelists.add(codelist)
@@ -160,8 +162,8 @@ class TestSchemas(object):
         """Check that it is not possible to add multiple functionally identical Codelists to a Schema."""
         codelist_name = "a test Codelist name"
         schema = schema_initialised
-        codelist = iati.core.codelists.Codelist(codelist_name)
-        codelist2 = iati.core.codelists.Codelist(codelist_name)
+        codelist = iati.core.Codelist(codelist_name)
+        codelist2 = iati.core.Codelist(codelist_name)
 
         schema.codelists.add(codelist)
         schema.codelists.add(codelist2)
