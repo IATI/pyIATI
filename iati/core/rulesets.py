@@ -145,6 +145,8 @@ class Rule(object):
     def _ruleset_schema_section(self):
         """Locate the section of the Ruleset Schema relevant for the Rule.
 
+        In doing so, makes required properties required.
+
         Returns:
             dict: A dictionary of the relevant part of the Ruleset Schema, based on the Rule's name.
 
@@ -153,8 +155,10 @@ class Rule(object):
 
         """
         ruleset_schema = iati.core.default.ruleset_schema()
+        partial_schema = ruleset_schema['patternProperties']['.+']['properties'][self.name]['properties']['cases']['items']
+        partial_schema['required'] = [key for key in partial_schema['properties'].keys() if key != 'condition']
 
-        return ruleset_schema['patternProperties']['.+']['properties'][self.name]['properties']['cases']['items']
+        return partial_schema
 
 
 class RuleNoMoreThanOne(Rule):

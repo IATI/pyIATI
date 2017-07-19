@@ -1,5 +1,4 @@
 """A module containing tests for the library representation of Rulesets."""
-import json
 import pytest
 import iati.core.default
 import iati.core.rulesets
@@ -135,7 +134,6 @@ class TestRule(object):
         """Check that a Rule can be created when given correct parameters."""
         xpath_base = 'an xpath'
         case = { 'paths': ['path_1', 'path_2'] }
-
         rule = rule_constructor(xpath_base, case)
 
         assert isinstance(rule, iati.core.Rule)
@@ -166,7 +164,7 @@ class TestRuleNoMoreThanOne(object):
 
     @pytest.fixture
     def basic_rule(self):
-        """A basic instantiation of this Rule."""
+        """Basic instantiation of this Rule."""
         xpath_base = 'an xpath'
         case = { 'paths': ['path_1', 'path_2'] }
 
@@ -175,3 +173,11 @@ class TestRuleNoMoreThanOne(object):
     def test_rule_name(self, basic_rule):
         """Check that a no_more_than_one rule has the expected name."""
         assert basic_rule.name == 'no_more_than_one'
+
+    def test_rule_missing_property_paths(self):
+        """Check that a rule cannot be instantiated without the required `paths` property."""
+        xpath_base = 'an xpath'
+        case = dict()
+
+        with pytest.raises(ValueError):
+            iati.core.rulesets.RuleNoMoreThanOne(xpath_base, case)
