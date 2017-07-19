@@ -101,7 +101,7 @@ def _correct_ruleset_conformance(dataset, schema):
 
     """
     for ruleset in schema.rulesets:
-        conforms_with_ruleset = _correct_ruleset_conformance(dataset, ruleset)
+        conforms_with_ruleset = _correct_rule_conformance(dataset, ruleset)
         if not conforms_with_ruleset:
             return False
 
@@ -165,7 +165,7 @@ def is_valid(dataset, schema):
     except iati.core.exceptions.SchemaError:
         return False
 
-    return _correct_codelist_values(dataset, schema)
+    return _correct_codelist_values(dataset, schema) and _correct_ruleset_conformance(dataset, schema)
 
 
 def is_xml(maybe_xml):
