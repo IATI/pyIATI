@@ -65,6 +65,49 @@ def _correct_codelist_values(dataset, schema):
     return True
 
 
+def _correct_rule_conformance(dataset, ruleset):
+    """Determine whether a given Dataset conforms to the Rules in a Ruleset.
+
+    Args:
+        dataset (iati.core.data.Dataset): The Dataset to check Rule conformance with.
+        ruleset (iati.core.rulesets.Ruleset): The Ruleset to check Rules within.
+
+    Returns:
+        bool: A boolean indicating whether the given Dataset conforms to all the Rules in the given Ruleset.
+
+    Todo:
+    	Determine a better name for this function.
+
+    """
+    for rule in ruleset.rules:
+    	if not rule.is_valid_for(dataset):
+    		return False
+
+    return True
+
+
+def _correct_ruleset_conformance(dataset, schema):
+    """Determine whether a given Dataset conforms to the Rulesets that have been added to a Schema.
+
+    Args:
+        dataset (iati.core.data.Dataset): The Dataset to check Rule conformance with.
+        schema (iati.core.schemas.Schema): The Schema to locate Rulesets within.
+
+    Returns:
+        bool: A boolean indicating whether the given Dataset conforms to the required Rulesets.
+
+    Todo:
+    	Determine a better name for this function.
+
+    """
+    for ruleset in schema.rulesets:
+        conforms_with_ruleset = _correct_ruleset_conformance(dataset, ruleset)
+        if not conforms_with_ruleset:
+            return False
+
+    return True
+
+
 def is_iati_xml(dataset, schema):
     """Determine whether a given Dataset's XML is valid against the specified Schema.
 
