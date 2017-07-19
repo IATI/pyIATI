@@ -75,9 +75,11 @@ class TestDefault(object):
         Todo:
             Handle multiple versions.
 
-            Check internal values beyond the ruleset being the correct type.
+            Check internal values beyond the Ruleset being the correct type.
         """
         ruleset = iati.core.default.ruleset()
+
+        assert isinstance(ruleset, iati.core.rulesets.Ruleset)
 
     def test_default_schemas(self):
         """Check that the default Schemas are correct.
