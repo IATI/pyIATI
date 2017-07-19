@@ -118,6 +118,14 @@ class Rule(object):
 
         self.xpath_base = xpath_base
 
+    def is_valid_for(self, dataset):
+        """Check whether a dataset conforms with the Rule.
+
+        Args:
+            dataset (iati.core.Dataset): The Dataset to check conformance with.
+        """
+        pass
+
     def _valid_rule_configuration(self, case):
         """Check that a configuration being passed into a Rule is valid for the given type of Rule.
 
