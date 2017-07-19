@@ -332,3 +332,19 @@ class TestValidateRulesets(object):
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_ruleset)
         assert not iati.validate.is_valid(data, schema_ruleset)
+
+
+class ValidateRuleSubclass(object):
+    def test_basic_validation_invalid(self):
+        # create Dataset that breaks this Rule
+        data = iati.core.Dataset(iati.core.tests.XML_STR_INVALID_RULE_SUBCLASS_1)
+        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+
+        case = {'paths': ['dsfds']}
+        rule = iati.core.RuleSubclass('base', case)
+        ruleset = iati.core.Ruleset()
+        ruleset.rules.add(rule)
+
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema)
+        assert not iati.validate.is_valid(data, schema)
