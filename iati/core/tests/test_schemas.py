@@ -15,16 +15,16 @@ class TestSchemas(object):
         """Create a very basic Schema.
 
         Returns:
-            iati.core.Schema: A Schema that has been initialised with basic values.
+            iati.core.ActivitySchema: An ActivitySchema that has been initialised with basic values.
 
         """
         schema_name = iati.core.tests.utilities.SCHEMA_NAME_VALID
 
-        return iati.core.Schema(name=schema_name)
+        return iati.core.ActivitySchema(name=schema_name)
 
     def test_schema_default_attributes(self):
         """Check a Schema's default attributes are correct."""
-        schema = iati.core.Schema()
+        schema = iati.core.ActivitySchema()
 
         assert schema.name is None
 
@@ -37,7 +37,7 @@ class TestSchemas(object):
 
         """
         with pytest.raises(TypeError) as excinfo:
-            iati.core.Schema(invalid_name)
+            iati.core.ActivitySchema(invalid_name)
 
         assert 'The name of the Schema is an invalid type. Must be a string, though was a' in str(excinfo.value)
 

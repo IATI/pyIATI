@@ -83,7 +83,7 @@ def convert_tree_to_schema(tree):
     Warning:
         Should raise exceptions when there are errors during execution.
 
-        Needs to better distinguish between an `etree.XMLSchema` and an `iati.core.Schema`.
+        Needs to better distinguish between an `etree.XMLSchema`, an `iati.core.Schema`, an `iati.core.ActivitySchema` and an `iati.core.OrganisationSchema`.
 
         Does not fully hide the lxml internal workings.
 

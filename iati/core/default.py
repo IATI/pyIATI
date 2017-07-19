@@ -119,7 +119,7 @@ def schemas(bypass_cache=False):
     Todo:
         Allow creation of Schemas by XML rather than name.
 
-        Handle the difference between Organisation and Activity Schemas.
+        Handle the difference between Organisation and Activity Schemas - i.e. load ActivitySchema or OrganisationSchema, rather than Schema
 
         Consider the Schema that defines the format of Codelists.
 

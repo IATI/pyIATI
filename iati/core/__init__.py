@@ -2,4 +2,4 @@
 from .codelists import Code, Codelist
 from .data import Dataset
 from .rulesets import Rule, Ruleset
-from .schemas import Schema
+from .schemas import ActivitySchema, OrganisationSchema, Schema

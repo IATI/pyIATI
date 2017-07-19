@@ -13,16 +13,18 @@ class Schema(object):
     Attributes:
         name (str): The name of the Schema.
         codelists (set): The Codelists asspciated with this Schema. This is a read-only attribute.
+        root_element_name (str): The name of the root element within the schema - i.e. 'iati-activities' for the activity schema and 'iati-organisations' for the organisation schema.
 
     Warning:
         The private attribute allowing access to the base Schema Tree is likely to change in determining a good way of accessing the contained schema content.
 
     Todo:
-        Determine a good API for accessing the XMLSchema that the iati.core.Schema represents.
+        Determine a good API for accessing the XMLSchema that the iati.core.ActivitySchema represents.
 
         Determine how to distinguish and handle the different types of Schema - activity, organisation, codelist, other.
 
     """
+    root_element_name = ''
 
     def __init__(self, name=None):
         """Initialise a Schema.
@@ -172,3 +174,13 @@ class Schema(object):
         etree.strip_elements(tree.getroot(), schema_xpath)
 
         return tree
+
+
+class ActivitySchema(Schema):
+    root_element_name = 'iati-activities'
+    pass
+
+
+class OrganisationSchema(Schema):
+    root_element_name = 'iati-organisations'
+    pass

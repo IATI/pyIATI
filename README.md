@@ -62,7 +62,7 @@ The following example loads the included IATI v2.02 schema at:  `iati.core/iati/
 
 ```
 import iati.core.schemas
-schema = iati.core.Schema(name='iati-activities-schema')
+schema = iati.core.ActivitySchema(name='iati-activities-schema')
 ```
 
 ### Loading codelists
