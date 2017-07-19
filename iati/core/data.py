@@ -66,6 +66,10 @@ class Dataset(object):
             ValueError: If a value that is being assigned is not a valid XML string.
             TypeError: If a value that is being assigned is not a string at all.
 
+        Todo:
+            Clarify error messages, for example when a mismatched encoding is used.
+            Perhaps pass on the original lxml error message instead of trying to intrepret what might have gone wrong when running etree.fromstring.
+
         """
         return self._xml_str
 

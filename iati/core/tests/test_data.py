@@ -133,6 +133,7 @@ class TestDatasets(object):
 
         Todo:
             Check that the xml_tree attribute is updated to the new tree.
+
         """
         data = dataset_initialised
         data.xml_tree = iati.core.tests.utilities.XML_TREE_VALID
@@ -144,6 +145,7 @@ class TestDatasets(object):
 
         Todo:
             Create an invalid tree and test it.
+
         """
         pass
 
@@ -193,6 +195,7 @@ class TestDatasets(object):
         Note:
             The use of UTF-8 and UTF-16 is strongly recommended for IATI datasets, however other encodings are specificed here to demonstrate compatibility.
             UTF-32 is deliberately omitted as this causes an error: lxml.etree.XMLSyntaxError: Document is empty
+
         """
         xml = """<?xml version="1.0" encoding="{}"?>
         <iati-activities version="xx">
@@ -218,7 +221,12 @@ class TestDatasets(object):
                                           ("BIG5", "UTF-16"),
                                           ("EUC-JP", "UTF-16")])
     def test_instantiation_dataset_from_string_with_encoding_mismatch(self, encoding_declared, encoding_used):
-        """Test that an error is raised when attempting to create a dataset where a string is encoded significantly differently from what is defined within the XML encoding declaration."""
+        """Test that an error is raised when attempting to create a dataset where a string is encoded significantly differently from what is defined within the XML encoding declaration.
+
+        Todo:
+            Amend error message, when the todo in iati.core.data.Dataset.xml_str() has been resolved.
+
+        """
         xml = """<?xml version="1.0" encoding="{}"?>
         <iati-activities version="xx">
           <iati-activity>
