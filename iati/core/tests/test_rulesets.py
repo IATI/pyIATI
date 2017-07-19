@@ -180,6 +180,7 @@ class TestRuleSubclasses(object):
 
 
 class RuleSubclassTestBase(object):
+    """A base class for Rule subclass tests."""
 
     @pytest.fixture
     def basic_rule(self, rule_type, valid_case):
@@ -188,6 +189,14 @@ class RuleSubclassTestBase(object):
         rule_constructor = iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
         return rule_constructor(xpath_base, valid_case)
 
+    # @pytest.fixture
+    # def invalid_case_rule(self, rule_type):
+    #     """Invalid instantiation of a Rule subclass."""
+    #     xpath_base = 'an xpath'
+    #     invalid_case = dict()
+    #     rule_constructor = iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
+    #     return rule_constructor(xpath_base, invalid_case)
+
     def test_rule_init_valid_parameter_types(self, basic_rule):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
         assert isinstance(basic_rule, iati.core.Rule)
@@ -195,6 +204,7 @@ class RuleSubclassTestBase(object):
     def test_rule_name(self, basic_rule, rule_type):
         """Check that a Rule subclass has the expected name."""
         assert basic_rule.name == rule_type
+
 
 class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     """A container for tests relating to RuleNoMoreThanOne."""
@@ -207,13 +217,14 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     def valid_case(self):
         return {'paths': ['path_1', 'path_2']}
 
-    def test_rule_missing_property_paths(self):
-        """Check that a rule cannot be instantiated without the required `paths` property."""
-        xpath_base = 'an xpath'
-        case = dict()
-
-        with pytest.raises(ValueError):
-            iati.core.rulesets.RuleNoMoreThanOne(xpath_base, case)
+    # def test_rule_missing_property_paths(self, invalid_case_rule):
+    #     """Check that a rule cannot be instantiated without the required `paths` property."""
+    #     # xpath_base = 'an xpath'
+    #     # case = dict()
+    #
+    #     with pytest.raises(ValueError):
+    #         pass
+            # iati.core.rulesets.RuleNoMoreThanOne(xpath_base, case)
 
 
 class TestRuleAtLeastOne(RuleSubclassTestBase):
