@@ -38,14 +38,14 @@ def locate_constructor_for_rule_type(rule_type):
     """
     possible_rule_types = {
         'atleast_one': RuleAtLeastOne,
-        # 'date_order': RuleDateOrder,
-        # 'dependent': RuleDependent,
-        'no_more_than_one': RuleNoMoreThanOne #,
-        # 'regex_matches': RuleRegexMatches,
-        # 'regex_no_matches': RuleRegexNoMatches,
-        # 'startswith': RuleStartsWith,
-        # 'sum': RuleSum,
-        # 'unique': RuleUnique
+        'date_order': RuleDateOrder,
+        'dependent': RuleDependent,
+        'no_more_than_one': RuleNoMoreThanOne,
+        'regex_matches': RuleRegexMatches,
+        'regex_no_matches': RuleRegexNoMatches,
+        'startswith': RuleStartsWith,
+        'sum': RuleSum,
+        'unique': RuleUnique
     }
 
     return possible_rule_types[rule_type]
@@ -193,3 +193,93 @@ class RuleAtLeastOne(Rule):
     def implementation(self, dataset):
         """Check activity has at least one instance of a given case."""
         pass
+
+class RuleDateOrder(Rule):
+    """A specific type of Rule.
+
+    Todo:
+        Add docstring
+
+    """
+    def __init__(self, xpath_base, case):
+        self.name = "date_order"
+
+        super(RuleDateOrder, self).__init__(xpath_base, case)
+
+
+class RuleDependent(Rule):
+    """A specific type of Rule.
+
+    Todo:
+        Add docstring
+
+    """
+    def __init__(self, xpath_base, case):
+        self.name = "dependent"
+
+        super(RuleDependent, self).__init__(xpath_base, case)
+
+
+class RuleRegexMatches(Rule):
+    """A specific type of Rule.
+
+    Todo:
+        Add docstring
+
+    """
+    def __init__(self, xpath_base, case):
+        self.name = "regex_matches"
+
+        super(RuleRegexMatches, self).__init__(xpath_base, case)
+
+
+class RuleRegexNoMatches(Rule):
+    """A specific type of Rule.
+
+    Todo:
+        Add docstring
+
+    """
+    def __init__(self, xpath_base, case):
+        self.name = "regex_no_matches"
+
+        super(RuleRegexNoMatches, self).__init__(xpath_base, case)
+
+
+class RuleStartsWith(Rule):
+    """A specific type of Rule.
+
+    Todo:
+        Add docstring
+
+    """
+    def __init__(self, xpath_base, case):
+        self.name = "startswith"
+
+        super(RuleStartsWith, self).__init__(xpath_base, case)
+
+
+class RuleSum(Rule):
+    """A specific type of Rule.
+
+    Todo:
+        Add docstring
+
+    """
+    def __init__(self, xpath_base, case):
+        self.name = "sum"
+
+        super(RuleSum, self).__init__(xpath_base, case)
+
+
+class RuleUnique(Rule):
+    """A specific type of Rule.
+
+    Todo:
+        Add docstring
+
+    """
+    def __init__(self, xpath_base, case):
+        self.name = "unique"
+
+        super(RuleUnique, self).__init__(xpath_base, case)
