@@ -147,7 +147,6 @@ class TestValidateCodelist(object):
         assert not iati.validate.is_valid(data, schema_org_type)
 
 
-
 class TestValidateVocabularies(object):
     """A container for tests relating to validation of vocabularies and associated Codelists."""
 
@@ -297,3 +296,22 @@ class TestValidateVocabularies(object):
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_sectors)
         assert iati.validate.is_valid(data, schema_sectors)
+
+
+class TestValidateRulesets(object):
+    """A container for tests relating to validation of Rulesets."""
+
+    @pytest.fixture
+    def schema_ruleset(self):
+        """A schema with the default Ruleset added.
+
+        Returns:
+            A valid activity schema with the Version Codelist added.
+
+        """
+        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        ruleset = iati.core.default.ruleset()
+
+        schema.rulesets.add(ruleset)
+
+        return schema
