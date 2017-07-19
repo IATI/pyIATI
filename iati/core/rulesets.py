@@ -94,6 +94,9 @@ class Rule(object):
 
     Acts as a base class for specific types of Rule that actually do something.
 
+    Todo:
+        Determine whether this should be an Abstract Base Class.
+
     """
 
     def __init__(self, xpath_base, case):
@@ -111,7 +114,33 @@ class Rule(object):
         if not isinstance(xpath_base, six.string_types) or not isinstance(case, dict):
             raise TypeError
 
+        self._valid_rule_configuration(case)
+
         self.xpath_base = xpath_base
+
+    def _valid_rule_configuration(self, case):
+        """Check that a configuration being passed into a Rule is valid for the given type of Rule.
+
+        Note:
+            The `name` attribute on the class must be set to a valid rule_type before this function is called.
+
+        Args:
+            case (dict): A dictionary of values, generally parsed as a case from a Ruleset.
+
+        Raises:
+            AttributeError: When the Rule's name is unset or not a permitted rule_type.
+            ValueError: When the case is not valid for the type of Rule.
+
+        """
+        try:
+            ruleset_schema_section = self._ruleset_schema_section()
+        except AttributeError:
+            raise
+
+        try:
+            jsonschema.validate(case, ruleset_schema_section)
+        except jsonschema.ValidationError:
+            raise ValueError
 
     def _ruleset_schema_section(self):
         """Locate the section of the Ruleset Schema relevant for the Rule.
@@ -120,12 +149,9 @@ class Rule(object):
             dict: A dictionary of the relevant part of the Ruleset Schema, based on the Rule's name.
 
         Raises:
-            AttributeError: When the Rule's name is not a permitted rule_type.
+            AttributeError: When the Rule's name is unset or not a permitted rule_type.
 
         """
-        if not self.name in _VALID_RULE_TYPES:
-            raise AttributeError
-
         ruleset_schema = iati.core.default.ruleset_schema()
 
         return ruleset_schema['patternProperties']['.+']['properties'][self.name]['properties']['cases']['items']
@@ -141,14 +167,9 @@ class RuleNoMoreThanOne(Rule):
 
     """
     def __init__(self, xpath_base, case):
-        super(RuleNoMoreThanOne, self).__init__(xpath_base, case)
-
         self.name = "no_more_than_one"
 
-        try:
-            jsonschema.validate(case, self._ruleset_schema_section())
-        except jsonschema.ValidationError:
-            raise ValueError
+        super(RuleNoMoreThanOne, self).__init__(xpath_base, case)
 
 
 class RuleAtLeastOne(Rule):
@@ -160,6 +181,10 @@ class RuleAtLeastOne(Rule):
         The name of specific types of Rule may better indicate that they are Rules.
 
     """
+    def __init__(self, xpath_base, case):
+        self.name = "atleast_one"
+
+        super(RuleAtLeastOne, self).__init__(xpath_base, case)
 
     def implementation(self, dataset):
         """Check activity has at least one instance of a given case."""

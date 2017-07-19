@@ -113,7 +113,7 @@ class TestRuleset(object):
 class TestRule(object):
     """A container for tests relating to Rules."""
 
-    rule_constructors = list(map(iati.core.rulesets.locate_constructor_for_rule_type, ['atleast_one', 'no_more_than_one'])) + [iati.core.Rule]
+    rule_constructors = list(map(iati.core.rulesets.locate_constructor_for_rule_type, ['atleast_one', 'no_more_than_one']))
     """A list of constructors for the various types of Rule."""
 
     @pytest.mark.parametrize("rule_constructor", rule_constructors)
