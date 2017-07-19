@@ -13,14 +13,10 @@ def _correct_codes(dataset, codelist):
 
     Args:
         dataset (iati.core.data.Dataset): The Dataset to check Codelist values within.
-        codelist_name (str): The name of the Codelist to check values from.
+        codelist (iati.core.codelists.Codelist): The Codelist to check values from.
 
     Returns:
         bool: A boolean indicating whether the given Dataset has values from the specified Codelist where they should be.
-
-    Todo:
-        Test invalid Codelist name.
-        Test something with a condition.
 
     """
     mappings = iati.core.default.codelist_mapping()
