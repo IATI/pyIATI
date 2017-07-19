@@ -11,7 +11,6 @@ class Schema(object):
     """Represenation of a Schema as defined within the IATI SSOT.
 
     Attributes:
-        name (str): The name of the Schema.
         codelists (set): The Codelists asspciated with this Schema. This is a read-only attribute.
         root_element_name (str): The name of the root element within the schema - i.e. 'iati-activities' for the activity schema and 'iati-organisations' for the organisation schema.
 
@@ -26,15 +25,13 @@ class Schema(object):
     """
     root_element_name = ''
 
-    def __init__(self, name=None):
+    def __init__(self, path):
         """Initialise a Schema.
 
         Args:
-            name (str): The name of the schema being initialised.
-                This name refers to a file contained within the core IATI resources folder.
+            path (str): The path to the schema that is being initialised.
 
         Raises:
-            TypeError: The type of the provided name is incorrect.
             iati.core.exceptions.SchemaError: An error occurred during the creation of the Schema.
 
         Warning:
@@ -54,24 +51,17 @@ class Schema(object):
             Create test instance where the SchemaError is raised.
 
         """
-        self.name = name
         self._schema_base_tree = None
         self.codelists = set()
 
-        if isinstance(name, str):
-            path = iati.core.resources.get_schema_path(self.name)
-            try:
-                loaded_tree = iati.core.resources.load_as_tree(path)
-            except (IOError, OSError):
-                msg = "Failed to load tree at '{0}' when creating Schema.".format(path)
-                iati.core.utilities.log_error(msg)
-                raise iati.core.exceptions.SchemaError
-            else:
-                self._schema_base_tree = loaded_tree
-        elif name is not None:
-            msg = "The name of the Schema is an invalid type. Must be a string, though was a {0}.".format(type(name))
+        try:
+            loaded_tree = iati.core.resources.load_as_tree(path)
+        except (IOError, OSError):
+            msg = "Failed to load tree at '{0}' when creating Schema.".format(path)
             iati.core.utilities.log_error(msg)
-            raise TypeError(msg)
+            raise iati.core.exceptions.SchemaError
+        else:
+            self._schema_base_tree = loaded_tree
 
     def _change_include_to_xinclude(self, tree):
         """Change the method in which common elements are included.

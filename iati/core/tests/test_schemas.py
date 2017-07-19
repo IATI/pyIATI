@@ -2,6 +2,7 @@
 from lxml import etree
 import pytest
 import iati.core.codelists
+import iati.core.default
 import iati.core.exceptions
 import iati.core.schemas
 import iati.core.tests.utilities
@@ -20,32 +21,18 @@ class TestSchemas(object):
         """
         schema_name = iati.core.tests.utilities.SCHEMA_NAME_VALID
 
-        return iati.core.ActivitySchema(name=schema_name)
+        return iati.core.default.schema(schema_name)
 
-    def test_schema_default_attributes(self):
+    def test_schema_default_attributes(self, schema_initialised):
         """Check a Schema's default attributes are correct."""
-        schema = iati.core.ActivitySchema()
+        schema = schema_initialised
 
-        assert schema.name is None
-
-    @pytest.mark.parametrize("invalid_name", iati.core.tests.utilities.find_parameter_by_type(['str', 'none'], False))
-    def test_schema_name_instance(self, invalid_name):
-        """Check that an Error is raised when attempting to load a Schema that does not exist.
-
-        Todo:
-            Check for type errors when the type is incorrect.
-
-        """
-        with pytest.raises(TypeError) as excinfo:
-            iati.core.ActivitySchema(invalid_name)
-
-        assert 'The name of the Schema is an invalid type. Must be a string, though was a' in str(excinfo.value)
+        assert schema.root_element_name == 'iati-activities'
 
     def test_schema_define_from_xsd(self, schema_initialised):
         """Check that a Schema can be generated from an XSD definition."""
         schema = schema_initialised
 
-        assert schema.name == iati.core.tests.utilities.SCHEMA_NAME_VALID
         assert isinstance(schema.codelists, set)
         assert len(schema.codelists) == 0
 
@@ -119,8 +106,12 @@ class TestSchemas(object):
 
             Assert that the flattened XML is a valid Schema.
 
+            Test that this works with subclasses of iati.core.Schema: iati.core.ActivitySchema and iati.core.OrganisationSchema
+
         """
-        schema = schema_initialised
+        schema_name = iati.core.tests.utilities.SCHEMA_NAME_VALID
+        schema_path = iati.core.resources.get_schema_path(schema_name)
+        schema = iati.core.Schema(schema_path)
         local_element = 'iati-activities'
         included_element = 'reporting-org'
 

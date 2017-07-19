@@ -61,8 +61,8 @@ The `.xsd` schema file should be stored in the folder: `iati.core/iati/core/reso
 The following example loads the included IATI v2.02 schema at:  `iati.core/iati/core/resources/schemas/202/iati-activities-schema.xsd`.
 
 ```
-import iati.core.schemas
-schema = iati.core.ActivitySchema(name='iati-activities-schema')
+import iati.core.default
+schema = iati.core.default.schema('iati-activities-schema')
 ```
 
 ### Loading codelists

@@ -105,7 +105,7 @@ This removes the need to repeatedly load a Schema from disk each time it is acce
 
 
 def schemas(bypass_cache=False):
-    """Locate the default Schemas.
+    """Locate all the default Schemas and return them within a dictionary.
 
     Args:
         bypass_cache (bool): Whether the cache should be bypassed, instead reloading data from disk even if it's already been loaded.
@@ -119,7 +119,7 @@ def schemas(bypass_cache=False):
     Todo:
         Allow creation of Schemas by XML rather than name.
 
-        Handle the difference between Organisation and Activity Schemas - i.e. load ActivitySchema or OrganisationSchema, rather than Schema
+        Handle the difference between Organisation and Activity Schemas - i.e. load ActivitySchema or OrganisationSchema, rather than always ActivitySchema
 
         Consider the Schema that defines the format of Codelists.
 
@@ -127,13 +127,35 @@ def schemas(bypass_cache=False):
 
         Load the Schemas.
 
+        Needs to handle multiple versions of the Schemas. Versions could perhaps be placed within a nested dictionary, with the version number as the key.
+
     """
     paths = iati.core.resources.find_all_schema_paths()
 
     for path in paths:
         name = path.split(os.sep).pop()[:-len(iati.core.resources.FILE_SCHEMA_EXTENSION)]
         if (name not in _SCHEMAS.keys()) or bypass_cache:
-            schema = iati.core.Schema(name)
+            schema = iati.core.ActivitySchema(path)
             _SCHEMAS[name] = schema
 
     return _SCHEMAS
+
+
+def schema(name, version=None):
+    """Return a default Schema with the specified name for the specified version of the Standard.
+
+    Args:
+        name (str): The name of the Schema to locate.
+        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
+
+    Todo:
+        Needs to handle multiple versions of the Schemas. At present, only the latest version can be returned.
+
+    """
+
+    try:
+        return schemas()[name]
+    except KeyError:
+        msg = 'There is no default Schema in version {0} of the Standard with the name {1}.'.format(version, name)
+        iati.core.utilities.log_warning(msg)
+        raise ValueError(msg)
