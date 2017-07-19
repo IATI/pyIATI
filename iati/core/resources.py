@@ -1,6 +1,18 @@
 """A module to provide a way of locating resources within the IATI library.
 
-`pkg_resources` is used to allow resources to be located however the package is distributed. If using the standard `os` functionality, resources may not be locatable if, for example, the package is distributed as an egg.
+There are two key groups of functions within this module: `get_*_path[s]()` and `load_as_*()`.
+
+The `get_*_path[s](name)` functions provide information about where to locate particular types of resources with a provided name.
+
+The `load_as_*(path)` functions load the contents of a file at the specified path and return it in the specified format.
+
+Example:
+    To load a test XML file located in `my_test_file` and use it to create a `Dataset`::
+
+        dataset = iati.core.Dataset(iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('my_test_file')))
+
+Note:
+    `pkg_resources` is used to allow resources to be located however the package is distributed. If using the standard `os` functionality, resources may not be locatable if, for example, the package is distributed as an egg.
 
 Warning:
     The contents of this module are likely to change. This is due to them expecting that there is a single version of the Standard. When this assumption changes, so will the contents of this module.
@@ -36,6 +48,8 @@ PATH_TEST_DATA = os.path.join(BASE_PATH, 'test_data')
 """The relative location of the folder containing IATI data files."""
 PATH_SCHEMAS = 'schemas'
 """The location of the folder containing schemas from the SSOT."""
+PATH_RULESETS = 'rulesets'
+"""The location of the folder containing rulesets from the SSOT."""
 
 FILE_CODELIST_EXTENSION = '.xml'
 """The extension of a file containing a Codelist."""
@@ -44,6 +58,9 @@ FILE_CODELIST_MAPPING = 'codelist-mapping.xml'
 
 FILE_DATA_EXTENSION = '.xml'
 """The extension of a file containing IATI data."""
+
+FILE_RULESET_EXTENSION = '.json'
+"""The extension of a file containing a Ruleset."""
 
 FILE_SCHEMA_ACTIVITY_NAME = 'iati-activities-schema'
 """The name of a file containing an Activity Schema."""
@@ -148,6 +165,31 @@ def get_codelist_mapping_path(version=None):
     return get_path_for_version(FILE_CODELIST_MAPPING, version)
 
 
+def get_schema_path(name, version=None):
+    """Determine the path of a schema with the given name.
+
+    Args:
+        name (str): The name of the schema to locate.
+        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
+
+    Returns:
+        str: The path to a file containing the specified schema.
+
+    Note:
+        Does not check whether the specified schema actually exists.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+    Todo:
+        Handle versions of the standard other than 2.02.
+
+        Test this.
+
+    """
+    return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
+
+
 def get_test_data_path(name, version=None):
     """Determine the path of an IATI data file with the given filename.
 
@@ -193,6 +235,26 @@ def get_folder_name_for_version(version=None):
         raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
 
 
+def get_ruleset_path(name, version=None):
+    """Determine the path of a ruleset with the given name.
+
+    Args:
+        name (str): The name of the ruleset to locate.
+        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that paths to the latest version of the Ruleset are returned.
+
+    Returns:
+        str: The path to a file containing the specified ruleset.
+
+    Note:
+        Does not check whether the specified ruleset actually exists.
+
+    Todo:
+        Test this.
+
+    """
+    return get_path_for_version(os.path.join(PATH_RULESETS, '{0}'.format(name) + FILE_RULESET_EXTENSION), version)
+
+
 def get_schema_path(name, version=None):
     """Determine the path of a schema with the given name.
 
@@ -213,7 +275,6 @@ def get_schema_path(name, version=None):
         Handle versions of the standard other than 2.02.
 
         Test this.
-
     """
     return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
@@ -251,6 +312,24 @@ def get_path_for_version(path, version=None):
     return os.path.join(get_folder_path_for_version(version), path)
 
 
+def load_as_bytes(path):
+    """Load a resource at the specified path into a bytes object.
+
+    Args:
+        path (str): The path to the file that is to be read in.
+
+    Returns:
+        bytes: The contents of the file at the specified location.
+
+    Todo:
+        Should raise Exceptions when there are problems loading the requested data.
+        Add error handling for when the specified file does not exist.
+        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
+
+    """
+    return pkg_resources.resource_string(PACKAGE, path)
+
+
 def load_as_string(path):
     """Load a resource at the specified path into a string.
 
@@ -258,16 +337,14 @@ def load_as_string(path):
         path (str): The path to the file that is to be read in.
 
     Returns:
-        str: The contents of the file at the specified location.
-
-    Warning:
-        Should raise Exceptions when there are problems loading the requested data.
+        str (python3) / unicode (python2): The contents of the file at the specified location.
 
     Todo:
-        Add error handling for when the specified file does not exist.
+        Should raise Exceptions when there are problems loading the requested data.
+        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
 
     """
-    return pkg_resources.resource_string(PACKAGE, path)
+    return load_as_bytes(path).decode('utf-8')
 
 
 def load_as_tree(path):

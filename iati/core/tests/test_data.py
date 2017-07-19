@@ -19,13 +19,10 @@ class TestDatasets(object):
 
     def test_dataset_no_params(self):
         """Test Dataset creation with no parameters."""
-        try:
-            _ = iati.core.Dataset()  # pylint: disable=E1120
-        except TypeError:
-            assert True
-        else:  # pragma: no cover
-            # a TypeError should be raised when creating without any parameters
-            assert False
+        with pytest.raises(TypeError) as excinfo:
+            iati.core.Dataset()
+
+        assert ('__init__() missing 1 required positional argument' in str(excinfo.value)) or ('__init__() takes exactly 2 arguments' in str(excinfo.value))
 
     def test_dataset_valid_xml_string(self):
         """Test Dataset creation with a valid XML string that is not IATI data."""
@@ -48,24 +45,18 @@ class TestDatasets(object):
 
     def test_dataset_invalid_xml_string(self):
         """Test Dataset creation with a string that is not valid XML."""
-        try:
-            _ = iati.core.Dataset(iati.core.tests.utilities.XML_STR_INVALID)
-        except ValueError:
-            assert True
-        else:  # pragma: no cover
-            # a ValueError should be raised when creating without valid XML
-            assert False
+        with pytest.raises(ValueError) as excinfo:
+            iati.core.Dataset(iati.core.tests.utilities.XML_STR_INVALID)
+
+        assert 'The string provided to create a Dataset from is not valid XML.' == str(excinfo.value)
 
     @pytest.mark.parametrize("not_xml", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_dataset_number_not_xml(self, not_xml):
         """Test Dataset creation when it's passed a number rather than a string or etree."""
-        try:
-            _ = iati.core.Dataset(not_xml)
-        except TypeError:
-            assert True
-        else:  # pragma: no cover
-            # a TypeError should be raised when creating without valid XML
-            assert False
+        with pytest.raises(TypeError) as excinfo:
+            iati.core.Dataset(not_xml)
+
+        assert 'Datasets can only be ElementTrees or strings containing valid XML, using the xml_tree and xml_str attributes respectively. Actual type:' in str(excinfo.value)
 
     def test_dataset_tree(self):
         """Test Dataset creation with an etree that is not valid IATI data."""
@@ -99,36 +90,30 @@ class TestDatasets(object):
     def test_dataset_xml_str_assignment_invalid_str(self, dataset_initialised):
         """Test assignment to the xml_str property with an invalid XML string."""
         data = dataset_initialised
-        try:
+
+        with pytest.raises(ValueError) as excinfo:
             data.xml_str = iati.core.tests.utilities.XML_STR_INVALID
-        except ValueError:
-            assert True
-        else:  # pragma: no cover
-            # a ValueError should be raised when creating without valid XML
-            assert False
+
+        assert 'The string provided to create a Dataset from is not valid XML.' == str(excinfo.value)
 
     def test_dataset_xml_str_assignment_tree(self, dataset_initialised):
         """Test assignment to the xml_str property with an ElementTree."""
         data = dataset_initialised
-        try:
+
+        with pytest.raises(TypeError) as excinfo:
             data.xml_str = iati.core.tests.utilities.XML_TREE_VALID
-        except TypeError:
-            assert True
-        else:  # pragma: no cover
-            # a TypeError should be raised when creating without valid XML
-            assert False
+
+        assert 'If setting a dataset with an ElementTree, use the xml_tree property, not the xml_str property.' == str(excinfo.value)
 
     @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_dataset_xml_str_assignment_invalid_value(self, dataset_initialised, invalid_value):
         """Test assignment to the xml_str property with a value that is very much not valid."""
         data = dataset_initialised
-        try:
+
+        with pytest.raises(TypeError) as excinfo:
             data.xml_str = invalid_value
-        except TypeError:
-            assert True
-        else:  # pragma: no cover
-            # a TypeError should be raised when creating without valid XML
-            assert False
+
+        assert 'Datasets can only be ElementTrees or strings containing valid XML, using the xml_tree and xml_str attributes respectively. Actual type:' in str(excinfo.value)
 
     def test_dataset_xml_tree_assignment_valid_tree(self, dataset_initialised):
         """Test assignment to the xml_tree property with a valid ElementTree.
@@ -154,22 +139,16 @@ class TestDatasets(object):
     def test_dataset_xml_tree_assignment_str(self, dataset_initialised):
         """Test assignment to the xml_tree property with an XML string."""
         data = dataset_initialised
-        try:
+        with pytest.raises(TypeError) as excinfo:
             data.xml_tree = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
-        except TypeError:
-            assert True
-        else:  # pragma: no cover
-            # a TypeError should be raised when creating without a tree
-            assert False
+
+        assert 'If setting a dataset with the xml_property, an ElementTree should be provided, not a' in str(excinfo.value)
 
     @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_dataset_xml_tree_assignment_invalid_value(self, dataset_initialised, invalid_value):
         """Test assignment to the xml_tree property with a value that is very much not valid."""
         data = dataset_initialised
-        try:
+        with pytest.raises(TypeError) as excinfo:
             data.xml_tree = invalid_value
-        except TypeError:
-            assert True
-        else:  # pragma: no cover
-            # a TypeError should be raised when creating without a tree
-            assert False
+
+        assert 'If setting a dataset with the xml_property, an ElementTree should be provided, not a' in str(excinfo.value)
