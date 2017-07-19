@@ -176,7 +176,7 @@ class TestSchemas(object):
         """Check that it is possible to add Rulesets to the Schema."""
         codelist_name = "a test Codelist name"
         schema = schema_initialised
-        ruleset = iati.core.Ruleset()
+        ruleset = iati.core.default.ruleset()
 
         schema.rulesets.add(ruleset)
 

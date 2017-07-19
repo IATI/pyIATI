@@ -315,3 +315,20 @@ class TestValidateRulesets(object):
         schema.rulesets.add(ruleset)
 
         return schema
+
+    def test_basic_validation_ruleset_valid(self, schema_ruleset):
+        """Perform data validation against valid IATI XML that has valid Codelist values."""
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
+
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema_ruleset)
+        assert iati.validate.is_valid(data, schema_ruleset)
+
+    @pytest.mark.skip(reason='Validation of various types of Rule is being implemented separately')
+    def test_basic_validation_ruleset_invalid(self, schema_ruleset):
+        """Perform data validation against valid IATI XML that does not conform to the default Ruleset."""
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_BREAKS_RULE)
+
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema_ruleset)
+        assert not iati.validate.is_valid(data, schema_ruleset)
