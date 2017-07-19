@@ -113,35 +113,22 @@ class Rule(object):
 
         self.xpath_base = xpath_base
 
-    def _has_values_in_case(self, case, values):
-        """Check that a case object has the required values.
-
-        Args:
-            case (dict): Specific configuration for this instance of the Rule.
-            values (list of (str, type)): A list of tuples containing the expected keys and type they should be.
-
-        Raises:
-            KeyError: When a required key is not present.
-            TypeError: When a parameter is of an incorrect type.
-            ValueError: When a required key is present, but the type is incorrect.
+    def _ruleset_schema_section(self):
+        """Locate the section of the Ruleset Schema relevant for the Rule.
 
         Returns:
-            boolean: Whether the case has the required values.
+            dict: A dictionary of the relevant part of the Ruleset Schema, based on the Rule's name.
 
-        Todo:
-            Figure out the mix of Value and Type errors.
+        Raises:
+            AttributeError: When the Rule's name is not a permitted rule_type.
 
         """
-        if not isinstance(case, dict) or not isinstance(values, list):
-            raise TypeError
+        if not self.name in _VALID_RULE_TYPES:
+            raise AttributeError
 
-        for (key, expected_type) in values:
-            if key not in case.keys():
-                raise KeyError
-            if not isinstance(case[key], expected_type):
-                raise ValueError
+        ruleset_schema = iati.core.default.ruleset_schema()
 
-        return True
+        return ruleset_schema['patternProperties']['.+']['properties'][self.name]['properties']['cases']['items']
 
 
 class RuleNoMoreThanOne(Rule):
@@ -156,9 +143,12 @@ class RuleNoMoreThanOne(Rule):
     def __init__(self, xpath_base, case):
         super(RuleNoMoreThanOne, self).__init__(xpath_base, case)
 
-        self._has_values_in_case(case, [('paths', list)])
-
         self.name = "no_more_than_one"
+
+        try:
+            jsonschema.validate(case, self._ruleset_schema_section())
+        except jsonschema.ValidationError:
+            raise ValueError
 
 
 class RuleAtLeastOne(Rule):
