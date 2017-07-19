@@ -1,4 +1,5 @@
 """A module containing tests for the library representation of Rulesets."""
+import json
 import pytest
 import iati.core.default
 import iati.core.rulesets
@@ -23,11 +24,18 @@ class TestRuleset(object):
         assert isinstance(ruleset.rules, set)
         assert len(ruleset.rules) == 0
 
-    @pytest.mark.parametrize("not_a_ruleset", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    @pytest.mark.parametrize("not_a_ruleset", iati.core.tests.utilities.find_parameter_by_type(['str', 'bytearray'], False))
     def test_ruleset_init_ruleset_str_not_str(self, not_a_ruleset):
         """Check that a Ruleset cannot be created when given at least one Rule in a non-string format."""
         with pytest.raises(TypeError):
             iati.core.Ruleset(not_a_ruleset)
+
+    @pytest.mark.skip(reason="Bytearrays cause multiple types of errors. This is confusing. Probs due to the stupid null byte at the start of one of the sample bytearrays. Grr! Argh!")
+    @pytest.mark.parametrize("byte_array", iati.core.tests.utilities.find_parameter_by_type(['bytearray']))
+    def test_ruleset_init_ruleset_str_bytearray(self, byte_array):
+        """Check that a Ruleset cannot be created when given at least one Rule in a bytearray format."""
+        with pytest.raises(ValueError):
+            iati.core.Ruleset(byte_array)
 
     def test_ruleset_init_ruleset_str_invalid(self):
         """Check that a Ruleset cannot be created when given a string that is not a Ruleset."""

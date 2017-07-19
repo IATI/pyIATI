@@ -69,12 +69,12 @@ class Ruleset(object):
             TypeError: When a ruleset_str is not a string.
             ValueError: When ruleset_str does not validate against the ruleset schema.
 
-        """
-        if not isinstance(ruleset_str, str):
-            raise TypeError
+        Todo:
+            May raise a UnicodeDecodeError or json.JSONDecodeError if passed a dodgey bytearray. Need to test.
 
-        # if parsing fails, raises a ValueError
+        """
         ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
+
         try:
             jsonschema.validate(ruleset, iati.core.default.ruleset_schema())
         except jsonschema.ValidationError:
