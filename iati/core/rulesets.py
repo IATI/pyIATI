@@ -70,14 +70,14 @@ class Ruleset(object):
         """
         possible_rule_types = {
             'atleast_one': RuleAtLeastOne,
-            # 'date_order': RuleDateOrder,
-            # 'dependent': RuleDependent,
-            'no_more_than_one': RuleNoMoreThanOne #,
-            # 'regex_matches': RuleRegexMatches,
-            # 'regex_no_matches': RuleRegexNoMatches,
-            # 'startswith': RuleStartsWith,
-            # 'sum': RuleSum,
-            # 'unique': RuleUnique
+            'date_order': RuleDateOrder,
+            'dependent': RuleDependent,
+            'no_more_than_one': RuleNoMoreThanOne,
+            'regex_matches': RuleRegexMatches,
+            'regex_no_matches': RuleRegexNoMatches,
+            'startswith': RuleStartsWith,
+            'sum': RuleSum,
+            'unique': RuleUnique
         }
 
         return possible_rule_types[rule_type]
@@ -182,3 +182,37 @@ class RuleAtLeastOne(Rule):
     def implementation(self, dataset):
         """Check activity has at least one instance of a given case."""
         pass
+
+class RuleDateOrder(Rule):
+
+    pass
+
+
+class RuleDependent(Rule):
+
+    pass
+
+
+class RuleRegexMatches(Rule):
+
+    pass
+
+
+class RuleRegexNoMatches(Rule):
+
+    pass
+
+
+class RuleStartsWith(Rule):
+
+    pass
+
+
+class RuleSum(Rule):
+
+    pass
+
+
+class RuleUnique(Rule):
+
+    pass
