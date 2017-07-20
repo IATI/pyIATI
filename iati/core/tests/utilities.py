@@ -19,6 +19,11 @@ import decimal
 from lxml import etree
 import iati.core.resources
 
+ATLEASTONE_RULESET = iati.core.resources.load_as_string(iati.core.resources.get_test_ruleset_path('atleastone_test_ruleset'))
+"""A string containing a valid Ruleset with the `atleast_one` Rule."""
+INVALID_DATASET_FOR_ATLEASTONE_RULE = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('invalid_atleastone'))
+"""An etree containing XML data that is not permitted by `RuleAtLeastOne`."""
+
 SCHEMA_NAME_VALID = 'iati-activities-schema'
 """A string containing a valid Schema name."""
 

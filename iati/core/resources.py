@@ -196,6 +196,29 @@ def get_test_data_path(name, version=None):
     return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
 
 
+def get_test_ruleset_path(name, version=None):
+    """Determine the path of an IATI test Ruleset file with the given filename.
+
+    Args:
+        name (str): The name of the data file to locate. The filename must not contain the '.json' file extension.
+        version (float): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+
+    Returns:
+        str: The path to a file containing the specified test Ruleset.
+
+    Note:
+        Does not check whether the specified file actually exists.
+
+    Warning:
+        Needs to handle a more complex file structure than a single flat directory.
+
+    Todo:
+        Test this.
+
+    """
+    return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), 'rulesets/{0}'.format(name) + FILE_RULESET_EXTENSION)
+
+
 def get_folder_name_for_version(version=None):
     """Return the folder name for a given version of the Standard.
 

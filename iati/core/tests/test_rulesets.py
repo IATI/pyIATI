@@ -3,6 +3,7 @@ import pytest
 import iati.core.default
 import iati.core.rulesets
 import iati.core.resources
+import iati.core.tests.utilities
 
 
 class TestRuleset(object):
@@ -203,8 +204,8 @@ class RuleSubclassTestBase(object):
         """Check that a Rule subclass has the expected name."""
         assert basic_rule.name == rule_type
 
-    def test_rule_missing_required_property(self, invalid_case_rule, invalid_cases):
-        """Check that a rule cannot be instantiated without the required properties."""
+    def test_rule_missing_required_case_properties(self, invalid_case_rule, invalid_cases):
+        """Check that a rule cannot be instantiated without the required case properties."""
         xpath_base = 'an xpath'
 
         with pytest.raises(ValueError):
@@ -229,6 +230,9 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         """Non-permitted cases for this rule."""
         return {}
 
+    def test_implementation(self):
+        """Check that the element specified by `paths` is only provided once or less."""
+        pass
 
 class TestRuleAtLeastOne(RuleSubclassTestBase):
     """A container for tests relating to RuleAtLeastOne."""
@@ -248,6 +252,15 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         """Non-permitted cases for this rule."""
         return {}
 
+    # def test_implementation(self):
+    #     """Check that missing element required by 'atleast_one' rule raises error."""
+    #     invalid_data = iati.core.tests.utilities.INVALID_DATASET_FOR_ATLEASTONE_RULE
+    #     ruleset_str = iati.core.tests.utilities.ATLEASTONE_RULESET
+    #     ruleset = iati.core.Ruleset(ruleset_str)
+    #
+    #     with pytest.raises(ValueError):
+    #         for rule in ruleset.rules:
+    #             rule.implement(invalid_data)
 
 class TestRuleDependent(RuleSubclassTestBase):
     """A container for tests relating to RuleDependent."""
@@ -262,6 +275,7 @@ class TestRuleDependent(RuleSubclassTestBase):
         """Permitted case for this rule."""
         return {'paths': ['path_1', 'path_2']}
 
+    # If this rule is checking for dependent paths then surely it's invalid to pass in only one path property?
     @pytest.fixture
     def invalid_cases(self):
         """Non-permitted cases for this rule."""

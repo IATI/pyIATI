@@ -1,0 +1,9 @@
+{
+    "//iati-activity": {
+        "atleast_one": {
+            "cases": [
+                { "paths": ["iati-identifier"]}
+            ]
+        }
+    }
+}
