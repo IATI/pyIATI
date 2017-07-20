@@ -117,8 +117,6 @@ def schemas(bypass_cache=False):
         The `bypass_cache` parameter could potentially be implemented in a cleaner manner. It also shouldn't really exist until a clear use-case is defined - changes elsewhere in the library may make it redundant.
 
     Todo:
-        Handle the difference between Organisation and Activity Schemas - i.e. load ActivitySchema or OrganisationSchema, rather than always ActivitySchema
-
         Consider the Schema that defines the format of Codelists.
 
         Test a cache bypass where data is updated.
