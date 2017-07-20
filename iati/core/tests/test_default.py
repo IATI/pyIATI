@@ -58,7 +58,7 @@ class TestDefault(object):
         schemas = iati.core.default.schemas()
 
         assert isinstance(schemas, dict)
-        assert len(schemas) == 1
+        assert len(schemas) == 2
         for _, schema in schemas.items():
             assert isinstance(schema, iati.core.Schema)
 

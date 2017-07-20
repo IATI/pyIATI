@@ -73,7 +73,7 @@ class TestResources(object):
         """
         paths = iati.core.resources.find_all_schema_paths()
 
-        assert len(paths) == 1
+        assert len(paths) == 2
         for path in paths:
             assert path[-4:] == iati.core.resources.FILE_SCHEMA_EXTENSION
 

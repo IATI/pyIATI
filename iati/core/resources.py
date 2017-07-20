@@ -109,10 +109,13 @@ def find_all_schema_paths(version=None):
     Todo:
         Handle versions, including errors.
 
-        Implement for more than a single specified activity schema.
+        Potentially add the IATI codelist schema.
 
     """
-    return [get_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version)]
+    return [
+        get_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version),
+        get_schema_path(FILE_SCHEMA_ORGANISATION_NAME, version)
+    ]
 
 
 def get_codelist_path(codelist_name, version=None):
