@@ -127,24 +127,21 @@ def schemas(bypass_cache=False):
 
         Needs to handle multiple versions of the Schemas. Versions could perhaps be placed within a nested dictionary, with the version number as the key.
 
-        Refactor to remove duplicate code.
-
     """
-    paths = iati.core.resources.find_all_activity_schema_paths()
+    schema_paths_by_type = {
+        'activity': iati.core.resources.find_all_activity_schema_paths(),
+        'organisation': iati.core.resources.find_all_organisation_schema_paths()
+    }
 
-    for path in paths:
-        name = path.split(os.sep).pop()[:-len(iati.core.resources.FILE_SCHEMA_EXTENSION)]
-        if (name not in _SCHEMAS.keys()) or bypass_cache:
-            schema = iati.core.ActivitySchema(path)
-            _SCHEMAS[name] = schema
-
-    paths = iati.core.resources.find_all_organisation_schema_paths()
-
-    for path in paths:
-        name = path.split(os.sep).pop()[:-len(iati.core.resources.FILE_SCHEMA_EXTENSION)]
-        if (name not in _SCHEMAS.keys()) or bypass_cache:
-            schema = iati.core.OrganisationSchema(path)
-            _SCHEMAS[name] = schema
+    for schema_type, schema_paths in schema_paths_by_type.items():
+        for path in schema_paths:
+            name = path.split(os.sep).pop()[:-len(iati.core.resources.FILE_SCHEMA_EXTENSION)]
+            if (name not in _SCHEMAS.keys()) or bypass_cache:
+                if schema_type == 'activity':
+                    schema = iati.core.ActivitySchema(path)
+                elif schema_type == 'organisation':
+                    schema = iati.core.OrganisationSchema(path)
+                _SCHEMAS[name] = schema
 
     return _SCHEMAS
 
