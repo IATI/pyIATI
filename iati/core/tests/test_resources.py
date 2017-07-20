@@ -70,14 +70,10 @@ class TestResources(object):
 
             Handle all paths to schemas being found correctly.
 
-            Refactor to remove duplicate code in test_find_all_activity_schema_paths, test_find_all_organisation_schema_paths and test_find_schema_paths.
-
         """
         activity_paths = iati.core.resources.find_all_activity_schema_paths()
 
         assert len(activity_paths) == 1
-        for path in activity_paths:
-            assert path[-4:] == iati.core.resources.FILE_SCHEMA_EXTENSION
 
     def test_find_all_organisation_schema_paths(self):
         """Check that all organisation schema paths are found.
@@ -87,14 +83,10 @@ class TestResources(object):
 
             Handle all paths to schemas being found correctly.
 
-            Refactor to remove duplicate code in test_find_all_activity_schema_paths, test_find_all_organisation_schema_paths and test_find_schema_paths.
-
         """
         organisation_paths = iati.core.resources.find_all_organisation_schema_paths()
 
         assert len(organisation_paths) == 1
-        for path in organisation_paths:
-            assert path[-4:] == iati.core.resources.FILE_SCHEMA_EXTENSION
 
     def test_find_schema_paths(self):
         """Check that all schema paths are being found.
@@ -104,12 +96,20 @@ class TestResources(object):
 
             Handle all paths to schemas being found correctly.
 
-            Refactor to remove duplicate code in test_find_all_activity_schema_paths, test_find_all_organisation_schema_paths and test_find_schema_paths.
-
         """
         paths = iati.core.resources.find_all_schema_paths()
 
         assert len(paths) == 2
+
+    @pytest.mark.parametrize('get_schema_path_function', [
+        iati.core.resources.find_all_schema_paths,
+        iati.core.resources.find_all_activity_schema_paths,
+        iati.core.resources.find_all_organisation_schema_paths
+        ])
+    def test_find_schema_paths_file_extension(self, get_schema_path_function):
+        """Check that the correct file extension is present within file paths returned by find_all_*schema_paths functions."""
+        paths = get_schema_path_function()
+
         for path in paths:
             assert path[-4:] == iati.core.resources.FILE_SCHEMA_EXTENSION
 
