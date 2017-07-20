@@ -112,10 +112,55 @@ def find_all_schema_paths(version=None):
         Potentially add the IATI codelist schema.
 
     """
-    return [
-        get_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version),
-        get_schema_path(FILE_SCHEMA_ORGANISATION_NAME, version)
-    ]
+    return find_all_activity_schema_paths(version) + find_all_organisation_schema_paths(version)
+
+
+def find_all_activity_schema_paths(version=None):
+    """Find the paths for all activity schemas.
+
+    Args:
+        version (str): The version of the Standard to return the activity Schemas for. Defaults to None. This means that paths to the latest version of the activity Schemas are returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        list: A list of paths to all of the activity Schemas at the specified version of the Standard.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+    Todo:
+        Handle versions, including errors.
+
+        Potentially add the IATI codelist schema.
+
+    """
+    return [get_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version)]
+
+
+def find_all_organisation_schema_paths(version=None):
+    """Find the paths for all organisation schemas.
+
+    Args:
+        version (str): The version of the Standard to return the organisation Schemas for. Defaults to None. This means that paths to the latest version of the activity Schemas are returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        list: A list of paths to all of the organisation Schemas at the specified version of the Standard.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+    Todo:
+        Handle versions, including errors.
+
+        Potentially add the IATI codelist schema.
+
+    """
+    return [get_schema_path(FILE_SCHEMA_ORGANISATION_NAME, version)]
 
 
 def get_codelist_path(codelist_name, version=None):

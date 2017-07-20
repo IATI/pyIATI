@@ -111,7 +111,7 @@ def schemas(bypass_cache=False):
         bypass_cache (bool): Whether the cache should be bypassed, instead reloading data from disk even if it's already been loaded.
 
     Returns:
-        dict: A dictionary containing all the Schemas for versions of the Standard. The version of the Standard is the key. An iati.core.Schema() is each value.
+        dict: A dictionary containing all the Schemas for versions of the Standard. The name of the schema the key. An iati.core.Schema() is each value.
 
     Warning:
         The `bypass_cache` parameter could potentially be implemented in a cleaner manner. It also shouldn't really exist until a clear use-case is defined - changes elsewhere in the library may make it redundant.
@@ -127,13 +127,23 @@ def schemas(bypass_cache=False):
 
         Needs to handle multiple versions of the Schemas. Versions could perhaps be placed within a nested dictionary, with the version number as the key.
 
+        Refactor to remove duplicate code.
+
     """
-    paths = iati.core.resources.find_all_schema_paths()
+    paths = iati.core.resources.find_all_activity_schema_paths()
 
     for path in paths:
         name = path.split(os.sep).pop()[:-len(iati.core.resources.FILE_SCHEMA_EXTENSION)]
         if (name not in _SCHEMAS.keys()) or bypass_cache:
             schema = iati.core.ActivitySchema(path)
+            _SCHEMAS[name] = schema
+
+    paths = iati.core.resources.find_all_organisation_schema_paths()
+
+    for path in paths:
+        name = path.split(os.sep).pop()[:-len(iati.core.resources.FILE_SCHEMA_EXTENSION)]
+        if (name not in _SCHEMAS.keys()) or bypass_cache:
+            schema = iati.core.OrganisationSchema(path)
             _SCHEMAS[name] = schema
 
     return _SCHEMAS

@@ -62,6 +62,40 @@ class TestResources(object):
             assert path[-4:] == iati.core.resources.FILE_CODELIST_EXTENSION
             assert iati.core.resources.PATH_CODELISTS in path
 
+    def test_find_all_activity_schema_paths(self):
+        """Check that all activity schema paths are found.
+
+        Todo:
+            Add other tests relating to specific versions of the Standard.
+
+            Handle all paths to schemas being found correctly.
+
+            Refactor to remove duplicate code in test_find_all_activity_schema_paths, test_find_all_organisation_schema_paths and test_find_schema_paths.
+
+        """
+        activity_paths = iati.core.resources.find_all_activity_schema_paths()
+
+        assert len(activity_paths) == 1
+        for path in activity_paths:
+            assert path[-4:] == iati.core.resources.FILE_SCHEMA_EXTENSION
+
+    def test_find_all_organisation_schema_paths(self):
+        """Check that all organisation schema paths are found.
+
+        Todo:
+            Add other tests relating to specific versions of the Standard.
+
+            Handle all paths to schemas being found correctly.
+
+            Refactor to remove duplicate code in test_find_all_activity_schema_paths, test_find_all_organisation_schema_paths and test_find_schema_paths.
+
+        """
+        organisation_paths = iati.core.resources.find_all_organisation_schema_paths()
+
+        assert len(organisation_paths) == 1
+        for path in organisation_paths:
+            assert path[-4:] == iati.core.resources.FILE_SCHEMA_EXTENSION
+
     def test_find_schema_paths(self):
         """Check that all schema paths are being found.
 
@@ -69,6 +103,8 @@ class TestResources(object):
             Add other tests relating to specific versions of the Standard.
 
             Handle all paths to schemas being found correctly.
+
+            Refactor to remove duplicate code in test_find_all_activity_schema_paths, test_find_all_organisation_schema_paths and test_find_schema_paths.
 
         """
         paths = iati.core.resources.find_all_schema_paths()
