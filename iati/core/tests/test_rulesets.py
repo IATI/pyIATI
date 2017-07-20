@@ -29,7 +29,8 @@ class TestRuleset(object):
         with pytest.raises(TypeError):
             iati.core.Ruleset(not_a_ruleset)
 
-    @pytest.mark.skip(reason="Bytearrays cause multiple types of errors. This is confusing. Probs due to the stupid null byte at the start of one of the sample bytearrays. Grr! Argh!")
+    # This is passing now without issue, am I being dense?
+    # @pytest.mark.skip(reason="Bytearrays cause multiple types of errors. This is confusing. Probs due to the stupid null byte at the start of one of the sample bytearrays. Grr! Argh!")
     @pytest.mark.parametrize("byte_array", iati.core.tests.utilities.find_parameter_by_type(['bytearray']))
     def test_ruleset_init_ruleset_str_bytearray(self, byte_array):
         """Check that a Ruleset cannot be created when given at least one Rule in a bytearray format."""
@@ -189,13 +190,11 @@ class RuleSubclassTestBase(object):
         rule_constructor = iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
         return rule_constructor(xpath_base, valid_case)
 
-    # @pytest.fixture
-    # def invalid_case_rule(self, rule_type):
-    #     """Invalid instantiation of a Rule subclass."""
-    #     xpath_base = 'an xpath'
-    #     invalid_case = dict()
-    #     rule_constructor = iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
-    #     return rule_constructor(xpath_base, invalid_case)
+    @pytest.fixture
+    def invalid_case_rule(self, rule_type):
+        """Invalid instantiation of a Rule subclass."""
+        rule_constructor = iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
+        return rule_constructor
 
     def test_rule_init_valid_parameter_types(self, basic_rule):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
@@ -204,6 +203,13 @@ class RuleSubclassTestBase(object):
     def test_rule_name(self, basic_rule, rule_type):
         """Check that a Rule subclass has the expected name."""
         assert basic_rule.name == rule_type
+
+    def test_rule_missing_required_property(self, invalid_case_rule, invalid_cases):
+        """Check that a rule cannot be instantiated without the required properties."""
+        xpath_base = 'an xpath'
+
+        with pytest.raises(ValueError):
+            invalid_case_rule(xpath_base, invalid_cases)
 
 
 class TestRuleNoMoreThanOne(RuleSubclassTestBase):
@@ -217,14 +223,9 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     def valid_case(self):
         return {'paths': ['path_1', 'path_2']}
 
-    # def test_rule_missing_property_paths(self, invalid_case_rule):
-    #     """Check that a rule cannot be instantiated without the required `paths` property."""
-    #     # xpath_base = 'an xpath'
-    #     # case = dict()
-    #
-    #     with pytest.raises(ValueError):
-    #         pass
-            # iati.core.rulesets.RuleNoMoreThanOne(xpath_base, case)
+    @pytest.fixture
+    def invalid_cases(self):
+        return {}
 
 
 class TestRuleAtLeastOne(RuleSubclassTestBase):
@@ -237,3 +238,118 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
     @pytest.fixture
     def valid_case(self):
         return {'paths': ['path_1', 'path_2']}
+
+    @pytest.fixture
+    def invalid_cases(self):
+        return {}
+
+
+class TestRuleDependent(RuleSubclassTestBase):
+    """A container for tests relating to RuleDependent."""
+
+    @pytest.fixture
+    def rule_type(self):
+        return 'dependent'
+
+    @pytest.fixture
+    def valid_case(self):
+        return {'paths': ['path_1', 'path_2']}
+
+    @pytest.fixture
+    def invalid_cases(self):
+        return {}
+
+
+class TestRuleSum(RuleSubclassTestBase):
+    """A container for tests relating to RuleSum."""
+
+    @pytest.fixture
+    def rule_type(self):
+        return 'sum'
+
+    @pytest.fixture
+    def valid_case(self):
+        return {'paths': ['path_1', 'path_2'], 'sum': 3}
+
+    @pytest.fixture(params=[{'paths': ['path_1', 'path_2']}, {'sum': 100}, {}])
+    def invalid_cases(self, request):
+        return request.param
+
+
+class TestRuleDateOrder(RuleSubclassTestBase):
+    """A container for tests relating to RuleDateOrder."""
+
+    @pytest.fixture
+    def rule_type(self):
+        return 'date_order'
+
+    @pytest.fixture
+    def valid_case(self):
+        return {'less': 'start', 'more': 'end'}
+
+    @pytest.fixture(params=[{'less': 'start'}, {'more': 'end'}, {}])
+    def invalid_cases(self, request):
+        return request.param
+
+
+class TestRuleRegexMatches(RuleSubclassTestBase):
+    """A container for tests relating to RuleRegexMatches."""
+
+    @pytest.fixture
+    def rule_type(self):
+        return 'regex_matches'
+
+    @pytest.fixture
+    def valid_case(self):
+        return {'regex': 'some regex', 'paths': ['path_1', 'path_2']}
+
+    @pytest.fixture(params=[{'regex': 'some regex'}, {'paths': ['path_1', 'path_2']}, {}])
+    def invalid_cases(self, request):
+        return request.param
+
+
+class TestRuleRegexNoMatches(RuleSubclassTestBase):
+    """A container for tests relating to RuleRegexNoMatches."""
+
+    @pytest.fixture
+    def rule_type(self):
+        return 'regex_no_matches'
+
+    @pytest.fixture
+    def valid_case(self):
+        return {'regex': 'some regex', 'paths': ['path_1', 'path_2']}
+
+    @pytest.fixture(params=[{'regex': 'some regex'}, {'paths': ['path_1', 'path_2']}, {}])
+    def invalid_cases(self, request):
+        return request.param
+
+
+class TestRuleStartsWith(RuleSubclassTestBase):
+    """A container for tests relating to RuleStartsWith."""
+
+    @pytest.fixture
+    def rule_type(self):
+        return 'startswith'
+
+    @pytest.fixture
+    def valid_case(self):
+        return {'start': 'a string', 'paths': ['path_1', 'path_2']}
+
+    @pytest.fixture(params=[{'start': 'a string'}, {'paths': ['path_1', 'path_2']}, {}])
+    def invalid_cases(self, request):
+        return request.param
+
+class TestRuleUnique(RuleSubclassTestBase):
+    """A container for tests relating to RuleUnique."""
+
+    @pytest.fixture
+    def rule_type(self):
+        return 'unique'
+
+    @pytest.fixture
+    def valid_case(self):
+        return {'paths': ['path_1', 'path_2']}
+
+    @pytest.fixture
+    def invalid_cases(self):
+        return {}
