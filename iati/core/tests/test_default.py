@@ -60,7 +60,7 @@ class TestDefault(object):
         assert isinstance(schemas, dict)
         assert len(schemas) == 2
         for _, schema in schemas.items():
-            assert isinstance(schema, iati.core.Schema)
+            assert isinstance(schema, iati.core.ActivitySchema) or isinstance(schema, iati.core.OrganisationSchema)
 
     @pytest.mark.parametrize("invalid_name", iati.core.tests.utilities.find_parameter_by_type(['str', 'none', 'view', 'set', 'mapping', 'list', 'bytearray', 'memory', 'range'], False))
     def test_default_schema(self, invalid_name):
