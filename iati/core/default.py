@@ -83,7 +83,7 @@ def codelists(version=None, bypass_cache=False):
         Add a function to return a single Codelist by name.
 
     """
-    paths = iati.core.resources.find_all_codelist_paths()
+    paths = iati.core.resources.get_all_codelist_paths()
 
     for path in paths:
         _, filename = os.path.split(path)
@@ -129,8 +129,8 @@ def schemas(bypass_cache=False):
 
     """
     schema_paths_by_type = {
-        'activity': iati.core.resources.find_all_activity_schema_paths(),
-        'organisation': iati.core.resources.find_all_organisation_schema_paths()
+        'activity': iati.core.resources.get_all_activity_schema_paths(),
+        'organisation': iati.core.resources.get_all_organisation_schema_paths()
     }
 
     for schema_type, schema_paths in schema_paths_by_type.items():
