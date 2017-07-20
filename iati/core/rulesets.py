@@ -170,7 +170,9 @@ class RuleNoMoreThanOne(Rule):
         The name of specific types of Rule may better indicate that they are Rules.
 
     """
+
     def __init__(self, xpath_base, case):
+        """Initialise a `no_more_than_one` rule."""
         self.name = "no_more_than_one"
 
         super(RuleNoMoreThanOne, self).__init__(xpath_base, case)
@@ -185,7 +187,9 @@ class RuleAtLeastOne(Rule):
         The name of specific types of Rule may better indicate that they are Rules.
 
     """
+
     def __init__(self, xpath_base, case):
+        """Initialise an `atleast_one` rule."""
         self.name = "atleast_one"
 
         super(RuleAtLeastOne, self).__init__(xpath_base, case)
@@ -194,6 +198,7 @@ class RuleAtLeastOne(Rule):
         """Check activity has at least one instance of a given case."""
         pass
 
+
 class RuleDateOrder(Rule):
     """A specific type of Rule.
 
@@ -201,7 +206,9 @@ class RuleDateOrder(Rule):
         Add docstring
 
     """
+
     def __init__(self, xpath_base, case):
+        """Initialise a `date_order` rule."""
         self.name = "date_order"
 
         super(RuleDateOrder, self).__init__(xpath_base, case)
@@ -214,7 +221,9 @@ class RuleDependent(Rule):
         Add docstring
 
     """
+
     def __init__(self, xpath_base, case):
+        """Initialise a `dependent` rule."""
         self.name = "dependent"
 
         super(RuleDependent, self).__init__(xpath_base, case)
@@ -227,7 +236,9 @@ class RuleRegexMatches(Rule):
         Add docstring
 
     """
+
     def __init__(self, xpath_base, case):
+        """Initialise a `regex_matches` rule."""
         self.name = "regex_matches"
 
         super(RuleRegexMatches, self).__init__(xpath_base, case)
@@ -240,7 +251,9 @@ class RuleRegexNoMatches(Rule):
         Add docstring
 
     """
+
     def __init__(self, xpath_base, case):
+        """Initialise a `regex_no_matches` rule."""
         self.name = "regex_no_matches"
 
         super(RuleRegexNoMatches, self).__init__(xpath_base, case)
@@ -253,7 +266,9 @@ class RuleStartsWith(Rule):
         Add docstring
 
     """
+
     def __init__(self, xpath_base, case):
+        """Initialise a `startswith` rule."""
         self.name = "startswith"
 
         super(RuleStartsWith, self).__init__(xpath_base, case)
@@ -266,7 +281,9 @@ class RuleSum(Rule):
         Add docstring
 
     """
+
     def __init__(self, xpath_base, case):
+        """Initialise a `sum` rule."""
         self.name = "sum"
 
         super(RuleSum, self).__init__(xpath_base, case)
@@ -279,7 +296,9 @@ class RuleUnique(Rule):
         Add docstring
 
     """
+
     def __init__(self, xpath_base, case):
+        """Initialise a `unique` rule."""
         self.name = "unique"
 
         super(RuleUnique, self).__init__(xpath_base, case)
