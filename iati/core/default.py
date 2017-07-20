@@ -105,7 +105,7 @@ This removes the need to repeatedly load a Schema from disk each time it is acce
 
 
 def schemas(bypass_cache=False):
-    """Locate all the default Schemas and return them within a dictionary.
+    """Locate all the default IATI Schemas and return them within a dictionary.
 
     Args:
         bypass_cache (bool): Whether the cache should be bypassed, instead reloading data from disk even if it's already been loaded.
@@ -147,6 +147,12 @@ def schema(name, version=None):
     Args:
         name (str): The name of the Schema to locate.
         version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
+
+    Returns:
+        iati.core.schema.Schema (or subclass): An instance of the schema corresponding to the input name and version.
+
+    Raises:
+        KeyError: If the input schema name is not found as part of the default IATI Schemas.
 
     Todo:
         Needs to handle multiple versions of the Schemas. At present, only the latest version can be returned.
