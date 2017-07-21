@@ -202,8 +202,11 @@ class RuleAtLeastOne(Rule):
     def is_valid_for(self, dataset_tree):
         """Check activity has at least one instance of a given case.
 
-        Todo:
-            Document stuff.
+        Args:
+            dataset_tree: an etree created from an XML dataset.
+
+        Returns:
+            Boolean value that changes depending on whether the case is found in the dataset_tree.
 
         """
         case = '//{0}'.format(self.case['paths'][0])
