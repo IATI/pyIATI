@@ -20,7 +20,9 @@ from lxml import etree
 import iati.core.resources
 
 SCHEMA_ACTIVITY_NAME_VALID = 'iati-activities-schema'
-"""A string containing a valid Schema name."""
+"""A string containing a valid IATI Activity Schema name."""
+SCHEMA_ORGANISATION_NAME_VALID = 'iati-organisations-schema'
+"""A string containing a valid IATI Organisaion Schema name."""
 
 XML_STR_VALID_NOT_IATI = '<parent><child attribute="value" /></parent>'
 """A string containing valid XML that is not valid against the IATI schema."""
