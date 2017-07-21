@@ -169,7 +169,13 @@ class TestSchemas(object):
         ('element-name-that-does-not-exist', type(None))
     ])
     def test_get_xsd_element(self, schema_initialised, xsd_element_name, expected_type):
-        """Check that an lxml object is returned to represent an XSD element"""
+        """Check that an lxml object is returned to represent an XSD element.
+
+        Todo
+            Add test for organisation schema.
+
+            Test for elements that should be contained within a flattened schema.
+        """
         schema = schema_initialised
 
         result = schema.get_xsd_element(xsd_element_name)
