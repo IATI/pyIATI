@@ -211,6 +211,14 @@ class RuleSubclassTestBase(object):
         with pytest.raises(ValueError):
             invalid_case_rule(xpath_base, invalid_cases)
 
+    # Maybe too much of a shortcut as can't fully pass until all implementations complete.
+    # def test_is_valid_for(self, invalid_data_tree, valid_data_tree, this_rule_only_ruleset):
+    #     """Check that the 'atleast_one' rule returns the expected result when given a dataset."""
+    #
+    #     for rule in this_rule_only_ruleset.rules:
+    #         assert not rule.is_valid_for(invalid_data_tree)
+    #         assert rule.is_valid_for(valid_data_tree)
+
 
 class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     """A container for tests relating to RuleNoMoreThanOne."""
@@ -230,9 +238,22 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         """Non-permitted cases for this rule."""
         return {}
 
-    def test_implementation(self):
-        """Check that the element specified by `paths` is only provided once or less."""
-        pass
+    @pytest.fixture
+    def invalid_data_tree(self):
+        """Invalid dataset etree for this Rule."""
+        return iati.core.tests.utilities.DATASET_TREE_FOR_NOMORETHANONE_RULE_INVALID
+
+    @pytest.fixture
+    def valid_data_tree(self):
+        """Valid dataset etree for this Rule."""
+        return iati.core.tests.utilities.DATASET_TREE_FOR_NOMORETHANONE_RULE_VALID
+
+
+    @pytest.fixture
+    def this_rule_only_ruleset(self):
+        """Ruleset contains only this Rule."""
+        ruleset_str = iati.core.tests.utilities.NOMORETHANONE_RULESET_STR
+        return iati.core.Ruleset(ruleset_str)
 
 
 class TestRuleAtLeastOne(RuleSubclassTestBase):
@@ -253,16 +274,22 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         """Non-permitted cases for this rule."""
         return {}
 
-    def test_is_valid_for(self):
-        """Check that the 'atleast_one' rule returns the expected result when given a dataset."""
-        invalid_data_tree = iati.core.tests.utilities.INVALID_DATASET_TREE_FOR_ATLEASTONE_RULE
-        valid_data_tree = iati.core.tests.utilities.VAlID_DATASET_TREE_FOR_ATLEASTONE_RULE
-        ruleset_str = iati.core.tests.utilities.ATLEASTONE_RULESET_STR
-        ruleset = iati.core.Ruleset(ruleset_str)
+    @pytest.fixture
+    def invalid_data_tree(self):
+        """Invalid dataset etree for this Rule."""
+        return iati.core.tests.utilities.DATASET_TREE_FOR_ATLEASTONE_RULE_INVALID
 
-        for rule in ruleset.rules:
-            assert not rule.is_valid_for(invalid_data_tree)
-            assert rule.is_valid_for(valid_data_tree)
+    @pytest.fixture
+    def valid_data_tree(self):
+        """Valid dataset etree for this Rule."""
+        return iati.core.tests.utilities.DATASET_TREE_FOR_ATLEASTONE_RULE_VALID
+
+
+    @pytest.fixture
+    def this_rule_only_ruleset(self):
+        """Ruleset contains only this Rule."""
+        ruleset_str = iati.core.tests.utilities.ATLEASTONE_RULESET_STR
+        return iati.core.Ruleset(ruleset_str)
 
 
 class TestRuleDependent(RuleSubclassTestBase):
@@ -340,6 +367,23 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
     def invalid_cases(self, request):
         """Non-permitted cases for this rule."""
         return request.param
+
+    # @pytest.fixture
+    # def invalid_data_tree(self):
+    #     """Invalid dataset etree for this Rule."""
+    #     return iati.core.tests.utilities.DATASET_TREE_FOR_REGEXMATCHES_RULE_INVALID
+    #
+    # @pytest.fixture
+    # def valid_data_tree(self):
+    #     """Valid dataset etree for this Rule."""
+    #     return iati.core.tests.utilities.DATASET_TREE_FOR_REGEXMATCHES_RULE_VALID
+    #
+    #
+    # @pytest.fixture
+    # def this_rule_only_ruleset(self):
+    #     """Ruleset contains only this Rule."""
+    #     ruleset_str = iati.core.tests.utilities.REGEXMATCHES_RULESET_STR
+    #     return iati.core.Ruleset(ruleset_str)
 
 
 class TestRuleRegexNoMatches(RuleSubclassTestBase):

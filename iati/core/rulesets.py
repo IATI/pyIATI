@@ -182,6 +182,21 @@ class RuleNoMoreThanOne(Rule):
 
         super(RuleNoMoreThanOne, self).__init__(xpath_base, case)
 
+    def is_valid_for(self, dataset_tree):
+        """Check `dataset_tree` has no more than one instance of a given case for an Element.
+
+        Args:
+            dataset_tree: an etree created from an XML dataset.
+
+        Returns:
+            Boolean value that changes depending on whether more than one case is found in the dataset_tree.
+
+        """
+        case = '//{0}'.format(self.case['paths'][0])
+        import pdb; pdb.set_trace()
+        return bool(dataset_tree.findall(case))
+
+
 
 class RuleAtLeastOne(Rule):
     """Representation of a Rule that checks that there is at least one Element matching a given XPath.
@@ -200,7 +215,7 @@ class RuleAtLeastOne(Rule):
         super(RuleAtLeastOne, self).__init__(xpath_base, case)
 
     def is_valid_for(self, dataset_tree):
-        """Check activity has at least one instance of a given case.
+        """Check `dataset_tree` has at least one instance of a given case for an Element.
 
         Args:
             dataset_tree: an etree created from an XML dataset.
