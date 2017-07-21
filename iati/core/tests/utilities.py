@@ -19,8 +19,10 @@ import decimal
 from lxml import etree
 import iati.core.resources
 
-SCHEMA_NAME_VALID = 'iati-activities-schema'
-"""A string containing a valid Schema name."""
+SCHEMA_ACTIVITY_NAME_VALID = 'iati-activities-schema'
+"""A string containing a valid IATI Activity Schema name."""
+SCHEMA_ORGANISATION_NAME_VALID = 'iati-organisations-schema'
+"""A string containing a valid IATI Organisaion Schema name."""
 
 XML_STR_VALID_NOT_IATI = '<parent><child attribute="value" /></parent>'
 """A string containing valid XML that is not valid against the IATI schema."""
@@ -84,7 +86,7 @@ TYPE_TEST_DATA = {
     'other': [NotImplemented],
     'range': [range(3, 4)],
     'set': [set(range(20)), set(['hello', 23]), frozenset(range(20)), frozenset(['hello', 23])],
-    'str': [SCHEMA_NAME_VALID, XML_STR_VALID_NOT_IATI, XML_STR_INVALID, b'\x80abc', b'\x80abc', '\N{GREEK CAPITAL LETTER DELTA}', '\u0394', '\U00000394'],
+    'str': [SCHEMA_ACTIVITY_NAME_VALID, XML_STR_VALID_NOT_IATI, XML_STR_INVALID, b'\x80abc', b'\x80abc', '\N{GREEK CAPITAL LETTER DELTA}', '\u0394', '\U00000394'],
     'tuple': [(), (1, 2)],
     'type': [type(1), type('string')],
     'unicode': [],  # counts as a string, so moved there

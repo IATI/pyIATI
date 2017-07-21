@@ -136,10 +136,10 @@ def schemas(bypass_cache=False):
             name = path.split(os.sep).pop()[:-len(iati.core.resources.FILE_SCHEMA_EXTENSION)]
             if (name not in _SCHEMAS.keys()) or bypass_cache:
                 if schema_type == 'activity':
-                    schema = iati.core.ActivitySchema(path)
+                    schema_object = iati.core.ActivitySchema(path)
                 elif schema_type == 'organisation':
-                    schema = iati.core.OrganisationSchema(path)
-                _SCHEMAS[name] = schema
+                    schema_object = iati.core.OrganisationSchema(path)
+                _SCHEMAS[name] = schema_object
 
     return _SCHEMAS
 
@@ -161,7 +161,6 @@ def schema(name, version=None):
         Needs to handle multiple versions of the Schemas. At present, only the latest version can be returned.
 
     """
-
     try:
         return schemas()[name]
     except KeyError:

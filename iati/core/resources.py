@@ -119,7 +119,7 @@ def get_all_activity_schema_paths(version=None):
     """Find the paths for all activity schemas.
 
     Args:
-        version (str): The version of the Standard to return the activity Schemas for. Defaults to None. This means that paths to the latest version of the activity Schemas are returned.
+        version (str): The version of the Standard to return the activity schemas for. Defaults to None. This means that paths to the latest version of the activity Schemas are returned.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -143,7 +143,7 @@ def get_all_organisation_schema_paths(version=None):
     """Find the paths for all organisation schemas.
 
     Args:
-        version (str): The version of the Standard to return the organisation Schemas for. Defaults to None. This means that paths to the latest version of the activity Schemas are returned.
+        version (str): The version of the Standard to return the organisation schemas for. Defaults to None. This means that paths to the latest version of the activity Schemas are returned.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
