@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<iati-activities version="2.02">
+  <iati-activity>
+    <iati-identifier>this is not an IATI identifier</iati-identifier><!-- iati-identifier does not match regex -->
+  </iati-activity>
+</iati-activities>

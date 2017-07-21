@@ -193,9 +193,7 @@ class RuleNoMoreThanOne(Rule):
 
         """
         case = '//{0}'.format(self.case['paths'][0])
-        import pdb; pdb.set_trace()
         return bool(dataset_tree.findall(case))
-
 
 
 class RuleAtLeastOne(Rule):
@@ -273,6 +271,10 @@ class RuleRegexMatches(Rule):
 
         super(RuleRegexMatches, self).__init__(xpath_base, case)
 
+    def is_valid_for(self):
+        """Check that the Element specified by `paths` matches the given regex case."""
+        return True
+
 
 class RuleRegexNoMatches(Rule):
     """A specific type of Rule.
@@ -287,6 +289,10 @@ class RuleRegexNoMatches(Rule):
         self.name = "regex_no_matches"
 
         super(RuleRegexNoMatches, self).__init__(xpath_base, case)
+
+    def is_valid_for(self):
+        """This is a Rule implementation method."""
+        return True
 
 
 class RuleStartsWith(Rule):
@@ -303,6 +309,10 @@ class RuleStartsWith(Rule):
 
         super(RuleStartsWith, self).__init__(xpath_base, case)
 
+    def is_valid_for(self):
+        """This is a Rule implementation method."""
+        return True
+
 
 class RuleSum(Rule):
     """A specific type of Rule.
@@ -318,6 +328,10 @@ class RuleSum(Rule):
 
         super(RuleSum, self).__init__(xpath_base, case)
 
+    def is_valid_for(self):
+        """This is a Rule implementation method."""
+        return True
+
 
 class RuleUnique(Rule):
     """A specific type of Rule.
@@ -332,3 +346,7 @@ class RuleUnique(Rule):
         self.name = "unique"
 
         super(RuleUnique, self).__init__(xpath_base, case)
+
+    def is_valid_for(self):
+        """This is a Rule implementation method."""
+        return True
