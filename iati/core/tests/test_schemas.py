@@ -160,3 +160,18 @@ class TestSchemas(object):
         schema.codelists.add(codelist2)
 
         assert len(schema.codelists) == 1
+
+    @pytest.mark.parametrize("xsd_element_name, expected_type", [
+        ('iati-activities', etree._Element),
+        ('iati-activity', etree._Element),
+        ('activity-date', etree._Element),
+        ('sector', etree._Element),
+        ('element-name-that-does-not-exist', type(None))
+    ])
+    def test_get_xsd_element(self, schema_initialised, xsd_element_name, expected_type):
+        """Check that an lxml object is returned to represent an XSD element"""
+        schema = schema_initialised
+
+        result = schema.get_xsd_element(xsd_element_name)
+
+        assert isinstance(result, expected_type)

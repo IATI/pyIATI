@@ -165,6 +165,21 @@ class Schema(object):
 
         return tree
 
+    def get_xsd_element(self, xsd_element_name):
+        """Return an lxml.etree represention for a given xsd:element, based on its name.
+
+        Args:
+            xsd_element_name (str): The name of the element to be returned.
+
+        Returns:
+            etree._ElementTree / None: The first element tree that matches the element name within the schema. Returns None if no XSD element found.
+
+        """
+        return self._schema_base_tree.find(
+            'xsd:element[@name="{0}"]'.format(xsd_element_name),
+            namespaces=iati.core.constants.NSMAP
+        )
+
 
 class ActivitySchema(Schema):
     root_element_name = 'iati-activities'
