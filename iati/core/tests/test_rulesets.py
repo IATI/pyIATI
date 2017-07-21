@@ -158,16 +158,16 @@ class TestRuleSubclasses(object):
         """Check that a Rule cannot be created when xpath_base is not a string."""
         case = dict()
 
-        with pytest.raises(TypeError):
+        with pytest.raises(ValueError):
             rule_constructor(xpath_base, case)
 
     @pytest.mark.parametrize("rule_constructor", rule_constructors)
     @pytest.mark.parametrize("case", iati.core.tests.utilities.find_parameter_by_type(['mapping'], False))
-    def test_rule_init_invalid_case_type(self, rule_constructor, case):
+    def test_rule_init_invalid_case(self, rule_constructor, case):
         """Check that a Rule cannot be created when case is not a dictionary."""
         xpath_base = 'an xpath'
 
-        with pytest.raises(TypeError):
+        with pytest.raises(ValueError):
             rule_constructor(xpath_base, case)
 
     @pytest.mark.parametrize("rule_constructor", rule_constructors)
@@ -234,6 +234,7 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         """Check that the element specified by `paths` is only provided once or less."""
         pass
 
+
 class TestRuleAtLeastOne(RuleSubclassTestBase):
     """A container for tests relating to RuleAtLeastOne."""
 
@@ -252,15 +253,17 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         """Non-permitted cases for this rule."""
         return {}
 
-    # def test_implementation(self):
-    #     """Check that missing element required by 'atleast_one' rule raises error."""
-    #     invalid_data = iati.core.tests.utilities.INVALID_DATASET_FOR_ATLEASTONE_RULE
-    #     ruleset_str = iati.core.tests.utilities.ATLEASTONE_RULESET
-    #     ruleset = iati.core.Ruleset(ruleset_str)
-    #
-    #     with pytest.raises(ValueError):
-    #         for rule in ruleset.rules:
-    #             rule.implement(invalid_data)
+    def test_is_valid_for(self):
+        """Check that the 'atleast_one' rule returns the expected result when given a dataset."""
+        invalid_data_tree = iati.core.tests.utilities.INVALID_DATASET_TREE_FOR_ATLEASTONE_RULE
+        valid_data_tree = iati.core.tests.utilities.VAlID_DATASET_TREE_FOR_ATLEASTONE_RULE
+        ruleset_str = iati.core.tests.utilities.ATLEASTONE_RULESET_STR
+        ruleset = iati.core.Ruleset(ruleset_str)
+
+        for rule in ruleset.rules:
+            assert not rule.is_valid_for(invalid_data_tree)
+            assert rule.is_valid_for(valid_data_tree)
+
 
 class TestRuleDependent(RuleSubclassTestBase):
     """A container for tests relating to RuleDependent."""

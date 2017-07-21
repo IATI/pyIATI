@@ -12,7 +12,6 @@ Todo:
 """
 import json
 import jsonschema
-import six
 import iati.core.default
 import iati.core.utilities
 
@@ -73,20 +72,29 @@ class Ruleset(object):
             May raise a UnicodeDecodeError or json.JSONDecodeError if passed a dodgey bytearray. Need to test.
 
         """
-        ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
+        self.ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
+        self.validate_ruleset()
+        self.rules = set()
+        self.set_rules()
 
+    def validate_ruleset(self):
+        """Validate a Ruleset against the Ruleset Schema."""
         try:
-            jsonschema.validate(ruleset, iati.core.default.ruleset_schema())
+            jsonschema.validate(self.ruleset, iati.core.default.ruleset_schema())
         except jsonschema.ValidationError:
             raise ValueError
-        self.rules = set()
 
-        for xpath_base, rule in ruleset.items():
-            for rule_type, cases in rule.items():
-                for case in cases['cases']:
-                    constructor = locate_constructor_for_rule_type(rule_type)
-                    new_rule = constructor(xpath_base, case)
-                    self.rules.add(new_rule)
+    def set_rules(self):
+        """Set the Rules of the Ruleset."""
+        try:
+            for xpath_base, rule in self.ruleset.items():
+                for rule_type, cases in rule.items():
+                    for case in cases['cases']:
+                        constructor = locate_constructor_for_rule_type(rule_type)
+                        new_rule = constructor(xpath_base, case)
+                        self.rules.add(new_rule)
+        except ValueError:
+            raise
 
 
 class Rule(object):
@@ -111,12 +119,9 @@ class Rule(object):
             ValueError: When a rule_type is not one of the permitted Rule types.
 
         """
-        if not isinstance(xpath_base, six.string_types) or not isinstance(case, dict):
-            raise TypeError
-
-        self._valid_rule_configuration(case)
-
+        self.case = case
         self.xpath_base = xpath_base
+        self._valid_rule_configuration(case)
 
     def _valid_rule_configuration(self, case):
         """Check that a configuration being passed into a Rule is valid for the given type of Rule.
@@ -194,9 +199,16 @@ class RuleAtLeastOne(Rule):
 
         super(RuleAtLeastOne, self).__init__(xpath_base, case)
 
-    def implementation(self, dataset):
-        """Check activity has at least one instance of a given case."""
-        pass
+    def is_valid_for(self, dataset_tree):
+        """Check activity has at least one instance of a given case.
+
+        Todo:
+            Document stuff.
+
+        """
+        case = '//{0}'.format(self.case['paths'][0])
+
+        return bool(dataset_tree.find(case) is not None)
 
 
 class RuleDateOrder(Rule):
