@@ -23,6 +23,7 @@ class Schema(object):
         Determine how to distinguish and handle the different types of Schema - activity, organisation, codelist, other.
 
     """
+
     root_element_name = ''
 
     def __init__(self, path):
@@ -167,10 +168,12 @@ class Schema(object):
 
 
 class ActivitySchema(Schema):
+    """Represenation of an IATI Activity Schema as defined within the IATI SSOT."""
+
     root_element_name = 'iati-activities'
-    pass
 
 
 class OrganisationSchema(Schema):
+    """Represenation of an IATI Organisation Schema as defined within the IATI SSOT."""
+
     root_element_name = 'iati-organisations'
-    pass

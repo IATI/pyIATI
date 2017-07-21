@@ -105,7 +105,7 @@ class TestResources(object):
         iati.core.resources.get_all_schema_paths,
         iati.core.resources.get_all_activity_schema_paths,
         iati.core.resources.get_all_organisation_schema_paths
-        ])
+    ])
     def test_find_schema_paths_file_extension(self, get_schema_path_function):
         """Check that the correct file extension is present within file paths returned by get_all_*schema_paths functions."""
         paths = get_schema_path_function()

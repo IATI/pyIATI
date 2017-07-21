@@ -19,6 +19,7 @@ def default_activity_schema():
 
     return iati.core.default.schema(schema_name)
 
+
 def default_organisation_schema():
     """Create a very basic organisaion schema.
 
