@@ -177,7 +177,7 @@ class Schema(object):
 
         """
         return self._schema_base_tree.find(
-            'xsd:element[@name="{0}"]'.format(xsd_element_name),
+            '//xsd:element[@name="{0}"]'.format(xsd_element_name),
             namespaces=iati.core.constants.NSMAP
         )
 
