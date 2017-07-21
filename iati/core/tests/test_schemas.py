@@ -204,22 +204,21 @@ class TestSchemas(object):
 
         assert len(schema.codelists) == 1
 
-    @pytest.mark.parametrize("xsd_element_name, expected_type", [
-        ('iati-activities', etree._Element),
-        ('iati-activity', etree._Element),
-        ('activity-date', etree._Element),
-        ('sector', etree._Element),
-        ('element-name-that-does-not-exist', type(None))
+    @pytest.mark.parametrize("schema_type, xsd_element_name, expected_type", [
+        (default_activity_schema, 'iati-activities', etree._Element),
+        (default_activity_schema, 'iati-activity', etree._Element),
+        (default_activity_schema, 'activity-date', etree._Element),
+        (default_activity_schema, 'element-name-that-does-not-exist', type(None)),
+        (default_organisation_schema, 'iati-organisations', etree._Element),
+        (default_organisation_schema, 'sector', type(None))
     ])
-    def test_get_xsd_element(self, schema_initialised, xsd_element_name, expected_type):
+    def test_get_xsd_element(self, schema_type, xsd_element_name, expected_type):
         """Check that an lxml object is returned to represent an XSD element.
 
         Todo
-            Add test for organisation schema.
-
             Test for elements that should be contained within a flattened schema.
         """
-        schema = schema_initialised
+        schema = schema_type()
 
         result = schema.get_xsd_element(xsd_element_name)
 
