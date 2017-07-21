@@ -19,7 +19,7 @@ class TestSchemas(object):
             iati.core.ActivitySchema: An ActivitySchema that has been initialised with basic values.
 
         """
-        schema_name = iati.core.tests.utilities.SCHEMA_NAME_VALID
+        schema_name = iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID
 
         return iati.core.default.schema(schema_name)
 
@@ -109,7 +109,7 @@ class TestSchemas(object):
             Test that this works with subclasses of iati.core.Schema: iati.core.ActivitySchema and iati.core.OrganisationSchema
 
         """
-        schema_name = iati.core.tests.utilities.SCHEMA_NAME_VALID
+        schema_name = iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID
         schema_path = iati.core.resources.get_schema_path(schema_name)
         schema = iati.core.Schema(schema_path)
         local_element = 'iati-activities'
