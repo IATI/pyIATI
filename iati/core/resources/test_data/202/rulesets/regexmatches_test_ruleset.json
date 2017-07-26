@@ -1,6 +1,6 @@
 {
     "//iati-activity": {
-      "regex_no_matches": {
+      "regex_matches": {
           "cases": [
             { "regex": "[^\/\\&\\|\\?]+",
               "paths": ["iati-identifier"]}

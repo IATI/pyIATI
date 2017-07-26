@@ -10,9 +10,9 @@ Todo:
     Implement Rulesets (and Rules). Likely worth completing the Codelist implementation first since the two will be similar.
 
 """
+import re
 import json
 import jsonschema
-import re
 import iati.core.default
 import iati.core.utilities
 
@@ -303,15 +303,13 @@ class RuleRegexNoMatches(Rule):
 
     def is_valid_for(self, dataset_tree):
         """Rule implementation method."""
-        # paths = self.case['paths']
-        # pattern = re.compile(self.case['regex'])
-        #
-        # for path in paths:
-        #     results = dataset_tree.findall(self._extract_xpath_case(path))
-        #     for result in results:
-        #         import pdb; pdb.set_trace()
-        #         return not bool(pattern.match(result.text))
-        return True
+        paths = self.case['paths']
+        pattern = re.compile(self.case['regex'])
+
+        for path in paths:
+            results = dataset_tree.findall(self._extract_xpath_case(path))
+            for result in results:
+                return not bool(pattern.match(result.text))
 
 
 class RuleStartsWith(Rule):
