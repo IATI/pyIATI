@@ -251,6 +251,7 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'paths': []},  # empty path array
+        {'paths': 'path_1'},  # non-array `paths`
         {'paths': [3]},  # non-string value in path array
         {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
         {}  # empty dictionary
@@ -296,6 +297,7 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'paths': []},  # empty path array
+        {'paths': 'path_1'},  # non-array `paths`
         {'paths': [3]},  # non-string value in path array
         {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
         {}  # empty dictionary
@@ -341,6 +343,7 @@ class TestRuleDependent(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'paths': []},  # empty path array
+        {'paths': 'path_1'},  # non-array `paths`
         {'paths': [3]},  # non-string value in path array
         {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
         {}  # empty dictionary
@@ -377,6 +380,7 @@ class TestRuleSum(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'paths': [], 'sum': 3},  # empty path array
+        {'paths': 'path_1', 'sum': 3},  # non-array `paths`
         {'paths': [3], 'sum': 3},  # non-string value in path array
         {'paths': ['path_1', 3], 'sum': 3},  # mixed string and non-string value in path array
         {'paths': ['path_1', 'path_2']},  # missing required attribute - `sum`
@@ -442,6 +446,7 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'regex': 'some regex', 'paths': []},  # empty path array
+        {'regex': 'some regex', 'paths': 'path_1'},  # non-array `paths`
         {'regex': 'some regex', 'paths': [3]},  # non-string value in path array
         {'regex': 'some regex', 'paths': ['path_1', 3]},  # mixed string and non-string value in path array
         {'regex': 'some regex'},  # missing required attribute - `paths`
@@ -491,6 +496,7 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'regex': 'some regex', 'paths': []},  # empty path array
+        {'regex': 'some regex', 'paths': 'path_1'},  # non-array `paths`
         {'regex': 'some regex', 'paths': [3]},  # non-string value in path array
         {'regex': 'some regex', 'paths': ['path_1', 3]},  # mixed string and non-string value in path array
         {'regex': 'some regex'},  # missing required attribute - `paths`
@@ -524,6 +530,7 @@ class TestRuleStartsWith(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'start': 'a string prefix', 'paths': []},  # empty path array
+        {'start': 'a string prefix', 'paths': 'path_1'},  # non-array `paths`
         {'start': 'a string prefix', 'paths': [3]},  # non-string value in path array
         {'start': 'a string prefix', 'paths': ['path_1', 3]},  # mixed string and non-string value in path array
         {'start': 'a string prefix'},  # missing required attribute - `paths`
@@ -555,6 +562,7 @@ class TestRuleUnique(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'paths': []},  # empty path array
+        {'paths': 'path_1'},  # non-array `paths`
         {'paths': [3]},  # non-string value in path array
         {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
         {}  # empty dictionary
