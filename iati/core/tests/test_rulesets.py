@@ -438,7 +438,8 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         {'regex': 'some regex', 'paths': ['']},  # empty path with regex
         {'regex': 'some regex', 'paths': ['path_1']},  # single path with regex
         {'regex': 'some regex', 'paths': ['path_1', 'path_2']},  # multiple paths with regex
-        {'regex': 'some regex', 'paths': ['path_1', 'path_1']}  # duplicate paths with regex
+        {'regex': 'some regex', 'paths': ['path_1', 'path_1']},  # duplicate paths with regex
+        {'regex': '', 'paths': ['path_1']}  # single path with regex
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
@@ -488,7 +489,8 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         {'regex': 'some regex', 'paths': ['']},  # empty path with regex
         {'regex': 'some regex', 'paths': ['path_1']},  # single path with regex
         {'regex': 'some regex', 'paths': ['path_1', 'path_2']},  # multiple paths with regex
-        {'regex': 'some regex', 'paths': ['path_1', 'path_1']}  # duplicate paths with regex
+        {'regex': 'some regex', 'paths': ['path_1', 'path_1']},  # duplicate paths with regex
+        {'regex': '', 'paths': ['path_1']}  # single path with regex
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
@@ -522,7 +524,8 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         {'start': 'a string prefix', 'paths': ['']},  # empty path with prefix
         {'start': 'a string prefix', 'paths': ['path_1']},  # single path with prefix
         {'start': 'a string prefix', 'paths': ['path_1', 'path_2']},  # multiple paths with prefix
-        {'start': 'a string prefix', 'paths': ['path_1', 'path_1']}  # duplicate paths with prefix
+        {'start': 'a string prefix', 'paths': ['path_1', 'path_1']},  # duplicate paths with prefix
+        {'start': '', 'paths': ['path_1']}  # single path with prefix
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
