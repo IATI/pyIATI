@@ -291,7 +291,7 @@ class RuleRegexNoMatches(Rule):
         super(RuleRegexNoMatches, self).__init__(xpath_base, case)
 
     def is_valid_for(self):
-        """This is a Rule implementation method."""
+        """Rule implementation method."""
         return True
 
 
@@ -310,7 +310,7 @@ class RuleStartsWith(Rule):
         super(RuleStartsWith, self).__init__(xpath_base, case)
 
     def is_valid_for(self):
-        """This is a Rule implementation method."""
+        """Rule implementation method."""
         return True
 
 
@@ -329,7 +329,7 @@ class RuleSum(Rule):
         super(RuleSum, self).__init__(xpath_base, case)
 
     def is_valid_for(self):
-        """This is a Rule implementation method."""
+        """Rule implementation method."""
         return True
 
 
@@ -348,5 +348,5 @@ class RuleUnique(Rule):
         super(RuleUnique, self).__init__(xpath_base, case)
 
     def is_valid_for(self):
-        """This is a Rule implementation method."""
+        """Rule implementation method."""
         return True
