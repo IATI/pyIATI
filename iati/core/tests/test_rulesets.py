@@ -235,6 +235,7 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         return 'no_more_than_one'
 
     @pytest.fixture(params=[
+        {'paths': ['']},  # empty path
         {'paths': ['path_1']},  # single path
         {'paths': ['path_1', 'path_2']},  # multiple paths
         {'paths': ['path_1', 'path_1']}  # duplicate paths
@@ -276,6 +277,7 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         return 'atleast_one'
 
     @pytest.fixture(params=[
+        {'paths': ['']},  # empty path
         {'paths': ['path_1']},  # single path
         {'paths': ['path_1', 'path_2']},  # multiple paths
         {'paths': ['path_1', 'path_1']}  # duplicate paths
@@ -317,6 +319,7 @@ class TestRuleDependent(RuleSubclassTestBase):
         return 'dependent'
 
     @pytest.fixture(params=[
+        {'paths': ['']},  # empty path
         {'paths': ['path_1']},  # single path
         {'paths': ['path_1', 'path_2']},  # multiple paths
         {'paths': ['path_1', 'path_1']}  # duplicate paths
@@ -342,6 +345,7 @@ class TestRuleSum(RuleSubclassTestBase):
         return 'sum'
 
     @pytest.fixture(params=[
+        {'paths': [''], 'sum': 3},  # empty path with sum
         {'paths': ['path_1'], 'sum': 3},  # single path with sum
         {'paths': ['path_1', 'path_2'], 'sum': 3},  # multiple paths with sum
         {'paths': ['path_1', 'path_1'], 'sum': 3},  # duplicate paths with sum
@@ -402,6 +406,7 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         return 'regex_matches'
 
     @pytest.fixture(params=[
+        {'regex': 'some regex', 'paths': ['']},  # empty path with regex
         {'regex': 'some regex', 'paths': ['path_1']},  # single path with regex
         {'regex': 'some regex', 'paths': ['path_1', 'path_2']},  # multiple paths with regex
         {'regex': 'some regex', 'paths': ['path_1', 'path_1']}  # duplicate paths with regex
@@ -445,6 +450,7 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         return 'regex_no_matches'
 
     @pytest.fixture(params=[
+        {'regex': 'some regex', 'paths': ['']},  # empty path with regex
         {'regex': 'some regex', 'paths': ['path_1']},  # single path with regex
         {'regex': 'some regex', 'paths': ['path_1', 'path_2']},  # multiple paths with regex
         {'regex': 'some regex', 'paths': ['path_1', 'path_1']}  # duplicate paths with regex
@@ -472,7 +478,8 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         return 'startswith'
 
     @pytest.fixture(params=[
-        {'start': 'a string prefix', 'paths': ['path_1']},  # a single path with prefix
+        {'start': 'a string prefix', 'paths': ['']},  # empty path with prefix
+        {'start': 'a string prefix', 'paths': ['path_1']},  # single path with prefix
         {'start': 'a string prefix', 'paths': ['path_1', 'path_2']},  # multiple paths with prefix
         {'start': 'a string prefix', 'paths': ['path_1', 'path_1']}  # duplicate paths with prefix
     ])
@@ -499,6 +506,7 @@ class TestRuleUnique(RuleSubclassTestBase):
         return 'unique'
 
     @pytest.fixture(params=[
+        {'paths': ['']},  # empty path
         {'paths': ['path_1']},  # single path
         {'paths': ['path_1', 'path_2']},  # multiple paths
         {'paths': ['path_1', 'path_1']}  # duplicate paths
