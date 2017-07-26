@@ -208,7 +208,12 @@ class RuleSubclassTestBase(object):
         assert basic_rule.name == rule_type
 
     def test_rule_missing_required_case_properties(self, invalid_case_rule, invalid_case):
-        """Check that a rule cannot be instantiated without the required case properties."""
+        """Check that a rule cannot be instantiated without the required case properties.
+
+        Todo:
+            Rename now that there are a wider range of invalid cases.
+            Add tests with empty path AND empty xpath_base.
+        """
         xpath_base = 'an xpath'
 
         with pytest.raises(ValueError):
