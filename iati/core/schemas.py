@@ -181,6 +181,31 @@ class Schema(object):
             namespaces=iati.core.constants.NSMAP
         )
 
+    def get_child_xsd_elements(self, parent_element):
+        """Return a list of child elements for a given lxml.etree represention of an xsd:element.
+
+        Args:
+            parent_element (etree._ElementTree): The parent represention of an XSD element to find children for.
+
+        Returns:
+            list of etree._ElementTree: A list containing representions of XSD elements that are children to the input element.
+        """
+        child_elements_and_refs = parent_element.findall(
+            'xsd:complexType/xsd:sequence/xsd:element',
+            namespaces=iati.core.constants.NSMAP
+        )  # This will find all elements defined directly within the schema, or cited by reference.
+
+        output = []
+        for element_or_ref in child_elements_and_refs:
+            if element_or_ref.get('ref') is not None:
+                # This element is defined via a reference to an xsd:element defined elsewhere in the schema.
+                output.append(self.get_xsd_element(element_or_ref.get('ref')))
+            elif element_or_ref.get('name') is not None:
+                # This element is defined directly within the parent xsd:element.
+                output.append(element_or_ref)
+
+        return output
+
 
 class ActivitySchema(Schema):
     """Represenation of an IATI Activity Schema as defined within the IATI SSOT."""
