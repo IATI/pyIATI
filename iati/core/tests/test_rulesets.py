@@ -236,7 +236,8 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'paths': ['path_1']},  # single path
-        {'paths': ['path_1', 'path_2']}  # multiple paths
+        {'paths': ['path_1', 'path_2']},  # multiple paths
+        {'paths': ['path_1', 'path_1']}  # duplicate paths
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
@@ -276,7 +277,8 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'paths': ['path_1']},  # single path
-        {'paths': ['path_1', 'path_2']}  # multiple paths
+        {'paths': ['path_1', 'path_2']},  # multiple paths
+        {'paths': ['path_1', 'path_1']}  # duplicate paths
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
@@ -316,7 +318,8 @@ class TestRuleDependent(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'paths': ['path_1']},  # single path
-        {'paths': ['path_1', 'path_2']}  # multiple paths
+        {'paths': ['path_1', 'path_2']},  # multiple paths
+        {'paths': ['path_1', 'path_1']}  # duplicate paths
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
@@ -340,7 +343,8 @@ class TestRuleSum(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'paths': ['path_1'], 'sum': 3},  # single path with sum
-        {'paths': ['path_1', 'path_2'], 'sum': 3}  # multiple paths with sum
+        {'paths': ['path_1', 'path_2'], 'sum': 3},  # multiple paths with sum
+        {'paths': ['path_1', 'path_1'], 'sum': 3}  # duplicate paths with sum
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
@@ -391,7 +395,8 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'regex': 'some regex', 'paths': ['path_1']},  # single path with regex
-        {'regex': 'some regex', 'paths': ['path_1', 'path_2']}  # multiple paths with regex
+        {'regex': 'some regex', 'paths': ['path_1', 'path_2']},  # multiple paths with regex
+        {'regex': 'some regex', 'paths': ['path_1', 'path_1']}  # duplicate paths with regex
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
@@ -433,7 +438,8 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'regex': 'some regex', 'paths': ['path_1']},  # single path with regex
-        {'regex': 'some regex', 'paths': ['path_1', 'path_2']}  # multiple paths with regex
+        {'regex': 'some regex', 'paths': ['path_1', 'path_2']},  # multiple paths with regex
+        {'regex': 'some regex', 'paths': ['path_1', 'path_1']}  # duplicate paths with regex
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
@@ -459,7 +465,8 @@ class TestRuleStartsWith(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'start': 'a string prefix', 'paths': ['path_1']},  # a single path with prefix
-        {'start': 'a string prefix', 'paths': ['path_1', 'path_2']}  # multiple paths with prefix
+        {'start': 'a string prefix', 'paths': ['path_1', 'path_2']},  # multiple paths with prefix
+        {'start': 'a string prefix', 'paths': ['path_1', 'path_1']}  # duplicate paths with prefix
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
@@ -485,7 +492,8 @@ class TestRuleUnique(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'paths': ['path_1']},  # single path
-        {'paths': ['path_1', 'path_2']}  # multiple paths
+        {'paths': ['path_1', 'path_2']},  # multiple paths
+        {'paths': ['path_1', 'path_1']}  # duplicate paths
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
