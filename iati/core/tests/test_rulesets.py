@@ -396,7 +396,9 @@ class TestRuleDateOrder(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {'less': 'start-xpath', 'more': 'end-xpath'},  # both `less` and `more` present
         {'less': 'start-xpath', 'more': 'NOW'},  # `more` as NOW
-        {'less': 'NOW', 'more': 'end-xpath'}  # `less` as NOW
+        {'less': 'NOW', 'more': 'end-xpath'},  # `less` as NOW
+        {'less': 'NOW', 'more': 'NOW'},  # both `less` and `more` as NOW
+        {'less': 'start-xpath', 'more': 'start-xpath'}  # both `less` and `more` as same xpath
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
