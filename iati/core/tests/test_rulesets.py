@@ -211,13 +211,15 @@ class RuleSubclassTestBase(object):
         with pytest.raises(ValueError):
             invalid_case_rule(xpath_base, invalid_cases)
 
-    # Maybe too much of a shortcut as can't fully pass until all implementations complete. Probably the wrong abstraction in the long-term.
-    # def test_is_valid_for(self, invalid_data_tree, valid_data_tree, this_rule_only_ruleset):
-    #     """Check that the 'atleast_one' rule returns the expected result when given a dataset."""
-    #
-    #     for rule in this_rule_only_ruleset.rules:
-    #         assert not rule.is_valid_for(invalid_data_tree)
-    #         assert rule.is_valid_for(valid_data_tree)
+    def test_is_valid_for(self, invalid_data_tree, valid_data_tree, this_rule_only_ruleset):
+        """Check that the 'atleast_one' rule returns the expected result when given a dataset.
+
+        Todo:
+            Maybe too much of a shortcut as can't fully pass until all implementations complete. Probably the wrong abstraction in the long-term.
+        """
+        for rule in this_rule_only_ruleset.rules:
+            assert not rule.is_valid_for(invalid_data_tree)
+            assert rule.is_valid_for(valid_data_tree)
 
 
 class TestRuleNoMoreThanOne(RuleSubclassTestBase):
@@ -245,9 +247,8 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
 
     @pytest.fixture
     def valid_data_tree(self):
-        """Valid dataset etree for this Rule."""
+        """Return valid dataset etree for this Rule."""
         return iati.core.tests.utilities.DATASET_TREE_FOR_NOMORETHANONE_RULE_VALID
-
 
     @pytest.fixture
     def this_rule_only_ruleset(self):
@@ -281,9 +282,8 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
 
     @pytest.fixture
     def valid_data_tree(self):
-        """Valid dataset etree for this Rule."""
+        """Return valid dataset etree for this Rule."""
         return iati.core.tests.utilities.DATASET_TREE_FOR_ATLEASTONE_RULE_VALID
-
 
     @pytest.fixture
     def this_rule_only_ruleset(self):
@@ -375,9 +375,8 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
 
     @pytest.fixture
     def valid_data_tree(self):
-        """Valid dataset etree for this Rule."""
+        """Return valid dataset etree for this Rule."""
         return iati.core.tests.utilities.DATASET_TREE_FOR_REGEXMATCHES_RULE_VALID
-
 
     @pytest.fixture
     def this_rule_only_ruleset(self):

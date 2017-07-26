@@ -189,11 +189,11 @@ class RuleNoMoreThanOne(Rule):
             dataset_tree: an etree created from an XML dataset.
 
         Returns:
-            Boolean value that changes depending on whether more than one case is found in the dataset_tree.
+            Boolean value that changes depending on whether one or fewer cases are found in the dataset_tree.
 
         """
         case = '//{0}'.format(self.case['paths'][0])
-        return bool(dataset_tree.findall(case))
+        return len(dataset_tree.findall(case)) <= 1
 
 
 class RuleAtLeastOne(Rule):
@@ -224,7 +224,7 @@ class RuleAtLeastOne(Rule):
         """
         case = '//{0}'.format(self.case['paths'][0])
 
-        return bool(dataset_tree.find(case) is not None)
+        return dataset_tree.find(case) is not None
 
 
 class RuleDateOrder(Rule):
