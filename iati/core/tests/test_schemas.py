@@ -248,3 +248,30 @@ class TestSchemas(object):
         assert isinstance(result, list)
         for item in result:
             assert isinstance(item, etree._Element)
+
+    @pytest.mark.parametrize("element_index, expected_name", [
+        (0, 'note'),
+        (1, 'to'),
+        (2, 'from'),
+        (3, 'heading'),
+        (4, 'body')
+    ])
+    def test_get_xsd_element_name(self, element_index, expected_name):
+        """Test that an expected name is found within a mock xsd:element.
+
+        Todo:
+            Move the mock xsd file out of the resources/test_data/202 folder, as it is not version specific.
+
+            Rename the mock xsd file with a .xsd file extension.
+
+            Test for a case where there is no xsd:element/@name.  In which case, test that None is returned.
+        """
+        schema = iati.core.Schema(iati.core.tests.utilities.PATH_XSD_NON_IATI)
+        elements = schema._schema_base_tree.findall(
+            '//xsd:element',
+            namespaces=iati.core.constants.NSMAP
+        )
+
+        result = schema.get_xsd_element_name(elements[element_index])
+
+        assert result == expected_name

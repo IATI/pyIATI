@@ -69,6 +69,9 @@ XML_TREE_VALID_IATI = etree.fromstring(XML_STR_VALID_IATI)
 XML_TREE_VALID_IATI_INVALID_CODE = etree.fromstring(XML_STR_VALID_IATI_INVALID_CODE)
 """A valid IATI etree that has an invalid Code value."""
 
+PATH_XSD_NON_IATI = iati.core.resources.get_test_data_path('valid_non_iati_schema')
+"""Path to a valid (non-IATI) XSD schema document."""
+
 TYPE_TEST_DATA = {
     'bool': [True, False],
     'bytes': [],  # counts as a string, so moved there

@@ -206,6 +206,17 @@ class Schema(object):
 
         return output
 
+    def get_xsd_element_name(self, element):
+        """Returns the name of a given xsd:element, as defined in the xsd:element/@name attribute.
+
+        Args:
+            element (etree._ElementTree): The represention of an XSD element to find the name for.
+
+        Returns:
+            str or None: The value within the xsd:element/@name attribute. None is returned if no name is found.
+        """
+        return element.get('name')
+
 
 class ActivitySchema(Schema):
     """Represenation of an IATI Activity Schema as defined within the IATI SSOT."""
