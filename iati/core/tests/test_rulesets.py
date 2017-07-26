@@ -311,13 +311,13 @@ class TestRuleDependent(RuleSubclassTestBase):
         return 'dependent'
 
     @pytest.fixture(params=[
+        {'paths': ['path_1']},  # single path
         {'paths': ['path_1', 'path_2']}  # multiple paths
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
         return request.param
 
-    # If this rule is checking for dependent paths then surely it's invalid to pass in only one path property?
     @pytest.fixture(params=[
         {}  # empty dictionary
     ])
