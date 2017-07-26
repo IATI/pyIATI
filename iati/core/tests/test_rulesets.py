@@ -154,7 +154,11 @@ class TestRuleSubclasses(object):
     @pytest.mark.parametrize("rule_constructor", rule_constructors)
     @pytest.mark.parametrize("xpath_base", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_rule_init_invalid_xpath_base(self, rule_constructor, xpath_base):
-        """Check that a Rule cannot be created when xpath_base is not a string."""
+        """Check that a Rule cannot be created when xpath_base is not a string.
+
+        Todo:
+            Ensure the case is valid - an empty dictionary isn't.
+        """
         case = dict()
 
         with pytest.raises(ValueError):
