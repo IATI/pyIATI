@@ -203,12 +203,12 @@ class RuleSubclassTestBase(object):
         """Check that a Rule subclass has the expected name."""
         assert basic_rule.name == rule_type
 
-    def test_rule_missing_required_case_properties(self, invalid_case_rule, invalid_cases):
+    def test_rule_missing_required_case_properties(self, invalid_case_rule, invalid_case):
         """Check that a rule cannot be instantiated without the required case properties."""
         xpath_base = 'an xpath'
 
         with pytest.raises(ValueError):
-            invalid_case_rule(xpath_base, invalid_cases)
+            invalid_case_rule(xpath_base, invalid_case)
 
     @pytest.mark.skip(reason="Not implemented for some subclasses")
     def test_is_valid_for(self, invalid_data_tree, valid_data_tree, this_rule_only_ruleset):
@@ -240,7 +240,7 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {}
     ])
-    def invalid_cases(self, request):
+    def invalid_case(self, request):
         """Non-permitted cases for this rule."""
         return request.param
 
@@ -279,7 +279,7 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {}
     ])
-    def invalid_cases(self, request):
+    def invalid_case(self, request):
         """Non-permitted cases for this rule."""
         return request.param
 
@@ -319,7 +319,7 @@ class TestRuleDependent(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {}
     ])
-    def invalid_cases(self, request):
+    def invalid_case(self, request):
         """Non-permitted cases for this rule."""
         return request.param
 
@@ -344,7 +344,7 @@ class TestRuleSum(RuleSubclassTestBase):
         {'sum': 100},
         {}
     ])
-    def invalid_cases(self, request):
+    def invalid_case(self, request):
         """Non-permitted cases for this rule."""
         return request.param
 
@@ -369,7 +369,7 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'more': 'end'},
         {}
     ])
-    def invalid_cases(self, request):
+    def invalid_case(self, request):
         """Non-permitted cases for this rule."""
         return request.param
 
@@ -394,7 +394,7 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         {'paths': ['path_1', 'path_2']},
         {}
     ])
-    def invalid_cases(self, request):
+    def invalid_case(self, request):
         """Non-permitted cases for this rule."""
         return request.param
 
@@ -435,7 +435,7 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         {'paths': ['path_1', 'path_2']},
         {}
     ])
-    def invalid_cases(self, request):
+    def invalid_case(self, request):
         """Non-permitted cases for this rule."""
         return request.param
 
@@ -460,7 +460,7 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         {'paths': ['path_1', 'path_2']},
         {}
     ])
-    def invalid_cases(self, request):
+    def invalid_case(self, request):
         """Non-permitted cases for this rule."""
         return request.param
 
@@ -483,6 +483,6 @@ class TestRuleUnique(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {}
     ])
-    def invalid_cases(self, request):
+    def invalid_case(self, request):
         """Non-permitted cases for this rule."""
         return request.param
