@@ -12,6 +12,7 @@ Todo:
 """
 import json
 import jsonschema
+import re
 import iati.core.default
 import iati.core.utilities
 
@@ -165,6 +166,11 @@ class Rule(object):
 
         return partial_schema
 
+    def _extract_xpath_case(self, path):
+        """Return full XPath from `xpath_base` and `path`."""
+        full_path = self.xpath_base + '/' + path
+        return full_path
+
 
 class RuleNoMoreThanOne(Rule):
     """Representation of a Rule that checks that there is no more than one Element matching a given XPath.
@@ -192,8 +198,8 @@ class RuleNoMoreThanOne(Rule):
             Boolean value that changes depending on whether one or fewer cases are found in the dataset_tree.
 
         """
-        case = '//{0}'.format(self.case['paths'][0])
-        return len(dataset_tree.findall(case)) <= 1
+        path = self.case['paths'][0]
+        return len(dataset_tree.findall(self._extract_xpath_case(path))) <= 1
 
 
 class RuleAtLeastOne(Rule):
@@ -222,9 +228,8 @@ class RuleAtLeastOne(Rule):
             Boolean value that changes depending on whether the case is found in the dataset_tree.
 
         """
-        case = '//{0}'.format(self.case['paths'][0])
-
-        return dataset_tree.find(case) is not None
+        path = self.case['paths'][0]
+        return dataset_tree.find(self._extract_xpath_case(path)) is not None
 
 
 class RuleDateOrder(Rule):
@@ -271,9 +276,15 @@ class RuleRegexMatches(Rule):
 
         super(RuleRegexMatches, self).__init__(xpath_base, case)
 
-    def is_valid_for(self):
+    def is_valid_for(self, dataset_tree):
         """Check that the Element specified by `paths` matches the given regex case."""
-        return True
+        paths = self.case['paths']
+        pattern = re.compile(self.case['regex'])
+
+        for path in paths:
+            results = dataset_tree.findall(self._extract_xpath_case(path))
+            for result in results:
+                return bool(pattern.match(result.text))
 
 
 class RuleRegexNoMatches(Rule):
@@ -290,9 +301,15 @@ class RuleRegexNoMatches(Rule):
 
         super(RuleRegexNoMatches, self).__init__(xpath_base, case)
 
-    def is_valid_for(self):
+    def is_valid_for(self, dataset_tree):
         """Rule implementation method."""
-        return True
+        paths = self.case['paths']
+        pattern = re.compile(self.case['regex'])
+
+        for path in paths:
+            results = dataset_tree.findall(self._extract_xpath_case(path))
+            for result in results:
+                return not bool(pattern.match(result.text))
 
 
 class RuleStartsWith(Rule):
