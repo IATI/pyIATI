@@ -160,7 +160,7 @@ class Rule(object):
 
         """
         ruleset_schema = iati.core.default.ruleset_schema()
-        partial_schema = ruleset_schema['patternProperties']['.+']['properties'][self.name]['properties']['cases']['items']
+        partial_schema = ruleset_schema['patternProperties']['.+']['properties'][self.name]['properties']['cases']['items']  # pylint: disable=E1101
         partial_schema['required'] = [key for key in partial_schema['properties'].keys() if key != 'condition']
 
         return partial_schema
