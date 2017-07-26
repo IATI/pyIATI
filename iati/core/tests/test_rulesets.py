@@ -250,6 +250,8 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         return request.param
 
     @pytest.fixture(params=[
+        {'paths': []},  # empty path array
+        {'paths': [3]},  # non-string value in path array
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
@@ -292,6 +294,8 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         return request.param
 
     @pytest.fixture(params=[
+        {'paths': []},  # empty path array
+        {'paths': [3]},  # non-string value in path array
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
@@ -334,6 +338,8 @@ class TestRuleDependent(RuleSubclassTestBase):
         return request.param
 
     @pytest.fixture(params=[
+        {'paths': []},  # empty path array
+        {'paths': [3]},  # non-string value in path array
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
@@ -367,6 +373,8 @@ class TestRuleSum(RuleSubclassTestBase):
         return request.param
 
     @pytest.fixture(params=[
+        {'paths': [], 'sum': 3},  # empty path array
+        {'paths': [3], 'sum': 3},  # non-string value in path array
         {'paths': ['path_1', 'path_2']},  # missing required attribute - `sum`
         {'sum': 100},  # missing required attribute - `paths`
         {},  # empty dictionary
@@ -421,6 +429,8 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         return request.param
 
     @pytest.fixture(params=[
+        {'regex': 'some regex', 'paths': []},  # empty path array
+        {'regex': 'some regex', 'paths': [3]},  # non-string value in path array
         {'regex': 'some regex'},  # missing required attribute - `paths`
         {'paths': ['path_1', 'path_2']},  # missing required attribute - `regex`
         {}  # empty dictionary
@@ -465,6 +475,8 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         return request.param
 
     @pytest.fixture(params=[
+        {'regex': 'some regex', 'paths': []},  # empty path array
+        {'regex': 'some regex', 'paths': [3]},  # non-string value in path array
         {'regex': 'some regex'},  # missing required attribute - `paths`
         {'paths': ['path_1', 'path_2']},  # missing required attribute - `regex`
         {}  # empty dictionary
@@ -493,6 +505,8 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         return request.param
 
     @pytest.fixture(params=[
+        {'start': 'a string prefix', 'paths': []},  # empty path array
+        {'start': 'a string prefix', 'paths': [3]},  # non-string value in path array
         {'start': 'a string prefix'},  # missing required attribute - `paths`
         {'paths': ['path_1', 'path_2']},  # missing required attribute - `start`
         {}  # empty dictionary
@@ -521,6 +535,8 @@ class TestRuleUnique(RuleSubclassTestBase):
         return request.param
 
     @pytest.fixture(params=[
+        {'paths': []},  # empty path array
+        {'paths': [3]},  # non-string value in path array
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
