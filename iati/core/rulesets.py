@@ -11,6 +11,8 @@ Todo:
 
 """
 import json
+import re
+import sre_constants
 import jsonschema
 import iati.core.default
 import iati.core.utilities
@@ -261,6 +263,8 @@ class RuleDependent(Rule):
         super(RuleDependent, self).__init__(xpath_base, case)
 
 
+
+
 class RuleRegexMatches(Rule):
     """A specific type of Rule.
 
@@ -274,6 +278,11 @@ class RuleRegexMatches(Rule):
         self.name = "regex_matches"
 
         super(RuleRegexMatches, self).__init__(xpath_base, case)
+
+        try:
+            re.compile(case['regex'])
+        except sre_constants.error:
+            raise ValueError
 
     def is_valid_for(self):
         """Check that the Element specified by `paths` matches the given regex case."""
@@ -293,6 +302,11 @@ class RuleRegexNoMatches(Rule):
         self.name = "regex_no_matches"
 
         super(RuleRegexNoMatches, self).__init__(xpath_base, case)
+
+        try:
+            re.compile(case['regex'])
+        except sre_constants.error:
+            raise ValueError
 
     def is_valid_for(self):
         """Rule implementation method."""

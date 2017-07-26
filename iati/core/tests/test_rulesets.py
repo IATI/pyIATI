@@ -446,6 +446,7 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         {'regex': 'some regex', 'paths': ['path_1', 3]},  # mixed string and non-string value in path array
         {'regex': 'some regex'},  # missing required attribute - `paths`
         {'paths': ['path_1', 'path_2']},  # missing required attribute - `regex`
+        {'regex': '[', 'paths': ['path_1']},  # provided string not a valid regex
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
@@ -493,6 +494,7 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         {'regex': 'some regex', 'paths': ['path_1', 3]},  # mixed string and non-string value in path array
         {'regex': 'some regex'},  # missing required attribute - `paths`
         {'paths': ['path_1', 'path_2']},  # missing required attribute - `regex`
+        {'regex': '[', 'paths': ['path_1']},  # provided string not a valid regex
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
