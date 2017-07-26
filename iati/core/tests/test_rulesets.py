@@ -480,7 +480,9 @@ class TestRuleUnique(RuleSubclassTestBase):
         """Permitted case for this rule."""
         return request.param
 
-    @pytest.fixture
-    def invalid_cases(self):
+    @pytest.fixture(params=[
+        {}
+    ])
+    def invalid_cases(self, request):
         """Non-permitted cases for this rule."""
-        return {}
+        return request.param
