@@ -67,6 +67,8 @@ class TestSchemas(object):
 
         assert isinstance(schema.codelists, set)
         assert len(schema.codelists) == 0
+        assert isinstance(schema.rulesets, set)
+        assert len(schema.rulesets) == 0
 
     @pytest.mark.parametrize("schema_type, expected_local_element", [
         (default_activity_schema, 'iati-activities'),
@@ -203,3 +205,23 @@ class TestSchemas(object):
         schema.codelists.add(codelist2)
 
         assert len(schema.codelists) == 1
+
+    def test_schema_rulesets_add(self, schema_initialised):
+        """Check that it is possible to add Rulesets to the Schema."""
+        codelist_name = "a test Codelist name"
+        schema = schema_initialised
+        ruleset = iati.core.Ruleset()
+
+        schema.rulesets.add(ruleset)
+
+        assert len(schema.rulesets) == 1
+
+    @pytest.mark.skip(reason='Not implemented')
+    def test_schema_rulesets_add_twice(self, schema_initialised):
+        """Check that it is not possible to add the sameRulesets to a Schema multiple times."""
+        raise NotImplementedError
+
+    @pytest.mark.skip(reason='Not implemented')
+    def test_schema_rulesets_add_duplicate(self, schema_initialised):
+        """Check that it is not possible to add multiple functionally identical Rulesets to a Schema."""
+        raise NotImplementedError
