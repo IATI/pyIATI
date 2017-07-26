@@ -237,10 +237,12 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         """Permitted case for this rule."""
         return request.param
 
-    @pytest.fixture
-    def invalid_cases(self):
+    @pytest.fixture(params=[
+        {}
+    ])
+    def invalid_cases(self, request):
         """Non-permitted cases for this rule."""
-        return {}
+        return request.param
 
     @pytest.fixture
     def invalid_data_tree(self):
@@ -274,10 +276,12 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         """Permitted case for this rule."""
         return request.param
 
-    @pytest.fixture
-    def invalid_cases(self):
+    @pytest.fixture(params=[
+        {}
+    ])
+    def invalid_cases(self, request):
         """Non-permitted cases for this rule."""
-        return {}
+        return request.param
 
     @pytest.fixture
     def invalid_data_tree(self):
@@ -312,10 +316,12 @@ class TestRuleDependent(RuleSubclassTestBase):
         return request.param
 
     # If this rule is checking for dependent paths then surely it's invalid to pass in only one path property?
-    @pytest.fixture
-    def invalid_cases(self):
+    @pytest.fixture(params=[
+        {}
+    ])
+    def invalid_cases(self, request):
         """Non-permitted cases for this rule."""
-        return {}
+        return request.param
 
 
 class TestRuleSum(RuleSubclassTestBase):
@@ -333,7 +339,11 @@ class TestRuleSum(RuleSubclassTestBase):
         """Permitted case for this rule."""
         return request.param
 
-    @pytest.fixture(params=[{'paths': ['path_1', 'path_2']}, {'sum': 100}, {}])
+    @pytest.fixture(params=[
+        {'paths': ['path_1', 'path_2']},
+        {'sum': 100},
+        {}
+    ])
     def invalid_cases(self, request):
         """Non-permitted cases for this rule."""
         return request.param
@@ -354,7 +364,11 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         """Permitted case for this rule."""
         return request.param
 
-    @pytest.fixture(params=[{'less': 'start'}, {'more': 'end'}, {}])
+    @pytest.fixture(params=[
+        {'less': 'start'},
+        {'more': 'end'},
+        {}
+    ])
     def invalid_cases(self, request):
         """Non-permitted cases for this rule."""
         return request.param
@@ -375,7 +389,11 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         """Permitted case for this rule."""
         return request.param
 
-    @pytest.fixture(params=[{'regex': 'some regex'}, {'paths': ['path_1', 'path_2']}, {}])
+    @pytest.fixture(params=[
+        {'regex': 'some regex'},
+        {'paths': ['path_1', 'path_2']},
+        {}
+    ])
     def invalid_cases(self, request):
         """Non-permitted cases for this rule."""
         return request.param
@@ -412,7 +430,11 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         """Permitted case for this rule."""
         return request.param
 
-    @pytest.fixture(params=[{'regex': 'some regex'}, {'paths': ['path_1', 'path_2']}, {}])
+    @pytest.fixture(params=[
+        {'regex': 'some regex'},
+        {'paths': ['path_1', 'path_2']},
+        {}
+    ])
     def invalid_cases(self, request):
         """Non-permitted cases for this rule."""
         return request.param
@@ -433,7 +455,11 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         """Permitted case for this rule."""
         return request.param
 
-    @pytest.fixture(params=[{'start': 'a string'}, {'paths': ['path_1', 'path_2']}, {}])
+    @pytest.fixture(params=[
+        {'start': 'a string'},
+        {'paths': ['path_1', 'path_2']},
+        {}
+    ])
     def invalid_cases(self, request):
         """Non-permitted cases for this rule."""
         return request.param
