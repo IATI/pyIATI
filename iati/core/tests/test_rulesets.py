@@ -452,7 +452,7 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         {'regex': 'some regex'},  # missing required attribute - `paths`
         {'paths': ['path_1', 'path_2']},  # missing required attribute - `regex`
         {'regex': '[', 'paths': ['path_1']},  # provided string not a valid regex
-        {'regex': 3, 'paths': ['path_1']},  # provided string not a valid regex
+        {'regex': 3, 'paths': ['path_1']},  # provided regex not a string
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
@@ -502,7 +502,7 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         {'regex': 'some regex'},  # missing required attribute - `paths`
         {'paths': ['path_1', 'path_2']},  # missing required attribute - `regex`
         {'regex': '[', 'paths': ['path_1']},  # provided string not a valid regex
-        {'regex': 3, 'paths': ['path_1']},  # provided string not a valid regex
+        {'regex': 3, 'paths': ['path_1']},  # provided regex not a string
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
@@ -533,6 +533,7 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         {'start': 'a string prefix', 'paths': 'path_1'},  # non-array `paths`
         {'start': 'a string prefix', 'paths': [3]},  # non-string value in path array
         {'start': 'a string prefix', 'paths': ['path_1', 3]},  # mixed string and non-string value in path array
+        {'start': 3, 'paths': ['path_1']},  # provided prefix not a string
         {'start': 'a string prefix'},  # missing required attribute - `paths`
         {'paths': ['path_1', 'path_2']},  # missing required attribute - `start`
         {}  # empty dictionary
