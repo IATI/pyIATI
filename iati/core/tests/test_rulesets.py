@@ -211,15 +211,15 @@ class RuleSubclassTestBase(object):
         with pytest.raises(ValueError):
             invalid_case_rule(xpath_base, invalid_cases)
 
-    # def test_is_valid_for(self, invalid_data_tree, valid_data_tree, this_rule_only_ruleset):
-    #     """Check that a given rule returns the expected result when given a dataset.
-    #
-    #     Todo:
-    #         Maybe too much of a shortcut as can't fully pass until all implementations complete. Possibly the wrong abstraction in the long-term.
-    #     """
-    #     for rule in this_rule_only_ruleset.rules:
-    #         assert not rule.is_valid_for(invalid_data_tree)
-    #         assert rule.is_valid_for(valid_data_tree)
+    def test_is_valid_for(self, invalid_data_tree, valid_data_tree, this_rule_only_ruleset):
+        """Check that a given rule returns the expected result when given a dataset.
+
+        Todo:
+            Maybe too much of a shortcut as can't fully pass until all implementations complete. Possibly the wrong abstraction in the long-term.
+        """
+        for rule in this_rule_only_ruleset.rules:
+            assert not rule.is_valid_for(invalid_data_tree)
+            assert rule.is_valid_for(valid_data_tree)
 
 
 class TestRuleNoMoreThanOne(RuleSubclassTestBase):
@@ -402,6 +402,22 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
     def invalid_cases(self, request):
         """Non-permitted cases for this rule."""
         return request.param
+
+    @pytest.fixture
+    def invalid_data_tree(self):
+        """Invalid dataset etree for this Rule."""
+        return iati.core.tests.utilities.DATASET_TREE_FOR_REGEXNOMATCHES_RULE_INVALID
+
+    @pytest.fixture
+    def valid_data_tree(self):
+        """Return valid dataset etree for this Rule."""
+        return iati.core.tests.utilities.DATASET_TREE_FOR_REGEXNOMATCHES_RULE_VALID
+
+    @pytest.fixture
+    def this_rule_only_ruleset(self):
+        """Ruleset contains only this Rule."""
+        ruleset_str = iati.core.tests.utilities.REGEXNOMATCHES_RULESET_STR
+        return iati.core.Ruleset(ruleset_str)
 
 
 class TestRuleStartsWith(RuleSubclassTestBase):

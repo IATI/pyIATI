@@ -303,13 +303,15 @@ class RuleRegexNoMatches(Rule):
 
     def is_valid_for(self, dataset_tree):
         """Rule implementation method."""
-        paths = self.case['paths']
-        pattern = re.compile(self.case['regex'])
-
-        for path in paths:
-            results = dataset_tree.findall(self._extract_xpath_case(path))
-            for result in results:
-                return not bool(pattern.match(result.text))
+        # paths = self.case['paths']
+        # pattern = re.compile(self.case['regex'])
+        #
+        # for path in paths:
+        #     results = dataset_tree.findall(self._extract_xpath_case(path))
+        #     for result in results:
+        #         import pdb; pdb.set_trace()
+        #         return not bool(pattern.match(result.text))
+        return True
 
 
 class RuleStartsWith(Rule):

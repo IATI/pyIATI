@@ -37,6 +37,12 @@ DATASET_TREE_FOR_REGEXMATCHES_RULE_VALID = iati.core.resources.load_as_tree(iati
 DATASET_TREE_FOR_REGEXMATCHES_RULE_INVALID = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('invalid_regexmatches'))
 """An etree containing XML data that is not permitted by `RuleRegexMatches`."""
 
+REGEXNOMATCHES_RULESET_STR = iati.core.resources.load_as_string(iati.core.resources.get_test_ruleset_path('regexnomatches_test_ruleset'))
+"""A string containing a valid Ruleset with the `regex_no_matches` Rule."""
+DATASET_TREE_FOR_REGEXNOMATCHES_RULE_VALID = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_regexnomatches'))
+DATASET_TREE_FOR_REGEXNOMATCHES_RULE_INVALID = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('invalid_regexnomatches'))
+"""An etree containing XML data that is not permitted by `RuleRegexNoMatches`."""
+
 SCHEMA_NAME_VALID = 'iati-activities-schema'
 """A string containing a valid Schema name."""
 
