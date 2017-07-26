@@ -344,7 +344,14 @@ class TestRuleSum(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {'paths': ['path_1'], 'sum': 3},  # single path with sum
         {'paths': ['path_1', 'path_2'], 'sum': 3},  # multiple paths with sum
-        {'paths': ['path_1', 'path_1'], 'sum': 3}  # duplicate paths with sum
+        {'paths': ['path_1', 'path_1'], 'sum': 3},  # duplicate paths with sum
+        {'paths': ['path_1'], 'sum': -1000},  # negative sum
+        {'paths': ['path_1'], 'sum': 101},  # sum greater than standard percentage limit
+        {'paths': ['path_1'], 'sum': 15.5},  # decimal sum
+        {'paths': ['path_1'], 'sum': 0},  # zero sum
+        {'paths': ['path_1'], 'sum': 10**100},  # big sum
+        {'paths': ['path_1'], 'sum': -10**100},  # tiny sum
+        {'paths': ['path_1'], 'sum': 2.99792458e6}  # exponential sum
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
@@ -353,7 +360,8 @@ class TestRuleSum(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {'paths': ['path_1', 'path_2']},  # missing required attribute - `sum`
         {'sum': 100},  # missing required attribute - `paths`
-        {}  # empty dictionary
+        {},  # empty dictionary
+        {'paths': ['path_1'], 'sum': '3'}  # sum is a string representation of a number
     ])
     def invalid_case(self, request):
         """Non-permitted cases for this rule."""
