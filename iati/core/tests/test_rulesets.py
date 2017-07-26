@@ -521,10 +521,10 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         return 'startswith'
 
     @pytest.fixture(params=[
-        {'start': 'a string prefix', 'paths': ['']},  # empty path with prefix
-        {'start': 'a string prefix', 'paths': ['path_1']},  # single path with prefix
-        {'start': 'a string prefix', 'paths': ['path_1', 'path_2']},  # multiple paths with prefix
-        {'start': 'a string prefix', 'paths': ['path_1', 'path_1']},  # duplicate paths with prefix
+        {'start': 'prefix-xpath', 'paths': ['']},  # empty path with prefix
+        {'start': 'prefix-xpath', 'paths': ['path_1']},  # single path with prefix
+        {'start': 'prefix-xpath', 'paths': ['path_1', 'path_2']},  # multiple paths with prefix
+        {'start': 'prefix-xpath', 'paths': ['path_1', 'path_1']},  # duplicate paths with prefix
         {'start': '', 'paths': ['path_1']}  # single path with prefix
     ])
     def valid_case(self, request):
@@ -532,12 +532,12 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         return request.param
 
     @pytest.fixture(params=[
-        {'start': 'a string prefix', 'paths': []},  # empty path array
-        {'start': 'a string prefix', 'paths': 'path_1'},  # non-array `paths`
-        {'start': 'a string prefix', 'paths': [3]},  # non-string value in path array
-        {'start': 'a string prefix', 'paths': ['path_1', 3]},  # mixed string and non-string value in path array
-        {'start': 3, 'paths': ['path_1']},  # provided prefix not a string
-        {'start': 'a string prefix'},  # missing required attribute - `paths`
+        {'start': 'prefix-xpath', 'paths': []},  # empty path array
+        {'start': 'prefix-xpath', 'paths': 'path_1'},  # non-array `paths`
+        {'start': 'prefix-xpath', 'paths': [3]},  # non-string value in path array
+        {'start': 'prefix-xpath', 'paths': ['path_1', 3]},  # mixed string and non-string value in path array
+        {'start': 3, 'paths': ['path_1']},  # provided prefix xpath not a string
+        {'start': 'prefix-xpath'},  # missing required attribute - `paths`
         {'paths': ['path_1', 'path_2']},  # missing required attribute - `start`
         {}  # empty dictionary
     ])
