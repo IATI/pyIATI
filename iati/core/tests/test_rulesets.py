@@ -394,7 +394,9 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         return 'date_order'
 
     @pytest.fixture(params=[
-        {'less': 'start', 'more': 'end'}  # both `less` and `more` present
+        {'less': 'start-xpath', 'more': 'end-xpath'},  # both `less` and `more` present
+        {'less': 'start-xpath', 'more': 'NOW'},  # `more` as NOW
+        {'less': 'NOW', 'more': 'end-xpath'}  # `less` as NOW
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
