@@ -161,7 +161,11 @@ class Rule(object):
         """
         ruleset_schema = iati.core.default.ruleset_schema()
         partial_schema = ruleset_schema['patternProperties']['.+']['properties'][self.name]['properties']['cases']['items']  # pylint: disable=E1101
+        # make all attributes other than 'condition' in the partial schema required
         partial_schema['required'] = [key for key in partial_schema['properties'].keys() if key != 'condition']
+        # ensure that the 'paths' array is not empty
+        if 'paths' in partial_schema['properties'].keys():
+            partial_schema['properties']['paths']['minItems'] = 1
 
         return partial_schema
 
