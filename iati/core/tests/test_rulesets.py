@@ -257,7 +257,7 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
-        """Non-permitted cases for this rule."""
+        """Non-permitted case for this rule."""
         return request.param
 
     @pytest.fixture
@@ -303,7 +303,7 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
-        """Non-permitted cases for this rule."""
+        """Non-permitted case for this rule."""
         return request.param
 
     @pytest.fixture
@@ -349,7 +349,7 @@ class TestRuleDependent(RuleSubclassTestBase):
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
-        """Non-permitted cases for this rule."""
+        """Non-permitted case for this rule."""
         return request.param
 
 
@@ -389,7 +389,7 @@ class TestRuleSum(RuleSubclassTestBase):
         {'paths': ['path_1'], 'sum': '3'}  # sum is a string representation of a number
     ])
     def invalid_case(self, request):
-        """Non-permitted cases for this rule."""
+        """Non-permitted case for this rule."""
         return request.param
 
 
@@ -422,7 +422,7 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
-        """Non-permitted cases for this rule."""
+        """Non-permitted case for this rule."""
         return request.param
 
 
@@ -457,7 +457,7 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
-        """Non-permitted cases for this rule."""
+        """Non-permitted case for this rule."""
         return request.param
 
     @pytest.fixture
@@ -508,7 +508,7 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
-        """Non-permitted cases for this rule."""
+        """Non-permitted case for this rule."""
         return request.param
 
 
@@ -542,7 +542,7 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
-        """Non-permitted cases for this rule."""
+        """Non-permitted case for this rule."""
         return request.param
 
 
@@ -572,5 +572,5 @@ class TestRuleUnique(RuleSubclassTestBase):
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
-        """Non-permitted cases for this rule."""
+        """Non-permitted case for this rule."""
         return request.param
