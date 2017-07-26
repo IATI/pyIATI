@@ -231,14 +231,15 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         return 'no_more_than_one'
 
     @pytest.fixture(params=[
-        {'paths': ['path_1', 'path_2']}
+        {'paths': ['path_1']},  # single path
+        {'paths': ['path_1', 'path_2']}  # multiple paths
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
         return request.param
 
     @pytest.fixture(params=[
-        {}
+        {}  # empty dictionary
     ])
     def invalid_case(self, request):
         """Non-permitted cases for this rule."""
@@ -270,14 +271,15 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         return 'atleast_one'
 
     @pytest.fixture(params=[
-        {'paths': ['path_1', 'path_2']}
+        {'paths': ['path_1']},  # single path
+        {'paths': ['path_1', 'path_2']}  # multiple paths
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
         return request.param
 
     @pytest.fixture(params=[
-        {}
+        {}  # empty dictionary
     ])
     def invalid_case(self, request):
         """Non-permitted cases for this rule."""
@@ -309,7 +311,7 @@ class TestRuleDependent(RuleSubclassTestBase):
         return 'dependent'
 
     @pytest.fixture(params=[
-        {'paths': ['path_1', 'path_2']}
+        {'paths': ['path_1', 'path_2']}  # multiple paths
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
@@ -317,7 +319,7 @@ class TestRuleDependent(RuleSubclassTestBase):
 
     # If this rule is checking for dependent paths then surely it's invalid to pass in only one path property?
     @pytest.fixture(params=[
-        {}
+        {}  # empty dictionary
     ])
     def invalid_case(self, request):
         """Non-permitted cases for this rule."""
@@ -333,16 +335,17 @@ class TestRuleSum(RuleSubclassTestBase):
         return 'sum'
 
     @pytest.fixture(params=[
-        {'paths': ['path_1', 'path_2'], 'sum': 3}
+        {'paths': ['path_1'], 'sum': 3},  # single path with sum
+        {'paths': ['path_1', 'path_2'], 'sum': 3}  # multiple paths with sum
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
         return request.param
 
     @pytest.fixture(params=[
-        {'paths': ['path_1', 'path_2']},
-        {'sum': 100},
-        {}
+        {'paths': ['path_1', 'path_2']},  # missing required attribute - `sum`
+        {'sum': 100},  # missing required attribute - `paths`
+        {}  # empty dictionary
     ])
     def invalid_case(self, request):
         """Non-permitted cases for this rule."""
@@ -358,16 +361,16 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         return 'date_order'
 
     @pytest.fixture(params=[
-        {'less': 'start', 'more': 'end'}
+        {'less': 'start', 'more': 'end'}  # both `less` and `more` present
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
         return request.param
 
     @pytest.fixture(params=[
-        {'less': 'start'},
-        {'more': 'end'},
-        {}
+        {'less': 'start'},  # missing required attribute - `more`
+        {'more': 'end'},  # missing required attribute - `less`
+        {}  # empty dictionary
     ])
     def invalid_case(self, request):
         """Non-permitted cases for this rule."""
@@ -383,16 +386,17 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         return 'regex_matches'
 
     @pytest.fixture(params=[
-        {'regex': 'some regex', 'paths': ['path_1', 'path_2']}
+        {'regex': 'some regex', 'paths': ['path_1']},  # single path with regex
+        {'regex': 'some regex', 'paths': ['path_1', 'path_2']}  # multiple paths with regex
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
         return request.param
 
     @pytest.fixture(params=[
-        {'regex': 'some regex'},
-        {'paths': ['path_1', 'path_2']},
-        {}
+        {'regex': 'some regex'},  # missing required attribute - `paths`
+        {'paths': ['path_1', 'path_2']},  # missing required attribute - `regex`
+        {}  # empty dictionary
     ])
     def invalid_case(self, request):
         """Non-permitted cases for this rule."""
@@ -424,16 +428,17 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         return 'regex_no_matches'
 
     @pytest.fixture(params=[
-        {'regex': 'some regex', 'paths': ['path_1', 'path_2']}
+        {'regex': 'some regex', 'paths': ['path_1']},  # single path with regex
+        {'regex': 'some regex', 'paths': ['path_1', 'path_2']}  # multiple paths with regex
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
         return request.param
 
     @pytest.fixture(params=[
-        {'regex': 'some regex'},
-        {'paths': ['path_1', 'path_2']},
-        {}
+        {'regex': 'some regex'},  # missing required attribute - `paths`
+        {'paths': ['path_1', 'path_2']},  # missing required attribute - `regex`
+        {}  # empty dictionary
     ])
     def invalid_case(self, request):
         """Non-permitted cases for this rule."""
@@ -449,16 +454,17 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         return 'startswith'
 
     @pytest.fixture(params=[
-        {'start': 'a string', 'paths': ['path_1', 'path_2']}
+        {'start': 'a string prefix', 'paths': ['path_1']},  # a single path with prefix
+        {'start': 'a string prefix', 'paths': ['path_1', 'path_2']}  # multiple paths with prefix
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
         return request.param
 
     @pytest.fixture(params=[
-        {'start': 'a string'},
-        {'paths': ['path_1', 'path_2']},
-        {}
+        {'start': 'a string prefix'},  # missing required attribute - `paths`
+        {'paths': ['path_1', 'path_2']},  # missing required attribute - `start`
+        {}  # empty dictionary
     ])
     def invalid_case(self, request):
         """Non-permitted cases for this rule."""
@@ -474,14 +480,15 @@ class TestRuleUnique(RuleSubclassTestBase):
         return 'unique'
 
     @pytest.fixture(params=[
-        {'paths': ['path_1', 'path_2']}
+        {'paths': ['path_1']},  # single path
+        {'paths': ['path_1', 'path_2']}  # multiple paths
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
         return request.param
 
     @pytest.fixture(params=[
-        {}
+        {}  # empty dictionary
     ])
     def invalid_case(self, request):
         """Non-permitted cases for this rule."""
