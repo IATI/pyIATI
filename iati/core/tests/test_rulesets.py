@@ -402,7 +402,9 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'start-xpath', 'more': 'NOW'},  # `more` as NOW
         {'less': 'NOW', 'more': 'end-xpath'},  # `less` as NOW
         {'less': 'NOW', 'more': 'NOW'},  # both `less` and `more` as NOW
-        {'less': 'start-xpath', 'more': 'start-xpath'}  # both `less` and `more` as same xpath
+        {'less': 'start-xpath', 'more': 'start-xpath'},  # both `less` and `more` as same xpath
+        {'less': '2017-07-26T13:19:05.493Z', 'more': 'end-xpath'},  # `less` is a string-formatted date
+        {'less': 'start-xpath', 'more': '2017-07-26T13:19:05.493Z'}  # `more` is a string-formatted date
     ])
     def valid_case(self, request):
         """Permitted case for this rule."""
@@ -411,6 +413,8 @@ class TestRuleDateOrder(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {'less': 'start'},  # missing required attribute - `more`
         {'more': 'end'},  # missing required attribute - `less`
+        {'less': 1501075031590, 'more': 'end-xpath'},  # `less` is a numeric value
+        {'less': 'start-xpath', 'more': 1501075031590},  # `more` is a numeric value
         {}  # empty dictionary
     ])
     def invalid_case(self, request):
