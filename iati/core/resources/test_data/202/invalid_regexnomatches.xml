@@ -2,6 +2,6 @@
 
 <iati-activities version="2.02">
   <iati-activity>
-    <iati-identifier>Almost anything is allowed here according to the current standard.</iati-identifier><!-- iati-identifier does not match regex -->
+    <iati-identifier>Almost anything is allowed here according to the current standard.</iati-identifier><!-- iati-identifier matches regex -->
   </iati-activity>
 </iati-activities>

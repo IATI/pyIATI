@@ -364,6 +364,21 @@ class RuleUnique(Rule):
 
         super(RuleUnique, self).__init__(xpath_base, case)
 
-    def is_valid_for(self):
-        """Rule implementation method."""
-        return True
+    def is_valid_for(self, dataset_tree):
+        """Rule implementation method.
+
+        Todo:
+            Consider better methods for specifying which elements in the tree contain non-permitted duplication, such as bucket sort.
+            Test with a ruleset that has multiple paths.
+        """
+        paths = self.case['paths']
+        original = list()
+        unique = set()
+
+        for path in paths:
+            results = dataset_tree.findall(self._extract_xpath_case(path))
+            for result in results:
+                original.append(result.text)
+                unique.add(result.text)
+
+        return len(original) == len(unique)
