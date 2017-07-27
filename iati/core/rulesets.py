@@ -328,14 +328,14 @@ class RuleRegexMatches(Rule):
         super(RuleRegexMatches, self).__init__(xpath_base, case)
 
         try:
-            re.compile(case['regex'])
+            re.compile(self.regex)
         except sre_constants.error:
             raise ValueError
 
 
     def is_valid_for(self, dataset_tree):
         """Check that the Element specified by `paths` matches the given regex case."""
-        pattern = re.compile(self.case['regex'])
+        pattern = re.compile(self.regex)
 
         for path in self.paths:
             results = dataset_tree.findall(path)
@@ -358,13 +358,13 @@ class RuleRegexNoMatches(Rule):
         super(RuleRegexNoMatches, self).__init__(xpath_base, case)
 
         try:
-            re.compile(case['regex'])
+            re.compile(self.regex)
         except sre_constants.error:
             raise ValueError
 
     def is_valid_for(self, dataset_tree):
         """Rule implementation method."""
-        pattern = re.compile(self.case['regex'])
+        pattern = re.compile(self.regex)
 
         for path in self.paths:
             results = dataset_tree.findall(path)
