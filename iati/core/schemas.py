@@ -81,8 +81,6 @@ class Schema(object):
             etree._ElementTree: The modified tree.
 
         Todo:
-            Check whether this is safe in the general case, so allowing it to be performed in __init__().
-
             Make resource locations more able to handle the general case.
 
             Consider moving this out of Schema().
@@ -130,12 +128,12 @@ class Schema(object):
         return tree
 
     def _flatten_includes(self):
-        """Flatten includes so that all nodes are accessible through lxml.
+        """For a Schema that contains an xsd:include element, flatten includes so that all nodes are accessible through lxml.
 
-        Identify the contents of files defined as `<xsd:include schemaLocation="NAME.xsd" />` and bring in the contents.
+        Identifies the contents of files defined as `<xsd:include schemaLocation="NAME.xsd" />` and bring in the contents.
 
-        Params:
-            tree (etree._ElementTree): The tree to flatten.
+        Updates:
+            self._schema_base_tree: To be the flattened schema. Makes no modification if the schema contains no xsd:include element.
 
         Todo:
             Consider moving this out of Schema().
