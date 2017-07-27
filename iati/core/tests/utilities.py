@@ -43,6 +43,11 @@ XML_STR_VALID_IATI_INVALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST_SECOND = iati.core
 
 The first value that should be from the Codelist is invalid, while the second is valid."""
 
+XML_STR_VALID_IATI_INCOMPLETE_CODELIST_CODE_PRESENT = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_incomplete_codelist_code_present'))
+"""A string containing valid IATI XML with an attribute requiring a value from an incomplete Codelist. The attribute value is on this Codelist."""
+XML_STR_VALID_IATI_INCOMPLETE_CODELIST_CODE_NOT_PRESENT = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_incomplete_codelist_code_not_present'))
+"""A string containing valid IATI XML with an attribute requiring a value from an incomplete Codelist. The attribute value is not on this Codelist."""
+
 XML_STR_VALID_IATI_VOCAB_DEFAULT_EXPLICIT = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_default_explicit'))
 """A string contains valid IATI XML containing an element that uses vocabularies. Explicitly defines default vocab and uses code from that list."""
 XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_default_implicit'))
