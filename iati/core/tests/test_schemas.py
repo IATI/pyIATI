@@ -226,15 +226,15 @@ class TestSchemas(object):
 
         assert isinstance(result, expected_type)
 
-    @pytest.mark.parametrize("schema_type, xsd_element_name", [
-        (default_activity_schema, 'iati-activities'),
-        (default_activity_schema, 'contact-info'),
-        (default_activity_schema, 'iati-identifier'),  # Contains no child elements
-        (default_organisation_schema, 'iati-organisations'),
-        (default_organisation_schema, 'total-budget'),
-        (default_organisation_schema, 'organisation-identifier')  # Contains no child elements
+    @pytest.mark.parametrize("schema_type, xsd_element_name, num_expected_child_elements", [
+        (default_activity_schema, 'iati-activities', 1),
+        (default_activity_schema, 'contact-info', 8),
+        (default_activity_schema, 'iati-identifier', 0),  # Contains no child elements
+        (default_organisation_schema, 'iati-organisations', 1),
+        (default_organisation_schema, 'total-budget', 4),
+        (default_organisation_schema, 'organisation-identifier', 0)  # Contains no child elements
     ])
-    def test_get_child_xsd_elements(self, schema_type, xsd_element_name):
+    def test_get_child_xsd_elements(self, schema_type, xsd_element_name, num_expected_child_elements):
         """Check that a list of lxml objects are returned to represent all child XSD elements. Also check that each item in the result is of the expected type.
 
         Todo
@@ -246,18 +246,19 @@ class TestSchemas(object):
         result = schema.get_child_xsd_elements(parent_element)
 
         assert isinstance(result, list)
+        assert len(result) == num_expected_child_elements
         for item in result:
             assert isinstance(item, etree._Element)
 
-    @pytest.mark.parametrize("schema_type, xsd_element_name", [
-        (default_activity_schema, 'iati-activities'),
-        (default_activity_schema, 'iati-activity'),
-        (default_activity_schema, 'iati-identifier'),  # No attributes
-        (default_organisation_schema, 'iati-organisations'),
-        (default_organisation_schema, 'iati-organisation'),
-        (default_organisation_schema, 'organisation-identifier')  # No attributes
+    @pytest.mark.parametrize("schema_type, xsd_element_name, num_expected_attributes", [
+        (default_activity_schema, 'iati-activities', 3),
+        (default_activity_schema, 'iati-activity', 6),
+        (default_activity_schema, 'iati-identifier', 0),  # Contains no attributes
+        (default_organisation_schema, 'iati-organisations', 2),
+        (default_organisation_schema, 'iati-organisation', 3),
+        (default_organisation_schema, 'organisation-identifier', 0)  # Contains no attributes
     ])
-    def test_get_attributes_in_xsd_element(self, schema_type, xsd_element_name):
+    def test_get_attributes_in_xsd_element(self, schema_type, xsd_element_name, num_expected_attributes):
         """Check that a list of lxml objects are returned to represent the attributes contained within a given XSD element. Also check that each item in the result is of the expected type.
 
         Todo
@@ -269,6 +270,7 @@ class TestSchemas(object):
         result = schema.get_attributes_in_xsd_element(element)
 
         assert isinstance(result, list)
+        assert len(result) == num_expected_attributes
         for item in result:
             assert isinstance(item, etree._Element)
 
