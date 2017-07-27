@@ -155,6 +155,9 @@ class Rule(object):
 
         Args:
             case (dict): The case to take values from.
+
+        Todo:
+            Set non-required properties such as a `condition`.
         """
         required_attributes = self._required_case_attributes(self._ruleset_schema_section())
         for attrib in required_attributes:
