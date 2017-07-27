@@ -229,6 +229,9 @@ class RuleSubclassTestBase(object):
         Todo:
             Maybe too much of a shortcut as can't fully pass until all implementations complete. Possibly the wrong abstraction in the long-term.
         """
+        if this_rule_only_ruleset is None:
+            return
+
         for rule in this_rule_only_ruleset.rules:
             assert rule.is_valid_for(valid_data_tree)
 
@@ -238,6 +241,9 @@ class RuleSubclassTestBase(object):
         Todo:
             Maybe too much of a shortcut as can't fully pass until all implementations complete. Possibly the wrong abstraction in the long-term.
         """
+        if this_rule_only_ruleset is None:
+            return
+
         for rule in this_rule_only_ruleset.rules:
             assert not rule.is_valid_for(invalid_data_tree)
 
@@ -363,6 +369,20 @@ class TestRuleDependent(RuleSubclassTestBase):
         """Non-permitted case for this rule."""
         return request.param
 
+    @pytest.fixture
+    def invalid_data_tree(self):
+        """Invalid dataset etree for this Rule."""
+        return None
+
+    @pytest.fixture
+    def valid_data_tree(self):
+        """Return valid dataset etree for this Rule."""
+        return None
+
+    @pytest.fixture
+    def this_rule_only_ruleset(self):
+        """Ruleset contains only this Rule."""
+        return None
 
 class TestRuleSum(RuleSubclassTestBase):
     """A container for tests relating to RuleSum."""
@@ -403,6 +423,21 @@ class TestRuleSum(RuleSubclassTestBase):
         """Non-permitted case for this rule."""
         return request.param
 
+    @pytest.fixture
+    def invalid_data_tree(self):
+        """Invalid dataset etree for this Rule."""
+        return None
+
+    @pytest.fixture
+    def valid_data_tree(self):
+        """Return valid dataset etree for this Rule."""
+        return None
+
+    @pytest.fixture
+    def this_rule_only_ruleset(self):
+        """Ruleset contains only this Rule."""
+        return None
+
 
 class TestRuleDateOrder(RuleSubclassTestBase):
     """A container for tests relating to RuleDateOrder."""
@@ -436,6 +471,20 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         """Non-permitted case for this rule."""
         return request.param
 
+    @pytest.fixture
+    def invalid_data_tree(self):
+        """Invalid dataset etree for this Rule."""
+        return None
+
+    @pytest.fixture
+    def valid_data_tree(self):
+        """Return valid dataset etree for this Rule."""
+        return None
+
+    @pytest.fixture
+    def this_rule_only_ruleset(self):
+        """Ruleset contains only this Rule."""
+        return None
 
 class TestRuleRegexMatches(RuleSubclassTestBase):
     """A container for tests relating to RuleRegexMatches."""
@@ -571,6 +620,21 @@ class TestRuleStartsWith(RuleSubclassTestBase):
     def invalid_case(self, request):
         """Non-permitted case for this rule."""
         return request.param
+
+    @pytest.fixture
+    def invalid_data_tree(self):
+        """Invalid dataset etree for this Rule."""
+        return None
+
+    @pytest.fixture
+    def valid_data_tree(self):
+        """Return valid dataset etree for this Rule."""
+        return None
+
+    @pytest.fixture
+    def this_rule_only_ruleset(self):
+        """Ruleset contains only this Rule."""
+        return None
 
 
 class TestRuleUnique(RuleSubclassTestBase):
