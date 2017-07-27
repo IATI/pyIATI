@@ -205,11 +205,10 @@ class RuleSubclassTestBase(object):
         """Check that a Rule subclass has the expected name."""
         assert basic_rule.name == rule_type
 
-    def test_rule_missing_required_case_properties(self, rule_constructor, invalid_case):
-        """Check that a rule cannot be instantiated without the required case properties.
+    def test_rule_invalid_case(self, rule_constructor, invalid_case):
+        """Check that a rule cannot be instantiated when the case is invalid.
 
         Todo:
-            Rename now that there are a wider range of invalid cases.
             Add tests with empty path AND empty xpath_base.
         """
         xpath_base = 'an xpath'
