@@ -212,7 +212,7 @@ class TestSchemas(object):
         (default_activity_schema, 'element-name-that-does-not-exist', type(None)),
         (default_organisation_schema, 'iati-organisations', etree._Element),
         (default_organisation_schema, 'organisation-identifier', etree._Element),  # The 'organisation-identifier' is defined within the 'iati-organisation' element.
-        (default_organisation_schema, 'sector', type(None))
+        (default_organisation_schema, 'sector', type(None))  # There is no 'sector' element within the organisation schema.
     ])
     def test_get_xsd_element(self, schema_type, xsd_element_name, expected_type):
         """Check that an lxml object is returned to represent an XSD element.
