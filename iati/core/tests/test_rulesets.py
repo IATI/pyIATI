@@ -601,3 +601,19 @@ class TestRuleUnique(RuleSubclassTestBase):
     def invalid_case(self, request):
         """Non-permitted case for this rule."""
         return request.param
+
+    @pytest.fixture
+    def invalid_data_tree(self):
+        """Invalid dataset etree for this Rule."""
+        return iati.core.tests.utilities.DATASET_TREE_FOR_UNIQUE_RULE_INVALID
+
+    @pytest.fixture
+    def valid_data_tree(self):
+        """Return valid dataset etree for this Rule."""
+        return iati.core.tests.utilities.DATASET_TREE_FOR_UNIQUE_RULE_VALID
+
+    @pytest.fixture
+    def this_rule_only_ruleset(self):
+        """Ruleset contains only this Rule."""
+        ruleset_str = iati.core.tests.utilities.UNIQUE_RULESET_STR
+        return iati.core.Ruleset(ruleset_str)

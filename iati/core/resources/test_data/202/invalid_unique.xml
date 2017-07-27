@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<iati-activities version="2.02">
+  <iati-activity>
+    <iati-identifier>This is not a unique identifier</iati-identifier><!-- iati-identifier is replicated -->
+    <iati-identifier>This is not a unique identifier</iati-identifier>
+  </iati-activity>
+</iati-activities>
