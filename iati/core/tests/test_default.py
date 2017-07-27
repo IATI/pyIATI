@@ -57,7 +57,7 @@ class TestDefault(object):
         """
         ruleset = iati.core.default.ruleset()
 
-        assert isinstance(ruleset, iati.core.rulesets.Ruleset)
+        assert isinstance(ruleset, iati.core.Ruleset)
 
     def test_default_schemas(self):
         """Check that the default Schemas are correct.
