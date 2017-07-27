@@ -392,6 +392,12 @@ class RuleStartsWith(Rule):
         """Rule implementation method."""
         return True
 
+    def _normalize_xpaths(self):
+        """Normalize xpaths by combining them with `xpath_base`."""
+        super(RuleStartsWith, self)._normalize_xpaths()
+
+        self.start = self._normalize_xpath(self.start)
+
 
 class RuleSum(Rule):
     """A specific type of Rule.

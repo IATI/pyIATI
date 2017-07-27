@@ -658,6 +658,10 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         """Ruleset contains only this Rule."""
         return None
 
+    def test_rule_paths_less(self, basic_rule):
+        """Check that the `start` value has been combined with the `xpath_base`."""
+        assert basic_rule.start.startswith(basic_rule.xpath_base)
+
 
 class TestRuleUnique(RuleSubclassTestBase):
     """A container for tests relating to RuleUnique."""
