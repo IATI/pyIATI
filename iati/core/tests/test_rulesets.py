@@ -256,52 +256,6 @@ class RuleSubclassTestBase(object):
             assert not rule.is_valid_for(invalid_data_tree)
 
 
-class TestRuleNoMoreThanOne(RuleSubclassTestBase):
-    """A container for tests relating to RuleNoMoreThanOne."""
-
-    @pytest.fixture
-    def rule_type(self):
-        """Type of rule."""
-        return 'no_more_than_one'
-
-    @pytest.fixture(params=[
-        {'paths': ['']},  # empty path
-        {'paths': ['path_1']},  # single path
-        {'paths': ['path_1', 'path_2']},  # multiple paths
-        {'paths': ['path_1', 'path_1']}  # duplicate paths
-    ])
-    def valid_case(self, request):
-        """Permitted case for this rule."""
-        return request.param
-
-    @pytest.fixture(params=[
-        {'paths': []},  # empty path array
-        {'paths': 'path_1'},  # non-array `paths`
-        {'paths': [3]},  # non-string value in path array
-        {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
-        {}  # empty dictionary
-    ])
-    def invalid_case(self, request):
-        """Non-permitted case for this rule."""
-        return request.param
-
-    @pytest.fixture
-    def invalid_data_tree(self):
-        """Invalid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_NOMORETHANONE_RULE_INVALID
-
-    @pytest.fixture
-    def valid_data_tree(self):
-        """Return valid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_NOMORETHANONE_RULE_VALID
-
-    @pytest.fixture
-    def this_rule_only_ruleset(self):
-        """Ruleset contains only this Rule."""
-        ruleset_str = iati.core.tests.utilities.NOMORETHANONE_RULESET_STR
-        return iati.core.Ruleset(ruleset_str)
-
-
 class TestRuleAtLeastOne(RuleSubclassTestBase):
     """A container for tests relating to RuleAtLeastOne."""
 
@@ -392,61 +346,6 @@ class TestRuleDependent(RuleSubclassTestBase):
         """Ruleset contains only this Rule."""
         return None
 
-class TestRuleSum(RuleSubclassTestBase):
-    """A container for tests relating to RuleSum."""
-
-    @pytest.fixture
-    def rule_type(self):
-        """Type of rule."""
-        return 'sum'
-
-    @pytest.fixture(params=[
-        {'paths': [''], 'sum': 3},  # empty path with sum
-        {'paths': ['path_1'], 'sum': 3},  # single path with sum
-        {'paths': ['path_1', 'path_2'], 'sum': 3},  # multiple paths with sum
-        {'paths': ['path_1', 'path_1'], 'sum': 3},  # duplicate paths with sum
-        {'paths': ['path_1'], 'sum': -1000},  # negative sum
-        {'paths': ['path_1'], 'sum': 101},  # sum greater than standard percentage limit
-        {'paths': ['path_1'], 'sum': 15.5},  # decimal sum
-        {'paths': ['path_1'], 'sum': 0},  # zero sum
-        {'paths': ['path_1'], 'sum': 10**100},  # big sum
-        {'paths': ['path_1'], 'sum': -10**100},  # tiny sum
-        {'paths': ['path_1'], 'sum': 2.99792458e6}  # exponential sum
-    ])
-    def valid_case(self, request):
-        """Permitted case for this rule."""
-        return request.param
-
-    @pytest.fixture(params=[
-        {'paths': [], 'sum': 3},  # empty path array
-        {'paths': 'path_1', 'sum': 3},  # non-array `paths`
-        {'paths': [3], 'sum': 3},  # non-string value in path array
-        {'paths': ['path_1', 3], 'sum': 3},  # mixed string and non-string value in path array
-        {'paths': ['path_1', 'path_2']},  # missing required attribute - `sum`
-        {'sum': 100},  # missing required attribute - `paths`
-        {},  # empty dictionary
-        {'paths': ['path_1'], 'sum': '3'}  # sum is a string representation of a number
-    ])
-    def invalid_case(self, request):
-        """Non-permitted case for this rule."""
-        return request.param
-
-    @pytest.fixture
-    def invalid_data_tree(self):
-        """Invalid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_SUM_RULE_INVALID
-
-    @pytest.fixture
-    def valid_data_tree(self):
-        """Return valid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_SUM_RULE_VALID
-
-    @pytest.fixture
-    def this_rule_only_ruleset(self):
-        """Ruleset contains only this Rule."""
-        ruleset_str = iati.core.tests.utilities.SUM_RULESET_STR
-        return iati.core.Ruleset(ruleset_str)
-
 
 class TestRuleDateOrder(RuleSubclassTestBase):
     """A container for tests relating to RuleDateOrder."""
@@ -481,19 +380,25 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         return request.param
 
     @pytest.fixture
+    def this_rule_only_ruleset(self):
+        """Ruleset contains only this Rule."""
+        return None
+
+    @pytest.fixture
     def invalid_data_tree(self):
         """Invalid dataset etree for this Rule."""
-        return None
+        return iati.core.tests.utilities.DATASET_TREE_FOR_SUM_RULE_INVALID
 
     @pytest.fixture
     def valid_data_tree(self):
         """Return valid dataset etree for this Rule."""
-        return None
+        return iati.core.tests.utilities.DATASET_TREE_FOR_SUM_RULE_VALID
 
     @pytest.fixture
     def this_rule_only_ruleset(self):
         """Ruleset contains only this Rule."""
-        return None
+        ruleset_str = iati.core.tests.utilities.SUM_RULESET_STR
+        return iati.core.Ruleset(ruleset_str)
 
     def test_rule_paths_less(self, basic_rule):
         """Check that the `less` value has been combined with the `xpath_base` where required."""
@@ -508,6 +413,53 @@ class TestRuleDateOrder(RuleSubclassTestBase):
             assert basic_rule.more == basic_rule.SPECIAL_CASE
         else:
             assert basic_rule.more.startswith(basic_rule.xpath_base)
+
+
+class TestRuleNoMoreThanOne(RuleSubclassTestBase):
+    """A container for tests relating to RuleNoMoreThanOne."""
+
+    @pytest.fixture
+    def rule_type(self):
+        """Type of rule."""
+        return 'no_more_than_one'
+
+    @pytest.fixture(params=[
+        {'paths': ['']},  # empty path
+        {'paths': ['path_1']},  # single path
+        {'paths': ['path_1', 'path_2']},  # multiple paths
+        {'paths': ['path_1', 'path_1']}  # duplicate paths
+    ])
+    def valid_case(self, request):
+        """Permitted case for this rule."""
+        return request.param
+
+    @pytest.fixture(params=[
+        {'paths': []},  # empty path array
+        {'paths': 'path_1'},  # non-array `paths`
+        {'paths': [3]},  # non-string value in path array
+        {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
+        {}  # empty dictionary
+    ])
+    def invalid_case(self, request):
+        """Non-permitted case for this rule."""
+        return request.param
+
+    @pytest.fixture
+    def invalid_data_tree(self):
+        """Invalid dataset etree for this Rule."""
+        return iati.core.tests.utilities.DATASET_TREE_FOR_NOMORETHANONE_RULE_INVALID
+
+    @pytest.fixture
+    def valid_data_tree(self):
+        """Return valid dataset etree for this Rule."""
+        return iati.core.tests.utilities.DATASET_TREE_FOR_NOMORETHANONE_RULE_VALID
+
+    @pytest.fixture
+    def this_rule_only_ruleset(self):
+        """Ruleset contains only this Rule."""
+        ruleset_str = iati.core.tests.utilities.NOMORETHANONE_RULESET_STR
+        return iati.core.Ruleset(ruleset_str)
+
 
 class TestRuleRegexMatches(RuleSubclassTestBase):
     """A container for tests relating to RuleRegexMatches."""
@@ -662,6 +614,62 @@ class TestRuleStartsWith(RuleSubclassTestBase):
     def test_rule_paths_start(self, basic_rule):
         """Check that the `start` value has been combined with the `xpath_base`."""
         assert basic_rule.start.startswith(basic_rule.xpath_base)
+
+
+class TestRuleSum(RuleSubclassTestBase):
+    """A container for tests relating to RuleSum."""
+
+    @pytest.fixture
+    def rule_type(self):
+        """Type of rule."""
+        return 'sum'
+
+    @pytest.fixture(params=[
+        {'paths': [''], 'sum': 3},  # empty path with sum
+        {'paths': ['path_1'], 'sum': 3},  # single path with sum
+        {'paths': ['path_1', 'path_2'], 'sum': 3},  # multiple paths with sum
+        {'paths': ['path_1', 'path_1'], 'sum': 3},  # duplicate paths with sum
+        {'paths': ['path_1'], 'sum': -1000},  # negative sum
+        {'paths': ['path_1'], 'sum': 101},  # sum greater than standard percentage limit
+        {'paths': ['path_1'], 'sum': 15.5},  # decimal sum
+        {'paths': ['path_1'], 'sum': 0},  # zero sum
+        {'paths': ['path_1'], 'sum': 10**100},  # big sum
+        {'paths': ['path_1'], 'sum': -10**100},  # tiny sum
+        {'paths': ['path_1'], 'sum': 2.99792458e6}  # exponential sum
+    ])
+    def valid_case(self, request):
+        """Permitted case for this rule."""
+        return request.param
+
+    @pytest.fixture(params=[
+        {'paths': [], 'sum': 3},  # empty path array
+        {'paths': 'path_1', 'sum': 3},  # non-array `paths`
+        {'paths': [3], 'sum': 3},  # non-string value in path array
+        {'paths': ['path_1', 3], 'sum': 3},  # mixed string and non-string value in path array
+        {'paths': ['path_1', 'path_2']},  # missing required attribute - `sum`
+        {'sum': 100},  # missing required attribute - `paths`
+        {},  # empty dictionary
+        {'paths': ['path_1'], 'sum': '3'}  # sum is a string representation of a number
+    ])
+    def invalid_case(self, request):
+        """Non-permitted case for this rule."""
+        return request.param
+
+    @pytest.fixture
+    def invalid_data_tree(self):
+        """Invalid dataset etree for this Rule."""
+        return iati.core.tests.utilities.DATASET_TREE_FOR_SUM_RULE_INVALID
+
+    @pytest.fixture
+    def valid_data_tree(self):
+        """Return valid dataset etree for this Rule."""
+        return iati.core.tests.utilities.DATASET_TREE_FOR_SUM_RULE_VALID
+
+    @pytest.fixture
+    def this_rule_only_ruleset(self):
+        """Ruleset contains only this Rule."""
+        ruleset_str = iati.core.tests.utilities.SUM_RULESET_STR
+        return iati.core.Ruleset(ruleset_str)
 
 
 class TestRuleUnique(RuleSubclassTestBase):
