@@ -249,6 +249,29 @@ class TestSchemas(object):
         for item in result:
             assert isinstance(item, etree._Element)
 
+    @pytest.mark.parametrize("schema_type, xsd_element_name", [
+        (default_activity_schema, 'iati-activities'),
+        (default_activity_schema, 'iati-activity'),
+        (default_activity_schema, 'iati-identifier'),  # No attributes
+        (default_organisation_schema, 'iati-organisations'),
+        (default_organisation_schema, 'iati-organisation'),
+        (default_organisation_schema, 'organisation-identifier')  # No attributes
+    ])
+    def test_get_attributes_in_xsd_element(self, schema_type, xsd_element_name):
+        """Check that a list of lxml objects are returned to represent the attributes contained within a given XSD element. Also check that each item in the result is of the expected type.
+
+        Todo
+            Test for attributes that should be contained within elements that are part of a flattened schema.
+        """
+        schema = schema_type()
+        element = schema.get_xsd_element(xsd_element_name)
+
+        result = schema.get_attributes_in_xsd_element(element)
+
+        assert isinstance(result, list)
+        for item in result:
+            assert isinstance(item, etree._Element)
+
     @pytest.mark.parametrize("element_index, expected_name", [
         (0, 'note'),
         (1, 'to'),

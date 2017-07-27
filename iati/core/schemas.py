@@ -206,6 +206,20 @@ class Schema(object):
 
         return output
 
+    def get_attributes_in_xsd_element(self, element):
+        """Return a list of attribute elements that are contained within a given lxml.etree represention of an xsd:element.
+
+        Args:
+            element (etree._ElementTree): The lxml represention of an XSD element to find attributes for.
+
+        Returns:
+            list of etree._ElementTree: A list containing representions of XSD attributes that are contained witin the input element. If there are no attributes, this will be an empty list.
+        """
+        return element.findall(
+            'xsd:complexType/xsd:attribute',
+            namespaces=iati.core.constants.NSMAP
+        )
+
     def get_xsd_element_name(self, element):
         """Returns the name of a given xsd:element, as defined in the xsd:element/@name attribute.
 
