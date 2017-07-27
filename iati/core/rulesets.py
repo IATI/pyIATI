@@ -126,6 +126,21 @@ class Rule(object):
         self.xpath_base = xpath_base
         self._valid_rule_configuration(case)
         self._set_case_attributes(case)
+        self._normalize_xpaths()
+
+    def _normalize_xpath(self, path):
+        """Normalize an xpath by combining it with `xpath_base`."""
+        if path == '':
+            return self.xpath_base
+        else:
+            return self.xpath_base + '/' + path
+
+    def _normalize_xpaths(self):
+        """Normalize xpaths by combining them with `xpath_base`."""
+        try:
+            self.paths = [self._normalize_xpath(path) for path in self.paths]
+        except AttributeError:
+            pass
 
     def _valid_rule_configuration(self, case):
         """Check that a configuration being passed into a Rule is valid for the given type of Rule.
@@ -198,11 +213,6 @@ class Rule(object):
 
         return partial_schema
 
-    def _extract_xpath_case(self, path):
-        """Return full XPath from `xpath_base` and `path`."""
-        full_path = self.xpath_base + '/' + path
-        return full_path
-
 
 class RuleNoMoreThanOne(Rule):
     """Representation of a Rule that checks that there is no more than one Element matching a given XPath.
@@ -230,8 +240,8 @@ class RuleNoMoreThanOne(Rule):
             Boolean value that changes depending on whether one or fewer cases are found in the dataset_tree.
 
         """
-        path = self.case['paths'][0]
-        return len(dataset_tree.findall(self._extract_xpath_case(path))) <= 1
+        path = self.paths[0]
+        return len(dataset_tree.findall(path)) <= 1
 
 
 class RuleAtLeastOne(Rule):
@@ -260,8 +270,8 @@ class RuleAtLeastOne(Rule):
             Boolean value that changes depending on whether the case is found in the dataset_tree.
 
         """
-        path = self.case['paths'][0]
-        return dataset_tree.find(self._extract_xpath_case(path)) is not None
+        path = self.paths[0]
+        return dataset_tree.find(path) is not None
 
 
 class RuleDateOrder(Rule):
@@ -275,8 +285,17 @@ class RuleDateOrder(Rule):
     def __init__(self, xpath_base, case):
         """Initialise a `date_order` rule."""
         self.name = "date_order"
+        self.SPECIAL_CASE = 'NOW'
 
         super(RuleDateOrder, self).__init__(xpath_base, case)
+
+    def _normalize_xpaths(self):
+        """Normalize xpaths by combining them with `xpath_base`."""
+        if self.less is not self.SPECIAL_CASE:
+            self.less = self._normalize_xpath(self.less)
+
+        if self.more is not self.SPECIAL_CASE:
+            self.more = self._normalize_xpath(self.more)
 
 
 class RuleDependent(Rule):
@@ -318,11 +337,10 @@ class RuleRegexMatches(Rule):
 
     def is_valid_for(self, dataset_tree):
         """Check that the Element specified by `paths` matches the given regex case."""
-        paths = self.case['paths']
         pattern = re.compile(self.case['regex'])
 
-        for path in paths:
-            results = dataset_tree.findall(self._extract_xpath_case(path))
+        for path in self.paths:
+            results = dataset_tree.findall(path)
             for result in results:
                 return bool(pattern.match(result.text))
 
@@ -348,11 +366,10 @@ class RuleRegexNoMatches(Rule):
 
     def is_valid_for(self, dataset_tree):
         """Rule implementation method."""
-        paths = self.case['paths']
         pattern = re.compile(self.case['regex'])
 
-        for path in paths:
-            results = dataset_tree.findall(self._extract_xpath_case(path))
+        for path in self.paths:
+            results = dataset_tree.findall(path)
             for result in results:
                 return not bool(pattern.match(result.text))
 
@@ -374,6 +391,12 @@ class RuleStartsWith(Rule):
     def is_valid_for(self):
         """Rule implementation method."""
         return True
+
+    def _normalize_xpaths(self):
+        """Normalize xpaths by combining them with `xpath_base`."""
+        super(RuleStartsWith, self)._normalize_xpaths()
+
+        self.start = self._normalize_xpath(self.start)
 
 
 class RuleSum(Rule):
@@ -416,12 +439,11 @@ class RuleUnique(Rule):
             Consider better methods for specifying which elements in the tree contain non-permitted duplication, such as bucket sort.
             Test with a ruleset that has multiple paths.
         """
-        paths = self.case['paths']
         original = list()
         unique = set()
 
-        for path in paths:
-            results = dataset_tree.findall(self._extract_xpath_case(path))
+        for path in self.paths:
+            results = dataset_tree.findall(path)
             for result in results:
                 original.append(result.text)
                 unique.add(result.text)
