@@ -19,7 +19,7 @@ import iati.core.default
 import iati.core.utilities
 
 
-_VALID_RULE_TYPES = ["no_more_than_one", "atleast_one", "dependent", "sum", "date_order", "regex_matches", "regex_no_matches", "startswith", "unique"]
+_VALID_RULE_TYPES = ["atleast_one", "dependent", "sum", "date_order", "no_more_than_one", "regex_matches", "regex_no_matches", "startswith", "unique"]
 
 
 def locate_constructor_for_rule_type(rule_type):
@@ -204,36 +204,6 @@ class Rule(object):
         return full_path
 
 
-class RuleNoMoreThanOne(Rule):
-    """Representation of a Rule that checks that there is no more than one Element matching a given XPath.
-
-    Warning:
-        Rules have not yet been implemented. The structure of specific types of Rule will depend on how the base class is formed.
-
-        The name of specific types of Rule may better indicate that they are Rules.
-
-    """
-
-    def __init__(self, xpath_base, case):
-        """Initialise a `no_more_than_one` rule."""
-        self.name = "no_more_than_one"
-
-        super(RuleNoMoreThanOne, self).__init__(xpath_base, case)
-
-    def is_valid_for(self, dataset_tree):
-        """Check `dataset_tree` has no more than one instance of a given case for an Element.
-
-        Args:
-            dataset_tree: an etree created from an XML dataset.
-
-        Returns:
-            Boolean value that changes depending on whether one or fewer cases are found in the dataset_tree.
-
-        """
-        path = self.case['paths'][0]
-        return len(dataset_tree.findall(self._extract_xpath_case(path))) <= 1
-
-
 class RuleAtLeastOne(Rule):
     """Representation of a Rule that checks that there is at least one Element matching a given XPath.
 
@@ -294,6 +264,34 @@ class RuleDependent(Rule):
         super(RuleDependent, self).__init__(xpath_base, case)
 
 
+class RuleNoMoreThanOne(Rule):
+    """Representation of a Rule that checks that there is no more than one Element matching a given XPath.
+
+    Warning:
+        Rules have not yet been implemented. The structure of specific types of Rule will depend on how the base class is formed.
+
+        The name of specific types of Rule may better indicate that they are Rules.
+
+    """
+
+    def __init__(self, xpath_base, case):
+        """Initialise a `no_more_than_one` rule."""
+        self.name = "no_more_than_one"
+
+        super(RuleNoMoreThanOne, self).__init__(xpath_base, case)
+
+    def is_valid_for(self, dataset_tree):
+        """Check `dataset_tree` has no more than one instance of a given case for an Element.
+
+        Args:
+            dataset_tree: an etree created from an XML dataset.
+
+        Returns:
+            Boolean value that changes depending on whether one or fewer cases are found in the dataset_tree.
+
+        """
+        path = self.case['paths'][0]
+        return len(dataset_tree.findall(self._extract_xpath_case(path))) <= 1
 
 
 class RuleRegexMatches(Rule):
