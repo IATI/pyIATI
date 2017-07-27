@@ -124,6 +124,7 @@ class Rule(object):
         self.case = case
         self.xpath_base = xpath_base
         self._valid_rule_configuration(case)
+        self._set_case_attributes(case)
 
     def _valid_rule_configuration(self, case):
         """Check that a configuration being passed into a Rule is valid for the given type of Rule.
@@ -148,6 +149,16 @@ class Rule(object):
             jsonschema.validate(case, ruleset_schema_section)
         except jsonschema.ValidationError:
             raise ValueError
+
+    def _set_case_attributes(self, case):
+        """Make the required attributes within a case their own attributes in the class.
+
+        Args:
+            case (dict): The case to take values from.
+        """
+        required_attributes = self._required_case_attributes(self._ruleset_schema_section())
+        for attrib in required_attributes:
+            setattr(self, attrib, case[attrib])
 
     def _required_case_attributes(self, partial_schema):
         """Determines the attributes that must be present given the Schema for the Rule type.

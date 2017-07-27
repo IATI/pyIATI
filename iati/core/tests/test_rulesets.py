@@ -201,6 +201,13 @@ class RuleSubclassTestBase(object):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
         assert isinstance(basic_rule, iati.core.Rule)
 
+    def test_rule_attributes_from_case(self, basic_rule):
+        """Check that a Rule subclass has case attributes set."""
+        required_attributes = basic_rule._required_case_attributes(basic_rule._ruleset_schema_section())
+        for attrib in required_attributes:
+            # ensure that the attribute exists - if not, an AttributeError will be raised
+            getattr(basic_rule, attrib)
+
     def test_rule_name(self, basic_rule, rule_type):
         """Check that a Rule subclass has the expected name."""
         assert basic_rule.name == rule_type
