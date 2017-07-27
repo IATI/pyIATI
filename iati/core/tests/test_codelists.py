@@ -80,6 +80,24 @@ class TestCodelists(object):
             assert code.name in code_names
             assert code.value in code_values
 
+    def test_codelist_complete(self):
+        """Check that a Codelist can be generated from an XML codelist definition."""
+        codelist_name = 'BudgetType'
+        path = iati.core.resources.get_codelist_path(codelist_name)
+        xml_str = iati.core.resources.load_as_string(path)
+        codelist = iati.core.Codelist(codelist_name, xml=xml_str)
+
+        assert codelist.complete == True
+
+    def test_codelist_incomplete(self):
+        """Check that a Codelist can be generated from an XML codelist definition."""
+        codelist_name = 'Country'
+        path = iati.core.resources.get_codelist_path(codelist_name)
+        xml_str = iati.core.resources.load_as_string(path)
+        codelist = iati.core.Codelist(codelist_name, xml=xml_str)
+
+        assert codelist.complete == False
+
     def test_codelist_type_xsd(self, name_to_set):
         """Check that a Codelist can turn itself into a type to use for validation."""
         code_value_to_set = "test Code value"
