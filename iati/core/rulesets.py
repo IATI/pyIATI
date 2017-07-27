@@ -345,9 +345,20 @@ class RuleSum(Rule):
 
         super(RuleSum, self).__init__(xpath_base, case)
 
-    def is_valid_for(self):
+    def is_valid_for(self, dataset_tree):
         """Rule implementation method."""
-        return True
+        paths = self.case['paths']
+        valid_total = self.case['sum']
+        percentages = list()
+
+        for path in paths:
+            results = dataset_tree.xpath(self._extract_xpath_case(path))
+            for result in results:
+                percentages.append(int(result))
+
+        total = sum(percentages)
+
+        return total == valid_total
 
 
 class RuleUnique(Rule):

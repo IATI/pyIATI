@@ -43,6 +43,12 @@ DATASET_TREE_FOR_REGEXNOMATCHES_RULE_VALID = iati.core.resources.load_as_tree(ia
 DATASET_TREE_FOR_REGEXNOMATCHES_RULE_INVALID = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('invalid_regexnomatches'))
 """An etree containing XML data that is not permitted by `RuleRegexNoMatches`."""
 
+SUM_RULESET_STR = iati.core.resources.load_as_string(iati.core.resources.get_test_ruleset_path('sum_test_ruleset'))
+"""A string containing a valid Ruleset with the `sum` Rule."""
+DATASET_TREE_FOR_SUM_RULE_VALID = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_sum'))
+DATASET_TREE_FOR_SUM_RULE_INVALID = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('invalid_sum'))
+"""An etree containing XML data that is not permitted by `RuleSum`."""
+
 UNIQUE_RULESET_STR = iati.core.resources.load_as_string(iati.core.resources.get_test_ruleset_path('unique_test_ruleset'))
 """A string containing a valid Ruleset with the `unique` Rule."""
 DATASET_TREE_FOR_UNIQUE_RULE_VALID = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_unique'))
