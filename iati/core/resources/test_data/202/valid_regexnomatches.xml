@@ -2,6 +2,6 @@
 
 <iati-activities version="2.02">
   <iati-activity>
-    <iati-identifier>/&amp;|?</iati-identifier><!-- iati-identifier does not match regex -->
+    <iati-identifier>/&amp;|?12345</iati-identifier><!-- iati-identifier does not match regex -->
   </iati-activity>
 </iati-activities>
