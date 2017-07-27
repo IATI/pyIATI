@@ -63,6 +63,7 @@ class Schema(object):
             raise iati.core.exceptions.SchemaError
         else:
             self._schema_base_tree = loaded_tree
+            self._flatten_includes()
 
     def _change_include_to_xinclude(self, tree):
         """Change the method in which common elements are included.
@@ -128,16 +129,13 @@ class Schema(object):
 
         return tree
 
-    def flatten_includes(self, tree):
+    def _flatten_includes(self):
         """Flatten includes so that all nodes are accessible through lxml.
 
         Identify the contents of files defined as `<xsd:include schemaLocation="NAME.xsd" />` and bring in the contents.
 
         Params:
             tree (etree._ElementTree): The tree to flatten.
-
-        Returns:
-            etree._ElementTree: The flattened tree.
 
         Todo:
             Consider moving this out of Schema().
@@ -146,10 +144,13 @@ class Schema(object):
 
         """
         # change the include to a format that lxml can read
-        tree = self._change_include_to_xinclude(tree)
+        tree = self._change_include_to_xinclude(self._schema_base_tree)
 
         # adopt the included elements
-        tree.xinclude()
+        if tree is None:
+            return
+        else:
+            tree.xinclude()
 
         # remove nested schema elements
         schema_xpath = (iati.core.constants.NAMESPACE + 'schema')
@@ -163,8 +164,6 @@ class Schema(object):
                     tree.getroot().insert(nested_schema_el.getparent().index(nested_schema_el) + 1, elem)
         # remove the nested schema elements
         etree.strip_elements(tree.getroot(), schema_xpath)
-
-        return tree
 
     def get_xsd_element(self, xsd_element_name):
         """Return an lxml.etree represention for a given xsd:element, based on its name.

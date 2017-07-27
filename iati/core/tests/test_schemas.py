@@ -68,108 +68,60 @@ class TestSchemas(object):
         assert isinstance(schema.codelists, set)
         assert len(schema.codelists) == 0
 
-    @pytest.mark.parametrize("schema_type, expected_local_element", [
-        (default_activity_schema, 'iati-activities'),
-        (default_organisation_schema, 'iati-organisations')
-    ])
-    def test_schema_unmodified_includes(self, schema_type, expected_local_element):
-        """Check that local elements can be accessed, but imported elements within unmodified Schema includes cannot be accessed.
-
-        lxml does not contain functionality to access elements within imports defined along the lines of:
-        `<xsd:include schemaLocation="NAME.xsd" />`
-
-        Todo:
-            Simplify asserts.
-
-        """
-        schema = schema_type()
-        local_element = expected_local_element
-        included_element = 'reporting-org'
-
-        include_location_xpath = (iati.core.constants.NAMESPACE + 'include')
-        local_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + local_element + '"]')
-        included_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
-
-        assert schema._schema_base_tree.getroot().find(include_location_xpath).attrib['schemaLocation'] == 'iati-common.xsd'
-        assert isinstance(schema._schema_base_tree.getroot().find(local_xpath), etree._Element)
-        assert schema._schema_base_tree.getroot().find(included_xpath) is None
-
-    @pytest.mark.parametrize("schema_type, expected_local_element", [
-        (default_activity_schema, 'iati-activities'),
-        (default_organisation_schema, 'iati-organisations')
-    ])
-    def test_schema_modified_includes(self, schema_type, expected_local_element):
-        """Check that elements within unflattened modified Schema includes cannot be accessed.
-
-        lxml contains functionality to access elements within imports defined along the lines of:
-        `<xi:include href="NAME.xsd" parse="xml" />`
-        when there is a namespace defined against the root schema element as `xmlns:xi="http://www.w3.org/2001/XInclude"`
-
-        Todo:
-            Simplify asserts.
-
-            Consider consolidating variables shared between multiple tests.
-
-        """
-        schema = schema_type()
-        local_element = expected_local_element
-        included_element = 'reporting-org'
-
-        include_location_xpath = (iati.core.constants.NAMESPACE + 'include')
-        xi_location_xpath = ('{http://www.w3.org/2001/XInclude}include')
-        local_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + local_element + '"]')
-        included_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
-
-        include_location = schema._schema_base_tree.getroot().find(include_location_xpath).attrib['schemaLocation']
-        tree = schema._change_include_to_xinclude(schema._schema_base_tree)
-        xi_node = tree.getroot().find(xi_location_xpath)
-        include_node_after = tree.getroot().find(include_location_xpath)
-
-        # check that the new element has been added
-        assert isinstance(xi_node, etree._Element)
-        assert xi_node.attrib['href'][-len(include_location):] == include_location
-        assert xi_node.attrib['parse'] == 'xml'
-        assert isinstance(tree.getroot().find(local_xpath), etree._Element)
-        assert not isinstance(tree.getroot().find(included_xpath), etree._Element)
-        # check that the old element has been removed
-        assert include_node_after is None
-
     @pytest.mark.parametrize("schema_name, expected_local_element", [
         (iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID, 'iati-activities'),
         (iati.core.tests.utilities.SCHEMA_ORGANISATION_NAME_VALID, 'iati-organisations')
     ])
-    def test_schema_flattened_includes(self, schema_name, expected_local_element):
-        """Check that includes are flattened correctly.
+    def test_schema_init_schema_containing_includes(self, schema_name, expected_local_element):
+        """For a schema that includes another schema, check that includes are flattened correctly.
 
         In a full flatten of included elements as `<xi:include href="NAME.xsd" parse="xml" />`, there may be nested `schema` elements and other situations that are not permitted.
 
         This checks that the flattened xsd is valid and that included elements can be accessed.
 
         Todo:
-            Simplify asserts.
-
             Assert that the flattened XML is a valid Schema.
 
             Test that this works with subclasses of iati.core.Schema: iati.core.ActivitySchema and iati.core.OrganisationSchema
 
         """
-        schema_path = iati.core.resources.get_schema_path(schema_name)
-        schema = iati.core.Schema(schema_path)
-        local_element = expected_local_element
-        included_element = 'reporting-org'
+        schema = iati.core.default.schema(schema_name)
 
-        include_location_xpath = (iati.core.constants.NAMESPACE + 'include')
-        xi_location_xpath = ('{http://www.w3.org/2001/XInclude}include')
-        local_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + local_element + '"]')
-        included_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
+        element_name_in_flattened_schema = 'reporting-org'
+        element_in_original_schema = schema.get_xsd_element(expected_local_element)
+        element_in_flattened_schema = schema.get_xsd_element(element_name_in_flattened_schema)
+        xsd_include_element = schema._schema_base_tree.find(
+            'xsd:include', namespaces=iati.core.constants.NSMAP
+        )
+        xi_include_element = schema._schema_base_tree.find(
+            'xi:include', namespaces={'xi': 'http://www.w3.org/2001/XInclude'}
+        )
+        xsd_schema_element = schema._schema_base_tree.find(
+            'xsd:schema', namespaces=iati.core.constants.NSMAP
+        )
 
-        tree = schema.flatten_includes(schema._schema_base_tree)
+        assert isinstance(element_in_flattened_schema, etree._Element)
+        assert isinstance(element_in_original_schema, etree._Element)
+        assert xsd_include_element is None
+        assert xi_include_element is None
+        assert xsd_schema_element is None
 
-        assert tree.getroot().find(include_location_xpath) is None
-        assert tree.getroot().find(xi_location_xpath) is None
-        assert isinstance(tree.getroot().find(local_xpath), etree._Element)
-        assert isinstance(tree.getroot().find(included_xpath), etree._Element)
-        assert iati.core.utilities.convert_tree_to_schema(tree)
+    def test_schema_init_schema_containing_no_includes(self):
+        """For a schema that does not includes another schema, test that no flattening takes place.
+
+        This test compares the etree.tostring results of the same input file which is instantiated through:
+          i) iati.core.Schema, and
+          ii) directly from etree.fromstring.
+
+        """
+        schema = iati.core.Schema(iati.core.tests.utilities.PATH_XSD_NON_IATI)
+        xsd_bytes = iati.core.resources.load_as_bytes(iati.core.tests.utilities.PATH_XSD_NON_IATI)
+        schema_direct_from_file = etree.fromstring(xsd_bytes)
+
+        str_schema = etree.tostring(schema._schema_base_tree)
+        str_schema_direct_from_file = etree.tostring(schema_direct_from_file)
+
+        assert str_schema == str_schema_direct_from_file
 
     def test_schema_codelists_add(self, schemas_initialised):
         """Check that it is possible to add Codelists to the Schema."""
