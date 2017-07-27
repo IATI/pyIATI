@@ -9,6 +9,8 @@ setup(
     url='http://iatistandard.org/',
     packages = find_packages(exclude='iati/core/tests'),
     install_requires = [
+        # JSON schema parsing validation
+        'jsonschema==2.6.0',
         # XML handling library
         'lxml==3.8.0',
         # python2/python3 compatibility library
