@@ -285,8 +285,17 @@ class RuleDateOrder(Rule):
     def __init__(self, xpath_base, case):
         """Initialise a `date_order` rule."""
         self.name = "date_order"
+        self.SPECIAL_CASE = 'NOW'
 
         super(RuleDateOrder, self).__init__(xpath_base, case)
+
+    def _normalize_xpaths(self):
+        """Normalize xpaths by combining them with `xpath_base`."""
+        if self.less is not self.SPECIAL_CASE:
+            self.less = self._normalize_xpath(self.less)
+
+        if self.more is not self.SPECIAL_CASE:
+            self.more = self._normalize_xpath(self.more)
 
 
 class RuleDependent(Rule):
