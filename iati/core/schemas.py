@@ -188,7 +188,7 @@ class Schema(object):
             parent_element (etree._ElementTree): The parent represention of an XSD element to find children for.
 
         Returns:
-            list of etree._ElementTree: A list containing representions of XSD elements that are children to the input element.
+            list of etree._ElementTree: A list containing representions of XSD elements that are children to the input element.  If there are no child elements, this will be an empty list.
         """
         child_elements_and_refs = parent_element.findall(
             'xsd:complexType/xsd:sequence/xsd:element',

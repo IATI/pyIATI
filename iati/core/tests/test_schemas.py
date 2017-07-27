@@ -229,10 +229,10 @@ class TestSchemas(object):
     @pytest.mark.parametrize("schema_type, xsd_element_name", [
         (default_activity_schema, 'iati-activities'),
         (default_activity_schema, 'contact-info'),
-        (default_activity_schema, 'iati-identifier'),  # No child elements
+        (default_activity_schema, 'iati-identifier'),  # Contains no child elements
         (default_organisation_schema, 'iati-organisations'),
         (default_organisation_schema, 'total-budget'),
-        (default_organisation_schema, 'organisation-identifier')  # No child elements
+        (default_organisation_schema, 'organisation-identifier')  # Contains no child elements
     ])
     def test_get_child_xsd_elements(self, schema_type, xsd_element_name):
         """Check that a list of lxml objects are returned to represent all child XSD elements. Also check that each item in the result is of the expected type.
