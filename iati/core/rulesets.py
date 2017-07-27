@@ -267,6 +267,10 @@ class RuleDateOrder(Rule):
         if self.more is not self.SPECIAL_CASE:
             self.more = self._normalize_xpath(self.more)
 
+    def is_valid_for(self):
+        """Rule implementation method."""
+        return True
+
 
 class RuleDependent(Rule):
     """A specific type of Rule.
@@ -281,6 +285,13 @@ class RuleDependent(Rule):
         self.name = "dependent"
 
         super(RuleDependent, self).__init__(xpath_base, case)
+
+    def is_valid_for(self, dataset_tree):
+        """Rule implementation method."""
+        for path in self.paths:
+            # results = dataset_tree.findall(path) #?
+        # import pdb; pdb.set_trace()
+        return len(?) == len(self.paths)
 
 
 class RuleNoMoreThanOne(Rule):
@@ -386,15 +397,15 @@ class RuleStartsWith(Rule):
 
         super(RuleStartsWith, self).__init__(xpath_base, case)
 
-    def is_valid_for(self):
-        """Rule implementation method."""
-        return True
-
     def _normalize_xpaths(self):
         """Normalize xpaths by combining them with `xpath_base`."""
         super(RuleStartsWith, self)._normalize_xpaths()
 
         self.start = self._normalize_xpath(self.start)
+
+    def is_valid_for(self):
+        """Rule implementation method."""
+        return True
 
 
 class RuleSum(Rule):

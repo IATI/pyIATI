@@ -238,7 +238,7 @@ class RuleSubclassTestBase(object):
             Maybe too much of a shortcut as can't fully pass until all implementations complete. Possibly the wrong abstraction in the long-term.
         """
         if this_rule_only_ruleset is None:
-            return
+            return # Remove later
 
         for rule in this_rule_only_ruleset.rules:
             assert rule.is_valid_for(valid_data_tree)
@@ -250,7 +250,7 @@ class RuleSubclassTestBase(object):
             Maybe too much of a shortcut as can't fully pass until all implementations complete. Possibly the wrong abstraction in the long-term.
         """
         if this_rule_only_ruleset is None:
-            return
+            return # remove later
 
         for rule in this_rule_only_ruleset.rules:
             assert not rule.is_valid_for(invalid_data_tree)
@@ -334,17 +334,18 @@ class TestRuleDependent(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_data_tree(self):
         """Invalid dataset etree for this Rule."""
-        return None
+        return iati.core.tests.utilities.DATASET_TREE_FOR_DEPENDENT_RULE_INVALID
 
     @pytest.fixture
     def valid_data_tree(self):
         """Return valid dataset etree for this Rule."""
-        return None
+        return iati.core.tests.utilities.DATASET_TREE_FOR_DEPENDENT_RULE_VALID
 
     @pytest.fixture
     def this_rule_only_ruleset(self):
         """Ruleset contains only this Rule."""
-        return None
+        ruleset_str = iati.core.tests.utilities.DEPENDENT_RULESET_STR
+        return iati.core.Ruleset(ruleset_str)
 
 
 class TestRuleDateOrder(RuleSubclassTestBase):
@@ -380,25 +381,19 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         return request.param
 
     @pytest.fixture
-    def this_rule_only_ruleset(self):
-        """Ruleset contains only this Rule."""
-        return None
-
-    @pytest.fixture
     def invalid_data_tree(self):
         """Invalid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_SUM_RULE_INVALID
+        return None
 
     @pytest.fixture
     def valid_data_tree(self):
         """Return valid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_SUM_RULE_VALID
+        return None
 
     @pytest.fixture
     def this_rule_only_ruleset(self):
         """Ruleset contains only this Rule."""
-        ruleset_str = iati.core.tests.utilities.SUM_RULESET_STR
-        return iati.core.Ruleset(ruleset_str)
+        return None
 
     def test_rule_paths_less(self, basic_rule):
         """Check that the `less` value has been combined with the `xpath_base` where required."""

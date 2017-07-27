@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<iati-activities version="2.02">
+  <iati-activity>
+    <transaction><!-- Contains all dependencies for transactions -->
+      <transaction-date></transaction-date>
+      <transaction-type></transaction-type>
+      <value></value>
+      <value-date></value-date>
+    </transaction>
+  </iati-activity>
+</iati-activities>

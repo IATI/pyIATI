@@ -25,6 +25,12 @@ DATASET_TREE_FOR_ATLEASTONE_RULE_VALID = iati.core.resources.load_as_tree(iati.c
 DATASET_TREE_FOR_ATLEASTONE_RULE_INVALID = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('invalid_atleastone'))
 """An etree containing XML data that is not permitted by `RuleAtLeastOne`."""
 
+DEPENDENT_RULESET_STR = iati.core.resources.load_as_string(iati.core.resources.get_test_ruleset_path('dependent_test_ruleset'))
+"""A string containing a valid Ruleset with the `dependent` Rule."""
+DATASET_TREE_FOR_DEPENDENT_RULE_VALID = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_dependent'))
+DATASET_TREE_FOR_DEPENDENT_RULE_INVALID = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('invalid_dependent'))
+"""An etree containing XML data that is not permitted by `RuleDependent`."""
+
 NOMORETHANONE_RULESET_STR = iati.core.resources.load_as_string(iati.core.resources.get_test_ruleset_path('nomorethanone_test_ruleset'))
 """A string containing a valid Ruleset with the `no_more_than_one` Rule."""
 DATASET_TREE_FOR_NOMORETHANONE_RULE_VALID = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_nomorethanone'))
