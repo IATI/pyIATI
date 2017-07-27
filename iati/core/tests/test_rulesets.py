@@ -212,6 +212,14 @@ class RuleSubclassTestBase(object):
         """Check that a Rule subclass has the expected name."""
         assert basic_rule.name == rule_type
 
+    def test_rule_paths(self, basic_rule):
+        """Check that a Rule subclass has the expected paths."""
+        try:
+            for path in basic_rule.paths:
+                assert path.startswith(basic_rule.xpath_base)
+        except AttributeError:
+            pass
+
     def test_rule_invalid_case(self, rule_constructor, invalid_case):
         """Check that a rule cannot be instantiated when the case is invalid.
 
@@ -439,6 +447,20 @@ class TestRuleDateOrder(RuleSubclassTestBase):
     def this_rule_only_ruleset(self):
         """Ruleset contains only this Rule."""
         return None
+      
+    def test_rule_paths_less(self, basic_rule):
+        """Check that the `less` value has been combined with the `xpath_base` where required."""
+        if basic_rule.less.endswith(basic_rule.SPECIAL_CASE):
+            assert basic_rule.less == basic_rule.SPECIAL_CASE
+        else:
+            assert basic_rule.less.startswith(basic_rule.xpath_base)
+
+    def test_rule_paths_more(self, basic_rule):
+        """Check that the `more` value has been combined with the `xpath_base` where required."""
+        if basic_rule.more.endswith(basic_rule.SPECIAL_CASE):
+            assert basic_rule.more == basic_rule.SPECIAL_CASE
+        else:
+            assert basic_rule.more.startswith(basic_rule.xpath_base)
 
 
 class TestRuleNoMoreThanOne(RuleSubclassTestBase):
@@ -485,7 +507,7 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         """Ruleset contains only this Rule."""
         ruleset_str = iati.core.tests.utilities.NOMORETHANONE_RULESET_STR
         return iati.core.Ruleset(ruleset_str)
-
+      
 
 class TestRuleRegexMatches(RuleSubclassTestBase):
     """A container for tests relating to RuleRegexMatches."""
@@ -636,6 +658,10 @@ class TestRuleStartsWith(RuleSubclassTestBase):
     def this_rule_only_ruleset(self):
         """Ruleset contains only this Rule."""
         return None
+
+    def test_rule_paths_start(self, basic_rule):
+        """Check that the `start` value has been combined with the `xpath_base`."""
+        assert basic_rule.start.startswith(basic_rule.xpath_base)
 
 
 class TestRuleUnique(RuleSubclassTestBase):
