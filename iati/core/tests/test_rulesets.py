@@ -187,17 +187,15 @@ class RuleSubclassTestBase(object):
     """A base class for Rule subclass tests."""
 
     @pytest.fixture
-    def basic_rule(self, rule_type, valid_case):
+    def basic_rule(self, rule_constructor, valid_case):
         """Instantiate a basic Rule subclass."""
         xpath_base = 'an xpath'
-        rule_constructor = iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
         return rule_constructor(xpath_base, valid_case)
 
     @pytest.fixture
-    def invalid_case_rule(self, rule_type):
-        """Invalid instantiation of a Rule subclass."""
-        rule_constructor = iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
-        return rule_constructor
+    def rule_constructor(self, rule_type):
+        """Return the constructor for the current Rule type."""
+        return iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
 
     def test_rule_init_valid_parameter_types(self, basic_rule):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
@@ -207,17 +205,16 @@ class RuleSubclassTestBase(object):
         """Check that a Rule subclass has the expected name."""
         assert basic_rule.name == rule_type
 
-    def test_rule_missing_required_case_properties(self, invalid_case_rule, invalid_case):
-        """Check that a rule cannot be instantiated without the required case properties.
+    def test_rule_invalid_case(self, rule_constructor, invalid_case):
+        """Check that a rule cannot be instantiated when the case is invalid.
 
         Todo:
-            Rename now that there are a wider range of invalid cases.
             Add tests with empty path AND empty xpath_base.
         """
         xpath_base = 'an xpath'
 
         with pytest.raises(ValueError):
-            invalid_case_rule(xpath_base, invalid_case)
+            rule_constructor(xpath_base, invalid_case)
 
     @pytest.mark.skip(reason="Not implemented for some subclasses")
     def test_is_valid_for(self, invalid_data_tree, valid_data_tree, this_rule_only_ruleset):

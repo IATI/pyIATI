@@ -149,6 +149,18 @@ class Rule(object):
         except jsonschema.ValidationError:
             raise ValueError
 
+    def _required_case_attributes(self, partial_schema):
+        """Determines the attributes that must be present given the Schema for the Rule type.
+
+        Args:
+            partial_schema (dict): The partial JSONSchema to extract attribute names from.
+
+        Returns:
+            list of str: The names of required attributes.
+
+        """
+        return [key for key in partial_schema['properties'].keys() if key != 'condition']
+
     def _ruleset_schema_section(self):
         """Locate the section of the Ruleset Schema relevant for the Rule.
 
@@ -164,7 +176,7 @@ class Rule(object):
         ruleset_schema = iati.core.default.ruleset_schema()
         partial_schema = ruleset_schema['patternProperties']['.+']['properties'][self.name]['properties']['cases']['items']  # pylint: disable=E1101
         # make all attributes other than 'condition' in the partial schema required
-        partial_schema['required'] = [key for key in partial_schema['properties'].keys() if key != 'condition']
+        partial_schema['required'] = self._required_case_attributes(partial_schema)
         # ensure that the 'paths' array is not empty
         if 'paths' in partial_schema['properties'].keys():
             partial_schema['properties']['paths']['minItems'] = 1
