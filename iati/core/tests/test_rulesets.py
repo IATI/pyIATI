@@ -30,8 +30,7 @@ class TestRuleset(object):
         with pytest.raises(TypeError):
             iati.core.Ruleset(not_a_ruleset)
 
-    # This is passing now without issue, am I being dense?
-    # @pytest.mark.skip(reason="Bytearrays cause multiple types of errors. This is confusing. Probs due to the stupid null byte at the start of one of the sample bytearrays. Grr! Argh!")
+    @pytest.mark.skip(reason="Bytearrays cause multiple types of errors. This is confusing. Probs due to the stupid null byte at the start of one of the sample bytearrays. Grr! Argh!")
     @pytest.mark.parametrize("byte_array", iati.core.tests.utilities.find_parameter_by_type(['bytearray']))
     def test_ruleset_init_ruleset_str_bytearray(self, byte_array):
         """Check that a Ruleset cannot be created when given at least one Rule in a bytearray format."""
@@ -155,7 +154,11 @@ class TestRuleSubclasses(object):
     @pytest.mark.parametrize("rule_constructor", rule_constructors)
     @pytest.mark.parametrize("xpath_base", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_rule_init_invalid_xpath_base(self, rule_constructor, xpath_base):
-        """Check that a Rule cannot be created when xpath_base is not a string."""
+        """Check that a Rule cannot be created when xpath_base is not a string.
+
+        Todo:
+            Ensure the case is valid - an empty dictionary isn't.
+        """
         case = dict()
 
         with pytest.raises(ValueError):
@@ -184,32 +187,41 @@ class RuleSubclassTestBase(object):
     """A base class for Rule subclass tests."""
 
     @pytest.fixture
-    def basic_rule(self, rule_type, valid_case):
+    def basic_rule(self, rule_constructor, valid_case):
         """Instantiate a basic Rule subclass."""
         xpath_base = 'an xpath'
-        rule_constructor = iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
         return rule_constructor(xpath_base, valid_case)
 
     @pytest.fixture
-    def invalid_case_rule(self, rule_type):
-        """Invalid instantiation of a Rule subclass."""
-        rule_constructor = iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
-        return rule_constructor
+    def rule_constructor(self, rule_type):
+        """Return the constructor for the current Rule type."""
+        return iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
 
     def test_rule_init_valid_parameter_types(self, basic_rule):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
         assert isinstance(basic_rule, iati.core.Rule)
 
+    def test_rule_attributes_from_case(self, basic_rule):
+        """Check that a Rule subclass has case attributes set."""
+        required_attributes = basic_rule._required_case_attributes(basic_rule._ruleset_schema_section())
+        for attrib in required_attributes:
+            # ensure that the attribute exists - if not, an AttributeError will be raised
+            getattr(basic_rule, attrib)
+
     def test_rule_name(self, basic_rule, rule_type):
         """Check that a Rule subclass has the expected name."""
         assert basic_rule.name == rule_type
 
-    def test_rule_missing_required_case_properties(self, invalid_case_rule, invalid_cases):
-        """Check that a rule cannot be instantiated without the required case properties."""
+    def test_rule_invalid_case(self, rule_constructor, invalid_case):
+        """Check that a rule cannot be instantiated when the case is invalid.
+
+        Todo:
+            Add tests with empty path AND empty xpath_base.
+        """
         xpath_base = 'an xpath'
 
         with pytest.raises(ValueError):
-            invalid_case_rule(xpath_base, invalid_cases)
+            rule_constructor(xpath_base, invalid_case)
 
     def test_is_valid_for(self, valid_data_tree, this_rule_only_ruleset):
         """Check that a given rule returns the expected result when given a dataset.
@@ -217,6 +229,9 @@ class RuleSubclassTestBase(object):
         Todo:
             Maybe too much of a shortcut as can't fully pass until all implementations complete. Possibly the wrong abstraction in the long-term.
         """
+        if this_rule_only_ruleset is None:
+            return
+
         for rule in this_rule_only_ruleset.rules:
             assert rule.is_valid_for(valid_data_tree)
 
@@ -226,6 +241,9 @@ class RuleSubclassTestBase(object):
         Todo:
             Maybe too much of a shortcut as can't fully pass until all implementations complete. Possibly the wrong abstraction in the long-term.
         """
+        if this_rule_only_ruleset is None:
+            return
+
         for rule in this_rule_only_ruleset.rules:
             assert not rule.is_valid_for(invalid_data_tree)
 
@@ -238,15 +256,26 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         """Type of rule."""
         return 'no_more_than_one'
 
-    @pytest.fixture
-    def valid_case(self):
+    @pytest.fixture(params=[
+        {'paths': ['']},  # empty path
+        {'paths': ['path_1']},  # single path
+        {'paths': ['path_1', 'path_2']},  # multiple paths
+        {'paths': ['path_1', 'path_1']}  # duplicate paths
+    ])
+    def valid_case(self, request):
         """Permitted case for this rule."""
-        return {'paths': ['path_1', 'path_2']}
+        return request.param
 
-    @pytest.fixture
-    def invalid_cases(self):
-        """Non-permitted cases for this rule."""
-        return {}
+    @pytest.fixture(params=[
+        {'paths': []},  # empty path array
+        {'paths': 'path_1'},  # non-array `paths`
+        {'paths': [3]},  # non-string value in path array
+        {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
+        {}  # empty dictionary
+    ])
+    def invalid_case(self, request):
+        """Non-permitted case for this rule."""
+        return request.param
 
     @pytest.fixture
     def invalid_data_tree(self):
@@ -273,15 +302,26 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         """Type of rule."""
         return 'atleast_one'
 
-    @pytest.fixture
-    def valid_case(self):
+    @pytest.fixture(params=[
+        {'paths': ['']},  # empty path
+        {'paths': ['path_1']},  # single path
+        {'paths': ['path_1', 'path_2']},  # multiple paths
+        {'paths': ['path_1', 'path_1']}  # duplicate paths
+    ])
+    def valid_case(self, request):
         """Permitted case for this rule."""
-        return {'paths': ['path_1', 'path_2']}
+        return request.param
 
-    @pytest.fixture
-    def invalid_cases(self):
-        """Non-permitted cases for this rule."""
-        return {}
+    @pytest.fixture(params=[
+        {'paths': []},  # empty path array
+        {'paths': 'path_1'},  # non-array `paths`
+        {'paths': [3]},  # non-string value in path array
+        {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
+        {}  # empty dictionary
+    ])
+    def invalid_case(self, request):
+        """Non-permitted case for this rule."""
+        return request.param
 
     @pytest.fixture
     def invalid_data_tree(self):
@@ -308,17 +348,41 @@ class TestRuleDependent(RuleSubclassTestBase):
         """Type of rule."""
         return 'dependent'
 
-    @pytest.fixture
-    def valid_case(self):
+    @pytest.fixture(params=[
+        {'paths': ['']},  # empty path
+        {'paths': ['path_1']},  # single path
+        {'paths': ['path_1', 'path_2']},  # multiple paths
+        {'paths': ['path_1', 'path_1']}  # duplicate paths
+    ])
+    def valid_case(self, request):
         """Permitted case for this rule."""
-        return {'paths': ['path_1', 'path_2']}
+        return request.param
 
-    # If this rule is checking for dependent paths then surely it's invalid to pass in only one path property?
+    @pytest.fixture(params=[
+        {'paths': []},  # empty path array
+        {'paths': 'path_1'},  # non-array `paths`
+        {'paths': [3]},  # non-string value in path array
+        {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
+        {}  # empty dictionary
+    ])
+    def invalid_case(self, request):
+        """Non-permitted case for this rule."""
+        return request.param
+
     @pytest.fixture
-    def invalid_cases(self):
-        """Non-permitted cases for this rule."""
-        return {}
+    def invalid_data_tree(self):
+        """Invalid dataset etree for this Rule."""
+        return None
 
+    @pytest.fixture
+    def valid_data_tree(self):
+        """Return valid dataset etree for this Rule."""
+        return None
+
+    @pytest.fixture
+    def this_rule_only_ruleset(self):
+        """Ruleset contains only this Rule."""
+        return None
 
 class TestRuleSum(RuleSubclassTestBase):
     """A container for tests relating to RuleSum."""
@@ -328,15 +392,51 @@ class TestRuleSum(RuleSubclassTestBase):
         """Type of rule."""
         return 'sum'
 
-    @pytest.fixture
-    def valid_case(self):
+    @pytest.fixture(params=[
+        {'paths': [''], 'sum': 3},  # empty path with sum
+        {'paths': ['path_1'], 'sum': 3},  # single path with sum
+        {'paths': ['path_1', 'path_2'], 'sum': 3},  # multiple paths with sum
+        {'paths': ['path_1', 'path_1'], 'sum': 3},  # duplicate paths with sum
+        {'paths': ['path_1'], 'sum': -1000},  # negative sum
+        {'paths': ['path_1'], 'sum': 101},  # sum greater than standard percentage limit
+        {'paths': ['path_1'], 'sum': 15.5},  # decimal sum
+        {'paths': ['path_1'], 'sum': 0},  # zero sum
+        {'paths': ['path_1'], 'sum': 10**100},  # big sum
+        {'paths': ['path_1'], 'sum': -10**100},  # tiny sum
+        {'paths': ['path_1'], 'sum': 2.99792458e6}  # exponential sum
+    ])
+    def valid_case(self, request):
         """Permitted case for this rule."""
-        return {'paths': ['path_1', 'path_2'], 'sum': 3}
-
-    @pytest.fixture(params=[{'paths': ['path_1', 'path_2']}, {'sum': 100}, {}])
-    def invalid_cases(self, request):
-        """Non-permitted cases for this rule."""
         return request.param
+
+    @pytest.fixture(params=[
+        {'paths': [], 'sum': 3},  # empty path array
+        {'paths': 'path_1', 'sum': 3},  # non-array `paths`
+        {'paths': [3], 'sum': 3},  # non-string value in path array
+        {'paths': ['path_1', 3], 'sum': 3},  # mixed string and non-string value in path array
+        {'paths': ['path_1', 'path_2']},  # missing required attribute - `sum`
+        {'sum': 100},  # missing required attribute - `paths`
+        {},  # empty dictionary
+        {'paths': ['path_1'], 'sum': '3'}  # sum is a string representation of a number
+    ])
+    def invalid_case(self, request):
+        """Non-permitted case for this rule."""
+        return request.param
+
+    @pytest.fixture
+    def invalid_data_tree(self):
+        """Invalid dataset etree for this Rule."""
+        return None
+
+    @pytest.fixture
+    def valid_data_tree(self):
+        """Return valid dataset etree for this Rule."""
+        return None
+
+    @pytest.fixture
+    def this_rule_only_ruleset(self):
+        """Ruleset contains only this Rule."""
+        return None
 
 
 class TestRuleDateOrder(RuleSubclassTestBase):
@@ -347,16 +447,44 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         """Type of rule."""
         return 'date_order'
 
-    @pytest.fixture
-    def valid_case(self):
+    @pytest.fixture(params=[
+        {'less': 'start-xpath', 'more': 'end-xpath'},  # both `less` and `more` present
+        {'less': 'start-xpath', 'more': 'NOW'},  # `more` as NOW
+        {'less': 'NOW', 'more': 'end-xpath'},  # `less` as NOW
+        {'less': 'NOW', 'more': 'NOW'},  # both `less` and `more` as NOW
+        {'less': 'start-xpath', 'more': 'start-xpath'},  # both `less` and `more` as same xpath
+        {'less': '2017-07-26T13:19:05.493Z', 'more': 'end-xpath'},  # `less` is a string-formatted date
+        {'less': 'start-xpath', 'more': '2017-07-26T13:19:05.493Z'}  # `more` is a string-formatted date
+    ])
+    def valid_case(self, request):
         """Permitted case for this rule."""
-        return {'less': 'start', 'more': 'end'}
-
-    @pytest.fixture(params=[{'less': 'start'}, {'more': 'end'}, {}])
-    def invalid_cases(self, request):
-        """Non-permitted cases for this rule."""
         return request.param
 
+    @pytest.fixture(params=[
+        {'less': 'start'},  # missing required attribute - `more`
+        {'more': 'end'},  # missing required attribute - `less`
+        {'less': 1501075031590, 'more': 'end-xpath'},  # `less` is a numeric value
+        {'less': 'start-xpath', 'more': 1501075031590},  # `more` is a numeric value
+        {}  # empty dictionary
+    ])
+    def invalid_case(self, request):
+        """Non-permitted case for this rule."""
+        return request.param
+
+    @pytest.fixture
+    def invalid_data_tree(self):
+        """Invalid dataset etree for this Rule."""
+        return None
+
+    @pytest.fixture
+    def valid_data_tree(self):
+        """Return valid dataset etree for this Rule."""
+        return None
+
+    @pytest.fixture
+    def this_rule_only_ruleset(self):
+        """Ruleset contains only this Rule."""
+        return None
 
 class TestRuleRegexMatches(RuleSubclassTestBase):
     """A container for tests relating to RuleRegexMatches."""
@@ -366,14 +494,30 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         """Type of rule."""
         return 'regex_matches'
 
-    @pytest.fixture
-    def valid_case(self):
+    @pytest.fixture(params=[
+        {'regex': 'some regex', 'paths': ['']},  # empty path with regex
+        {'regex': 'some regex', 'paths': ['path_1']},  # single path with regex
+        {'regex': 'some regex', 'paths': ['path_1', 'path_2']},  # multiple paths with regex
+        {'regex': 'some regex', 'paths': ['path_1', 'path_1']},  # duplicate paths with regex
+        {'regex': '', 'paths': ['path_1']}  # single path with regex
+    ])
+    def valid_case(self, request):
         """Permitted case for this rule."""
-        return {'regex': 'some regex', 'paths': ['path_1', 'path_2']}
+        return request.param
 
-    @pytest.fixture(params=[{'regex': 'some regex'}, {'paths': ['path_1', 'path_2']}, {}])
-    def invalid_cases(self, request):
-        """Non-permitted cases for this rule."""
+    @pytest.fixture(params=[
+        {'regex': 'some regex', 'paths': []},  # empty path array
+        {'regex': 'some regex', 'paths': 'path_1'},  # non-array `paths`
+        {'regex': 'some regex', 'paths': [3]},  # non-string value in path array
+        {'regex': 'some regex', 'paths': ['path_1', 3]},  # mixed string and non-string value in path array
+        {'regex': 'some regex'},  # missing required attribute - `paths`
+        {'paths': ['path_1', 'path_2']},  # missing required attribute - `regex`
+        {'regex': '[', 'paths': ['path_1']},  # provided string not a valid regex
+        {'regex': 3, 'paths': ['path_1']},  # provided regex not a string
+        {}  # empty dictionary
+    ])
+    def invalid_case(self, request):
+        """Non-permitted case for this rule."""
         return request.param
 
     @pytest.fixture
@@ -401,14 +545,30 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         """Type of rule."""
         return 'regex_no_matches'
 
-    @pytest.fixture
-    def valid_case(self):
+    @pytest.fixture(params=[
+        {'regex': 'some regex', 'paths': ['']},  # empty path with regex
+        {'regex': 'some regex', 'paths': ['path_1']},  # single path with regex
+        {'regex': 'some regex', 'paths': ['path_1', 'path_2']},  # multiple paths with regex
+        {'regex': 'some regex', 'paths': ['path_1', 'path_1']},  # duplicate paths with regex
+        {'regex': '', 'paths': ['path_1']}  # single path with regex
+    ])
+    def valid_case(self, request):
         """Permitted case for this rule."""
-        return {'regex': 'some regex', 'paths': ['path_1', 'path_2']}
+        return request.param
 
-    @pytest.fixture(params=[{'regex': 'some regex'}, {'paths': ['path_1', 'path_2']}, {}])
-    def invalid_cases(self, request):
-        """Non-permitted cases for this rule."""
+    @pytest.fixture(params=[
+        {'regex': 'some regex', 'paths': []},  # empty path array
+        {'regex': 'some regex', 'paths': 'path_1'},  # non-array `paths`
+        {'regex': 'some regex', 'paths': [3]},  # non-string value in path array
+        {'regex': 'some regex', 'paths': ['path_1', 3]},  # mixed string and non-string value in path array
+        {'regex': 'some regex'},  # missing required attribute - `paths`
+        {'paths': ['path_1', 'path_2']},  # missing required attribute - `regex`
+        {'regex': '[', 'paths': ['path_1']},  # provided string not a valid regex
+        {'regex': 3, 'paths': ['path_1']},  # provided regex not a string
+        {}  # empty dictionary
+    ])
+    def invalid_case(self, request):
+        """Non-permitted case for this rule."""
         return request.param
 
     @pytest.fixture
@@ -436,15 +596,45 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         """Type of rule."""
         return 'startswith'
 
-    @pytest.fixture
-    def valid_case(self):
+    @pytest.fixture(params=[
+        {'start': 'prefix-xpath', 'paths': ['']},  # empty path with prefix
+        {'start': 'prefix-xpath', 'paths': ['path_1']},  # single path with prefix
+        {'start': 'prefix-xpath', 'paths': ['path_1', 'path_2']},  # multiple paths with prefix
+        {'start': 'prefix-xpath', 'paths': ['path_1', 'path_1']},  # duplicate paths with prefix
+        {'start': '', 'paths': ['path_1']}  # single path with prefix
+    ])
+    def valid_case(self, request):
         """Permitted case for this rule."""
-        return {'start': 'a string', 'paths': ['path_1', 'path_2']}
-
-    @pytest.fixture(params=[{'start': 'a string'}, {'paths': ['path_1', 'path_2']}, {}])
-    def invalid_cases(self, request):
-        """Non-permitted cases for this rule."""
         return request.param
+
+    @pytest.fixture(params=[
+        {'start': 'prefix-xpath', 'paths': []},  # empty path array
+        {'start': 'prefix-xpath', 'paths': 'path_1'},  # non-array `paths`
+        {'start': 'prefix-xpath', 'paths': [3]},  # non-string value in path array
+        {'start': 'prefix-xpath', 'paths': ['path_1', 3]},  # mixed string and non-string value in path array
+        {'start': 3, 'paths': ['path_1']},  # provided prefix xpath not a string
+        {'start': 'prefix-xpath'},  # missing required attribute - `paths`
+        {'paths': ['path_1', 'path_2']},  # missing required attribute - `start`
+        {}  # empty dictionary
+    ])
+    def invalid_case(self, request):
+        """Non-permitted case for this rule."""
+        return request.param
+
+    @pytest.fixture
+    def invalid_data_tree(self):
+        """Invalid dataset etree for this Rule."""
+        return None
+
+    @pytest.fixture
+    def valid_data_tree(self):
+        """Return valid dataset etree for this Rule."""
+        return None
+
+    @pytest.fixture
+    def this_rule_only_ruleset(self):
+        """Ruleset contains only this Rule."""
+        return None
 
 
 class TestRuleUnique(RuleSubclassTestBase):
@@ -455,15 +645,26 @@ class TestRuleUnique(RuleSubclassTestBase):
         """Type of rule."""
         return 'unique'
 
-    @pytest.fixture
-    def valid_case(self):
+    @pytest.fixture(params=[
+        {'paths': ['']},  # empty path
+        {'paths': ['path_1']},  # single path
+        {'paths': ['path_1', 'path_2']},  # multiple paths
+        {'paths': ['path_1', 'path_1']}  # duplicate paths
+    ])
+    def valid_case(self, request):
         """Permitted case for this rule."""
-        return {'paths': ['path_1', 'path_2']}
+        return request.param
 
-    @pytest.fixture
-    def invalid_cases(self):
-        """Non-permitted cases for this rule."""
-        return {}
+    @pytest.fixture(params=[
+        {'paths': []},  # empty path array
+        {'paths': 'path_1'},  # non-array `paths`
+        {'paths': [3]},  # non-string value in path array
+        {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
+        {}  # empty dictionary
+    ])
+    def invalid_case(self, request):
+        """Non-permitted case for this rule."""
+        return request.param
 
     @pytest.fixture
     def invalid_data_tree(self):

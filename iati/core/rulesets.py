@@ -12,6 +12,8 @@ Todo:
 """
 import re
 import json
+import re
+import sre_constants
 import jsonschema
 import iati.core.default
 import iati.core.utilities
@@ -123,6 +125,7 @@ class Rule(object):
         self.case = case
         self.xpath_base = xpath_base
         self._valid_rule_configuration(case)
+        self._set_case_attributes(case)
 
     def _valid_rule_configuration(self, case):
         """Check that a configuration being passed into a Rule is valid for the given type of Rule.
@@ -148,6 +151,31 @@ class Rule(object):
         except jsonschema.ValidationError:
             raise ValueError
 
+    def _set_case_attributes(self, case):
+        """Make the required attributes within a case their own attributes in the class.
+
+        Args:
+            case (dict): The case to take values from.
+
+        Todo:
+            Set non-required properties such as a `condition`.
+        """
+        required_attributes = self._required_case_attributes(self._ruleset_schema_section())
+        for attrib in required_attributes:
+            setattr(self, attrib, case[attrib])
+
+    def _required_case_attributes(self, partial_schema):
+        """Determines the attributes that must be present given the Schema for the Rule type.
+
+        Args:
+            partial_schema (dict): The partial JSONSchema to extract attribute names from.
+
+        Returns:
+            list of str: The names of required attributes.
+
+        """
+        return [key for key in partial_schema['properties'].keys() if key != 'condition']
+
     def _ruleset_schema_section(self):
         """Locate the section of the Ruleset Schema relevant for the Rule.
 
@@ -162,7 +190,11 @@ class Rule(object):
         """
         ruleset_schema = iati.core.default.ruleset_schema()
         partial_schema = ruleset_schema['patternProperties']['.+']['properties'][self.name]['properties']['cases']['items']  # pylint: disable=E1101
-        partial_schema['required'] = [key for key in partial_schema['properties'].keys() if key != 'condition']
+        # make all attributes other than 'condition' in the partial schema required
+        partial_schema['required'] = self._required_case_attributes(partial_schema)
+        # ensure that the 'paths' array is not empty
+        if 'paths' in partial_schema['properties'].keys():
+            partial_schema['properties']['paths']['minItems'] = 1
 
         return partial_schema
 
@@ -262,6 +294,8 @@ class RuleDependent(Rule):
         super(RuleDependent, self).__init__(xpath_base, case)
 
 
+
+
 class RuleRegexMatches(Rule):
     """A specific type of Rule.
 
@@ -275,6 +309,12 @@ class RuleRegexMatches(Rule):
         self.name = "regex_matches"
 
         super(RuleRegexMatches, self).__init__(xpath_base, case)
+
+        try:
+            re.compile(case['regex'])
+        except sre_constants.error:
+            raise ValueError
+
 
     def is_valid_for(self, dataset_tree):
         """Check that the Element specified by `paths` matches the given regex case."""
@@ -300,6 +340,11 @@ class RuleRegexNoMatches(Rule):
         self.name = "regex_no_matches"
 
         super(RuleRegexNoMatches, self).__init__(xpath_base, case)
+
+        try:
+            re.compile(case['regex'])
+        except sre_constants.error:
+            raise ValueError
 
     def is_valid_for(self, dataset_tree):
         """Rule implementation method."""
