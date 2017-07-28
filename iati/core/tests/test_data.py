@@ -368,3 +368,13 @@ class TestDatasetSourceFinding(object):
         for line_num in range(0, num_lines_xml):
             with pytest.raises(ValueError):
                 data.source_around_line(line_num, -1)
+
+    @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.find_parameter_by_type(['int'], False))
+    def test_dataset_xml_str_source_around_line_invalid_context_lines(self, invalid_value, data, num_lines_xml):
+        """Test obtaining source of a particular line.
+
+        The specified number of context lines is not an integer.
+        """
+        for line_num in range(0, num_lines_xml):
+            with pytest.raises(TypeError):
+                data.source_around_line(line_num, invalid_value)

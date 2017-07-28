@@ -185,6 +185,9 @@ class Dataset(object):
             ValueError: When the surrounding_lines is negative.
 
         """
+        if not isinstance(surrounding_lines, int) or isinstance(surrounding_lines, bool):
+            raise TypeError
+
         if surrounding_lines < 0:
             raise ValueError
 
