@@ -3,11 +3,8 @@
 Note:
     Rulesets are under-implemented since it is expected that their implementation will be similar to that of Codelists, which is currently unstable. Once Codelist stability has been increased, Rulesets may be fully-implemented.
 
-Warning:
-    The contents of this module have not been implemented. Their structure may change when they are implemented.
-
 Todo:
-    Implement Rulesets (and Rules). Likely worth completing the Codelist implementation first since the two will be similar.
+    Account for edge cases and improve documentation.
 
 """
 import re
@@ -36,6 +33,7 @@ def locate_constructor_for_rule_type(rule_type):
 
     Todo:
         Determine scope of this function, and how much testing is therefore required.
+        This is only external to Ruleset to help with testing. Changing code to make testing easier is smelly.
 
     """
     possible_rule_types = {
@@ -72,7 +70,7 @@ class Ruleset(object):
             ValueError: When ruleset_str does not validate against the ruleset schema.
 
         Todo:
-            May raise a UnicodeDecodeError or json.JSONDecodeError if passed a dodgey bytearray. Need to test.
+            Raises a UnicodeDecodeError or json.JSONDecodeError if passed a dodgey bytearray in all Python versions except 3.6.
 
         """
         self.ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
@@ -103,7 +101,7 @@ class Ruleset(object):
 class Rule(object):
     """Representation of a Rule contained within a Ruleset.
 
-    Acts as a base class for specific types of Rule that actually do something.
+    Acts as a base class for specific types of Rule that actually check the content of the data.
 
     Todo:
         Determine whether this should be an Abstract Base Class.
@@ -216,9 +214,6 @@ class Rule(object):
 
 class RuleAtLeastOne(Rule):
     """Representation of a Rule that checks that there is at least one Element matching a given XPath.
-
-    Warning:
-        Rules have not yet been implemented. The structure of specific types of Rule will depend on how the base class is formed.
 
         The name of specific types of Rule may better indicate that they are Rules.
 
