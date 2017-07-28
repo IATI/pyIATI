@@ -184,7 +184,7 @@ class Dataset(object):
         """
         lines_arr = []
 
-        for idx in range(max(line_number - 1, 0), line_number + 2):
+        for idx in range(max(line_number - 1, 0), min(line_number + 2, len(self.xml_str.split('\n')))):
             lines_arr.append(self._raw_source_at_line(idx))
 
         return ('\n'.join(lines_arr)).strip()

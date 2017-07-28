@@ -164,6 +164,15 @@ class TestDatasets(object):
 
         assert data.source_around_line(0) == ('\n'.join(split_xml_str[:1])).strip()
 
+    def test_dataset_xml_str_source_around_line_last_line(self):
+        """Test obtaining source around a particular line. Line numbers are valid."""
+        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip()
+        data = iati.core.Dataset(xml_str)
+
+        split_xml_str = xml_str.split('\n')
+
+        assert data.source_around_line(len(split_xml_str) - 1) == ('\n'.join(split_xml_str[-2:])).strip()
+
     def test_dataset_xml_tree_assignment_valid_tree(self, dataset_initialised):
         """Test assignment to the xml_tree property with a valid ElementTree.
 
