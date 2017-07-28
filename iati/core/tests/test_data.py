@@ -154,7 +154,7 @@ class TestDatasets(object):
         split_xml_str = xml_str.split('\n')
 
         for line_num in range(1, len(split_xml_str)-1):
-            assert data.source_around_line(line_num) == ('\n'.join(split_xml_str[line_num-1:line_num+2])).strip()
+            assert data.source_around_line(line_num) == '\n'.join(split_xml_str[line_num-1:line_num+2])
 
     def test_dataset_xml_str_source_around_line_valid_line_number_custom_context(self):
         """Test obtaining source around a particular line. Line numbers are valid."""
@@ -165,7 +165,7 @@ class TestDatasets(object):
 
         for context_lines in range(1, math.ceil(len(split_xml_str) / 2)):
             for line_num in range(context_lines, len(split_xml_str)-context_lines):
-                assert data.source_around_line(line_num, context_lines) == ('\n'.join(split_xml_str[line_num-context_lines:line_num+context_lines+1])).strip()
+                assert data.source_around_line(line_num, context_lines) == '\n'.join(split_xml_str[line_num-context_lines:line_num+context_lines+1])
 
     def test_dataset_xml_str_source_around_line_first_line(self):
         """Test obtaining source around a particular line. Line numbers are valid."""
@@ -174,7 +174,7 @@ class TestDatasets(object):
 
         split_xml_str = xml_str.split('\n')
 
-        assert data.source_around_line(0) == ('\n'.join(split_xml_str[:1])).strip()
+        assert data.source_around_line(0) == '\n'.join(split_xml_str[:2])
 
     def test_dataset_xml_str_source_around_line_early_line_custom_context(self):
         """Test obtaining source around a particular line. Line numbers are valid."""
@@ -185,7 +185,7 @@ class TestDatasets(object):
 
         for context_lines in range(1, math.ceil(len(split_xml_str) / 2)):
             for line_num in range(0, context_lines):
-                assert data.source_around_line(line_num, context_lines) == ('\n'.join(split_xml_str[:line_num + context_lines + 1])).strip()
+                assert data.source_around_line(line_num, context_lines) == '\n'.join(split_xml_str[:line_num + context_lines + 1])
 
     def test_dataset_xml_str_source_around_line_last_line(self):
         """Test obtaining source around a particular line. Line numbers are valid."""
@@ -194,7 +194,7 @@ class TestDatasets(object):
 
         split_xml_str = xml_str.split('\n')
 
-        assert data.source_around_line(len(split_xml_str) - 1) == ('\n'.join(split_xml_str[-2:])).strip()
+        assert data.source_around_line(len(split_xml_str) - 1) == '\n'.join(split_xml_str[-2:])
 
     def test_dataset_xml_str_source_around_line_late_line_custom_context(self):
         """Test obtaining source around a particular line. Line numbers are valid."""
@@ -205,7 +205,7 @@ class TestDatasets(object):
 
         for context_lines in range(1, math.ceil(len(split_xml_str) / 2)):
             for line_num in range(0, context_lines):
-                assert data.source_around_line(len(split_xml_str) - line_num - 1, context_lines) == ('\n'.join(split_xml_str[-(line_num + context_lines + 1):])).strip()
+                assert data.source_around_line(len(split_xml_str) - line_num - 1, context_lines) == '\n'.join(split_xml_str[-(line_num + context_lines + 1):])
 
     def test_dataset_xml_tree_assignment_valid_tree(self, dataset_initialised):
         """Test assignment to the xml_tree property with a valid ElementTree.

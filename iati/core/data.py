@@ -190,4 +190,4 @@ class Dataset(object):
         for idx in range(lower_line_number, upper_line_number):
             lines_arr.append(self._raw_source_at_line(idx))
 
-        return ('\n'.join(lines_arr)).strip()
+        return '\n'.join(lines_arr)
