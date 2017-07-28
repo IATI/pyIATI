@@ -3,6 +3,9 @@
 Todo:
     Implement tests for strict checking once validation work is underway.
 """
+from future.standard_library import install_aliases
+install_aliases()
+
 import math
 from lxml import etree
 import pytest
