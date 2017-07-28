@@ -237,6 +237,20 @@ class TestDatasets(object):
             for line_num in range(0, context_lines):
                 assert data.source_around_line(len(split_xml_str) - line_num - 1, context_lines) == '\n'.join(split_xml_str[-(line_num + context_lines + 1):])
 
+    def test_dataset_xml_str_source_around_line_full_file(self):
+        """Test obtaining source around a particular line.
+
+        The context is such that the full file will be returned.
+        """
+        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip()
+        data = iati.core.Dataset(xml_str)
+
+        split_xml_str = xml_str.split('\n')
+        line_num = int(len(split_xml_str) / 2)
+        context_lines = len(split_xml_str)
+
+        assert data.source_around_line(line_num, context_lines) == xml_str
+
     def test_dataset_xml_tree_assignment_valid_tree(self, dataset_initialised):
         """Test assignment to the xml_tree property with a valid ElementTree.
 
