@@ -20,24 +20,28 @@ def _correct_codes(dataset, codelist):
 
     """
     mappings = iati.core.default.codelist_mapping()
-    codes_to_check = []
 
     for mapping in mappings[codelist.name]:
         base_xpath = mapping['xpath']
         condition = mapping['condition']
-        if condition is None:
-            xpath = base_xpath
-        else:
-            # insert condition into the xpath
-            split_xpath = base_xpath.split('/')
-            parent_el_xpath = '/'.join(split_xpath[:-1])
-            attr_xpath = split_xpath[-1:][0]
-            xpath = parent_el_xpath + '[' + condition + ']/' + attr_xpath
-        codes_to_check = codes_to_check + dataset.xml_tree.xpath(xpath)
+        split_xpath = base_xpath.split('/')
+        parent_el_xpath = '/'.join(split_xpath[:-1])
+        attr_xpath = split_xpath[-1:][0]
+        attr_name = attr_xpath[1:]
 
-    for code in codes_to_check:
-        if code not in codelist.codes:
-            return False
+        if condition is not None:
+            parent_el_xpath = parent_el_xpath + '[' + condition + ']'
+
+        parents_to_check = dataset.xml_tree.xpath(parent_el_xpath)
+
+        for parent in parents_to_check:
+            try:
+                code = parent.attrib[attr_name]
+            except KeyError:
+                continue
+
+            if code not in codelist.codes:
+                return False
 
     return True
 
