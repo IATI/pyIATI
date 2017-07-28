@@ -169,14 +169,15 @@ class Dataset(object):
         return self._raw_source_at_line(line_number).strip()
 
     def source_around_line(self, line_number, surrounding_lines=1):
-        """Return the value of the XML source at the specified line, plus its surrounding context.
+        """Return the value of the XML source at the specified line, plus the specified amount of surrounding context.
 
         Args:
             line_number (int): A zero-indexed line number.
             surrounding_lines (int): The number of lines of context to provide either side of the specified line number. Default 1.
 
         Returns:
-            str: The source of the XML at the specified line, plus its surrounding whitespace.
+            str: The source of the XML at the specified line, plus the specified number of lines of surrounding context.
+            Should there be fewer lines of XML than are asked for, the entire Dataset will be returned.
 
         Raises:
             TypeError: When the line_number is not an integer.
