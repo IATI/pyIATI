@@ -168,11 +168,12 @@ class Dataset(object):
         """
         return self._raw_source_at_line(line_number).strip()
 
-    def source_around_line(self, line_number):
+    def source_around_line(self, line_number, surrounding_lines=1):
         """Return the value of the XML source at the specified line, plus its surrounding context.
 
         Args:
             line_number (int): A zero-indexed line number.
+            surrounding_lines (int): The number of lines of context to provide either side of the specified line number. Default 1.
 
         Returns:
             str: The source of the XML at the specified line, plus its surrounding whitespace.
@@ -183,8 +184,10 @@ class Dataset(object):
 
         """
         lines_arr = []
+        lower_line_number =  max(line_number - surrounding_lines, 0)
+        upper_line_number = min(line_number + surrounding_lines + 1, len(self.xml_str.split('\n')))
 
-        for idx in range(max(line_number - 1, 0), min(line_number + 2, len(self.xml_str.split('\n')))):
+        for idx in range(lower_line_number, upper_line_number):
             lines_arr.append(self._raw_source_at_line(idx))
 
         return ('\n'.join(lines_arr)).strip()
