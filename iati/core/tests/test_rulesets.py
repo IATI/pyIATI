@@ -594,17 +594,18 @@ class TestRuleStartsWith(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_data_tree(self):
         """Invalid dataset etree for this Rule."""
-        return None
+        return iati.core.tests.utilities.DATASET_TREE_FOR_STARTSWITH_RULE_INVALID
 
     @pytest.fixture
     def valid_data_tree(self):
         """Return valid dataset etree for this Rule."""
-        return None
+        return iati.core.tests.utilities.DATASET_TREE_FOR_STARTSWITH_RULE_VALID
 
     @pytest.fixture
     def this_rule_only_ruleset(self):
         """Ruleset contains only this Rule."""
-        return None
+        ruleset_str = iati.core.tests.utilities.STARTSWITH_RULESET_STR
+        return iati.core.Ruleset(ruleset_str)
 
     def test_rule_paths_start(self, basic_rule):
         """Check that the `start` value has been combined with the `xpath_base`."""

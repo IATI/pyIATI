@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<iati-activities version="2.02">
+  <iati-activity>
+    <reporting-org ref="text"></reporting-org><!-- iati-identifier starts with expected prefix -->
+    <iati-identifier>text-1234</iati-identifier>
+  </iati-activity>
+</iati-activities>

@@ -407,9 +407,15 @@ class RuleStartsWith(Rule):
 
         self.start = self._normalize_xpath(self.start)
 
-    def is_valid_for(self):
+    def is_valid_for(self, dataset_tree):
         """Rule implementation method."""
-        return True
+        prefixing_str = dataset_tree.xpath(self.start)
+
+        for path in self.paths:
+            results = dataset_tree.xpath(path)
+            for result in results:
+                el_str = result.text
+                return el_str.startswith(prefixing_str[0])
 
 
 class RuleSum(Rule):
