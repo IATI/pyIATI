@@ -28,16 +28,15 @@ def _correct_codes(dataset, codelist):
         parent_el_xpath = '/'.join(split_xpath[:-1])
         attr_name = split_xpath[-1:][0][1:]
 
-        if condition is not None:
-            parent_el_xpath = parent_el_xpath + '[' + condition + ']'
+        if condition is None:
+            parent_el_xpath = parent_el_xpath + '[@' + attr_name + ']'
+        else:
+            parent_el_xpath = parent_el_xpath + '[' + condition + ' and @' + attr_name + ']'
 
         parents_to_check = dataset.xml_tree.xpath(parent_el_xpath)
 
         for parent in parents_to_check:
-            try:
-                code = parent.attrib[attr_name]
-            except KeyError:
-                continue
+            code = parent.attrib[attr_name]
 
             if code not in codelist.codes:
                 return False
