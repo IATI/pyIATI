@@ -187,7 +187,7 @@ class Dataset(object):
         lower_line_number =  max(line_number - surrounding_lines, 0)
         upper_line_number = min(line_number + surrounding_lines + 1, len(self.xml_str.split('\n')))
 
-        for idx in range(lower_line_number, upper_line_number):
-            lines_arr.append(self._raw_source_at_line(idx))
+        for line_num in range(lower_line_number, upper_line_number):
+            lines_arr.append(self._raw_source_at_line(line_num))
 
         return '\n'.join(lines_arr)
