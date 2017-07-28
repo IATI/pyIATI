@@ -117,15 +117,13 @@ class TestDatasets(object):
 
     def test_dataset_xml_str_source_at_line_valid_line_number(self):
         """Test obtaining source of a particular line. Line numbers are valid."""
-        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
+        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip()
         data = iati.core.Dataset(xml_str)
 
-        with pytest.raises(ValueError):
-            data.source_at_line(-1)
-        assert data.source_at_line(2) == '<parent>'
-        assert data.source_at_line(6) == '<sub-child />'
-        assert data.source_at_line(7) == '<!-- comment with blank line below -->'
-        assert data.source_at_line(8) == ''
+        split_xml_str = xml_str.split('\n')
+
+        for idx, line in enumerate(split_xml_str):
+            assert data.source_at_line(idx) == line.strip()
 
     def test_dataset_xml_str_source_at_line_invalid_line_number(self):
         """Test obtaining source of a particular line. Line numbers are not valid."""
