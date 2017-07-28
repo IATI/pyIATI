@@ -137,8 +137,8 @@ class Dataset(object):
             str: The source of the XML at the specified line.
 
         Raises:
-            TypeError: When the line_number is not an integer.
-            ValueError: When the line_number is negative or more than the number of lines in the file.
+            TypeError: When `line_number` is not an integer.
+            ValueError: When `line_number` is negative or more than the number of lines in the file.
 
         """
         if not isinstance(line_number, int) or isinstance(line_number, bool):
@@ -162,8 +162,8 @@ class Dataset(object):
             str: The source of the XML at the specified line. Leading and trailing whitespace is trimmed.
 
         Raises:
-            TypeError: When the line_number is not an integer.
-            ValueError: When the line_number is negative or more than the number of lines in the file.
+            TypeError: When `line_number` is not an integer.
+            ValueError: When `line_number` is negative or more than the number of lines in the file.
 
         """
         return self._raw_source_at_line(line_number).strip()
@@ -180,9 +180,10 @@ class Dataset(object):
             Should there be fewer lines of XML than are asked for, the entire Dataset will be returned.
 
         Raises:
-            TypeError: When the line_number is not an integer.
-            ValueError: When the line_number is negative or more than the number of lines in the file.
-            ValueError: When the surrounding_lines is negative.
+            TypeError: When `line_number` is not an integer.
+            TypeError: When `surrounding_lines` is not an integer.
+            ValueError: When `line_number` is negative or more than the number of lines in the file.
+            ValueError: When `surrounding_lines` is negative.
 
         """
         if not isinstance(surrounding_lines, int) or isinstance(surrounding_lines, bool):
