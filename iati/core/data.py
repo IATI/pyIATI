@@ -181,8 +181,12 @@ class Dataset(object):
         Raises:
             TypeError: When the line_number is not an integer.
             ValueError: When the line_number is negative or more than the number of lines in the file.
+            ValueError: When the surrounding_lines is negative.
 
         """
+        if surrounding_lines < 0:
+            raise ValueError
+
         lines_arr = []
         lower_line_number =  max(line_number - surrounding_lines, 0)
         upper_line_number = min(line_number + surrounding_lines + 1, len(self.xml_str.split('\n')))

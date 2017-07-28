@@ -360,4 +360,11 @@ class TestDatasetSourceFinding(object):
 
         assert data.source_around_line(line_num, context_lines) == data.xml_str
 
+    def test_dataset_xml_str_source_around_line_negative_context_lines(self, data, split_xml_str, num_lines_xml):
+        """Test obtaining source around a particular line.
 
+        The number of context lines is negative.
+        """
+        for line_num in range(0, num_lines_xml):
+            with pytest.raises(ValueError):
+                data.source_around_line(line_num, -1)
