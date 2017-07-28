@@ -344,7 +344,7 @@ class TestDatasetSourceFinding(object):
     def test_dataset_xml_str_source_around_line_single_line(self, data, split_xml_str, num_lines_xml):
         """Test obtaining source around a particular line.
 
-        The context is such that the full file will be returned.
+        The context is such that only the specified line will be returned.
         """
         for line_num in range(0, num_lines_xml):
             assert data.source_around_line(line_num, 0) == split_xml_str[line_num]
