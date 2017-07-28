@@ -226,9 +226,14 @@ class TestDatasetSourceFinding(object):
     """A container for tests relating to finding source context within a Dataset."""
 
 
-    def test_dataset_xml_str_source_at_line_valid_line_number(self):
+    @pytest.fixture
+    def xml_str(self):
+        """A XML string to test."""
+        return iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip()
+
+
+    def test_dataset_xml_str_source_at_line_valid_line_number(self, xml_str):
         """Test obtaining source of a particular line. Line numbers are valid."""
-        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip()
         data = iati.core.Dataset(xml_str)
 
         split_xml_str = xml_str.split('\n')
@@ -236,9 +241,8 @@ class TestDatasetSourceFinding(object):
         for idx, line in enumerate(split_xml_str):
             assert data.source_at_line(idx) == line.strip()
 
-    def test_dataset_xml_str_source_at_line_invalid_line_number(self):
+    def test_dataset_xml_str_source_at_line_invalid_line_number(self, xml_str):
         """Test obtaining source of a particular line. Line numbers are not valid."""
-        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
         data = iati.core.Dataset(xml_str)
 
         with pytest.raises(ValueError):
@@ -248,22 +252,20 @@ class TestDatasetSourceFinding(object):
             data.source_at_line(len(xml_str.split('\n')))
 
     @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.find_parameter_by_type(['int'], False))
-    def test_dataset_xml_str_source_at_line_invalid_line_type(self, invalid_value):
+    def test_dataset_xml_str_source_at_line_invalid_line_type(self, invalid_value, xml_str):
         """Test obtaining source of a particular line. Line numbers are not valid."""
-        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
         data = iati.core.Dataset(xml_str)
 
         with pytest.raises(TypeError):
             data.source_at_line(invalid_value)
 
-    def test_dataset_xml_str_source_around_line_valid_line_number(self):
+    def test_dataset_xml_str_source_around_line_valid_line_number(self, xml_str):
         """Test obtaining source around a particular line.
 
         The line is in the middle of an XML document so that there will be full context both before and after the specified line number.
         Line numbers are valid.
         Uses the default number of surrounding context lines.
         """
-        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip()
         data = iati.core.Dataset(xml_str)
 
         split_xml_str = xml_str.split('\n')
@@ -271,14 +273,13 @@ class TestDatasetSourceFinding(object):
         for line_num in range(1, len(split_xml_str)-1):
             assert data.source_around_line(line_num) == '\n'.join(split_xml_str[line_num-1:line_num+2])
 
-    def test_dataset_xml_str_source_around_line_valid_line_number_custom_context(self):
+    def test_dataset_xml_str_source_around_line_valid_line_number_custom_context(self, xml_str):
         """Test obtaining source around a particular line.
 
         The lines are in the middle of an XML document so that there will be full context both before and after the specified line number.
         Line numbers are valid.
         Uses a custom number of surrounding context lines.
         """
-        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip()
         data = iati.core.Dataset(xml_str)
 
         split_xml_str = xml_str.split('\n')
@@ -287,28 +288,26 @@ class TestDatasetSourceFinding(object):
             for line_num in range(context_lines, len(split_xml_str)-context_lines):
                 assert data.source_around_line(line_num, context_lines) == '\n'.join(split_xml_str[line_num-context_lines:line_num+context_lines+1])
 
-    def test_dataset_xml_str_source_around_line_first_line(self):
+    def test_dataset_xml_str_source_around_line_first_line(self, xml_str):
         """Test obtaining source around a particular line.
 
         The line is at the start of an XML document such that there will not be full context before the specified line, but will be afterwards.
         Line numbers are valid.
         Uses the default number of surrounding context lines.
         """
-        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip()
         data = iati.core.Dataset(xml_str)
 
         split_xml_str = xml_str.split('\n')
 
         assert data.source_around_line(0) == '\n'.join(split_xml_str[:2])
 
-    def test_dataset_xml_str_source_around_line_early_line_custom_context(self):
+    def test_dataset_xml_str_source_around_line_early_line_custom_context(self, xml_str):
         """Test obtaining source around a particular line.
 
         The lines are around the start of an XML document such that there will not be full context before the specified line, but will be afterwards.
         Line numbers are valid.
         Uses a custom number of surrounding context lines.
         """
-        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip()
         data = iati.core.Dataset(xml_str)
 
         split_xml_str = xml_str.split('\n')
@@ -317,28 +316,26 @@ class TestDatasetSourceFinding(object):
             for line_num in range(0, context_lines):
                 assert data.source_around_line(line_num, context_lines) == '\n'.join(split_xml_str[:line_num + context_lines + 1])
 
-    def test_dataset_xml_str_source_around_line_last_line(self):
+    def test_dataset_xml_str_source_around_line_last_line(self, xml_str):
         """Test obtaining source around a particular line.
 
         The line is at the end of an XML document such that there will not be full context after the specified line, but will be before.
         Line numbers are valid.
         Uses the default number of surrounding context lines.
         """
-        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip()
         data = iati.core.Dataset(xml_str)
 
         split_xml_str = xml_str.split('\n')
 
         assert data.source_around_line(len(split_xml_str) - 1) == '\n'.join(split_xml_str[-2:])
 
-    def test_dataset_xml_str_source_around_line_late_line_custom_context(self):
+    def test_dataset_xml_str_source_around_line_late_line_custom_context(self, xml_str):
         """Test obtaining source around a particular line.
 
         The lines are around the end of an XML document such that there will not be full context after the specified line, but will be before.
         Line numbers are valid.
         Uses the default number of surrounding context lines.
         """
-        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip()
         data = iati.core.Dataset(xml_str)
 
         split_xml_str = xml_str.split('\n')
@@ -347,12 +344,11 @@ class TestDatasetSourceFinding(object):
             for line_num in range(0, context_lines):
                 assert data.source_around_line(len(split_xml_str) - line_num - 1, context_lines) == '\n'.join(split_xml_str[-(line_num + context_lines + 1):])
 
-    def test_dataset_xml_str_source_around_line_full_file(self):
+    def test_dataset_xml_str_source_around_line_full_file(self, xml_str):
         """Test obtaining source around a particular line.
 
         The context is such that the full file will be returned.
         """
-        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip()
         data = iati.core.Dataset(xml_str)
 
         split_xml_str = xml_str.split('\n')
