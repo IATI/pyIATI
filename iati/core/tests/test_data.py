@@ -359,4 +359,4 @@ class TestDatasetSourceFinding(object):
         line_num = int(len(split_xml_str) / 2)
         context_lines = len(split_xml_str)
 
-        assert data.source_around_line(line_num, context_lines) == xml_str
+        assert data.source_around_line(line_num, context_lines) == data.xml_str
