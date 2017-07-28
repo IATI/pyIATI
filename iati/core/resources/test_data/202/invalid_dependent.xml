@@ -3,8 +3,7 @@
 <iati-activities version="2.02">
   <iati-activity>
     <transaction><!-- Does not contain all dependencies for transactions -->
-      <transaction-date></transaction-date>
-      <value-date></value-date>
+      <provider-org></provider-org>
     </transaction>
   </iati-activity>
 </iati-activities>

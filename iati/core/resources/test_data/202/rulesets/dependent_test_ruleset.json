@@ -2,12 +2,8 @@
     "//iati-activity": {
       "dependent": {
           "cases": [
-            { "paths": ["",
-                        "transaction",
-                        "transaction/transaction-date",
-                        "transaction/transaction-type",
-                        "transaction/value",
-                        "transaction/value-date"] }
+            { "paths": ["transaction/provider-org",
+                        "location/point"] }
           ]
         }
     }

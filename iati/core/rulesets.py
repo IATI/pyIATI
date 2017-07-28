@@ -288,10 +288,14 @@ class RuleDependent(Rule):
 
     def is_valid_for(self, dataset_tree):
         """Rule implementation method."""
+        found_paths = 0
+
         for path in self.paths:
-            # results = dataset_tree.findall(path) #?
-        # import pdb; pdb.set_trace()
-        return len(?) == len(self.paths)
+            result = dataset_tree.findall(path)
+            if result != list():
+                found_paths += 1
+
+        return not found_paths or found_paths == len(self.paths)
 
 
 class RuleNoMoreThanOne(Rule):
