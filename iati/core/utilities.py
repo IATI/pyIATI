@@ -44,7 +44,7 @@ def add_namespace(tree, new_ns_name, new_ns_uri):
         iati.core.utilities.log_error(msg)
         raise ValueError(msg)
     if not isinstance(new_ns_uri, str) or len(new_ns_uri) == 0:
-        msg = "The `new_ns_name` parameter must be a valid URI."
+        msg = "The `new_ns_uri` parameter must be a valid URI."
         iati.core.utilities.log_error(msg)
         raise ValueError(msg)
 
@@ -122,6 +122,34 @@ def convert_xml_to_tree(xml):
         msg = "To parse XML into a tree, the XML must be a string, not a {0}.".format(type(xml))
         iati.core.utilities.log_error(msg)
         raise ValueError(msg)
+
+
+def dict_raise_on_duplicates(ordered_pairs):
+    """Reject duplicate keys in a dictionary.
+
+    RFC4627 merely says that keys in a JSON file SHOULD be unique. As such, `json.loads()` permits duplicate keys, and overwrites earlier values with those later in the string.
+
+    In creating Rulesets, we wish to forbid duplicate keys. As such, this function may be used to do this.
+
+    Algorithm from https://stackoverflow.com/a/14902564
+
+    Args:
+        ordered_pairs (list of tuples): A list of (key, value) pairs.
+
+    Raises:
+        ValueError: When there are duplicate keys.
+
+    Returns:
+        dict: A dictionary constructed from `ordered_pairs`.
+
+    """
+    d = {}
+    for k, v in ordered_pairs:
+        if k in d:
+           raise ValueError("duplicate key: %r" % (k,))
+        else:
+           d[k] = v
+    return d
 
 
 def log(lvl, msg, *args, **kwargs):

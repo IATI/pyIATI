@@ -1,6 +1,7 @@
 """A module containing tests for the library implementation of accessing resources."""
 from lxml import etree
 import pytest
+import six
 import iati.core.resources
 
 
@@ -87,6 +88,24 @@ class TestResources(object):
         assert path[-4:] == iati.core.resources.FILE_CODELIST_EXTENSION
         assert path.count(iati.core.resources.FILE_CODELIST_EXTENSION) == 1
         assert iati.core.resources.PATH_CODELISTS in path
+
+    def test_load_as_bytes(self):
+        """Test that resources.load_as_bytes returns a bytes object with the expected content."""
+        path_test_data = iati.core.resources.get_test_data_path('invalid')
+
+        result = iati.core.resources.load_as_bytes(path_test_data)
+
+        assert isinstance(result, bytes)
+        assert result == 'This is a string that is not valid XML\n'.encode()
+
+    def test_load_as_string(self):
+        """Test that resources.load_as_string returns a string (python3) or unicode (python2) object with the expected content."""
+        path_test_data = iati.core.resources.get_test_data_path('invalid')
+
+        result = iati.core.resources.load_as_string(path_test_data)
+
+        assert isinstance(result, six.string_types)
+        assert result == 'This is a string that is not valid XML\n'
 
     def test_resource_filename(self):
         """Check that resource file names are found correctly.

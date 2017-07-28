@@ -29,13 +29,10 @@ class TestCodelists(object):
 
     def test_codelist_default_attributes(self):
         """Check a Codelist's default attributes are correct."""
-        try:
-            _ = iati.core.Codelist()  # pylint: disable=E1120
-        except TypeError:
-            assert True
-        else:  # pragma: no cover
-            # a TypeError should have been thrown due to a lack of name
-            assert False
+        with pytest.raises(TypeError) as excinfo:
+            iati.core.Codelist()
+
+        assert ('__init__() missing 1 required positional argument' in str(excinfo.value)) or ('__init__() takes at least 2 arguments' in str(excinfo.value))
 
     def test_codelist_name_instance(self, name_to_set):
         """Check a Codelist's attributes are correct when defined with only a name."""

@@ -27,12 +27,10 @@ class TestDefault(object):
     @pytest.mark.parametrize("name", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_default_codelist_invalid(self, name):
         """Check that trying to find a default Codelist with an invalid name raises an error."""
-        try:
-            _ = iati.core.default.codelist(name)
-        except ValueError:
-            assert True
-        else:  # pragma: no cover
-            assert False
+        with pytest.raises(ValueError) as excinfo:
+            iati.core.default.codelist(name)
+
+        assert 'There is no default Codelist in version' in str(excinfo.value)
 
     def test_default_codelists(self):
         """Check that the default Codelists are correct.
@@ -70,6 +68,18 @@ class TestDefault(object):
 
         assert mapping['Version'][0]['xpath'] == '//iati-activities/@version'
         assert len(mapping['InvalidCodelistName']) == 0
+
+    def test_default_ruleset(self):
+        """Check that the default Ruleset is correct.
+
+        Todo:
+            Handle multiple versions.
+
+            Check internal values beyond the Ruleset being the correct type.
+        """
+        ruleset = iati.core.default.ruleset()
+
+        assert isinstance(ruleset, iati.core.rulesets.Ruleset)
 
     def test_default_schemas(self):
         """Check that the default Schemas are correct.

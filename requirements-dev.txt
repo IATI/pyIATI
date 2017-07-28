@@ -25,4 +25,4 @@ pytest-cov==2.4.0 # rq.filter: <3.0
 
 # documentation
 Sphinx==1.5.2 # rq.filter: <2.0
-sphinx_rtd_theme==0.1.9 # rq.filter: <1.0		
+sphinx_rtd_theme==0.1.9 # rq.filter: <1.0

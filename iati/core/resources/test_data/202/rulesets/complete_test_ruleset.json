@@ -1,0 +1,37 @@
+{
+    "//iati-activity": {
+        "atleast_one": {
+            "cases": [
+                { "paths": "reporting-org[@ref]"}
+            ]
+        },
+        "date_order": {
+            "cases": [
+                { "less": "activity-date[@type='2']", "more": "NOW" },
+            ]
+        },
+        "regex_matches": {
+            "cases": [
+              { "regex": "[^\\/\\&\\|\\?]+",
+                "paths": "iati-identifier"}
+            ]
+        },
+        "regex_no_matches": {
+          "cases": [
+            { "regex": "[a-zAZ]+",
+              "paths": "activity-date[@iso-date]"}
+          ]
+        },
+        "sum": {
+            "cases": [
+              {"paths": "recipient-country/@percentage",
+                "sum": 100}
+            ]
+        },
+        "no_more_than_one": {
+          "cases": [
+            { "paths": "iati-identifier" }
+          ]
+        }
+    }
+}
