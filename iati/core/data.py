@@ -127,6 +127,31 @@ class Dataset(object):
             iati.core.utilities.log_error(msg)
             raise TypeError(msg)
 
+    def _raw_source_at_line(self, line_number):
+        """Return the raw value of the XML source at the specified line.
+
+        Args:
+            line_number (int): A zero-indexed line number.
+
+        Returns:
+            str: The source of the XML at the specified line.
+
+        Raises:
+            TypeError: When the line_number is not an integer.
+            ValueError: When the line_number is negative or more than the number of lines in the file.
+
+        """
+        if not isinstance(line_number, int) or isinstance(line_number, bool):
+            raise TypeError
+
+        if line_number < 0:
+            raise ValueError
+
+        try:
+            return self.xml_str.split('\n')[line_number]
+        except IndexError:
+            raise ValueError
+
     def source_at_line(self, line_number):
         """Return the value of the XML source at the specified line.
 
@@ -141,13 +166,25 @@ class Dataset(object):
             ValueError: When the line_number is negative or more than the number of lines in the file.
 
         """
-        if not isinstance(line_number, int) or isinstance(line_number, bool):
-            raise TypeError
+        return self._raw_source_at_line(line_number).strip()
 
-        if line_number < 0:
-            raise ValueError
+    def source_around_line(self, line_number):
+        """Return the value of the XML source at the specified line, plus its surrounding context.
 
-        try:
-            return self.xml_str.split('\n')[line_number].strip()
-        except IndexError:
-            raise ValueError
+        Args:
+            line_number (int): A zero-indexed line number.
+
+        Returns:
+            str: The source of the XML at the specified line, plus its surrounding whitespace.
+
+        Raises:
+            TypeError: When the line_number is not an integer.
+            ValueError: When the line_number is negative or more than the number of lines in the file.
+
+        """
+        lines_arr = []
+
+        for idx in range(line_number - 1, line_number + 2):
+            lines_arr.append(self._raw_source_at_line(idx))
+
+        return ('\n'.join(lines_arr)).strip()
