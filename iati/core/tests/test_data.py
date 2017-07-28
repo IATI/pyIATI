@@ -116,6 +116,116 @@ class TestDatasets(object):
 
         assert 'Datasets can only be ElementTrees or strings containing valid XML, using the xml_tree and xml_str attributes respectively. Actual type:' in str(excinfo.value)
 
+    def test_dataset_xml_tree_assignment_valid_tree(self, dataset_initialised):
+        """Test assignment to the xml_tree property with a valid ElementTree.
+
+        Todo:
+            Check that the xml_tree attribute is updated to the new tree.
+
+        """
+        data = dataset_initialised
+        data.xml_tree = iati.core.tests.utilities.XML_TREE_VALID
+
+        assert data.xml_str == etree.tostring(iati.core.tests.utilities.XML_TREE_VALID, pretty_print=True)
+
+    def test_dataset_xml_tree_assignment_invalid_tree(self, dataset_initialised):
+        """Test assignment to the xml_tree property with an invalid ElementTree.
+
+        Todo:
+            Create an invalid tree and test it.
+
+        """
+        pass
+
+    def test_dataset_xml_tree_assignment_str(self, dataset_initialised):
+        """Test assignment to the xml_tree property with an XML string."""
+        data = dataset_initialised
+        with pytest.raises(TypeError) as excinfo:
+            data.xml_tree = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
+
+        assert 'If setting a dataset with the xml_property, an ElementTree should be provided, not a' in str(excinfo.value)
+
+    @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    def test_dataset_xml_tree_assignment_invalid_value(self, dataset_initialised, invalid_value):
+        """Test assignment to the xml_tree property with a value that is very much not valid."""
+        data = dataset_initialised
+        with pytest.raises(TypeError) as excinfo:
+            data.xml_tree = invalid_value
+        assert 'If setting a dataset with the xml_property, an ElementTree should be provided, not a' in str(excinfo.value)
+
+    def test_instantiation_dataset_from_string(self):
+        """Test that a dataset instantiated directly from a string (rather than a file) correctly creates an iati.core.data.Dataset and the input data is contained within the object."""
+        xml = """<?xml version="1.0"?>
+        <iati-activities version="xx">
+          <iati-activity>
+             <iati-identifier></iati-identifier>
+         </iati-activity>
+        </iati-activities>"""
+
+        dataset = iati.core.data.Dataset(xml)
+
+        assert isinstance(dataset, iati.core.data.Dataset)
+        assert dataset.xml_str == xml
+
+    @pytest.mark.parametrize("encoding", ["UTF-8", "utf-8", "UTF-16", "utf-16",
+                                          "ASCII", "ISO-8859-1", "ISO-8859-2",
+                                          "BIG5", "EUC-JP"])
+    def test_instantiation_dataset_from_string_with_encoding(self, encoding):
+        """Test that an encoded dataset instantiated directly from a string (rather than a file) correctly creates an iati.core.data.Dataset and the input data is contained within the object.
+
+        Note:
+            The use of UTF-8 and UTF-16 is strongly recommended for IATI datasets, however other encodings are specificed here to demonstrate compatibility.
+            UTF-32 is deliberately omitted as this causes an error: lxml.etree.XMLSyntaxError: Document is empty
+
+        """
+        xml = """<?xml version="1.0" encoding="{}"?>
+        <iati-activities version="xx">
+          <iati-activity>
+             <iati-identifier></iati-identifier>
+         </iati-activity>
+        </iati-activities>""".format(encoding)
+        xml_encoded = xml.encode(encoding)  # Encode the whole string in line with the specified encoding
+
+        dataset = iati.core.data.Dataset(xml_encoded)
+
+        assert isinstance(dataset, iati.core.data.Dataset)
+        assert dataset.xml_str == xml_encoded
+
+    @pytest.mark.parametrize("encoding_declared, encoding_used", [
+        ("UTF-16", "UTF-8"),
+        ("UTF-16", "ISO-8859-1"),
+        ("UTF-16", "BIG5"),
+        ("UTF-16", "EUC-JP"),
+        ("ASCII", "UTF-16"),
+        ("ISO-8859-1", "UTF-16"),
+        ("ISO-8859-2", "UTF-16"),
+        ("BIG5", "UTF-16"),
+        ("EUC-JP", "UTF-16")])
+    def test_instantiation_dataset_from_string_with_encoding_mismatch(self, encoding_declared, encoding_used):
+        """Test that an error is raised when attempting to create a dataset where a string is encoded significantly differently from what is defined within the XML encoding declaration.
+
+        Todo:
+            Amend error message, when the todo in iati.core.data.Dataset.xml_str() has been resolved.
+
+        """
+        xml = """<?xml version="1.0" encoding="{}"?>
+        <iati-activities version="xx">
+          <iati-activity>
+             <iati-identifier></iati-identifier>
+         </iati-activity>
+        </iati-activities>""".format(encoding_declared)
+        xml_encoded = xml.encode(encoding_used)  # Encode the whole string in line with the specified encoding
+
+        with pytest.raises(ValueError) as excinfo:
+            dataset = iati.core.data.Dataset(xml_encoded)
+
+        assert str(excinfo.value) == 'The string provided to create a Dataset from is not valid XML.'
+
+
+class TestDatasetSourceFinding(object):
+    """A container for tests relating to finding source context within a Dataset."""
+
+
     def test_dataset_xml_str_source_at_line_valid_line_number(self):
         """Test obtaining source of a particular line. Line numbers are valid."""
         xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip()
@@ -250,108 +360,3 @@ class TestDatasets(object):
         context_lines = len(split_xml_str)
 
         assert data.source_around_line(line_num, context_lines) == xml_str
-
-    def test_dataset_xml_tree_assignment_valid_tree(self, dataset_initialised):
-        """Test assignment to the xml_tree property with a valid ElementTree.
-
-        Todo:
-            Check that the xml_tree attribute is updated to the new tree.
-
-        """
-        data = dataset_initialised
-        data.xml_tree = iati.core.tests.utilities.XML_TREE_VALID
-
-        assert data.xml_str == etree.tostring(iati.core.tests.utilities.XML_TREE_VALID, pretty_print=True)
-
-    def test_dataset_xml_tree_assignment_invalid_tree(self, dataset_initialised):
-        """Test assignment to the xml_tree property with an invalid ElementTree.
-
-        Todo:
-            Create an invalid tree and test it.
-
-        """
-        pass
-
-    def test_dataset_xml_tree_assignment_str(self, dataset_initialised):
-        """Test assignment to the xml_tree property with an XML string."""
-        data = dataset_initialised
-        with pytest.raises(TypeError) as excinfo:
-            data.xml_tree = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
-
-        assert 'If setting a dataset with the xml_property, an ElementTree should be provided, not a' in str(excinfo.value)
-
-    @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
-    def test_dataset_xml_tree_assignment_invalid_value(self, dataset_initialised, invalid_value):
-        """Test assignment to the xml_tree property with a value that is very much not valid."""
-        data = dataset_initialised
-        with pytest.raises(TypeError) as excinfo:
-            data.xml_tree = invalid_value
-        assert 'If setting a dataset with the xml_property, an ElementTree should be provided, not a' in str(excinfo.value)
-
-    def test_instantiation_dataset_from_string(self):
-        """Test that a dataset instantiated directly from a string (rather than a file) correctly creates an iati.core.data.Dataset and the input data is contained within the object."""
-        xml = """<?xml version="1.0"?>
-        <iati-activities version="xx">
-          <iati-activity>
-             <iati-identifier></iati-identifier>
-         </iati-activity>
-        </iati-activities>"""
-
-        dataset = iati.core.data.Dataset(xml)
-
-        assert isinstance(dataset, iati.core.data.Dataset)
-        assert dataset.xml_str == xml
-
-    @pytest.mark.parametrize("encoding", ["UTF-8", "utf-8", "UTF-16", "utf-16",
-                                          "ASCII", "ISO-8859-1", "ISO-8859-2",
-                                          "BIG5", "EUC-JP"])
-    def test_instantiation_dataset_from_string_with_encoding(self, encoding):
-        """Test that an encoded dataset instantiated directly from a string (rather than a file) correctly creates an iati.core.data.Dataset and the input data is contained within the object.
-
-        Note:
-            The use of UTF-8 and UTF-16 is strongly recommended for IATI datasets, however other encodings are specificed here to demonstrate compatibility.
-            UTF-32 is deliberately omitted as this causes an error: lxml.etree.XMLSyntaxError: Document is empty
-
-        """
-        xml = """<?xml version="1.0" encoding="{}"?>
-        <iati-activities version="xx">
-          <iati-activity>
-             <iati-identifier></iati-identifier>
-         </iati-activity>
-        </iati-activities>""".format(encoding)
-        xml_encoded = xml.encode(encoding)  # Encode the whole string in line with the specified encoding
-
-        dataset = iati.core.data.Dataset(xml_encoded)
-
-        assert isinstance(dataset, iati.core.data.Dataset)
-        assert dataset.xml_str == xml_encoded
-
-    @pytest.mark.parametrize("encoding_declared, encoding_used", [
-        ("UTF-16", "UTF-8"),
-        ("UTF-16", "ISO-8859-1"),
-        ("UTF-16", "BIG5"),
-        ("UTF-16", "EUC-JP"),
-        ("ASCII", "UTF-16"),
-        ("ISO-8859-1", "UTF-16"),
-        ("ISO-8859-2", "UTF-16"),
-        ("BIG5", "UTF-16"),
-        ("EUC-JP", "UTF-16")])
-    def test_instantiation_dataset_from_string_with_encoding_mismatch(self, encoding_declared, encoding_used):
-        """Test that an error is raised when attempting to create a dataset where a string is encoded significantly differently from what is defined within the XML encoding declaration.
-
-        Todo:
-            Amend error message, when the todo in iati.core.data.Dataset.xml_str() has been resolved.
-
-        """
-        xml = """<?xml version="1.0" encoding="{}"?>
-        <iati-activities version="xx">
-          <iati-activity>
-             <iati-identifier></iati-identifier>
-         </iati-activity>
-        </iati-activities>""".format(encoding_declared)
-        xml_encoded = xml.encode(encoding_used)  # Encode the whole string in line with the specified encoding
-
-        with pytest.raises(ValueError) as excinfo:
-            dataset = iati.core.data.Dataset(xml_encoded)
-
-        assert str(excinfo.value) == 'The string provided to create a Dataset from is not valid XML.'
