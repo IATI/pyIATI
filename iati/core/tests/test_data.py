@@ -28,7 +28,7 @@ class TestDatasets(object):
         """Test Dataset creation with a valid XML string that is not IATI data."""
         data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_NOT_IATI)
 
-        assert data.xml_str == iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
+        assert data.xml_str == iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip()
         assert etree.tostring(data.xml_tree) == etree.tostring(iati.core.tests.utilities.XML_TREE_VALID)
 
     def test_dataset_xml_string_leading_whitespace(self):
@@ -85,7 +85,7 @@ class TestDatasets(object):
         data = dataset_initialised
         data.xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
 
-        assert data.xml_str == iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
+        assert data.xml_str == iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip()
 
     def test_dataset_xml_str_assignment_invalid_str(self, dataset_initialised):
         """Test assignment to the xml_str property with an invalid XML string."""
@@ -114,6 +114,38 @@ class TestDatasets(object):
             data.xml_str = invalid_value
 
         assert 'Datasets can only be ElementTrees or strings containing valid XML, using the xml_tree and xml_str attributes respectively. Actual type:' in str(excinfo.value)
+
+    def test_dataset_xml_str_source_at_line_valid_line_number(self):
+        """Test obtaining source of a particular line. Line numbers are valid."""
+        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
+        data = iati.core.Dataset(xml_str)
+
+        with pytest.raises(ValueError):
+            data.source_at_line(-1)
+        assert data.source_at_line(2) == '<parent>'
+        assert data.source_at_line(6) == '<sub-child />'
+        assert data.source_at_line(7) == '<!-- comment with blank line below -->'
+        assert data.source_at_line(8) == ''
+
+    def test_dataset_xml_str_source_at_line_invalid_line_number(self):
+        """Test obtaining source of a particular line. Line numbers are not valid."""
+        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
+        data = iati.core.Dataset(xml_str)
+
+        with pytest.raises(ValueError):
+            data.source_at_line(-1)
+
+        with pytest.raises(ValueError):
+            data.source_at_line(len(xml_str.split('\n')))
+
+    @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.find_parameter_by_type(['int'], False))
+    def test_dataset_xml_str_source_at_line_invalid_line_type(self, invalid_value):
+        """Test obtaining source of a particular line. Line numbers are not valid."""
+        xml_str = iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
+        data = iati.core.Dataset(xml_str)
+
+        with pytest.raises(TypeError):
+            data.source_at_line(invalid_value)
 
     def test_dataset_xml_tree_assignment_valid_tree(self, dataset_initialised):
         """Test assignment to the xml_tree property with a valid ElementTree.
