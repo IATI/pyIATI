@@ -1,0 +1,10 @@
+{
+    "//iati-activity": {
+        "date_order": {
+            "cases": [
+                { "less": "planned-disbursement/period-start/@iso-date",
+                  "more": "planned-disbursement/period-end/@iso-date"}
+            ]
+        }
+    }
+}

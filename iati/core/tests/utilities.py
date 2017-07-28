@@ -31,6 +31,12 @@ DATASET_TREE_FOR_DEPENDENT_RULE_VALID = iati.core.resources.load_as_tree(iati.co
 DATASET_TREE_FOR_DEPENDENT_RULE_INVALID = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('invalid_dependent'))
 """An etree containing XML data that is not permitted by `RuleDependent`."""
 
+DATEORDER_RULESET_STR = iati.core.resources.load_as_string(iati.core.resources.get_test_ruleset_path('dateorder_test_ruleset'))
+"""A string containing a valid Ruleset with the `date_order` Rule."""
+DATASET_TREE_FOR_DATEORDER_RULE_VALID = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_dateorder'))
+DATASET_TREE_FOR_DATEORDER_RULE_INVALID = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('invalid_dateorder'))
+"""An etree containing XML data that is not permitted by `RuleDateOrder`."""
+
 NOMORETHANONE_RULESET_STR = iati.core.resources.load_as_string(iati.core.resources.get_test_ruleset_path('nomorethanone_test_ruleset'))
 """A string containing a valid Ruleset with the `no_more_than_one` Rule."""
 DATASET_TREE_FOR_NOMORETHANONE_RULE_VALID = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_nomorethanone'))

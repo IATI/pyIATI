@@ -11,8 +11,8 @@ Todo:
 
 """
 import re
+import time
 import json
-import re
 import sre_constants
 import jsonschema
 import iati.core.default
@@ -267,9 +267,14 @@ class RuleDateOrder(Rule):
         if self.more is not self.SPECIAL_CASE:
             self.more = self._normalize_xpath(self.more)
 
-    def is_valid_for(self):
+    def is_valid_for(self, dataset_tree):
         """Rule implementation method."""
-        return True
+        less_date = dataset_tree.xpath(self.less)
+        more_date = dataset_tree.xpath(self.more)
+        earlier_date = time.strptime(less_date[0], '%Y-%m-%d')
+        later_date = time.strptime(more_date[0], '%Y-%m-%d')
+
+        return earlier_date < later_date
 
 
 class RuleDependent(Rule):
@@ -391,7 +396,8 @@ class RuleStartsWith(Rule):
     """A specific type of Rule.
 
     Todo:
-        Add docstring
+        Add docstring.
+        Test with multiple start strings (should error).
 
     """
 
