@@ -26,8 +26,7 @@ def _correct_codes(dataset, codelist):
         condition = mapping['condition']
         split_xpath = base_xpath.split('/')
         parent_el_xpath = '/'.join(split_xpath[:-1])
-        attr_xpath = split_xpath[-1:][0]
-        attr_name = attr_xpath[1:]
+        attr_name = split_xpath[-1:][0][1:]
 
         if condition is not None:
             parent_el_xpath = parent_el_xpath + '[' + condition + ']'
