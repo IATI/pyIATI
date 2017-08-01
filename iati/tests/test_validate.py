@@ -78,9 +78,8 @@ class TestValidate(object):
                 assert isinstance(err_code[attr], str)
 
 
-
-class TestValidateCodelist(object):
-    """A container for tests relating to validation of Codelists."""
+class ValidateCodelistsBase(object):
+    """A container for fixtures required for Codelist validation tests."""
 
     @pytest.fixture
     def schema_version(self):
@@ -126,6 +125,31 @@ class TestValidateCodelist(object):
         schema.codelists.add(codelist)
 
         return schema
+
+    @pytest.fixture
+    def schema_sectors(self):
+        """A schema with the DAC Sector Codelists and appropriate vocabulary added.
+
+        Returns:
+            A valid activity schema with the DAC Sector Codelists and appropriate vocabulary added.
+
+        """
+        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+
+        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.core.default.codelists()['Sector']
+        codelist_3 = iati.core.default.codelists()['SectorCategory']
+
+        schema.codelists.add(codelist_1)
+        schema.codelists.add(codelist_2)
+        schema.codelists.add(codelist_3)
+
+        return schema
+
+
+class TestValidateCodelist(ValidateCodelistsBase):
+    """A container for tests relating to validation of Codelists."""
+
 
     def test_basic_validation_codelist_valid(self, schema_version):
         """Perform data validation against valid IATI XML that has valid Codelist values."""
@@ -193,28 +217,9 @@ class TestValidateCodelist(object):
         assert iati.validate.is_valid(data, schema_incomplete_codelist)
 
 
-class TestValidateVocabularies(object):
+class TestValidateVocabularies(ValidateCodelistsBase):
     """A container for tests relating to validation of vocabularies and associated Codelists."""
 
-    @pytest.fixture
-    def schema_sectors(self):
-        """A schema with the DAC Sector Codelists and appropriate vocabulary added.
-
-        Returns:
-            A valid activity schema with the DAC Sector Codelists and appropriate vocabulary added.
-
-        """
-        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
-
-        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
-        codelist_2 = iati.core.default.codelists()['Sector']
-        codelist_3 = iati.core.default.codelists()['SectorCategory']
-
-        schema.codelists.add(codelist_1)
-        schema.codelists.add(codelist_2)
-        schema.codelists.add(codelist_3)
-
-        return schema
 
     def test_validation_codelist_vocab_default_implicit(self, schema_sectors):
         """Perform data validation against valid IATI XML with a vocabulary that has been implicitly set."""
@@ -344,7 +349,7 @@ class TestValidateVocabularies(object):
         assert iati.validate.is_valid(data, schema_sectors)
 
 
-class TestValidateDetailedOutput(object):
+class TestValidateDetailedOutput(ValidateCodelistsBase):
     """A container for tests relating to detailed error output from validation."""
 
     def test_basic_validation_codelist_valid_detailed_output(self, schema_version):
