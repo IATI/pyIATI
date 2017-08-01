@@ -242,7 +242,7 @@ class TestDatasetSourceFinding(object):
     @pytest.fixture
     def split_xml_str(self, data):
         """The XML from the provided Dataset, split by line."""
-        return data.xml_str.split('\n')
+        return [''] + data.xml_str.split('\n')
 
     @pytest.fixture
     def num_lines_xml(self, split_xml_str):
@@ -254,18 +254,25 @@ class TestDatasetSourceFinding(object):
         for idx, line in enumerate(split_xml_str):
             assert data.source_at_line(idx) == line.strip()
 
-    def test_dataset_xml_str_source_at_line_matches_tree(self):
+    @pytest.mark.parametrize("line_el_pair", [
+        {'line': 3, 'el': '//parent'},
+        {'line': 4, 'el': '//child'},
+        {'line': 5, 'el': '//another-child'},
+        {'line': 7, 'el': '//sub-child'}
+    ])
+    def test_dataset_xml_str_source_at_line_matches_tree(self, line_el_pair):
         """Test obtaining source of a particular line. Line numbers are valid.
 
         Ensure that the line numbers from which source is being returned are the same ones provided by the `sourceline` attribute from tree elements.
         """
         data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_NOT_IATI.strip())
-        split_xml_str = data.xml_str.split('\n')
-        line_num = 4
-        el_from_tree = data.xml_tree.find('child')
+        split_xml_str = [''] + data.xml_str.split('\n')
+        line_num = line_el_pair['line']
+        el_from_tree = data.xml_tree.xpath(line_el_pair['el'])[0]
+        str_from_tree = etree.tostring(el_from_tree, pretty_print=True).strip().decode('utf-8').split('\n')[0]
 
         assert el_from_tree.sourceline == line_num
-        assert data.source_at_line(line_num) == str(etree.tostring(el_from_tree, pretty_print=True).strip())
+        assert data.source_at_line(line_num) == str_from_tree
         assert data.source_at_line(line_num) == split_xml_str[line_num].strip()
 
     def test_dataset_xml_str_source_at_line_invalid_line_number(self, data, num_lines_xml):

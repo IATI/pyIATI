@@ -148,7 +148,9 @@ class Dataset(object):
             raise ValueError
 
         try:
-            return self.xml_str.split('\n')[line_number]
+            # this is led with an empty string since the `sourceline` attribute is 1-indexed.
+            split_lines = [''] + self.xml_str.split('\n')
+            return split_lines[line_number]
         except IndexError:
             raise ValueError
 
