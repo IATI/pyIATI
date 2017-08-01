@@ -48,11 +48,7 @@ def _base_error(err_name, calling_locals):
     base_err['help'] = base_err['help'].format(**calling_locals)
     base_err['info'] = base_err['info'].format(**calling_locals)
 
-    base_err['status'] = err_name.split('-')[0]
-    if base_err['status'] == 'err':
-        base_err['status'] = 'error'
-    elif base_err['status'] == 'warn':
-        base_err['status'] = 'warning'
+    base_err['status'] = 'error' if err_name.split('-')[0] =='err' else 'warning'
 
     return base_err
 
