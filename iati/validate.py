@@ -50,10 +50,12 @@ def _correct_codes(dataset, codelist, error_log=False):
                         'actual_value': code,
                         'category': 'codelist',
                         'element': parent,
+                        'error_info': '{0} is not a valid Code on the {1} Codelist',
+                        'error_name': 'code-not-on-codelist',
                         'expected_value': codelist,
+                        'help': 'The {0} attribute must have a value on the {1} Codelist. See http://iatistandard.org/202/codelists/{1} for valid values.',
                         'line_number': parent.sourceline,
-                        'status': 'error' if codelist.complete else 'warning',
-                        'type': 'code not on codelist'
+                        'status': 'error' if codelist.complete else 'warning'
                     })
                 else:
                     return False
