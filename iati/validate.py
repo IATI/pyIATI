@@ -8,6 +8,55 @@ from lxml import etree
 import iati.core.default
 
 
+_ERROR_CODES = {
+    'err-code-not-on-codelist': {
+        'category': 'codelist',
+        'description': 'An attribute that requires a Code from a particular complete Codelist contained a value not on the Codelist.',
+        'info': '{code} is not a valid Code on the {codelist.name} Codelist.',
+        'help': 'The `{attr_name}` attribute must contain a value on the `{codelist.name}` Codelist.\nSee http://iatistandard.org/202/codelists/{codelist.name} for permitted values.'
+    },
+    'warn-code-not-on-codelist': {
+        'category': 'codelist',
+        'description': 'An attribute that should contain a Code from a particular incomplete Codelist contained a value not on the Codelist.',
+        'info': '{code} is not a Code on the {codelist.name} Codelist. ',
+        'help': 'The `{attr_name}` attribute should contain a value on the `{codelist.name}` Codelist. Note that values not on the Codelist may be valid in particular circumstances.\nSee http://iatistandard.org/202/codelists/{codelist.name} for values on the Codelist.'
+    }
+}
+
+
+def _base_error(err_name, calling_locals):
+    """Create the base error with a particular name.
+
+    Args:
+        err_name (str): The name of the error to obtain basic information for.
+        calling_locals (dict): The dictionary of local variables from the calling scope. Obtained by calling `locals()`.
+
+    Returns:
+        dict: A populated base error.
+
+    Raises:
+        ValueError: If the `err_name` is not a valid name for an error.
+
+    """
+    try:
+        base_err = _ERROR_CODES[err_name]
+    except KeyError:
+        raise ValueError
+
+    base_err['name'] = err_name
+    # format error messages with context-specific info
+    base_err['help'] = base_err['help'].format(**calling_locals)
+    base_err['info'] = base_err['info'].format(**calling_locals)
+
+    base_err['status'] = 'error' if err_name.split('-')[0] =='err' else 'warning'
+
+    # obtain additional information
+    base_err['line_number'] = calling_locals['line_number']
+    base_err['context'] = calling_locals['dataset'].source_around_line(base_err['line_number'])
+
+    return base_err
+
+
 def _correct_codes(dataset, codelist, error_log=False):
     """Determine whether a given Dataset has values from the specified Codelist where expected.
 
@@ -46,17 +95,15 @@ def _correct_codes(dataset, codelist, error_log=False):
 
             if code not in codelist.codes:
                 if error_log:
-                    errors.append({
-                        'actual_value': code,
-                        'category': 'codelist',
-                        'element': parent,
-                        'error_info': '{0} is not a valid Code on the {1} Codelist',
-                        'error_name': 'code-not-on-codelist',
-                        'expected_value': codelist,
-                        'help': 'The {0} attribute must have a value on the {1} Codelist. See http://iatistandard.org/202/codelists/{1} for valid values.',
-                        'line_number': parent.sourceline,
-                        'status': 'error' if codelist.complete else 'warning'
-                    })
+                    line_number = parent.sourceline
+                    if codelist.complete:
+                        error = _base_error('err-code-not-on-codelist', locals())
+                    else:
+                        error = _base_error('warn-code-not-on-codelist', locals())
+
+                    error['actual_value'] = code
+
+                    errors.append(error)
                 else:
                     return False
 
