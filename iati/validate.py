@@ -43,6 +43,7 @@ def _base_error(err_name, calling_locals):
     except KeyError:
         raise ValueError
 
+    base_err['line_number'] = calling_locals['line_number']
     base_err['name'] = err_name
     # format error messages with context-specific info
     base_err['help'] = base_err['help'].format(**calling_locals)
@@ -91,13 +92,13 @@ def _correct_codes(dataset, codelist, error_log=False):
 
             if code not in codelist.codes:
                 if error_log:
+                    line_number = parent.sourceline
                     if codelist.complete:
                         error = _base_error('err-code-not-on-codelist', locals())
                     else:
                         error = _base_error('warn-code-not-on-codelist', locals())
 
                     error['actual_value'] = code
-                    error['line_number'] = parent.sourceline
 
                     errors.append(error)
                 else:
