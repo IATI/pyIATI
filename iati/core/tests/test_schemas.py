@@ -161,10 +161,12 @@ class TestSchemas(object):
         (default_activity_schema, 'iati-activity', etree._Element),
         (default_activity_schema, 'activity-date', etree._Element),
         (default_activity_schema, 'provider-org', etree._Element),  # The 'provider-org' element is deeply nested XSD element.
+        (default_activity_schema, 'reporting-org', etree._Element),  # The 'reporting-org' element is defined within the 'iati-common.xsd schema'.
         (default_activity_schema, 'element-name-that-does-not-exist', type(None)),
         (default_activity_schema, 'total-budget', type(None)),  # There is no 'total-budget' element within the activity schema.
         (default_organisation_schema, 'iati-organisations', etree._Element),
         (default_organisation_schema, 'organisation-identifier', etree._Element),  # The 'organisation-identifier' is defined within the 'iati-organisation' element.
+        (default_organisation_schema, 'reporting-org', etree._Element),  # The 'reporting-org' element is defined within the 'iati-common.xsd schema'.
         (default_organisation_schema, 'sector', type(None))  # There is no 'sector' element within the organisation schema.
     ])
     def test_get_xsd_element(self, schema_type, xsd_element_name, expected_type):
