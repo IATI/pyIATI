@@ -162,6 +162,7 @@ class TestSchemas(object):
         (default_activity_schema, 'activity-date', etree._Element),
         (default_activity_schema, 'provider-org', etree._Element),  # The 'provider-org' element is deeply nested XSD element.
         (default_activity_schema, 'element-name-that-does-not-exist', type(None)),
+        (default_activity_schema, 'total-budget', type(None)),  # There is no 'total-budget' element within the activity schema.
         (default_organisation_schema, 'iati-organisations', etree._Element),
         (default_organisation_schema, 'organisation-identifier', etree._Element),  # The 'organisation-identifier' is defined within the 'iati-organisation' element.
         (default_organisation_schema, 'sector', type(None))  # There is no 'sector' element within the organisation schema.
