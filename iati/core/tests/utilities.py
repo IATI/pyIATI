@@ -52,9 +52,9 @@ DATASET_TREE_FOR_UNIQUE_RULE_INVALID = iati.core.resources.load_as_tree(iati.cor
 SCHEMA_NAME_VALID = 'iati-activities-schema'
 """A string containing a valid Schema name."""
 
-XML_STR_VALID_NOT_IATI = '<parent><child attribute="value" /></parent>'
+XML_STR_VALID_NOT_IATI = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_not_iati'))
 """A string containing valid XML that is not valid against the IATI schema."""
-XML_STR_VALID_IATI = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid'))
+XML_STR_VALID_IATI = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati'))
 """A string containing valid IATI XML."""
 XML_STR_VALID_IATI_INVALID_CODE = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_invalid_code'))
 """A string containing valid IATI XML, but an invalid Code valid."""
