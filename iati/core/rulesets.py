@@ -139,8 +139,7 @@ class Rule(object):
         """
         if path == '':
             return self.xpath_base
-        else:
-            return self.xpath_base + '/' + path
+        return self.xpath_base + '/' + path
 
     def _normalize_xpaths(self):
         """Normalize xpaths by combining them with `xpath_base`.
@@ -192,7 +191,7 @@ class Rule(object):
             setattr(self, attrib, case[attrib])
 
     def _required_case_attributes(self, partial_schema):
-        """Determines the attributes that must be present given the Schema for the Rule type.
+        """Determine the attributes that must be present given the Schema for the Rule type.
 
         Args:
             partial_schema (dict): The partial JSONSchema to extract attribute names from.
@@ -255,16 +254,16 @@ class RuleDateOrder(Rule):
     def __init__(self, xpath_base, case):
         """Initialise a `date_order` rule."""
         self.name = "date_order"
-        self.SPECIAL_CASE = 'NOW'
+        self.special_case = 'NOW'  # Was a constant sort of
 
         super(RuleDateOrder, self).__init__(xpath_base, case)
 
     def _normalize_xpaths(self):
         """Normalize xpaths by combining them with `xpath_base`."""
-        if self.less is not self.SPECIAL_CASE:
+        if self.less is not self.special_case:
             self.less = self._normalize_xpath(self.less)
 
-        if self.more is not self.SPECIAL_CASE:
+        if self.more is not self.special_case:
             self.more = self._normalize_xpath(self.more)
 
     def is_valid_for(self, dataset_tree):
@@ -351,7 +350,6 @@ class RuleRegexMatches(Rule):
         except sre_constants.error:
             raise ValueError
 
-
     def is_valid_for(self, dataset_tree):
         """Assert that the text of the given `paths` matches the `regex` value.
 
@@ -359,7 +357,9 @@ class RuleRegexMatches(Rule):
             dataset_tree: an etree created from an XML dataset.
 
         Returns:
-            A boolean value. If the text of the given `path` matches the `regex` value, return `True`."""
+            A boolean value. If the text of the given `path` matches the `regex` value, return `True`.
+
+        """
         pattern = re.compile(self.case['regex'])
 
         for path in self.paths:
@@ -389,7 +389,9 @@ class RuleRegexNoMatches(Rule):
             dataset_tree: an etree created from an XML dataset.
 
         Returns:
-            A boolean value. If the text of the given `path` does not match the `regex` value, return `True`."""
+            A boolean value. If the text of the given `path` does not match the `regex` value, return `True`.
+
+        """
         pattern = re.compile(self.case['regex'])
 
         for path in self.paths:
@@ -456,7 +458,6 @@ class RuleSum(Rule):
             A boolean value. If the `path` values total to the `sum` value, return `True`.
 
         """
-        valid_total = self.sum
         sum_values = list()
 
         for path in self.paths:
@@ -466,7 +467,7 @@ class RuleSum(Rule):
 
         total = sum(sum_values)
 
-        return total == valid_total
+        return total == self.sum  # pylint: disable=no-member
 
 
 class RuleUnique(Rule):
@@ -490,6 +491,7 @@ class RuleUnique(Rule):
         Todo:
             Consider better methods for specifying which elements in the tree contain non-permitted duplication, such as bucket sort.
             Test with a test ruleset that has multiple paths.
+
         """
         original = list()
         unique = set()

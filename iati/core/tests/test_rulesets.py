@@ -237,7 +237,7 @@ class RuleSubclassTestBase(object):
             Maybe too much of a shortcut as can't fully pass until all implementations complete. Possibly the wrong abstraction in the long-term.
         """
         if this_rule_only_ruleset is None:
-            return # Remove later
+            return  # Remove later
 
         for rule in this_rule_only_ruleset.rules:
             assert rule.is_valid_for(valid_data_tree)
@@ -249,7 +249,7 @@ class RuleSubclassTestBase(object):
             Maybe too much of a shortcut as can't fully pass until all implementations complete. Possibly the wrong abstraction in the long-term.
         """
         if this_rule_only_ruleset is None:
-            return # remove later
+            return  # Remove later
 
         for rule in this_rule_only_ruleset.rules:
             assert not rule.is_valid_for(invalid_data_tree)
@@ -397,15 +397,15 @@ class TestRuleDateOrder(RuleSubclassTestBase):
 
     def test_rule_paths_less(self, basic_rule):
         """Check that the `less` value has been combined with the `xpath_base` where required."""
-        if basic_rule.less.endswith(basic_rule.SPECIAL_CASE):
-            assert basic_rule.less == basic_rule.SPECIAL_CASE
+        if basic_rule.less.endswith(basic_rule.special_case):
+            assert basic_rule.less == basic_rule.special_case
         else:
             assert basic_rule.less.startswith(basic_rule.xpath_base)
 
     def test_rule_paths_more(self, basic_rule):
         """Check that the `more` value has been combined with the `xpath_base` where required."""
-        if basic_rule.more.endswith(basic_rule.SPECIAL_CASE):
-            assert basic_rule.more == basic_rule.SPECIAL_CASE
+        if basic_rule.more.endswith(basic_rule.special_case):
+            assert basic_rule.more == basic_rule.special_case
         else:
             assert basic_rule.more.startswith(basic_rule.xpath_base)
 
