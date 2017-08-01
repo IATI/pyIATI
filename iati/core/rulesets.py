@@ -222,11 +222,7 @@ class Rule(object):
 
 
 class RuleAtLeastOne(Rule):
-    """Representation of a Rule that checks that there is at least one Element matching a given XPath.
-
-        The name of specific types of Rule may better indicate that they are Rules.
-
-    """
+    """Representation of a Rule that checks that there is at least one Element matching a given XPath."""
 
     def __init__(self, xpath_base, case):
         """Initialise an `atleast_one` rule."""
@@ -249,12 +245,7 @@ class RuleAtLeastOne(Rule):
 
 
 class RuleDateOrder(Rule):
-    """A specific type of Rule.
-
-    Todo:
-        Add docstring
-
-    """
+    """Representation of a Rule that checks that the date value of `more` is the most recent value in comparison to the date value of `less`."""
 
     def __init__(self, xpath_base, case):
         """Initialise a `date_order` rule."""
@@ -272,7 +263,15 @@ class RuleDateOrder(Rule):
             self.more = self._normalize_xpath(self.more)
 
     def is_valid_for(self, dataset_tree):
-        """Rule implementation method."""
+        """Assert that the date value of `less` is older than the date value of `more`.
+
+        Args:
+            dataset_tree: an etree created from an XML dataset.
+
+        Return:
+            A boolean value. If `less` is older than `more`, return `True`.
+
+        """
         less_date = dataset_tree.xpath(self.less)
         more_date = dataset_tree.xpath(self.more)
         earlier_date = time.strptime(less_date[0], '%Y-%m-%d')
@@ -282,12 +281,7 @@ class RuleDateOrder(Rule):
 
 
 class RuleDependent(Rule):
-    """A specific type of Rule.
-
-    Todo:
-        Add docstring
-
-    """
+    """Representation of a Rule that checks that if one of the elements in a given `path` exists then all its dependent paths must also exist."""
 
     def __init__(self, xpath_base, case):
         """Initialise a `dependent` rule."""
@@ -296,7 +290,15 @@ class RuleDependent(Rule):
         super(RuleDependent, self).__init__(xpath_base, case)
 
     def is_valid_for(self, dataset_tree):
-        """Rule implementation method."""
+        """Assert that either all given `paths` or none of the given `paths` exist in a dataset_tree.
+
+        Args:
+            dataset_tree: an etree created from an XML dataset.
+
+        Returns:
+            A boolean value. If no `paths`, or all `paths` are found in the dataset_tree, return `True`.
+
+        """
         found_paths = 0
 
         for path in self.paths:
@@ -308,14 +310,7 @@ class RuleDependent(Rule):
 
 
 class RuleNoMoreThanOne(Rule):
-    """Representation of a Rule that checks that there is no more than one Element matching a given XPath.
-
-    Warning:
-        Rules have not yet been implemented. The structure of specific types of Rule will depend on how the base class is formed.
-
-        The name of specific types of Rule may better indicate that they are Rules.
-
-    """
+    """Representation of a Rule that checks that there is no more than one Element matching a given XPath."""
 
     def __init__(self, xpath_base, case):
         """Initialise a `no_more_than_one` rule."""
@@ -338,12 +333,7 @@ class RuleNoMoreThanOne(Rule):
 
 
 class RuleRegexMatches(Rule):
-    """A specific type of Rule.
-
-    Todo:
-        Add docstring
-
-    """
+    """Representation of a Rule that checks that the given `paths` must contain values that match the `regex` value."""
 
     def __init__(self, xpath_base, case):
         """Initialise a `regex_matches` rule."""
@@ -358,7 +348,13 @@ class RuleRegexMatches(Rule):
 
 
     def is_valid_for(self, dataset_tree):
-        """Check that the Element specified by `paths` matches the given regex case."""
+        """Assert that the text of the given `paths` matches the `regex` value.
+
+        Args:
+            dataset_tree: an etree created from an XML dataset.
+
+        Returns:
+            A boolean value. If the text of the given `path` matches the `regex` value, return `True`."""
         pattern = re.compile(self.case['regex'])
 
         for path in self.paths:
@@ -368,12 +364,7 @@ class RuleRegexMatches(Rule):
 
 
 class RuleRegexNoMatches(Rule):
-    """A specific type of Rule.
-
-    Todo:
-        Add docstring
-
-    """
+    """Representation of a Rule that checks that the given `paths` must not contain values that match the `regex` value."""
 
     def __init__(self, xpath_base, case):
         """Initialise a `regex_no_matches` rule."""
@@ -387,7 +378,13 @@ class RuleRegexNoMatches(Rule):
             raise ValueError
 
     def is_valid_for(self, dataset_tree):
-        """Rule implementation method."""
+        """Assert that no text of the given `paths` matches the `regex` value.
+
+        Args:
+            dataset_tree: an etree created from an XML dataset.
+
+        Returns:
+            A boolean value. If the text of the given `path` does not match the `regex` value, return `True`."""
         pattern = re.compile(self.case['regex'])
 
         for path in self.paths:
@@ -397,10 +394,9 @@ class RuleRegexNoMatches(Rule):
 
 
 class RuleStartsWith(Rule):
-    """A specific type of Rule.
+    """Representation of a Rule that checks that the start of each `path` text value matches the `start` text value.
 
     Todo:
-        Add docstring.
         Test with multiple start strings (should error).
 
     """
@@ -418,7 +414,15 @@ class RuleStartsWith(Rule):
         self.start = self._normalize_xpath(self.start)
 
     def is_valid_for(self, dataset_tree):
-        """Rule implementation method."""
+        """Assert that the prefixing text of all given `paths` starts with the text of `start`.
+
+        Args:
+            dataset_tree: an etree created from an XML dataset.
+
+        Returns:
+            A boolean value. If the `path` string starts with the `start` string, return `True`.
+
+        """
         prefixing_str = dataset_tree.xpath(self.start)
 
         for path in self.paths:
@@ -429,12 +433,7 @@ class RuleStartsWith(Rule):
 
 
 class RuleSum(Rule):
-    """A specific type of Rule.
-
-    Todo:
-        Add docstring
-
-    """
+    """Representation of a Rule that checks that the values in given `path` attributes must sum to the given `sum` value."""
 
     def __init__(self, xpath_base, case):
         """Initialise a `sum` rule."""
@@ -443,40 +442,49 @@ class RuleSum(Rule):
         super(RuleSum, self).__init__(xpath_base, case)
 
     def is_valid_for(self, dataset_tree):
-        """Rule implementation method."""
+        """Assert that the total of the values given in `paths` match the given `sum` value.
+
+        Args:
+            dataset_tree: an etree created from an XML dataset.
+
+        Returns:
+            A boolean value. If the `path` values total to the `sum` value, return `True`.
+
+        """
         valid_total = self.sum
-        percentages = list()
+        sum_values = list()
 
         for path in self.paths:
             results = dataset_tree.xpath(path)
             for result in results:
-                percentages.append(int(result))
+                sum_values.append(int(result))
 
-        total = sum(percentages)
+        total = sum(sum_values)
 
         return total == valid_total
 
 
 class RuleUnique(Rule):
-    """A Rule that asserts that the text of each given path must be unique."""
+    """Representation of a Rule that checks that the text of each given path must be unique."""
 
     def __init__(self, xpath_base, case):
-        """Initialise a `unique` rule.
-
-        Args:
-
-
-        """
+        """Initialise a `unique` rule."""
         self.name = "unique"
 
         super(RuleUnique, self).__init__(xpath_base, case)
 
     def is_valid_for(self, dataset_tree):
-        """Rule implementation method.
+        """Assert that the given paths are not found in the dataset_tree more than once.
+
+        Args:
+            dataset_tree: an etree created from an XML dataset.
+
+        Returns:
+            A boolean value. If no repeated text is found in the dataset_tree for the given paths the value returned will be `True`.
 
         Todo:
             Consider better methods for specifying which elements in the tree contain non-permitted duplication, such as bucket sort.
-            Test with a ruleset that has multiple paths.
+            Test with a test ruleset that has multiple paths.
         """
         original = list()
         unique = set()
