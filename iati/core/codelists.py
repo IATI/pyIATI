@@ -75,6 +75,11 @@ class Codelist(object):
                     name = ''
                 self.codes.add(iati.core.Code(value, name))
 
+            try:
+                self.complete = True if tree.attrib['complete'] == '1' else False
+            except KeyError:
+                pass
+
         self.codes = set()
         self.name = name
 

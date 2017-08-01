@@ -24,6 +24,9 @@ def _correct_codes(dataset, codelist, error_log=False):
     errors = []
     mappings = iati.core.default.codelist_mapping()
 
+    if not codelist.complete:
+        return True
+
     for mapping in mappings[codelist.name]:
         base_xpath = mapping['xpath']
         condition = mapping['condition']
