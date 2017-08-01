@@ -217,14 +217,14 @@ class Schema(object):
             namespaces=iati.core.constants.NSMAP
         )
 
-    def get_xsd_element_name(self, element):
-        """Returns the name of a given xsd:element, as defined in the xsd:element/@name attribute.
+    def get_xsd_element_or_attribute_name(self, element):
+        """Returns the name of a given xsd:element or xsd:attribute element, as defined in the element's @name attribute.
 
         Args:
-            element (etree._ElementTree): The represention of an XSD element to find the name for.
+            element (etree._ElementTree): The represention of an xsd:element or xsd:attribute element to find the name for.
 
         Returns:
-            str or None: The value within the xsd:element/@name attribute. None is returned if no name is found.
+            str or None: The value within the xsd:element/@name or xsd:attribute/@name. None is returned if no name is found.
         """
         return element.get('name')
 

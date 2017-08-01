@@ -229,14 +229,7 @@ class TestSchemas(object):
         for item in result:
             assert isinstance(item, etree._Element)
 
-    @pytest.mark.parametrize("element_index, expected_name", [
-        (0, 'note'),
-        (1, 'to'),
-        (2, 'from'),
-        (3, 'heading'),
-        (4, 'body')
-    ])
-    def test_get_xsd_element_name(self, element_index, expected_name):
+    def test_get_name_from_xsd_element(self):
         """Test that an expected name is found within a mock xsd:element.
 
         Todo:
@@ -252,6 +245,28 @@ class TestSchemas(object):
             namespaces=iati.core.constants.NSMAP
         )
 
-        result = schema.get_xsd_element_name(elements[element_index])
+        element_names = [schema.get_xsd_element_or_attribute_name(element) for element in elements]
 
-        assert result == expected_name
+        assert element_names[0] == 'note'
+        assert element_names[1] == 'to'
+        assert element_names[2] == 'from'
+        assert element_names[3] == 'heading'
+        assert element_names[4] == 'body'
+
+    def test_get_name_from_xsd_attribute(self):
+        """Test that an expected name is found within a mock xsd:attribute.
+
+        Todo:
+            Move the mock xsd file out of the resources/test_data/202 folder, as it is not version specific.
+
+            Rename the mock xsd file with a .xsd file extension.
+
+            Test for a case where there is no xsd:attribute/@name.  In which case, test that None is returned.
+        """
+        schema = iati.core.Schema(iati.core.tests.utilities.PATH_XSD_NON_IATI)
+        element = schema.get_xsd_element('body')
+        attributes = schema.get_attributes_in_xsd_element(element)
+
+        result = schema.get_xsd_element_or_attribute_name(attributes[0])
+
+        assert result == 'lang'
