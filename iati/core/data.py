@@ -167,6 +167,9 @@ class Dataset(object):
             TypeError: When `line_number` is not an integer.
             ValueError: When `line_number` is negative or more than the number of lines in the file.
 
+        Todo:
+            Test with minified XML.
+
         """
         return self._raw_source_at_line(line_number).strip()
 
@@ -186,6 +189,9 @@ class Dataset(object):
             TypeError: When `surrounding_lines` is not an integer.
             ValueError: When `line_number` is negative or more than the number of lines in the file.
             ValueError: When `surrounding_lines` is negative.
+
+        Todo:
+            Test with minified XML.
 
         """
         if not isinstance(surrounding_lines, int) or isinstance(surrounding_lines, bool):
