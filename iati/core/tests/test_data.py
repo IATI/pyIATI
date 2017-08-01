@@ -296,7 +296,7 @@ class TestDatasetSourceFinding(object):
         Line numbers are valid.
         Uses the default number of surrounding context lines.
         """
-        for line_num in range(1, num_lines_xml-1):
+        for line_num in range(2, num_lines_xml):
             desired_source = '\n'.join(split_xml_str[line_num-1:line_num+2])
             actual_source = data.source_around_line(line_num)
 
@@ -311,7 +311,7 @@ class TestDatasetSourceFinding(object):
         """
         for context_lines in range(1, math.ceil(num_lines_xml/2)):
             for line_num in range(context_lines, num_lines_xml-context_lines):
-                desired_source = '\n'.join(split_xml_str[line_num-context_lines:line_num+context_lines+1])
+                desired_source = '\n'.join(split_xml_str[max(line_num-context_lines, 1):line_num+context_lines+1])
                 actual_source = data.source_around_line(line_num, context_lines)
 
                 assert actual_source == desired_source
@@ -323,7 +323,7 @@ class TestDatasetSourceFinding(object):
         Line numbers are valid.
         Uses the default number of surrounding context lines.
         """
-        assert data.source_around_line(0) == '\n'.join(split_xml_str[:2])
+        assert data.source_around_line(0) == '\n'.join(split_xml_str[1:2])
 
     def test_dataset_xml_str_source_around_line_early_line_custom_context(self, data, split_xml_str, num_lines_xml):
         """Test obtaining source around a particular line.
@@ -334,7 +334,7 @@ class TestDatasetSourceFinding(object):
         """
         for context_lines in range(1, math.ceil(num_lines_xml / 2)):
             for line_num in range(0, context_lines):
-                desired_source = '\n'.join(split_xml_str[:line_num + context_lines + 1])
+                desired_source = '\n'.join(split_xml_str[1:line_num + context_lines + 1])
                 actual_source = data.source_around_line(line_num, context_lines)
 
                 assert actual_source == desired_source
