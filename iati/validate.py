@@ -43,13 +43,16 @@ def _base_error(err_name, calling_locals):
     except KeyError:
         raise ValueError
 
-    base_err['line_number'] = calling_locals['line_number']
     base_err['name'] = err_name
     # format error messages with context-specific info
     base_err['help'] = base_err['help'].format(**calling_locals)
     base_err['info'] = base_err['info'].format(**calling_locals)
 
     base_err['status'] = 'error' if err_name.split('-')[0] =='err' else 'warning'
+
+    # obtain additional information
+    base_err['line_number'] = calling_locals['line_number']
+    base_err['context'] = calling_locals['dataset'].source_around_line(base_err['line_number'])
 
     return base_err
 
