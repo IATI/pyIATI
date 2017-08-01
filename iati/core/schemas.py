@@ -226,7 +226,13 @@ class Schema(object):
         Returns:
             str or None: The value within the xsd:element/@name or xsd:attribute/@name. None is returned if no name is found.
         """
-        return element.get('name')
+        name = element.get('name')
+
+        # Deal with the special case of the 'xml:lang' attributes, which are formally defined in the xml.xsd schema, but the documentation and usage restrictions are set in the IATI schemas.
+        if name is None and element.get('ref') == 'xml:lang':
+            name = 'xml:lang'
+
+        return name
 
 
 class ActivitySchema(Schema):

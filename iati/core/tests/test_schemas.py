@@ -270,3 +270,19 @@ class TestSchemas(object):
         result = schema.get_xsd_element_or_attribute_name(attributes[0])
 
         assert result == 'lang'
+
+    def test_get_name_from_xsd_attribute_xml_lang(self):
+        """Test that the expected name for an `xml:lang` element is returned.
+
+        This test uses the attribute at iati-activities/iati-activity/@xml:lang as the test case.
+        """
+        schema = iati.core.default.schema('iati-activities-schema')
+        element = schema.get_xsd_element('iati-activity')
+        attributes = schema.get_attributes_in_xsd_element(element)
+
+        attribute_names = [
+            schema.get_xsd_element_or_attribute_name(attribute)
+            for attribute in attributes
+        ]
+
+        assert 'xml:lang' in attribute_names
