@@ -21,7 +21,7 @@ class TestValidate(object):
         assert not iati.validate.is_xml(not_xml)
 
     @pytest.mark.parametrize("xml", [iati.core.tests.utilities.XML_STR_VALID_NOT_IATI, iati.core.tests.utilities.XML_STR_VALID_IATI, iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE, iati.core.tests.utilities.XML_STR_LEADING_WHITESPACE])
-    def test_xml_check_valid_xml(self, xml):
+    def test_xml_check_valid_xml_in_dataset(self, xml):
         """Perform check to see whether a Dataset is deemed valid XML."""
         data = iati.core.Dataset(xml)
 
