@@ -119,6 +119,15 @@ class TestValidateCodelist(object):
         assert iati.validate.is_iati_xml(data, schema_version)
         assert not iati.validate.is_valid(data, schema_version)
 
+    def test_basic_validation_codelist_invalid_detailed_output(self, schema_version):
+        """Perform data validation against valid IATI XML that has invalid Codelist values."""
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE)
+
+        result = iati.validate.full_validation(data, schema_version)
+
+        assert len(result) == 1
+        assert result[0] == {}
+
     def test_basic_validation_codelist_valid_from_common(self, schema_org_type):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested is on an element defined in common.xsd."""
         data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_VALID_CODE_FROM_COMMON)

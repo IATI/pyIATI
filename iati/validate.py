@@ -8,17 +8,20 @@ from lxml import etree
 import iati.core.default
 
 
-def _correct_codes(dataset, codelist):
+def _correct_codes(dataset, codelist, error_log=False):
     """Determine whether a given Dataset has values from the specified Codelist where expected.
 
     Args:
         dataset (iati.core.data.Dataset): The Dataset to check Codelist values within.
         codelist (iati.core.codelists.Codelist): The Codelist to check values from.
+        error_log (bool): Whether to return a detailed error log, or merely a boolean value. Default False.
 
     Returns:
-        bool: A boolean indicating whether the given Dataset has values from the specified Codelist where they should be.
+        bool: If `error_log` is False. A boolean indicating whether the given Dataset has values from the specified Codelist where they should be.
+        list of dict: If `error_log` is True. A list of the errors that occurred.
 
     """
+    errors = []
     mappings = iati.core.default.codelist_mapping()
 
     for mapping in mappings[codelist.name]:
@@ -39,28 +42,54 @@ def _correct_codes(dataset, codelist):
             code = parent.attrib[attr_name]
 
             if code not in codelist.codes:
-                return False
+                if error_log:
+                    errors.append(_create_error())
+                else:
+                    return False
 
-    return True
+    if error_log:
+        return errors
+    else:
+        return True
 
 
-def _correct_codelist_values(dataset, schema):
+def _correct_codelist_values(dataset, schema, error_log=False):
     """Determine whether a given Dataset has values from Codelists that have been added to a Schema where expected.
 
     Args:
         dataset (iati.core.data.Dataset): The Dataset to check Codelist values within.
         schema (iati.core.schemas.Schema): The Schema to locate Codelists within.
+        error_log (bool): Whether to return a detailed error log, or merely a boolean value. Default False.
 
     Returns:
-        bool: A boolean indicating whether the given Dataset has values from the specified Codelists where they should be.
+        bool: If `error_log` is False. A boolean indicating whether the given Dataset has values from the specified Codelists where they should be.
+        list of dict: If `error_log` is True. A list of the errors that occurred.
 
     """
-    for codelist in schema.codelists:
-        correct_for_codelist = _correct_codes(dataset, codelist)
-        if not correct_for_codelist:
-            return False
+    errors = []
 
-    return True
+    for codelist in schema.codelists:
+        if error_log:
+            errors = errors + _correct_codes(dataset, codelist, error_log)
+        else:
+            correct_for_codelist = _correct_codes(dataset, codelist)
+            if not correct_for_codelist:
+                return False
+
+    if error_log:
+        return errors
+    else:
+        return True
+
+
+def _create_error():
+    """Creates an error.
+
+    Returns:
+        dict: Information about the error.
+
+    """
+    return {}
 
 
 def full_validation(dataset, schema):
@@ -74,13 +103,13 @@ def full_validation(dataset, schema):
         Parameters are likely to change in some manner.
 
     Returns:
-        array of dict: An array of dictionaries containing error output. An empty array indicates that there are no errors.
+        list of dict: A list of dictionaries containing error output. An empty list indicates that there are no errors.
 
     Todo:
         Create test against a bad Schema.
 
     """
-    return []
+    return _correct_codelist_values(dataset, schema, True)
 
 
 def is_iati_xml(dataset, schema):
