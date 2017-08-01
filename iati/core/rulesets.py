@@ -463,7 +463,7 @@ class RuleSum(Rule):
         for path in self.paths:
             results = dataset_tree.xpath(path)
             for result in results:
-                sum_values.append(int(result))
+                sum_values.append(float(result))
 
         total = sum(sum_values)
 
