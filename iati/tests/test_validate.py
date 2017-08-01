@@ -142,6 +142,7 @@ class TestValidateCodelist(object):
 
         assert len(result) == 1
         assert isinstance(result[0], dict)
+        assert result[0]['status'] == 'error'
 
     def test_basic_validation_codelist_valid_from_common(self, schema_org_type):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested is on an element defined in common.xsd."""
@@ -184,6 +185,17 @@ class TestValidateCodelist(object):
         assert iati.validate.is_iati_xml(data, schema_incomplete_codelist)
         assert iati.validate.is_valid(data, schema_incomplete_codelist)
 
+    def test_basic_validation_codelist_incomplete_present_detailed_output(self, schema_incomplete_codelist):
+        """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested refers to an incomplete Codelist. The value is on the list.
+        Obtain detailed error output.
+        """
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INCOMPLETE_CODELIST_CODE_PRESENT)
+
+        result = iati.validate.full_validation(data, schema_incomplete_codelist)
+
+        assert isinstance(result, list)
+        assert len(result) == 0
+
     def test_basic_validation_codelist_incomplete_not_present(self, schema_incomplete_codelist):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested refers to an incomplete Codelist. The value is not on the list."""
         data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INCOMPLETE_CODELIST_CODE_NOT_PRESENT)
@@ -191,6 +203,19 @@ class TestValidateCodelist(object):
         assert iati.validate.is_xml(data.xml_str)
         assert iati.validate.is_iati_xml(data, schema_incomplete_codelist)
         assert iati.validate.is_valid(data, schema_incomplete_codelist)
+
+    def test_basic_validation_codelist_incomplete_not_present_detailed_output(self, schema_incomplete_codelist):
+        """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested refers to an incomplete Codelist. The value is not on the list.
+        Obtain detailed error output.
+        """
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INCOMPLETE_CODELIST_CODE_NOT_PRESENT)
+
+        result = iati.validate.full_validation(data, schema_incomplete_codelist)
+
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert result[0]['status'] == 'warning'
+
 
 class TestValidateVocabularies(object):
     """A container for tests relating to validation of vocabularies and associated Codelists."""

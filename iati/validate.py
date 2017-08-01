@@ -24,7 +24,7 @@ def _correct_codes(dataset, codelist, error_log=False):
     errors = []
     mappings = iati.core.default.codelist_mapping()
 
-    if not codelist.complete:
+    if not error_log and not codelist.complete:
         return True
 
     for mapping in mappings[codelist.name]:
@@ -52,7 +52,7 @@ def _correct_codes(dataset, codelist, error_log=False):
                         'element': parent,
                         'expected_value': codelist,
                         'line_number': parent.sourceline,
-                        'status': 'error',
+                        'status': 'error' if codelist.complete else 'warning',
                         'type': 'code not on codelist'
                     })
                 else:
