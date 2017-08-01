@@ -63,6 +63,26 @@ def _correct_codelist_values(dataset, schema):
     return True
 
 
+def full_validation(dataset, schema):
+    """Perform full validation on a Dataset.
+
+    Args:
+        dataset (iati.core.Dataset): The Dataset to check validity of.
+        schema (iati.core.Schema): The Schema to validate the Dataset against.
+
+    Warning:
+        Parameters are likely to change in some manner.
+
+    Returns:
+        array of dict: An array of dictionaries containing error output. An empty array indicates that there are no errors.
+
+    Todo:
+        Create test against a bad Schema.
+
+    """
+    return []
+
+
 def is_iati_xml(dataset, schema):
     """Determine whether a given Dataset's XML is valid against the specified Schema.
 
@@ -142,3 +162,4 @@ def is_xml(maybe_xml):
         return True
     except (etree.XMLSyntaxError, AttributeError, TypeError, ValueError):
         return False
+
