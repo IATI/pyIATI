@@ -43,7 +43,7 @@ def _correct_codes(dataset, codelist, error_log=False):
 
             if code not in codelist.codes:
                 if error_log:
-                    errors.append(_create_error())
+                    errors.append({})
                 else:
                     return False
 
@@ -80,16 +80,6 @@ def _correct_codelist_values(dataset, schema, error_log=False):
         return errors
     else:
         return True
-
-
-def _create_error():
-    """Creates an error.
-
-    Returns:
-        dict: Information about the error.
-
-    """
-    return {}
 
 
 def full_validation(dataset, schema):
