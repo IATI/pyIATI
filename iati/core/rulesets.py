@@ -127,7 +127,16 @@ class Rule(object):
         self._normalize_xpaths()
 
     def _normalize_xpath(self, path):
-        """Normalize an xpath by combining it with `xpath_base`."""
+        """Normalize a single xpath by combining it with `xpath_base`.
+
+        Error:
+            Raises an attribute error if self.xpath_base
+            isn't set.
+
+        Todo:
+            Add some logging.
+
+        """
         if path == '':
             return self.xpath_base
         else:
@@ -449,15 +458,15 @@ class RuleSum(Rule):
 
 
 class RuleUnique(Rule):
-    """A specific type of Rule.
-
-    Todo:
-        Add docstring
-
-    """
+    """A Rule that asserts that the text of each given path must be unique."""
 
     def __init__(self, xpath_base, case):
-        """Initialise a `unique` rule."""
+        """Initialise a `unique` rule.
+
+        Args:
+
+
+        """
         self.name = "unique"
 
         super(RuleUnique, self).__init__(xpath_base, case)

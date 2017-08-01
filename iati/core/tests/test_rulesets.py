@@ -30,7 +30,7 @@ class TestRuleset(object):
         with pytest.raises(TypeError):
             iati.core.Ruleset(not_a_ruleset)
 
-    @pytest.mark.skip(reason="Bytearrays cause multiple types of errors. This is confusing. Probs due to the stupid null byte at the start of one of the sample bytearrays. Grr! Argh!")
+    # @pytest.mark.skip(reason="Bytearrays cause multiple types of errors. This is confusing. Probs due to the stupid null byte at the start of one of the sample bytearrays. Grr! Argh!")
     @pytest.mark.parametrize("byte_array", iati.core.tests.utilities.find_parameter_by_type(['bytearray']))
     def test_ruleset_init_ruleset_str_bytearray(self, byte_array):
         """Check that a Ruleset cannot be created when given at least one Rule in a bytearray format."""
@@ -214,11 +214,10 @@ class RuleSubclassTestBase(object):
 
     def test_rule_paths(self, basic_rule):
         """Check that a Rule subclass has the expected paths."""
-        try:
+        # RuleDateOrder is excluded as it does not use paths.
+        if basic_rule.name is not 'date_order':
             for path in basic_rule.paths:
                 assert path.startswith(basic_rule.xpath_base)
-        except AttributeError:
-            pass
 
     def test_rule_invalid_case(self, rule_constructor, invalid_case):
         """Check that a rule cannot be instantiated when the case is invalid.
