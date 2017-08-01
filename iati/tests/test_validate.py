@@ -97,6 +97,21 @@ class TestValidateCodelist(object):
 
         return schema
 
+    @pytest.fixture
+    def schema_incomplete_codelist(self):
+        """A schema with an incomplete Codelist added.
+
+        Returns:
+            A valid activity schema with the OrganisationType Codelist added.
+
+        """
+        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        codelist = iati.core.default.codelists()['Country']
+
+        schema.codelists.add(codelist)
+
+        return schema
+
     def test_basic_validation_codelist_valid(self, schema_version):
         """Perform data validation against valid IATI XML that has valid Codelist values."""
         data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
@@ -146,7 +161,21 @@ class TestValidateCodelist(object):
         assert iati.validate.is_iati_xml(data, schema_org_type)
         assert not iati.validate.is_valid(data, schema_org_type)
 
+    def test_basic_validation_codelist_incomplete_present(self, schema_incomplete_codelist):
+        """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested refers to an incomplete Codelist. The value is on the list."""
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INCOMPLETE_CODELIST_CODE_PRESENT)
 
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema_incomplete_codelist)
+        assert iati.validate.is_valid(data, schema_incomplete_codelist)
+
+    def test_basic_validation_codelist_incomplete_not_present(self, schema_incomplete_codelist):
+        """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested refers to an incomplete Codelist. The value is not on the list."""
+        data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI_INCOMPLETE_CODELIST_CODE_NOT_PRESENT)
+
+        assert iati.validate.is_xml(data.xml_str)
+        assert iati.validate.is_iati_xml(data, schema_incomplete_codelist)
+        assert iati.validate.is_valid(data, schema_incomplete_codelist)
 
 class TestValidateVocabularies(object):
     """A container for tests relating to validation of vocabularies and associated Codelists."""
