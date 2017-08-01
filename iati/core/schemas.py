@@ -130,7 +130,7 @@ class Schema(object):
     def _flatten_includes(self):
         """For a Schema that contains an xsd:include element, flatten includes so that all nodes are accessible through lxml.
 
-        Identifies the contents of files defined as `<xsd:include schemaLocation="NAME.xsd" />` and bring in the contents.
+        I.e. Identify the contents of files defined as `<xsd:include schemaLocation="NAME.xsd" />` and bring in the contents.
 
         Updates:
             self._schema_base_tree: To be the flattened schema. Makes no modification if the schema contains no xsd:include element.
@@ -141,26 +141,26 @@ class Schema(object):
             Tidy this up.
 
         """
-        # change the include to a format that lxml can read
+        # Ensure that the include element is in a format that can be read by lxml
         tree = self._change_include_to_xinclude(self._schema_base_tree)
 
-        # adopt the included elements
+        # Adopt the included elements
         if tree is None:
             return
         else:
             tree.xinclude()
 
-        # remove nested schema elements
+        # Find any nested `xsd:schema` elements that exist within the newly flattened schema
         schema_xpath = (iati.core.constants.NAMESPACE + 'schema')
         for nested_schema_el in tree.getroot().findall(schema_xpath):
             if isinstance(nested_schema_el, etree._Element):
-                # move contents of nested schema elements up a level
+                # Move contents of nested schema elements up a level
                 for elem in nested_schema_el[:]:
-                    # do not duplicate an import statement
+                    # Do not duplicate an import statement
                     if 'schemaLocation' in elem.attrib:
                         continue
                     tree.getroot().insert(nested_schema_el.getparent().index(nested_schema_el) + 1, elem)
-        # remove the nested schema elements
+        # Remove the nested `xsd:schema` elements
         etree.strip_elements(tree.getroot(), schema_xpath)
 
     def get_xsd_element(self, xsd_element_name):
