@@ -43,7 +43,15 @@ def _correct_codes(dataset, codelist, error_log=False):
 
             if code not in codelist.codes:
                 if error_log:
-                    errors.append({})
+                    errors.append({
+                        'actual_value': code,
+                        'category': 'codelist',
+                        'element': parent,
+                        'expected_value': codelist,
+                        'line_number': parent.sourceline,
+                        'status': 'error',
+                        'type': 'code not on codelist'
+                    })
                 else:
                     return False
 

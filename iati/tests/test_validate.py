@@ -126,7 +126,7 @@ class TestValidateCodelist(object):
         result = iati.validate.full_validation(data, schema_version)
 
         assert len(result) == 1
-        assert result[0] == {}
+        assert isinstance(result[0], dict)
 
     def test_basic_validation_codelist_valid_from_common(self, schema_org_type):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested is on an element defined in common.xsd."""
