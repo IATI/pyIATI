@@ -143,11 +143,16 @@ class Rule(object):
             return self.xpath_base + '/' + path
 
     def _normalize_xpaths(self):
-        """Normalize xpaths by combining them with `xpath_base`."""
-        try:
-            self.paths = [self._normalize_xpath(path) for path in self.paths]
-        except AttributeError:
-            pass
+        """Normalize xpaths by combining them with `xpath_base`.
+
+        Todo:
+            Discuss appropriate edge cases and what is going on here.
+
+        """
+        # try:
+        self.paths = [self._normalize_xpath(path) for path in self.paths]
+        # except AttributeError:
+        #     pass
 
     def _valid_rule_configuration(self, case):
         """Check that a configuration being passed into a Rule is valid for the given type of Rule.

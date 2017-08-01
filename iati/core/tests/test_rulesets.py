@@ -205,7 +205,7 @@ class RuleSubclassTestBase(object):
         """Check that a Rule subclass has case attributes set."""
         required_attributes = basic_rule._required_case_attributes(basic_rule._ruleset_schema_section())
         for attrib in required_attributes:
-            # ensure that the attribute exists - if not, an AttributeError will be raised
+            # Ensure that the attribute exists - if not, an AttributeError will be raised
             getattr(basic_rule, attrib)
 
     def test_rule_name(self, basic_rule, rule_type):
@@ -215,7 +215,7 @@ class RuleSubclassTestBase(object):
     def test_rule_paths(self, basic_rule):
         """Check that a Rule subclass has the expected paths."""
         # RuleDateOrder is excluded as it does not use paths.
-        if basic_rule.name is not 'date_order':
+        if basic_rule.name != 'date_order':
             for path in basic_rule.paths:
                 assert path.startswith(basic_rule.xpath_base)
 
