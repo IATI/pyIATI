@@ -63,6 +63,21 @@ class TestValidate(object):
         assert not iati.validate.is_iati_xml(data, schema)
         assert not iati.validate.is_valid(data, schema)
 
+    def test_error_code_names(self):
+        """Check that the names of error codes are all in the correct format."""
+        for err_code_name in iati.validate._ERROR_CODES.keys():
+            assert err_code_name.split('-')[0] in ['err', 'warn']
+
+    def test_error_code_attributes(self):
+        """Check that error codes have the required attributes."""
+        expected_attributes = ['category', 'description', 'info', 'help']
+        for err_code_name, err_code in iati.validate._ERROR_CODES.items():
+            code_attrs = err_code.keys()
+            for attr in expected_attributes:
+                assert attr in code_attrs
+                assert isinstance(err_code[attr], str)
+
+
 
 class TestValidateCodelist(object):
     """A container for tests relating to validation of Codelists."""
