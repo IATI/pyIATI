@@ -7,8 +7,20 @@ import iati.core.default
 class ValidationError(object):
     """A base class to encapsulate information about Validation Errors."""
 
-    pass
+    def __init__(self, err_name):
+        """Create a new ValidationError.
 
+        Args:
+            err_name (str): The name of the error to use as a base.
+
+        Raises:
+            ValueError: If there is no base error with the provided name.
+
+        """
+        try:
+            _ = _ERROR_CODES[err_name]
+        except (KeyError, TypeError):
+            raise ValueError('{err_name} is not a known type of ValidationError.'.format(**locals()))
 
 
 class ValidationErrorLog(set):

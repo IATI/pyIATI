@@ -11,9 +11,20 @@ class TestValidationError(object):
     """A container for tests relating to ValidationErrors."""
 
 
-    def test_validation_error_init(self):
-        """Test that a ValidationError can be created."""
-        err = iati.validator.ValidationError()
+    def test_validation_error_init_no_name(self):
+        """Test that a ValidationError cannot be created with no name provided."""
+        with pytest.raises(TypeError):
+            iati.validator.ValidationError()
+
+    @pytest.mark.parametrize("invalid_err_name", iati.core.tests.utilities.find_parameter_by_type([], False))
+    def test_validation_error_init_bad_name_type(self, invalid_err_name):
+        """Test that a ValidationError cannot be created with a name that does not exist."""
+        with pytest.raises(ValueError):
+            iati.validator.ValidationError(invalid_err_name)
+
+    def test_error_log_init_valid_name(self):
+        """Test that a ValidationError can be created when provided a valid name."""
+        err = iati.validator.ValidationError('err-code-not-on-codelist')
 
         assert isinstance(err, iati.validator.ValidationError)
 
