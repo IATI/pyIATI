@@ -148,10 +148,7 @@ class Rule(object):
             Discuss appropriate edge cases and what is going on here.
 
         """
-        # try:
         self.paths = [self._normalize_xpath(path) for path in self.paths]
-        # except AttributeError:
-        #     pass
 
     def _valid_rule_configuration(self, case):
         """Check that a configuration being passed into a Rule is valid for the given type of Rule.
@@ -249,7 +246,7 @@ class RuleAtLeastOne(Rule):
         for path in self.paths:
             if dataset.xml_tree.find(path) is not None:
                 found_paths.add(path)
-
+        # import pdb; pdb.set_trace()
         return len(found_paths) == len(self.paths)
 
 

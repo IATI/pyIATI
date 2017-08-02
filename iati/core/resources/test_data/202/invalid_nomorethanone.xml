@@ -1,8 +1,6 @@
 <?xml version="1.0"?>
 
-<iati-activities version="2.02">
-  <iati-activity>
-    <iati-identifier></iati-identifier>
-    <iati-identifier></iati-identifier><!-- more than one iati-identifier -->
-  </iati-activity>
-</iati-activities>
+<root_element>
+  <iati-identifier></iati-identifier>
+  <iati-identifier></iati-identifier><!-- more than one iati-identifier -->
+</root_element>

@@ -32,8 +32,6 @@ DATASET_FOR_DATEORDER_RULE_VALID = iati.core.resources.load_as_dataset(iati.core
 DATASET_FOR_DATEORDER_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_dateorder'))
 """An etree containing XML data that is not permitted by `RuleDateOrder`."""
 
-DATASET_MULTIPATH_RULETESTING = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('multipath_ruletesting'))
-
 DATASET_FOR_NOMORETHANONE_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_nomorethanone'))
 DATASET_FOR_NOMORETHANONE_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_nomorethanone'))
 """An etree containing XML data that is not permitted by `RuleNoMoreThanOne`."""

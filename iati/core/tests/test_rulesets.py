@@ -214,8 +214,8 @@ class RuleSubclassTestBase(object):
 
     def test_rule_paths(self, basic_rule):
         """Check that a Rule subclass has the expected paths."""
-        # RuleDateOrder is excluded as it does not use paths.
-        if basic_rule.name != 'date_order':
+        # Exclude rules with no `paths` attribute.
+        if 'paths' in dir(basic_rule):
             for path in basic_rule.paths:
                 assert path.startswith(basic_rule.xpath_base)
 
@@ -287,19 +287,17 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         return iati.core.tests.utilities.DATASET_FOR_ATLEASTONE_RULE_VALID
 
     @pytest.fixture(params=[
-        {'paths': ['iati-identifier']}
-        # {'paths': ["iati-identifier", "transaction", "title"]}
+        {'paths': ['element_that_only_occurs_once']},
+        {'paths': ['element_that_only_occurs_once', 'element_that_occurs_twice']}
     ])
     def rule(self, request):
         """Instantiate RuleAtLeastOne."""
-        xpath_base = 'iati-activity'
+        xpath_base = 'root_element'
         return iati.core.rulesets.RuleAtLeastOne(xpath_base, request.param)
 
-    # def test_rule_with_multiple_paths(self):
-    #     """Check rule returns expected output when given multiple `paths`."""
-    #     ruleset_str = iati.core.tests.utilities.ATLEASTONE_MULTIPATH_RULESET_STR
-    #     ruleset = iati.core.Ruleset(ruleset_str)
+    # def test_multipath_cases(self):
     #     dataset = iati.core.tests.utilities.DATASET_MULTIPATH_RULETESTING
+
 
 
 class TestRuleDependent(RuleSubclassTestBase):
@@ -346,7 +344,7 @@ class TestRuleDependent(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'iati-activity'
+        xpath_base = 'root_element'
         return iati.core.rulesets.RuleDependent(xpath_base, request.param)
 
 
@@ -397,7 +395,7 @@ class TestRuleDateOrder(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'iati-activity'
+        xpath_base = 'root_element'
         return iati.core.rulesets.RuleDateOrder(xpath_base, request.param)
 
     def test_rule_paths_less(self, basic_rule):
@@ -459,7 +457,7 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'iati-activity'
+        xpath_base = 'root_element'
         return iati.core.rulesets.RuleNoMoreThanOne(xpath_base, request.param)
 
 
@@ -512,7 +510,7 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'iati-activity'
+        xpath_base = 'root_element'
         return iati.core.rulesets.RuleRegexMatches(xpath_base, request.param)
 
 
@@ -565,7 +563,7 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'iati-activity'
+        xpath_base = 'root_element'
         return iati.core.rulesets.RuleRegexNoMatches(xpath_base, request.param)
 
 
@@ -617,7 +615,7 @@ class TestRuleStartsWith(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'iati-activity'
+        xpath_base = 'root_element'
         return iati.core.rulesets.RuleStartsWith(xpath_base, request.param)
 
     def test_rule_paths_start(self, basic_rule):
@@ -679,7 +677,7 @@ class TestRuleSum(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'iati-activity'
+        xpath_base = 'root_element'
         return iati.core.rulesets.RuleSum(xpath_base, request.param)
 
 
@@ -727,5 +725,5 @@ class TestRuleUnique(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'iati-activity'
+        xpath_base = 'root_element'
         return iati.core.rulesets.RuleUnique(xpath_base, request.param)
