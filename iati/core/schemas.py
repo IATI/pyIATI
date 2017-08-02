@@ -225,6 +225,20 @@ class Schema(object):
             namespaces=iati.core.constants.NSMAP
         )
 
+    def is_attribute_xml_lang(self, element):
+        """Perform a check on a lxml represention of an xsd:attribute to determine if it is an 'xml:lang' attribute.
+
+        Args:
+            element (etree._ElementTree): The lxml represention of the xsd:attribute to check.
+
+        Returns:
+            bool: True if the element is an 'xml:lang' attribute, or False if not.
+        """
+        if element.get('ref') == 'xml:lang':
+            return True
+        else:
+            return False
+
     def get_xsd_element_or_attribute_name(self, element):
         """Returns the name of a given xsd:element or xsd:attribute element, as defined in the element's @name attribute.
 
@@ -237,7 +251,7 @@ class Schema(object):
         name = element.get('name')
 
         # Deal with the special case of the 'xml:lang' attributes, which are formally defined in the xml.xsd schema, but the documentation and usage restrictions are set in the IATI schemas.
-        if name is None and element.get('ref') == 'xml:lang':
+        if self.is_attribute_xml_lang(element):
             name = 'xml:lang'
 
         return name

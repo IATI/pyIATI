@@ -287,3 +287,22 @@ class TestSchemas(object):
         ]
 
         assert 'xml:lang' in attribute_names
+
+    def test_is_attribute_xml_lang(self):
+        """Test that the expected result is returned when checking if an input is an 'xml:lang' attribute."""
+        schema = iati.core.default.schema('iati-activities-schema')
+        element_with_xml_lang_attribute = schema.get_xsd_element('iati-activity')
+        attribute_xml_lang = schema.get_attributes_in_xsd_element(
+            element_with_xml_lang_attribute
+        )[1]
+        element_without_xml_lang_attribute = schema.get_xsd_element('activity-scope')
+        attribute_not_xml_lang = schema.get_attributes_in_xsd_element(
+            element_without_xml_lang_attribute
+        )[0]
+
+        result_expected_true = schema.is_attribute_xml_lang(attribute_xml_lang)
+        result_expected_false = schema.is_attribute_xml_lang(attribute_not_xml_lang[0])
+
+        assert result_expected_true
+        assert not result_expected_false
+
