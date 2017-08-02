@@ -192,6 +192,14 @@ class Schema(object):
             namespaces=iati.core.constants.NSMAP
         )  # This will find all elements defined directly within the schema, or cited by reference.
 
+        # Look for corresponding complexType and add to the child_elements_and_refs
+        if parent_element.get('type') is not None:
+            complexType_children = self._schema_base_tree.findall(
+                'xsd:complexType[@name="{0}"]/xsd:sequence/xsd:element'.format(parent_element.get('type')),
+                namespaces=iati.core.constants.NSMAP
+            )
+            child_elements_and_refs = child_elements_and_refs + complexType_children
+
         output = []
         for element_or_ref in child_elements_and_refs:
             if element_or_ref.get('ref') is not None:

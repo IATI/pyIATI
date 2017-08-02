@@ -184,6 +184,7 @@ class TestSchemas(object):
     @pytest.mark.parametrize("schema_type, xsd_element_name, num_expected_child_elements", [
         (default_activity_schema, 'iati-activities', 1),
         (default_activity_schema, 'contact-info', 8),
+        (default_activity_schema, 'title', 1),  # Contains 'narrative', but this is defined within the referenced xsd:complexType
         (default_activity_schema, 'iati-identifier', 0),  # Contains no child elements
         (default_organisation_schema, 'iati-organisations', 1),
         (default_organisation_schema, 'total-budget', 4),
