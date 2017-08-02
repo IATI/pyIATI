@@ -209,10 +209,12 @@ class TestSchemas(object):
     @pytest.mark.parametrize("schema_type, xsd_element_name, num_expected_attributes", [
         (default_activity_schema, 'iati-activities', 3),
         (default_activity_schema, 'iati-activity', 6),
+        # (default_activity_schema, 'narrative', 1),  # Contains the 'xml:lang' attribute defined as an extension to the "xsd:string" type  # Accessing complexType attributes is not yet implemented
         (default_activity_schema, 'loan-status', 3),  # Contains the 'currency' and 'value-date' attributes, which are referenced and defined elsewere in the schema.
         (default_activity_schema, 'iati-identifier', 0),  # Contains no attributes
         (default_organisation_schema, 'iati-organisations', 2),
         (default_organisation_schema, 'iati-organisation', 3),
+        # (default_organisation_schema, 'value', 2), # Accessing complexType attributes is not yet implemented
         (default_organisation_schema, 'organisation-identifier', 0)  # Contains no attributes
     ])
     def test_get_attributes_in_xsd_element(self, schema_type, xsd_element_name, num_expected_attributes):
@@ -307,3 +309,48 @@ class TestSchemas(object):
         assert result_expected_true
         assert not result_expected_false
 
+    def test_build_xsd_lookup_mock_schema(self):
+        """Test that an expected lookup table is built for a mock Schema."""
+        schema = iati.core.Schema(iati.core.tests.utilities.PATH_XSD_NON_IATI)
+        schema.root_element_name = "note"
+
+        result = schema.build_xsd_lookup()
+
+        assert list(result.keys()) == [
+            'note',
+            'note/to',
+            'note/from',
+            'note/heading',
+            'note/body',
+            'note/body/@lang'
+        ]
+        for element in result.values():
+            assert isinstance(element, etree._Element)
+
+    def test_build_xsd_lookup_activity_schema(self):
+        """Test that an expected lookup table is built for an ActivitySchema."""
+        schema = iati.core.default.schema('iati-activities-schema')
+
+        result = schema.build_xsd_lookup()
+
+        assert 'iati-activities' in result.keys()
+        assert 'iati-activities/iati-activity' in result.keys()
+        assert 'iati-activities/iati-activity/iati-identifier' in result.keys()
+        assert 'iati-activities/iati-activity/sector/@code' in result.keys()
+        assert 'iati-activities/iati-activity/result/indicator/period/target/comment/narrative' in result.keys()  # One of the two deepest nested elements in the v2.02 activity standard.
+        for element in result.values():
+            assert isinstance(element, etree._Element)
+
+    def test_build_xsd_lookup_organisation_schema(self):
+        """Test that an expected lookup table is built for an OrganisationSchema."""
+        schema = iati.core.default.schema('iati-organisations-schema')
+
+        result = schema.build_xsd_lookup()
+
+        assert 'iati-organisations' in result.keys()
+        assert 'iati-organisations/iati-organisation' in result.keys()
+        assert 'iati-organisations/iati-organisation/organisation-identifier' in result.keys()
+        assert 'iati-organisations/iati-organisation/recipient-org-budget/budget-line/value' in result.keys()
+        # assert 'iati-organisations/iati-organisation/recipient-org-budget/budget-line/value/@currency' in result.keys()  # Accessing complexType attributes is not yet implemented
+        for element in result.values():
+            assert isinstance(element, etree._Element)

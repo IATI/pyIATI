@@ -1,4 +1,5 @@
 """A module containing a core representation of IATI Schemas."""
+from collections import OrderedDict
 from lxml import etree
 import iati.core.codelists
 import iati.core.constants
@@ -234,6 +235,9 @@ class Schema(object):
 
         Returns:
             list of etree._ElementTree: A list containing representions of XSD attributes that are contained witin the input element. If there are no attributes, this will be an empty list.
+
+        Todo:
+            Access complexType attributes, for example 'narrative/@xml:lang' and 'value/@currency'
         """
         attributes = element.findall(
             'xsd:complexType/xsd:attribute',
@@ -277,6 +281,51 @@ class Schema(object):
             name = 'xml:lang'
 
         return name
+
+    def build_xsd_lookup(self):
+        """Builds a lookup dictionary containing an XPath (as keys) with the corresponding lxml represention of the xsd:element or xsd:attribute (as values).
+
+        Returns:
+            dict: Containing an XPath (as keys) with the corresponding lxml represention of the xsd:element or xsd:attribute (as values).
+
+        Todo:
+            Define if the two lines should be called directly by the __init__ method.
+        """
+        root_element = self.get_xsd_element(self.root_element_name)
+        output = self.get_xsd_components(root_element)
+
+        return output
+
+    def get_xsd_components(self, base_element, base_xpath='', output=None):
+        """Recursively builds a lookup dictionary containing an XPath (as keys) with the corresponding lxml represention of the xsd:element or xsd:attribute (as values).
+
+        Args:
+            base_element (etree._ElementTree): The inital element to traverse over.
+            base_xpath (str): The XPath for the base_element. Defaults to an empty string.
+            output (OrderedDict): An existing output OrderedDict to append results to. Defaults to None, implying that there is no existing output, so a new OrderedDict will be instantiated.
+
+        Returns:
+            OrderedDict: Containing an XPath (as keys) with the corresponding lxml represention of the xsd:element or xsd:attribute (as values).
+        """
+        if output is None:
+            output = OrderedDict()
+
+        base_element_name = self.get_xsd_element_or_attribute_name(base_element)
+        if base_xpath:
+            current_xpath = base_xpath + '/' + base_element_name
+        else:
+            current_xpath = base_element_name
+        output[current_xpath] = base_element
+
+        for attribute in self.get_attributes_in_xsd_element(base_element):
+            attribute_name = self.get_xsd_element_or_attribute_name(attribute)
+            xpath = current_xpath + '/@' + attribute_name
+            output[xpath] = attribute
+
+        for child_element in self.get_child_xsd_elements(base_element):
+            self.get_xsd_components(child_element, current_xpath, output)
+
+        return output
 
 
 class ActivitySchema(Schema):
