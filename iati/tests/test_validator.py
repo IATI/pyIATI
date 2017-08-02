@@ -7,7 +7,7 @@ import iati.core.tests.utilities
 import iati.validate
 
 
-class TestValidate(object):
+class TestValidation(object):
     """A container for tests relating to validation."""
 
     @pytest.mark.parametrize("xml", [iati.core.tests.utilities.XML_STR_VALID_NOT_IATI, iati.core.tests.utilities.XML_STR_VALID_IATI, iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE, iati.core.tests.utilities.XML_STR_LEADING_WHITESPACE])
@@ -64,7 +64,7 @@ class TestValidate(object):
         assert not iati.validate.is_valid(data, schema)
 
 
-class TestValidateCodelist(object):
+class TestValidationCodelist(object):
     """A container for tests relating to validation of Codelists."""
 
     @pytest.fixture
@@ -177,7 +177,7 @@ class TestValidateCodelist(object):
         assert iati.validate.is_iati_xml(data, schema_incomplete_codelist)
         assert iati.validate.is_valid(data, schema_incomplete_codelist)
 
-class TestValidateVocabularies(object):
+class TestValidationVocabularies(object):
     """A container for tests relating to validation of vocabularies and associated Codelists."""
 
     @pytest.fixture
