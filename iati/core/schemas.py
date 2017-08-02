@@ -178,6 +178,21 @@ class Schema(object):
             namespaces=iati.core.constants.NSMAP
         )
 
+    def get_xsd_attribute(self, xsd_attribute_name):
+        """Return an lxml.etree represention for a given xsd:attribute, based on its name.
+
+        Args:
+            xsd_attribute_name (str): The name of the attribute to be returned.
+
+        Returns:
+            etree._ElementTree / None: The first element tree that matches the attribute name within the schema. Returns None if no XSD attribute found.
+
+        """
+        return self._schema_base_tree.find(
+            '//xsd:attribute[@name="{0}"]'.format(xsd_attribute_name),
+            namespaces=iati.core.constants.NSMAP
+        )
+
     def get_child_xsd_elements(self, parent_element):
         """Return a list of child elements for a given lxml.etree represention of an xsd:element.
 
@@ -220,10 +235,17 @@ class Schema(object):
         Returns:
             list of etree._ElementTree: A list containing representions of XSD attributes that are contained witin the input element. If there are no attributes, this will be an empty list.
         """
-        return element.findall(
+        attributes = element.findall(
             'xsd:complexType/xsd:attribute',
             namespaces=iati.core.constants.NSMAP
         )
+        output = []
+        for attr in attributes:
+            if attr.get('ref') is not None and not self.is_attribute_xml_lang(attr):
+                output.append(self.get_xsd_attribute(attr.get('ref')))
+            else:
+                output.append(attr)
+        return output
 
     def is_attribute_xml_lang(self, element):
         """Perform a check on a lxml represention of an xsd:attribute to determine if it is an 'xml:lang' attribute.

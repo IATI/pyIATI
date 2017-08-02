@@ -209,6 +209,7 @@ class TestSchemas(object):
     @pytest.mark.parametrize("schema_type, xsd_element_name, num_expected_attributes", [
         (default_activity_schema, 'iati-activities', 3),
         (default_activity_schema, 'iati-activity', 6),
+        (default_activity_schema, 'loan-status', 3),  # Contains the 'currency' and 'value-date' attributes, which are referenced and defined elsewere in the schema.
         (default_activity_schema, 'iati-identifier', 0),  # Contains no attributes
         (default_organisation_schema, 'iati-organisations', 2),
         (default_organisation_schema, 'iati-organisation', 3),
