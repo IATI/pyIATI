@@ -244,8 +244,13 @@ class RuleAtLeastOne(Rule):
             Boolean value that changes depending on whether the case is found in the dataset.xml_tree.
 
         """
+        found_paths = set()
+
         for path in self.paths:
-            return dataset.xml_tree.find(path) is not None  # is this doing what is wanted?
+            if dataset.xml_tree.find(path) is not None:
+                found_paths.add(path)
+
+        return len(found_paths) == len(self.paths)
 
 
 class RuleDateOrder(Rule):
@@ -332,8 +337,13 @@ class RuleNoMoreThanOne(Rule):
             Boolean value that changes depending on whether one or fewer cases are found in the dataset.xml_tree.
 
         """
+        compliant_paths = set()
+
         for path in self.paths:
-            return len(dataset.xml_tree.findall(path)) <= 1  # is this doing what is wanted?
+            if len(dataset.xml_tree.findall(path)) <= 1:
+                  compliant_paths.add(path)
+
+        return len(compliant_paths) == len(self.paths)
 
 
 class RuleRegexMatches(Rule):

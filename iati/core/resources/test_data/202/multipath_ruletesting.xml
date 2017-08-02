@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<iati-activities version="2.02">
+  <iati-activity>
+    <iati-identifier></iati-identifier><!-- multiple paths present -->
+    <transaction></transaction>
+    <title></title>
+    <title></title>
+  </iati-activity>
+</iati-activities>
