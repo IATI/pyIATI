@@ -287,12 +287,12 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_data_tree(self):
         """Invalid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_ATLEASTONE_RULE_INVALID
+        return iati.core.tests.utilities.DATASET_FOR_ATLEASTONE_RULE_INVALID
 
     @pytest.fixture
     def valid_data_tree(self):
         """Return valid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_ATLEASTONE_RULE_VALID
+        return iati.core.tests.utilities.DATASET_FOR_ATLEASTONE_RULE_VALID
 
     @pytest.fixture
     def this_rule_only_ruleset(self):
@@ -333,12 +333,12 @@ class TestRuleDependent(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_data_tree(self):
         """Invalid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_DEPENDENT_RULE_INVALID
+        return iati.core.tests.utilities.DATASET_FOR_DEPENDENT_RULE_INVALID
 
     @pytest.fixture
     def valid_data_tree(self):
         """Return valid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_DEPENDENT_RULE_VALID
+        return iati.core.tests.utilities.DATASET_FOR_DEPENDENT_RULE_VALID
 
     @pytest.fixture
     def this_rule_only_ruleset(self):
@@ -382,12 +382,12 @@ class TestRuleDateOrder(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_data_tree(self):
         """Invalid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_DATEORDER_RULE_INVALID
+        return iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID
 
     @pytest.fixture
     def valid_data_tree(self):
         """Return valid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_DATEORDER_RULE_VALID
+        return iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_VALID
 
     @pytest.fixture
     def this_rule_only_ruleset(self):
@@ -442,12 +442,12 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_data_tree(self):
         """Invalid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_NOMORETHANONE_RULE_INVALID
+        return iati.core.tests.utilities.DATASET_FOR_NOMORETHANONE_RULE_INVALID
 
     @pytest.fixture
     def valid_data_tree(self):
         """Return valid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_NOMORETHANONE_RULE_VALID
+        return iati.core.tests.utilities.DATASET_FOR_NOMORETHANONE_RULE_VALID
 
     @pytest.fixture
     def this_rule_only_ruleset(self):
@@ -493,12 +493,12 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_data_tree(self):
         """Invalid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_REGEXMATCHES_RULE_INVALID
+        return iati.core.tests.utilities.DATASET_FOR_REGEXMATCHES_RULE_INVALID
 
     @pytest.fixture
     def valid_data_tree(self):
         """Return valid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_REGEXMATCHES_RULE_VALID
+        return iati.core.tests.utilities.DATASET_FOR_REGEXMATCHES_RULE_VALID
 
     @pytest.fixture
     def this_rule_only_ruleset(self):
@@ -544,12 +544,12 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_data_tree(self):
         """Invalid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_REGEXNOMATCHES_RULE_INVALID
+        return iati.core.tests.utilities.DATASET_FOR_REGEXNOMATCHES_RULE_INVALID
 
     @pytest.fixture
     def valid_data_tree(self):
         """Return valid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_REGEXNOMATCHES_RULE_VALID
+        return iati.core.tests.utilities.DATASET_FOR_REGEXNOMATCHES_RULE_VALID
 
     @pytest.fixture
     def this_rule_only_ruleset(self):
@@ -594,12 +594,12 @@ class TestRuleStartsWith(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_data_tree(self):
         """Invalid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_STARTSWITH_RULE_INVALID
+        return iati.core.tests.utilities.DATASET_FOR_STARTSWITH_RULE_INVALID
 
     @pytest.fixture
     def valid_data_tree(self):
         """Return valid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_STARTSWITH_RULE_VALID
+        return iati.core.tests.utilities.DATASET_FOR_STARTSWITH_RULE_VALID
 
     @pytest.fixture
     def this_rule_only_ruleset(self):
@@ -654,12 +654,12 @@ class TestRuleSum(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_data_tree(self):
         """Invalid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_SUM_RULE_INVALID
+        return iati.core.tests.utilities.DATASET_FOR_SUM_RULE_INVALID
 
     @pytest.fixture
     def valid_data_tree(self):
         """Return valid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_SUM_RULE_VALID
+        return iati.core.tests.utilities.DATASET_FOR_SUM_RULE_VALID
 
     @pytest.fixture
     def this_rule_only_ruleset(self):
@@ -700,12 +700,12 @@ class TestRuleUnique(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_data_tree(self):
         """Invalid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_UNIQUE_RULE_INVALID
+        return iati.core.tests.utilities.DATASET_FOR_UNIQUE_RULE_INVALID
 
     @pytest.fixture
     def valid_data_tree(self):
         """Return valid dataset etree for this Rule."""
-        return iati.core.tests.utilities.DATASET_TREE_FOR_UNIQUE_RULE_VALID
+        return iati.core.tests.utilities.DATASET_FOR_UNIQUE_RULE_VALID
 
     @pytest.fixture
     def this_rule_only_ruleset(self):

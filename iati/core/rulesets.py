@@ -234,18 +234,18 @@ class RuleAtLeastOne(Rule):
 
         super(RuleAtLeastOne, self).__init__(xpath_base, case)
 
-    def is_valid_for(self, dataset_tree):
-        """Check `dataset_tree` has at least one instance of a given case for an Element.
+    def is_valid_for(self, dataset):
+        """Check `dataset.xml_tree` has at least one instance of a given case for an Element.
 
         Args:
-            dataset_tree: an etree created from an XML dataset.
+            dataset.xml_tree: an etree created from an XML dataset.
 
         Returns:
-            Boolean value that changes depending on whether the case is found in the dataset_tree.
+            Boolean value that changes depending on whether the case is found in the dataset.xml_tree.
 
         """
-        path = self.paths[0]
-        return dataset_tree.find(path) is not None
+        for path in self.paths:
+            return dataset.xml_tree.find(path) is not None  # is this doing what is wanted?
 
 
 class RuleDateOrder(Rule):
@@ -266,18 +266,18 @@ class RuleDateOrder(Rule):
         if self.more is not self.special_case:
             self.more = self._normalize_xpath(self.more)
 
-    def is_valid_for(self, dataset_tree):
+    def is_valid_for(self, dataset):
         """Assert that the date value of `less` is older than the date value of `more`.
 
         Args:
-            dataset_tree: an etree created from an XML dataset.
+            dataset.xml_tree: an etree created from an XML dataset.
 
         Return:
             A boolean value. If `less` is older than `more`, return `True`.
 
         """
-        less_date = dataset_tree.xpath(self.less)
-        more_date = dataset_tree.xpath(self.more)
+        less_date = dataset.xml_tree.xpath(self.less)
+        more_date = dataset.xml_tree.xpath(self.more)
         earlier_date = time.strptime(less_date[0], '%Y-%m-%d')
         later_date = time.strptime(more_date[0], '%Y-%m-%d')
 
@@ -293,20 +293,20 @@ class RuleDependent(Rule):
 
         super(RuleDependent, self).__init__(xpath_base, case)
 
-    def is_valid_for(self, dataset_tree):
-        """Assert that either all given `paths` or none of the given `paths` exist in a dataset_tree.
+    def is_valid_for(self, dataset):
+        """Assert that either all given `paths` or none of the given `paths` exist in a dataset.xml_tree.
 
         Args:
-            dataset_tree: an etree created from an XML dataset.
+            dataset.xml_tree: an etree created from an XML dataset.
 
         Returns:
-            A boolean value. If no `paths`, or all `paths` are found in the dataset_tree, return `True`.
+            A boolean value. If no `paths`, or all `paths` are found in the dataset.xml_tree, return `True`.
 
         """
         found_paths = 0
 
         for path in self.paths:
-            result = dataset_tree.findall(path)
+            result = dataset.xml_tree.findall(path)
             if result != list():
                 found_paths += 1
 
@@ -322,18 +322,18 @@ class RuleNoMoreThanOne(Rule):
 
         super(RuleNoMoreThanOne, self).__init__(xpath_base, case)
 
-    def is_valid_for(self, dataset_tree):
-        """Check `dataset_tree` has no more than one instance of a given case for an Element.
+    def is_valid_for(self, dataset):
+        """Check `dataset.xml_tree` has no more than one instance of a given case for an Element.
 
         Args:
-            dataset_tree: an etree created from an XML dataset.
+            dataset.xml_tree: an etree created from an XML dataset.
 
         Returns:
-            Boolean value that changes depending on whether one or fewer cases are found in the dataset_tree.
+            Boolean value that changes depending on whether one or fewer cases are found in the dataset.xml_tree.
 
         """
-        path = self.paths[0]
-        return len(dataset_tree.findall(path)) <= 1
+        for path in self.paths:
+            return len(dataset.xml_tree.findall(path)) <= 1  # is this doing what is wanted?
 
 
 class RuleRegexMatches(Rule):
@@ -350,11 +350,11 @@ class RuleRegexMatches(Rule):
         except sre_constants.error:
             raise ValueError
 
-    def is_valid_for(self, dataset_tree):
+    def is_valid_for(self, dataset):
         """Assert that the text of the given `paths` matches the `regex` value.
 
         Args:
-            dataset_tree: an etree created from an XML dataset.
+            dataset.xml_tree: an etree created from an XML dataset.
 
         Returns:
             A boolean value. If the text of the given `path` matches the `regex` value, return `True`.
@@ -363,7 +363,7 @@ class RuleRegexMatches(Rule):
         pattern = re.compile(self.case['regex'])
 
         for path in self.paths:
-            results = dataset_tree.findall(path)
+            results = dataset.xml_tree.findall(path)
             for result in results:
                 return bool(pattern.match(result.text))
 
@@ -382,11 +382,11 @@ class RuleRegexNoMatches(Rule):
         except sre_constants.error:
             raise ValueError
 
-    def is_valid_for(self, dataset_tree):
+    def is_valid_for(self, dataset):
         """Assert that no text of the given `paths` matches the `regex` value.
 
         Args:
-            dataset_tree: an etree created from an XML dataset.
+            dataset.xml_tree: an etree created from an XML dataset.
 
         Returns:
             A boolean value. If the text of the given `path` does not match the `regex` value, return `True`.
@@ -395,7 +395,7 @@ class RuleRegexNoMatches(Rule):
         pattern = re.compile(self.case['regex'])
 
         for path in self.paths:
-            results = dataset_tree.findall(path)
+            results = dataset.xml_tree.findall(path)
             for result in results:
                 return not bool(pattern.match(result.text))
 
@@ -420,20 +420,20 @@ class RuleStartsWith(Rule):
 
         self.start = self._normalize_xpath(self.start)
 
-    def is_valid_for(self, dataset_tree):
+    def is_valid_for(self, dataset):
         """Assert that the prefixing text of all given `paths` starts with the text of `start`.
 
         Args:
-            dataset_tree: an etree created from an XML dataset.
+            dataset.xml_tree: an etree created from an XML dataset.
 
         Returns:
             A boolean value. If the `path` string starts with the `start` string, return `True`.
 
         """
-        prefixing_str = dataset_tree.xpath(self.start)
+        prefixing_str = dataset.xml_tree.xpath(self.start)
 
         for path in self.paths:
-            results = dataset_tree.xpath(path)
+            results = dataset.xml_tree.xpath(path)
             for result in results:
                 el_str = result.text
                 return el_str.startswith(prefixing_str[0])
@@ -448,11 +448,11 @@ class RuleSum(Rule):
 
         super(RuleSum, self).__init__(xpath_base, case)
 
-    def is_valid_for(self, dataset_tree):
+    def is_valid_for(self, dataset):
         """Assert that the total of the values given in `paths` match the given `sum` value.
 
         Args:
-            dataset_tree: an etree created from an XML dataset.
+            dataset.xml_tree: an etree created from an XML dataset.
 
         Returns:
             A boolean value. If the `path` values total to the `sum` value, return `True`.
@@ -461,7 +461,7 @@ class RuleSum(Rule):
         sum_values = list()
 
         for path in self.paths:
-            results = dataset_tree.xpath(path)
+            results = dataset.xml_tree.xpath(path)
             for result in results:
                 sum_values.append(float(result))
 
@@ -479,14 +479,14 @@ class RuleUnique(Rule):
 
         super(RuleUnique, self).__init__(xpath_base, case)
 
-    def is_valid_for(self, dataset_tree):
-        """Assert that the given paths are not found in the dataset_tree more than once.
+    def is_valid_for(self, dataset):
+        """Assert that the given paths are not found in the dataset.xml_tree more than once.
 
         Args:
-            dataset_tree: an etree created from an XML dataset.
+            dataset.xml_tree: an etree created from an XML dataset.
 
         Returns:
-            A boolean value. If no repeated text is found in the dataset_tree for the given paths the value returned will be `True`.
+            A boolean value. If no repeated text is found in the dataset.xml_tree for the given paths the value returned will be `True`.
 
         Todo:
             Consider better methods for specifying which elements in the tree contain non-permitted duplication, such as bucket sort.
@@ -497,7 +497,7 @@ class RuleUnique(Rule):
         unique = set()
 
         for path in self.paths:
-            results = dataset_tree.findall(path)
+            results = dataset.xml_tree.findall(path)
             for result in results:
                 original.append(result.text)
                 unique.add(result.text)
