@@ -7,6 +7,18 @@ import iati.core.tests.utilities
 import iati.validator
 
 
+class TestValidationErrorLog(object):
+    """A container for tests relating to Validation Error Logs."""
+
+
+    def test_error_log_init(self):
+        """Test that a validator ErrorLog can be created and acts as a set."""
+        error_log = iati.validator.ErrorLog()
+
+        assert isinstance(error_log, iati.validator.ErrorLog)
+        assert isinstance(error_log, set)
+
+
 class TestValidation(object):
     """A container for tests relating to validation."""
 

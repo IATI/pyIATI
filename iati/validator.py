@@ -4,6 +4,10 @@ from lxml import etree
 import iati.core.default
 
 
+class ErrorLog(set):
+    pass
+
+
 _ERROR_CODES = {
     'err-code-not-on-codelist': {
         'category': 'codelist',
