@@ -4,7 +4,16 @@ from lxml import etree
 import iati.core.default
 
 
-class ErrorLog(set):
+class ValidationError(object):
+    """A base class to encapsulate information about Validation Errors."""
+
+    pass
+
+
+
+class ValidationErrorLog(set):
+    """A container to keep track of a set of ValidationErrors."""
+
     pass
 
 
