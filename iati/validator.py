@@ -1,8 +1,4 @@
-"""A module containing validation functionality.
-
-Warning:
-    It is planned to change from Schema-based to Data-based Codelist validation. As such, this module will change significantly.
-"""
+"""A module containing validation functionality."""
 
 from lxml import etree
 import iati.core.default
