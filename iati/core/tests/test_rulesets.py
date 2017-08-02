@@ -292,12 +292,8 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Instantiate RuleAtLeastOne."""
-        xpath_base = 'root_element'
+        xpath_base = '//root_element'
         return iati.core.rulesets.RuleAtLeastOne(xpath_base, request.param)
-
-    # def test_multipath_cases(self):
-    #     dataset = iati.core.tests.utilities.DATASET_MULTIPATH_RULETESTING
-
 
 
 class TestRuleDependent(RuleSubclassTestBase):
@@ -344,7 +340,7 @@ class TestRuleDependent(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'root_element'
+        xpath_base = '//root_element'
         return iati.core.rulesets.RuleDependent(xpath_base, request.param)
 
 
@@ -395,7 +391,7 @@ class TestRuleDateOrder(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'root_element'
+        xpath_base = '//root_element'
         return iati.core.rulesets.RuleDateOrder(xpath_base, request.param)
 
     def test_rule_paths_less(self, basic_rule):
@@ -453,11 +449,12 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         return iati.core.tests.utilities.DATASET_FOR_NOMORETHANONE_RULE_VALID
 
     @pytest.fixture(params=[
-        {"paths": ["iati-identifier"]}
+        {"paths": ["element_that_only_occurs_once"]},
+        {"paths": ["element_that_only_occurs_once", "another_element_that_only_occurs_once"]}
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'root_element'
+        xpath_base = '//root_element'
         return iati.core.rulesets.RuleNoMoreThanOne(xpath_base, request.param)
 
 
@@ -510,7 +507,7 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'root_element'
+        xpath_base = '//root_element'
         return iati.core.rulesets.RuleRegexMatches(xpath_base, request.param)
 
 
@@ -563,7 +560,7 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'root_element'
+        xpath_base = '//root_element'
         return iati.core.rulesets.RuleRegexNoMatches(xpath_base, request.param)
 
 
@@ -615,7 +612,7 @@ class TestRuleStartsWith(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'root_element'
+        xpath_base = '//root_element'
         return iati.core.rulesets.RuleStartsWith(xpath_base, request.param)
 
     def test_rule_paths_start(self, basic_rule):
@@ -677,7 +674,7 @@ class TestRuleSum(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'root_element'
+        xpath_base = '//root_element'
         return iati.core.rulesets.RuleSum(xpath_base, request.param)
 
 
@@ -725,5 +722,5 @@ class TestRuleUnique(RuleSubclassTestBase):
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""
-        xpath_base = 'root_element'
+        xpath_base = '//root_element'
         return iati.core.rulesets.RuleUnique(xpath_base, request.param)

@@ -244,9 +244,8 @@ class RuleAtLeastOne(Rule):
         found_paths = set()
 
         for path in self.paths:
-            if dataset.xml_tree.find(path) is not None:
+            if dataset.xml_tree.xpath(path) != list():
                 found_paths.add(path)
-        # import pdb; pdb.set_trace()
         return len(found_paths) == len(self.paths)
 
 
@@ -308,7 +307,7 @@ class RuleDependent(Rule):
         found_paths = 0
 
         for path in self.paths:
-            result = dataset.xml_tree.findall(path)
+            result = dataset.xml_tree.xpath(path)
             if result != list():
                 found_paths += 1
 
@@ -337,8 +336,8 @@ class RuleNoMoreThanOne(Rule):
         compliant_paths = set()
 
         for path in self.paths:
-            if len(dataset.xml_tree.findall(path)) <= 1:
-                  compliant_paths.add(path)
+            if len(dataset.xml_tree.xpath(path)) <= 1:
+                compliant_paths.add(path)
 
         return len(compliant_paths) == len(self.paths)
 
@@ -370,7 +369,7 @@ class RuleRegexMatches(Rule):
         pattern = re.compile(self.case['regex'])
 
         for path in self.paths:
-            results = dataset.xml_tree.findall(path)
+            results = dataset.xml_tree.xpath(path)
             for result in results:
                 return bool(pattern.match(result.text))
 
@@ -402,7 +401,7 @@ class RuleRegexNoMatches(Rule):
         pattern = re.compile(self.case['regex'])
 
         for path in self.paths:
-            results = dataset.xml_tree.findall(path)
+            results = dataset.xml_tree.xpath(path)
             for result in results:
                 return not bool(pattern.match(result.text))
 
@@ -504,7 +503,7 @@ class RuleUnique(Rule):
         unique = set()
 
         for path in self.paths:
-            results = dataset.xml_tree.findall(path)
+            results = dataset.xml_tree.xpath(path)
             for result in results:
                 original.append(result.text)
                 unique.add(result.text)
