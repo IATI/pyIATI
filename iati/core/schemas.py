@@ -18,9 +18,10 @@ class Schema(object):
         The private attribute allowing access to the base Schema Tree is likely to change in determining a good way of accessing the contained schema content.
 
     Todo:
-        Determine a good API for accessing the XMLSchema that the iati.core.schemas.Schema represents.
+        Determine a good API for accessing the XMLSchema that the iati.core.Schema represents.
 
         Determine how to distinguish and handle the different types of Schema - activity, organisation, codelist, other.
+
     """
 
     def __init__(self, name=None):
@@ -49,10 +50,12 @@ class Schema(object):
             Allow the base schema to be modified after initialisation.
 
             Create test instance where the SchemaError is raised.
+
         """
         self.name = name
         self._schema_base_tree = None
         self.codelists = set()
+        self.rulesets = set()
 
         if isinstance(name, str):
             path = iati.core.resources.get_schema_path(self.name)

@@ -1,7 +1,19 @@
 """A module containing utility constants and functions for tests.
 
+A large number of constants containing example file content are contained. These constants are named from left to right, with general properties first, then leading into more specific information. These names indicate what they are used for.
+
+Example:
+    To load a file into a string::
+
+        name_of_file = 'a-file-name-without-the-extension'
+        CONSTANT_NAME = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path(name_of_file))
+
+Note:
+    The current method of managing test data is known to be sub-optimal. Suggestions for better methods that satisfy requirements are appreciated!
+
 Todo:
     Add versions of constants that are valid for differing schema versions.
+
 """
 import decimal
 from lxml import etree
@@ -27,26 +39,26 @@ XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT_COMMON = iati.core.resources.load_
 """A string containing invalid IATI XML. It is invalid due to a missing element defined as require in iati-common.xsd"""
 
 XML_STR_VALID_IATI_VALID_CODE_FROM_COMMON = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_valid_code_from_common'))
-"""A string contains valid IATI XML containing an element that is defined in iati-common.xsd - it has an attribute with a value on the appropriate Codelist."""
+"""A string containing valid IATI XML containing an element that is defined in iati-common.xsd - it has an attribute with a value on the appropriate Codelist."""
 XML_STR_VALID_IATI_INVALID_CODE_FROM_COMMON = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_invalid_code_from_common'))
-"""A string contains valid IATI XML containing an element that is defined in iati-common.xsd - it has an attribute with a value that is not on the appropriate Codelist."""
+"""A string containing valid IATI XML containing an element that is defined in iati-common.xsd - it has an attribute with a value that is not on the appropriate Codelist."""
 
 XML_STR_VALID_IATI_VOCAB_DEFAULT_EXPLICIT = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_default_explicit'))
-"""A string contains valid IATI XML containing an element that uses vocabularies. Explicitly defines default vocab and uses code from that list."""
+"""A string containing valid IATI XML containing an element that uses vocabularies. Explicitly defines default vocab and uses code from that list."""
 XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_default_implicit'))
-"""A string contains valid IATI XML containing an element that uses vocabularies. Implicitly assumes default vocab and uses code from that list."""
+"""A string containing valid IATI XML containing an element that uses vocabularies. Implicitly assumes default vocab and uses code from that list."""
 XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT_INVALID_CODE = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_default_implicit_invalid_code'))
-"""A string contains valid IATI XML containing an element that uses vocabularies. Implicitly assumes default vocab and uses code not in list."""
+"""A string containing valid IATI XML containing an element that uses vocabularies. Implicitly assumes default vocab and uses code not in list."""
 XML_STR_VALID_IATI_VOCAB_NON_DEFAULT = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_non_default'))
-"""A string contains valid IATI XML containing an element that uses vocabularies. Explicitly defines non-default vocab and uses code from that list."""
+"""A string containing valid IATI XML containing an element that uses vocabularies. Explicitly defines non-default vocab and uses code from that list."""
 XML_STR_VALID_IATI_VOCAB_USER_DEFINED = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_user_defined'))
-"""A string contains valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. No URI specified."""
+"""A string containing valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. No URI specified."""
 XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_user_defined_with_uri_readable'))
-"""A string contains valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and machine readable. Uses code from this list."""
+"""A string containing valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and machine readable. Uses code from this list."""
 XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE_BAD_CODE = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_user_defined_with_uri_readable_bad_code'))
-"""A string contains valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and machine readable. Uses code not in list."""
+"""A string containing valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and machine readable. Uses code not in list."""
 XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_UNREADABLE = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_user_defined_with_uri_unreadable'))
-"""A string contains valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and not machine readable."""
+"""A string containing valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and not machine readable."""
 
 XML_TREE_VALID = etree.fromstring(XML_STR_VALID_NOT_IATI)
 """An etree that is not valid IATI data."""
@@ -90,6 +102,7 @@ def find_parameter_by_type(types, type_as_specified=True):
 
     Returns:
         list: A list of values to pass to the test function.
+
     """
     valid_keys_as_specified = [key for key in types if key in TYPE_TEST_DATA]
     if not type_as_specified:
