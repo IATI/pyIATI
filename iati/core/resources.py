@@ -333,7 +333,7 @@ def load_as_dataset(path):
         Add error handling for when the specified file does not exist.
 
     """
-    dataset_str = load_as_string(PACKAGE, path)
+    dataset_str = load_as_string(path)
     return iati.core.Dataset(dataset_str)
 
 def load_as_bytes(path):
