@@ -62,15 +62,12 @@ class TestDefault(object):
         for _, schema in schemas.items():
             assert isinstance(schema, iati.core.ActivitySchema) or isinstance(schema, iati.core.OrganisationSchema)
 
-    @pytest.mark.parametrize("invalid_name", iati.core.tests.utilities.find_parameter_by_type(['str', 'none', 'view', 'set', 'mapping', 'list', 'bytearray', 'memory', 'range'], False))
+    @pytest.mark.parametrize("invalid_name", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_default_schema(self, invalid_name):
         """Check that an Error is raised when attempting to load a Schema name that does not exist.
 
-        Todo:
-            Check for type errors when the type is incorrect.
+        Type 'str' is excluded since a valid IATI activity name is contained within the fuzzed data.
 
         """
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises((ValueError, TypeError)) as excinfo:
             iati.core.default.schema(invalid_name)
-
-        assert 'There is no default Schema in version' in str(excinfo.value)

@@ -92,7 +92,11 @@ TYPE_TEST_DATA = {
     'unicode': [],  # counts as a string, so moved there
     'view': [{}.keys(), dict(zip(['one', 'two', 'three'], [1, 2, 3])).items(), dict(one=1, two=2, three=3).values()]
 }
-"""Generic test data of various Python builtin types."""
+"""Generic test data of various Python builtin types.
+
+Todo:
+    Remove SCHEMA_ACTIVITY_NAME_VALID from TYPE_TEST_DATA['str'], so that it can be better used to fuzz a wider range of functions without accidentally being valid.
+"""
 
 
 def find_parameter_by_type(types, type_as_specified=True):
