@@ -50,12 +50,7 @@ class ValidationError(object):
 
 
 class ValidationErrorLog(list):
-    """A container to keep track of a set of ValidationErrors.
-
-    Todo:
-        Consider switching to extending a set.
-
-    """
+    """A container to keep track of a set of ValidationErrors."""
 
     pass
 
@@ -149,7 +144,7 @@ def _correct_codelist_values(dataset, schema, error_log=False):
 
     for codelist in schema.codelists:
         if error_log:
-            errors = errors + _correct_codes(dataset, codelist, error_log)
+            errors.extend(_correct_codes(dataset, codelist, error_log))
         else:
             correct_for_codelist = _correct_codes(dataset, codelist)
             if not correct_for_codelist:

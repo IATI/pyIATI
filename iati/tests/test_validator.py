@@ -421,7 +421,6 @@ class TestValidatorDetailedOutput(ValidateCodelistsBase):
 
         result = iati.validator.full_validation(data, schema_incomplete_codelist)
 
-        assert isinstance(result, list)
         assert len(result) == 0
 
     def test_basic_validation_codelist_incomplete_not_present_detailed_output(self, schema_incomplete_codelist):
