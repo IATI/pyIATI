@@ -52,7 +52,19 @@ class ValidationError(object):
 class ValidationErrorLog(list):
     """A container to keep track of a set of ValidationErrors."""
 
-    pass
+    def contains_errors(self):
+        """Determine whether there are errors contained.
+
+        Note:
+            The error log may contain warnings, or may be empty.
+
+        Returns:
+            bool: Whether there are errors within this error log.
+
+        """
+        actual_errors = [err for err in self if err.status == 'error']
+
+        return len(actual_errors) > 0
 
 
 _ERROR_CODES = {
@@ -71,24 +83,19 @@ _ERROR_CODES = {
 }
 
 
-def _correct_codes(dataset, codelist, error_log=False):
+def _check_codes(dataset, codelist):
     """Determine whether a given Dataset has values from the specified Codelist where expected.
 
     Args:
         dataset (iati.core.data.Dataset): The Dataset to check Codelist values within.
         codelist (iati.core.codelists.Codelist): The Codelist to check values from.
-        error_log (bool): Whether to return a detailed error log, or merely a boolean value. Default False.
 
     Returns:
-        bool: If `error_log` is False. A boolean indicating whether the given Dataset has values from the specified Codelist where they should be.
-        list of dict: If `error_log` is True. A list of the errors that occurred.
+        iati.validator.ValidationErrorLog: A log of the errors that occurred.
 
     """
-    errors = ValidationErrorLog()
+    error_log = ValidationErrorLog()
     mappings = iati.core.default.codelist_mapping()
-
-    if not error_log and not codelist.complete:
-        return True
 
     for mapping in mappings[codelist.name]:
         base_xpath = mapping['xpath']
@@ -108,52 +115,53 @@ def _correct_codes(dataset, codelist, error_log=False):
             code = parent.attrib[attr_name]
 
             if code not in codelist.codes:
-                if error_log:
-                    line_number = parent.sourceline
-                    if codelist.complete:
-                        error = ValidationError('err-code-not-on-codelist', locals())
-                    else:
-                        error = ValidationError('warn-code-not-on-codelist', locals())
+                line_number = parent.sourceline
 
-                    error.actual_value = code
-
-                    errors.append(error)
+                if codelist.complete:
+                    error = ValidationError('err-code-not-on-codelist', locals())
                 else:
-                    return False
+                    error = ValidationError('warn-code-not-on-codelist', locals())
 
-    if error_log:
-        return errors
-    else:
-        return True
+                error.actual_value = code
+
+                error_log.append(error)
+
+    return error_log
 
 
-def _correct_codelist_values(dataset, schema, error_log=False):
+def _check_codelist_values(dataset, schema):
+    """Check whether a given Dataset has values from Codelists that have been added to a Schema where expected.
+
+    Args:
+        dataset (iati.core.data.Dataset): The Dataset to check Codelist values within.
+        schema (iati.core.schemas.Schema): The Schema to locate Codelists within.
+
+    Returns:
+        iati.validator.ValidationErrorLog: A log of the errors that occurred.
+
+    """
+    error_log = ValidationErrorLog()
+
+    for codelist in schema.codelists:
+        error_log.extend(_check_codes(dataset, codelist))
+
+    return error_log
+
+
+def _correct_codelist_values(dataset, schema):
     """Determine whether a given Dataset has values from Codelists that have been added to a Schema where expected.
 
     Args:
         dataset (iati.core.data.Dataset): The Dataset to check Codelist values within.
         schema (iati.core.schemas.Schema): The Schema to locate Codelists within.
-        error_log (bool): Whether to return a detailed error log, or merely a boolean value. Default False.
 
     Returns:
         bool: If `error_log` is False. A boolean indicating whether the given Dataset has values from the specified Codelists where they should be.
-        list of dict: If `error_log` is True. A list of the errors that occurred.
 
     """
-    errors = ValidationErrorLog()
+    error_log = _check_codelist_values(dataset, schema)
 
-    for codelist in schema.codelists:
-        if error_log:
-            errors.extend(_correct_codes(dataset, codelist, error_log))
-        else:
-            correct_for_codelist = _correct_codes(dataset, codelist)
-            if not correct_for_codelist:
-                return False
-
-    if error_log:
-        return errors
-    else:
-        return True
+    return not error_log.contains_errors()
 
 
 def full_validation(dataset, schema):
@@ -173,7 +181,7 @@ def full_validation(dataset, schema):
         Create test against a bad Schema.
 
     """
-    return _correct_codelist_values(dataset, schema, True)
+    return _check_codelist_values(dataset, schema)
 
 
 def is_iati_xml(dataset, schema):
