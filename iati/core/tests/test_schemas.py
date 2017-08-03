@@ -152,11 +152,11 @@ class TestSchemas(object):
 
             Assert that the flattened XML is a valid Schema.
 
-            Test that this works with subclasses of iati.core.Schema: iati.core.ActivitySchema and iati.core.OrganisationSchema
+            Test that this works with subclasses of iati.core.schemas.Schema: iati.core.ActivitySchema and iati.core.OrganisationSchema
 
         """
         schema_path = iati.core.resources.get_schema_path(schema_name)
-        schema = iati.core.Schema(schema_path)
+        schema = iati.core.schemas.Schema(schema_path)
         local_element = expected_local_element
         included_element = 'reporting-org'
 
