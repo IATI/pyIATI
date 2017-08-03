@@ -10,7 +10,6 @@ import iati.validator
 class TestValidationError(object):
     """A container for tests relating to ValidationErrors."""
 
-
     def test_validation_error_init_no_name(self):
         """Test that a ValidationError cannot be created with no name provided."""
         with pytest.raises(TypeError):
@@ -38,13 +37,34 @@ class TestValidationError(object):
 class TestValidationErrorLog(object):
     """A container for tests relating to Validation Error Logs."""
 
+    @pytest.fixture
+    def error_log(self):
+        """A basic, error log that is initially empty."""
+        return iati.validator.ValidationErrorLog()
 
-    def test_error_log_init(self):
+    def test_error_log_init(self, error_log):
         """Test that a validator ErrorLog can be created and acts as a set."""
-        error_log = iati.validator.ValidationErrorLog()
-
         assert isinstance(error_log, iati.validator.ValidationErrorLog)
         assert isinstance(error_log, list)
+        assert not error_log.contains_errors()
+
+    def test_error_log_add_errors(self, error_log):
+        """Test that errors are identified as errors when added to the error log."""
+        err_name = 'err-code-not-on-codelist'
+        err = iati.validator.ValidationError(err_name)
+        error_log.append(err)
+
+        assert len(error_log) == 1
+        assert error_log.contains_errors()
+
+    def test_error_log_add_warnings(self, error_log):
+        """Test that warnings are not identified as errors when added to the error log."""
+        warning_name = 'warn-code-not-on-codelist'
+        warning = iati.validator.ValidationError(warning_name)
+        error_log.append(warning)
+
+        assert len(error_log) == 1
+        assert not error_log.contains_errors()
 
 
 class TestValidation(object):
