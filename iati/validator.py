@@ -49,8 +49,69 @@ class ValidationError(object):
             pass
 
 
-class ValidationErrorLog(list):
+class ValidationErrorLog(object):
     """A container to keep track of a set of ValidationErrors."""
+
+    def __init__(self):
+        """Initialise the error log."""
+        self._values = []
+
+    def __iter__(self):
+        """Return an iterator."""
+        return iter(self._values)
+
+    def __len__(self):
+        """The number of items in the ErrorLog."""
+        return len(self._values)
+
+    def __getitem__(self, key):
+        """Return an item with the specified key."""
+        return self._values[key]
+
+    def __setitem__(self, key, value):
+        """Prevent assignment by keys.
+
+        This is assignments such as `list[key] = val`.
+
+        Raises:
+            NotImplementedError: In all cases where this is called and parameters are correct.
+        """
+        raise NotImplementedError('Items in the error log may not be set directly. Please use `append() instead.')
+
+    def __eq__(self, other):
+        """Test equality with another object."""
+        return self._values == other._values
+
+    def add(self, value):
+        """Add a value to the Error Log.
+
+        Args:
+            value (iati.validator.ValidationError): The ValidationError to add to the Error Log.
+
+        Raises:
+            TypeError: When attempting to set an item that is not a ValidationError.
+
+        """
+        if not isinstance(value, iati.validator.ValidationError):
+            raise TypeError('Only ValidationErrors may be added to a ValidationErrorLog.')
+
+        self._values.append(value)
+
+    def extend(self, values):
+        """Extend the ErrorLog with ValidationErrors from an iterable.
+
+        Args:
+            values (iterable): An iterable containing ValidationErrors.
+
+        Note:
+            All ValidationErrors within the iterable shall be added. Any other contents shall not, and will fail to be added silently.
+
+        """
+        for value in values:
+            try:
+               self.add(value)
+            except TypeError:
+                pass
 
     def contains_errors(self):
         """Determine whether there are errors contained.
@@ -65,6 +126,7 @@ class ValidationErrorLog(list):
         actual_errors = [err for err in self if err.status == 'error']
 
         return len(actual_errors) > 0
+
 
 
 _ERROR_CODES = {
@@ -124,7 +186,7 @@ def _check_codes(dataset, codelist):
 
                 error.actual_value = code
 
-                error_log.append(error)
+                error_log.add(error)
 
     return error_log
 
