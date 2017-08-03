@@ -165,6 +165,8 @@ def find_parameter_by_type(types, type_as_specified=True):
     else:
         valid_keys = valid_keys_as_specified
 
+    valid_keys = sorted(valid_keys)
+
     results = []
 
     for key in valid_keys:

@@ -18,6 +18,7 @@ radon==2.0.2 # rq.filter: <3.0
 # testing tools
 pytest==3.0.5 # rq.filter: <4.0
 pytest-cov==2.4.0 # rq.filter: <3.0
+pytest-xdist==1.18.1 # rq.filter: <2.0
 
 # python2/python3 compatibility library
 future==0.16.0 # rq.filter: <1.0
