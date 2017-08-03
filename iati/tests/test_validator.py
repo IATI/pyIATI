@@ -24,9 +24,15 @@ class TestValidationError(object):
 
     def test_error_log_init_valid_name(self):
         """Test that a ValidationError can be created when provided a valid name."""
-        err = iati.validator.ValidationError('err-code-not-on-codelist')
+        err_name = 'err-code-not-on-codelist'
+        err = iati.validator.ValidationError(err_name)
+        err_detail = iati.validator._ERROR_CODES[err_name]
 
         assert isinstance(err, iati.validator.ValidationError)
+        assert err.category == err_detail['category']
+        assert err.description == err_detail['description']
+        assert err.info == err_detail['info']
+        assert err.help == err_detail['help']
 
 
 class TestValidationErrorLog(object):

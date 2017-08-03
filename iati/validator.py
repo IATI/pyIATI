@@ -18,9 +18,12 @@ class ValidationError(object):
 
         """
         try:
-            _ = _ERROR_CODES[err_name]
+            err_detail = _ERROR_CODES[err_name]
         except (KeyError, TypeError):
             raise ValueError('{err_name} is not a known type of ValidationError.'.format(**locals()))
+
+        for key, val in err_detail.items():
+            setattr(self, key, val)
 
 
 class ValidationErrorLog(set):
