@@ -8,11 +8,11 @@ import iati.core.utilities
 
 
 class Schema(object):
-    """Represenation of a Schema as defined within the IATI SSOT.
+    """Represenation of a Schema as defined within the IATI SSOT. This is used as a base class for ActivitySchema and OrganisationSchema.
 
     Attributes:
         codelists (set): The Codelists asspciated with this Schema. This is a read-only attribute.
-        root_element_name (str): The name of the root element within the schema - i.e. 'iati-activities' for the activity schema and 'iati-organisations' for the organisation schema.
+        root_element_name (str): The name of the root element within the XSD schema that the class represents.
 
     Warning:
         The private attribute allowing access to the base Schema Tree is likely to change in determining a good way of accessing the contained schema content.
@@ -52,10 +52,10 @@ class Schema(object):
             Create test instance where the SchemaError is raised.
 
         """
-        self.source_path = path
         self._schema_base_tree = None
         self.codelists = set()
         self.rulesets = set()
+        self.source_path = path
 
         try:
             loaded_tree = iati.core.resources.load_as_tree(path)
