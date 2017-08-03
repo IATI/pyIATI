@@ -8,30 +8,6 @@ import iati.core.schemas
 import iati.core.tests.utilities
 
 
-def default_activity_schema():
-    """Create a very basic acivity schema.
-
-    Returns:
-        iati.core.ActivitySchema: An ActivitySchema that has been initialised based on the default IATI Activity Schema.
-
-    """
-    schema_name = iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID
-
-    return iati.core.default.schema(schema_name)
-
-
-def default_organisation_schema():
-    """Create a very basic organisaion schema.
-
-    Returns:
-        iati.core.OrganisaionSchema: An OrganisaionSchema that has been initialised based on the default IATI Organisaion Schema.
-
-    """
-    schema_name = iati.core.tests.utilities.SCHEMA_ORGANISATION_NAME_VALID
-
-    return iati.core.default.schema(schema_name)
-
-
 class TestSchemas(object):
     """A container for tests relating to Schemas."""
 
@@ -52,12 +28,12 @@ class TestSchemas(object):
         return iati.core.default.schema(schema_name)
 
     @pytest.mark.parametrize("schema_type, expected_value", [
-        (default_activity_schema, 'iati-activities'),
-        (default_organisation_schema, 'iati-organisations')
+        ('iati-activities-schema', 'iati-activities'),
+        ('iati-organisations-schema', 'iati-organisations')
     ])
     def test_schema_default_attributes(self, schema_type, expected_value):
         """Check a Schema's default attributes are correct."""
-        schema = schema_type()
+        schema = iati.core.default.schema(schema_type)
 
         assert schema.root_element_name == expected_value
 
@@ -69,8 +45,8 @@ class TestSchemas(object):
         assert len(schema_initialised.rulesets) == 0
 
     @pytest.mark.parametrize("schema_type, expected_local_element", [
-        (default_activity_schema, 'iati-activities'),
-        (default_organisation_schema, 'iati-organisations')
+        ('iati-activities-schema', 'iati-activities'),
+        ('iati-organisations-schema', 'iati-organisations')
     ])
     def test_schema_unmodified_includes(self, schema_type, expected_local_element):
         """Check that local elements can be accessed, but imported elements within unmodified Schema includes cannot be accessed.
@@ -82,7 +58,7 @@ class TestSchemas(object):
             Simplify asserts.
 
         """
-        schema = schema_type()
+        schema = iati.core.default.schema(schema_type)
         local_element = expected_local_element
         included_element = 'reporting-org'
 
@@ -95,8 +71,8 @@ class TestSchemas(object):
         assert schema._schema_base_tree.getroot().find(included_xpath) is None
 
     @pytest.mark.parametrize("schema_type, expected_local_element", [
-        (default_activity_schema, 'iati-activities'),
-        (default_organisation_schema, 'iati-organisations')
+        ('iati-activities-schema', 'iati-activities'),
+        ('iati-organisations-schema', 'iati-organisations')
     ])
     def test_schema_modified_includes(self, schema_type, expected_local_element):
         """Check that elements within unflattened modified Schema includes cannot be accessed.
@@ -111,7 +87,7 @@ class TestSchemas(object):
             Consider consolidating variables shared between multiple tests.
 
         """
-        schema = schema_type()
+        schema = iati.core.default.schema(schema_type)
         local_element = expected_local_element
         included_element = 'reporting-org'
 
