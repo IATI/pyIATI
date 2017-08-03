@@ -52,6 +52,7 @@ class Schema(object):
             Create test instance where the SchemaError is raised.
 
         """
+        self.source_path = path
         self._schema_base_tree = None
         self.codelists = set()
         self.rulesets = set()

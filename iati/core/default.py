@@ -10,6 +10,7 @@ Todo:
 """
 import os
 import iati.core.codelists
+import iati.core.constants
 import iati.core.resources
 
 
@@ -104,6 +105,40 @@ This removes the need to repeatedly load a Schema from disk each time it is acce
 """
 
 
+def activity_schemas():
+    """Return a dictionary of the default ActivitySchema objects for all versions of the Standard.
+
+    Returns:
+        dict: Containing the version (as keys) and a corresponding ActivitySchema object (as values).
+
+    Todo:
+        Handle a `bypass_cache` parameter.
+    """
+    output = {}
+    for version in iati.core.constants.STANDARD_VERSIONS:
+        activity_schema_paths = iati.core.resources.get_all_activity_schema_paths(version)
+        output[version] = iati.core.ActivitySchema(activity_schema_paths[0])
+
+    return output
+
+
+def organisation_schemas():
+    """Return a dictionary of the default OrganisationSchema objects for all versions of the Standard.
+
+    Returns:
+        dict: Containing the version (as keys) and a corresponding OrganisationSchema object (as values).
+
+    Todo:
+        Handle a `bypass_cache` parameter.
+    """
+    output = {}
+    for version in iati.core.constants.STANDARD_VERSIONS:
+        organisation_schema_paths = iati.core.resources.get_all_organisation_schema_paths(version)
+        output[version] = iati.core.OrganisationSchema(organisation_schema_paths[0])
+
+    return output
+
+
 def schemas(bypass_cache=False):
     """Locate all the default IATI Schemas and return them within a dictionary.
 
@@ -119,27 +154,21 @@ def schemas(bypass_cache=False):
     Todo:
         Consider the Schema that defines the format of Codelists.
 
-        Test a cache bypass where data is updated.
+        Handle the `bypass_cache` parameter (and test a cache bypass where data is updated).
 
-        Load the Schemas.
-
-        Needs to handle multiple versions of the Schemas. Versions could perhaps be placed within a nested dictionary, with the version number as the key.
-
+        Needs to handle multiple versions of the Schemas. This will probably involve passing in a version as a param, which should tidy up the function too.
     """
-    schema_paths_by_type = {
-        'activity': iati.core.resources.get_all_activity_schema_paths(),
-        'organisation': iati.core.resources.get_all_organisation_schema_paths()
+    schemas_by_type_and_version = {
+        'activity': activity_schemas(),
+        'organisation': organisation_schemas()
     }
 
-    for schema_type, schema_paths in schema_paths_by_type.items():
-        for path in schema_paths:
-            name = path.split(os.sep).pop()[:-len(iati.core.resources.FILE_SCHEMA_EXTENSION)]
-            if (name not in _SCHEMAS.keys()) or bypass_cache:
-                if schema_type == 'activity':
-                    schema_object = iati.core.ActivitySchema(path)
-                elif schema_type == 'organisation':
-                    schema_object = iati.core.OrganisationSchema(path)
-                _SCHEMAS[name] = schema_object
+    latest_version = iati.core.constants.STANDARD_VERSION_LATEST
+    for _, schemas_by_version in schemas_by_type_and_version.items():
+        schema_object = schemas_by_version[latest_version]
+        name = schema_object.source_path.split(os.sep).pop()[:-len(iati.core.resources.FILE_SCHEMA_EXTENSION)]
+        if (name not in _SCHEMAS.keys()):
+            _SCHEMAS[name] = schema_object
 
     return _SCHEMAS
 

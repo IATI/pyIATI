@@ -27,15 +27,16 @@ class TestSchemas(object):
 
         return iati.core.default.schema(schema_name)
 
-    @pytest.mark.parametrize("schema_type, expected_value", [
+    @pytest.mark.parametrize("schema_type, expected_root_element_name", [
         ('iati-activities-schema', 'iati-activities'),
         ('iati-organisations-schema', 'iati-organisations')
     ])
-    def test_schema_default_attributes(self, schema_type, expected_value):
+    def test_schema_default_attributes(self, schema_type, expected_root_element_name):
         """Check a Schema's default attributes are correct."""
         schema = iati.core.default.schema(schema_type)
 
-        assert schema.root_element_name == expected_value
+        assert schema.root_element_name == expected_root_element_name
+        assert expected_root_element_name in schema.source_path
 
     def test_schema_define_from_xsd(self, schema_initialised):
         """Check that a Schema can be generated from an XSD definition."""
