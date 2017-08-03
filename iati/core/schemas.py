@@ -173,6 +173,9 @@ class Schema(object):
         Returns:
             etree._ElementTree / None: The first element tree that matches the element name within the schema. Returns None if no XSD element found.
 
+        Todo:
+            Refactor functionality with `get_xsd_attribute` (perhaps to be called `get_xsd_type_by_name`).
+
         """
         return self._schema_base_tree.find(
             '//xsd:element[@name="{0}"]'.format(xsd_element_name),
@@ -188,6 +191,9 @@ class Schema(object):
         Returns:
             etree._ElementTree / None: The first element tree that matches the attribute name within the schema. Returns None if no XSD attribute found.
 
+        Todo:
+            Refactor functionality with `get_xsd_element` (perhaps to be called `get_xsd_type_by_name`).
+
         """
         return self._schema_base_tree.find(
             '//xsd:attribute[@name="{0}"]'.format(xsd_attribute_name),
@@ -202,6 +208,10 @@ class Schema(object):
 
         Returns:
             list of etree._ElementTree: A list containing representions of XSD elements that are children to the input element.  If there are no child elements, this will be an empty list.
+
+        Warning:
+            At present this is tightly coupled to the iati-activities-schema, iati-organisations-schema and iati-common schemas. The behaviour for other types of schema is undefined.
+
         """
         child_elements_and_refs = parent_element.findall(
             'xsd:complexType/xsd:sequence/xsd:element',
@@ -236,8 +246,12 @@ class Schema(object):
         Returns:
             list of etree._ElementTree: A list containing representions of XSD attributes that are contained witin the input element. If there are no attributes, this will be an empty list.
 
+        Warning:
+            At present this is tightly coupled to the IATI iati-activities-schema, iati-organisations-schema and iati-common schemas. The behaviour for other types of schema is undefined.
+
         Todo:
-            Access complexType attributes, for example 'narrative/@xml:lang' and 'value/@currency'
+            Possibly refactor.
+
         """
         attributes = element.findall(
             'xsd:complexType/xsd:attribute',
@@ -267,6 +281,7 @@ class Schema(object):
 
         Returns:
             bool: True if the element is an 'xml:lang' attribute, or False if not.
+
         """
         if element.get('ref') == 'xml:lang':
             return True
@@ -281,6 +296,7 @@ class Schema(object):
 
         Returns:
             str or None: The value within the xsd:element/@name or xsd:attribute/@name. None is returned if no name is found.
+
         """
         name = element.get('name')
 
@@ -296,8 +312,12 @@ class Schema(object):
         Returns:
             dict: Containing an XPath (as keys) with the corresponding lxml represention of the xsd:element or xsd:attribute (as values).
 
+        Warning:
+            At present this is tightly coupled to the IATI iati-activities-schema, iati-organisations-schema and iati-common schemas. The behaviour for other types of schema is undefined.
+
         Todo:
-            Define if the two lines should be called directly by the __init__ method.
+            Define if these two lines should be called directly by the __init__ method.
+
         """
         root_element = self.get_xsd_element(self.root_element_name)
         output = self.get_xsd_components(root_element)
@@ -314,6 +334,10 @@ class Schema(object):
 
         Returns:
             OrderedDict: Containing an XPath (as keys) with the corresponding lxml represention of the xsd:element or xsd:attribute (as values).
+
+        Todo:
+            Rename to an internal method.
+
         """
         if output is None:
             output = OrderedDict()
