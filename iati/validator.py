@@ -36,12 +36,16 @@ class ValidationError(object):
         try:
             self.help = self.help.format(**calling_locals)
             self.info = self.info.format(**calling_locals)
+        except KeyError as missing_var_err:
+            # raise NameError('The calling scope must contain a `{missing_var_err.args[0]}` variable for providing information for the error message.'.format(**locals()))
+            pass
 
-            # set general attributes for this type of error that require context from the calling scope
+        # set general attributes for this type of error that require context from the calling scope
+        try:
             self.line_number = calling_locals['line_number']
             self.context = calling_locals['dataset'].source_around_line(self.line_number)
-        except KeyError as missing_var_err:
-            # raise NameError('The calling scope must contain a `{missing_var_err.args[0]}` variable.'.format(**locals()))
+        except KeyError:
+            # TODO: Determine what the defaults should be should the appropriate values not be available
             pass
 
 
