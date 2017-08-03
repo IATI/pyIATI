@@ -70,7 +70,11 @@ class ValidationErrorLog(object):
 
     def __eq__(self, other):
         """Test equality with another object."""
-        return self._values == other._values
+        for val in self._values:
+            if not val in other._values:
+                return False
+
+        return True
 
     def add(self, value):
         """Add a value to the Error Log.

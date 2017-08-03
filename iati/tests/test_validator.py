@@ -43,19 +43,21 @@ class TestValidationErrorLog(object):
         return iati.validator.ValidationErrorLog()
 
     @pytest.fixture
-    def error_log_with_error(self, error_log):
+    def error_log_with_error(self):
         """An error log with an error added."""
         err_name = 'err-code-not-on-codelist'
         error = iati.validator.ValidationError(err_name)
+        error_log = iati.validator.ValidationErrorLog()
         error_log.add(error)
 
         return error_log
 
     @pytest.fixture
-    def error_log_with_warning(self, error_log):
+    def error_log_with_warning(self):
         """An error log with a warning added."""
         warning_name = 'warn-code-not-on-codelist'
         warning = iati.validator.ValidationError(warning_name)
+        error_log = iati.validator.ValidationErrorLog()
         error_log.add(warning)
 
         return error_log
@@ -86,6 +88,12 @@ class TestValidationErrorLog(object):
         """Test that you may not add values to an error log via index assignment."""
         with pytest.raises(TypeError):
             error_log_with_warning[0] = potential_ValidationError
+
+    def test_error_log_equality_single_error(self, error_log_with_error, error_log_with_warning):
+        """Test equality between Error Logs with a single error in them."""
+        assert not error_log_with_error == error_log_with_warning
+        assert error_log_with_error != error_log_with_warning
+
 
 class TestValidation(object):
     """A container for tests relating to validation."""
