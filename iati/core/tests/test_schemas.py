@@ -32,6 +32,11 @@ def default_organisation_schema():
     return iati.core.default.schema(schema_name)
 
 
+class MockSchema(iati.core.schemas.Schema):
+    """A MockSchema class representing the mock schema defined in iati.core.tests.utilities.PATH_XSD_NON_IATI."""
+    root_element_name = "note"
+
+
 class TestSchemas(object):
     """A container for tests relating to Schemas."""
 
@@ -114,7 +119,7 @@ class TestSchemas(object):
           ii) directly from etree.fromstring.
 
         """
-        schema = iati.core.Schema(iati.core.tests.utilities.PATH_XSD_NON_IATI)
+        schema = MockSchema(iati.core.tests.utilities.PATH_XSD_NON_IATI)
         xsd_bytes = iati.core.resources.load_as_bytes(iati.core.tests.utilities.PATH_XSD_NON_IATI)
         schema_direct_from_file = etree.fromstring(xsd_bytes)
 
@@ -243,7 +248,7 @@ class TestSchemas(object):
 
             Test for a case where there is no xsd:element/@name.  In which case, test that None is returned.
         """
-        schema = iati.core.Schema(iati.core.tests.utilities.PATH_XSD_NON_IATI)
+        schema = MockSchema(iati.core.tests.utilities.PATH_XSD_NON_IATI)
         elements = schema._schema_base_tree.findall(
             '//xsd:element',
             namespaces=iati.core.constants.NSMAP
@@ -267,7 +272,7 @@ class TestSchemas(object):
 
             Test for a case where there is no xsd:attribute/@name.  In which case, test that None is returned.
         """
-        schema = iati.core.Schema(iati.core.tests.utilities.PATH_XSD_NON_IATI)
+        schema = MockSchema(iati.core.tests.utilities.PATH_XSD_NON_IATI)
         element = schema.get_xsd_element('body')
         attributes = schema.get_attributes_in_xsd_element(element)
 
@@ -310,11 +315,10 @@ class TestSchemas(object):
         assert not result_expected_false
 
     def test_build_xsd_lookup_mock_schema(self):
-        """Test that an expected lookup table is built for a mock Schema."""
-        schema = iati.core.Schema(iati.core.tests.utilities.PATH_XSD_NON_IATI)
-        schema.root_element_name = "note"
+        """Test that an expected lookup dictionary is built and set when instantiating a MockSchema."""
+        schema = MockSchema(iati.core.tests.utilities.PATH_XSD_NON_IATI)
 
-        result = schema.build_xsd_lookup()
+        result = schema._xsd_lookup
 
         assert list(result.keys()) == [
             'note',
@@ -328,10 +332,10 @@ class TestSchemas(object):
             assert isinstance(element, etree._Element)
 
     def test_build_xsd_lookup_activity_schema(self):
-        """Test that an expected lookup table is built for an ActivitySchema."""
+        """Test that an expected lookup dictionary is built and set when instantiating an ActivitySchema."""
         schema = iati.core.default.schema('iati-activities-schema')
 
-        result = schema.build_xsd_lookup()
+        result = schema._xsd_lookup
 
         assert len(result) == 344  # Number of 'fields' in the v2.02 activity standard
         assert 'iati-activities' in result.keys()
@@ -343,10 +347,10 @@ class TestSchemas(object):
             assert isinstance(element, etree._Element)
 
     def test_build_xsd_lookup_organisation_schema(self):
-        """Test that an expected lookup table is built for an OrganisationSchema."""
+        """Test that an expected lookup dictionary is built and set when instantiating OrganisationSchema."""
         schema = iati.core.default.schema('iati-organisations-schema')
 
-        result = schema.build_xsd_lookup()
+        result = schema._xsd_lookup
 
         assert len(result) == 126  # Number of 'fields' in the v2.02 organisation standard.
         assert 'iati-organisations' in result.keys()

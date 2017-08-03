@@ -65,6 +65,7 @@ class Schema(object):
         else:
             self._schema_base_tree = loaded_tree
             self._flatten_includes()
+            self._xsd_lookup = self._build_xsd_lookup_dict()
 
     def _change_include_to_xinclude(self, tree):
         """Change the method in which common elements are included.
@@ -306,7 +307,7 @@ class Schema(object):
 
         return name
 
-    def build_xsd_lookup(self):
+    def _build_xsd_lookup_dict(self):
         """Builds a lookup dictionary containing an XPath (as keys) with the corresponding lxml represention of the xsd:element or xsd:attribute (as values).
 
         Returns:
@@ -315,16 +316,13 @@ class Schema(object):
         Warning:
             At present this is tightly coupled to the IATI iati-activities-schema, iati-organisations-schema and iati-common schemas. The behaviour for other types of schema is undefined.
 
-        Todo:
-            Define if these two lines should be called directly by the __init__ method.
-
         """
         root_element = self.get_xsd_element(self.root_element_name)
-        output = self.get_xsd_components(root_element)
+        output = self._build_recursive_xsd_lookup_dict(root_element)
 
         return output
 
-    def get_xsd_components(self, base_element, base_xpath='', output=None):
+    def _build_recursive_xsd_lookup_dict(self, base_element, base_xpath='', output=None):
         """Recursively builds a lookup dictionary containing an XPath (as keys) with the corresponding lxml represention of the xsd:element or xsd:attribute (as values).
 
         Args:
@@ -355,7 +353,7 @@ class Schema(object):
             output[xpath] = attribute
 
         for child_element in self.get_child_xsd_elements(base_element):
-            self.get_xsd_components(child_element, current_xpath, output)
+            self._build_recursive_xsd_lookup_dict(child_element, current_xpath, output)
 
         return output
 
