@@ -240,6 +240,9 @@ class RuleAtLeastOne(Rule):
         Returns:
             Boolean value that changes depending on whether the case is found in the dataset.xml_tree.
 
+        Raises:
+            AttributeError: When an argument is given that is not a dataset object.
+
         """
         found_paths = set()
 
@@ -276,6 +279,9 @@ class RuleDateOrder(Rule):
         Return:
             A boolean value. If `less` is older than `more`, return `True`.
 
+        Raises:
+            AttributeError: When an argument is given that is not a dataset object.
+
         """
         less_date = dataset.xml_tree.xpath(self.less)
         more_date = dataset.xml_tree.xpath(self.more)
@@ -302,6 +308,9 @@ class RuleDependent(Rule):
 
         Returns:
             A boolean value. If no `paths`, or all `paths` are found in the dataset.xml_tree, return `True`.
+
+        Raises:
+            AttributeError: When an argument is given that is not a dataset object.
 
         """
         found_paths = 0
@@ -331,6 +340,9 @@ class RuleNoMoreThanOne(Rule):
 
         Returns:
             Boolean value that changes depending on whether one or fewer cases are found in the dataset.xml_tree.
+
+        Raises:
+            AttributeError: When an argument is given that is not a dataset object.
 
         """
         compliant_paths = set()
@@ -365,6 +377,9 @@ class RuleRegexMatches(Rule):
         Returns:
             A boolean value. If the text of the given `path` matches the `regex` value, return `True`.
 
+        Raises:
+            AttributeError: When an argument is given that is not a dataset object.
+
         """
         pattern = re.compile(self.case['regex'])
 
@@ -396,6 +411,9 @@ class RuleRegexNoMatches(Rule):
 
         Returns:
             A boolean value. If the text of the given `path` does not match the `regex` value, return `True`.
+
+        Raises:
+            AttributeError: When an argument is given that is not a dataset object.
 
         """
         pattern = re.compile(self.case['regex'])
@@ -435,6 +453,9 @@ class RuleStartsWith(Rule):
         Returns:
             A boolean value. If the `path` string starts with the `start` string, return `True`.
 
+        Raises:
+            AttributeError: When an argument is given that is not a dataset object.
+
         """
         prefixing_str = dataset.xml_tree.xpath(self.start)
 
@@ -462,6 +483,9 @@ class RuleSum(Rule):
 
         Returns:
             A boolean value. If the `path` values total to the `sum` value, return `True`.
+
+        Raises:
+            AttributeError: When an argument is given that is not a dataset object.
 
         """
         sum_values = list()
@@ -494,9 +518,11 @@ class RuleUnique(Rule):
         Returns:
             A boolean value. If no repeated text is found in the dataset.xml_tree for the given paths the value returned will be `True`.
 
+        Raises:
+            AttributeError: When an argument is given that is not a dataset object.
+
         Todo:
             Consider better methods for specifying which elements in the tree contain non-permitted duplication, such as bucket sort.
-            Test with a test ruleset that has multiple paths.
 
         """
         original = list()

@@ -246,6 +246,17 @@ class RuleSubclassTestBase(object):
         """
         assert not rule.is_valid_for(invalid_dataset)
 
+    @pytest.mark.parametrize("junk_data", iati.core.tests.utilities.find_parameter_by_type([], False))
+    def test_is_valid_for_raises_error_on_non_permitted_argument(self, rule, junk_data):
+        """Check that a given rule returns expected error when passed an argument that is not a dataset."""
+        with pytest.raises(AttributeError):
+            rule.is_valid_for(junk_data)
+
+    def test_what_happens_with_an_etree(self, rule):
+        """Check that an error is raised if an etree is given as an argument instead of a dataset."""
+        with pytest.raises(AttributeError):
+            rule.is_valid_for(iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_atleastone')))
+
 
 class TestRuleAtLeastOne(RuleSubclassTestBase):
     """A container for tests relating to RuleAtLeastOne."""
@@ -294,54 +305,6 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         """Instantiate RuleAtLeastOne."""
         xpath_base = '//root_element'
         return iati.core.rulesets.RuleAtLeastOne(xpath_base, request.param)
-
-
-class TestRuleDependent(RuleSubclassTestBase):
-    """A container for tests relating to RuleDependent."""
-
-    @pytest.fixture
-    def rule_type(self):
-        """Type of rule."""
-        return 'dependent'
-
-    @pytest.fixture(params=[
-        {'paths': ['']},  # empty path
-        {'paths': ['path_1']},  # single path
-        {'paths': ['path_1', 'path_2']},  # multiple paths
-        {'paths': ['path_1', 'path_1']}  # duplicate paths
-    ])
-    def valid_case(self, request):
-        """Permitted case for this rule."""
-        return request.param
-
-    @pytest.fixture(params=[
-        {'paths': []},  # empty path array
-        {'paths': 'path_1'},  # non-array `paths`
-        {'paths': [3]},  # non-string value in path array
-        {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
-        {}  # empty dictionary
-    ])
-    def invalid_case(self, request):
-        """Non-permitted case for this rule."""
-        return request.param
-
-    @pytest.fixture
-    def invalid_dataset(self):
-        """Invalid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_DEPENDENT_RULE_INVALID
-
-    @pytest.fixture
-    def valid_dataset(self):
-        """Return valid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_DEPENDENT_RULE_VALID
-
-    @pytest.fixture(params=[
-        {"paths": ["transaction/provider-org", "location/point"]}
-    ])
-    def rule(self, request):
-        """Ruleset contains only this Rule."""
-        xpath_base = '//root_element'
-        return iati.core.rulesets.RuleDependent(xpath_base, request.param)
 
 
 class TestRuleDateOrder(RuleSubclassTestBase):
@@ -407,6 +370,54 @@ class TestRuleDateOrder(RuleSubclassTestBase):
             assert basic_rule.more == basic_rule.special_case
         else:
             assert basic_rule.more.startswith(basic_rule.xpath_base)
+
+
+class TestRuleDependent(RuleSubclassTestBase):
+    """A container for tests relating to RuleDependent."""
+
+    @pytest.fixture
+    def rule_type(self):
+        """Type of rule."""
+        return 'dependent'
+
+    @pytest.fixture(params=[
+        {'paths': ['']},  # empty path
+        {'paths': ['path_1']},  # single path
+        {'paths': ['path_1', 'path_2']},  # multiple paths
+        {'paths': ['path_1', 'path_1']}  # duplicate paths
+    ])
+    def valid_case(self, request):
+        """Permitted case for this rule."""
+        return request.param
+
+    @pytest.fixture(params=[
+        {'paths': []},  # empty path array
+        {'paths': 'path_1'},  # non-array `paths`
+        {'paths': [3]},  # non-string value in path array
+        {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
+        {}  # empty dictionary
+    ])
+    def invalid_case(self, request):
+        """Non-permitted case for this rule."""
+        return request.param
+
+    @pytest.fixture
+    def invalid_dataset(self):
+        """Invalid dataset for this Rule."""
+        return iati.core.tests.utilities.DATASET_FOR_DEPENDENT_RULE_INVALID
+
+    @pytest.fixture
+    def valid_dataset(self):
+        """Return valid dataset for this Rule."""
+        return iati.core.tests.utilities.DATASET_FOR_DEPENDENT_RULE_VALID
+
+    @pytest.fixture(params=[
+        {"paths": ["transaction/provider-org", "location/point"]}
+    ])
+    def rule(self, request):
+        """Ruleset contains only this Rule."""
+        xpath_base = '//root_element'
+        return iati.core.rulesets.RuleDependent(xpath_base, request.param)
 
 
 class TestRuleNoMoreThanOne(RuleSubclassTestBase):
@@ -718,7 +729,8 @@ class TestRuleUnique(RuleSubclassTestBase):
         return iati.core.tests.utilities.DATASET_FOR_UNIQUE_RULE_VALID
 
     @pytest.fixture(params=[
-        {"paths": ["iati-identifier"]}
+        {"paths": ["iati-identifier"]},
+        {"paths": ["iati-identifier", "other_unique_element"]}
     ])
     def rule(self, request):
         """Ruleset contains only this Rule."""

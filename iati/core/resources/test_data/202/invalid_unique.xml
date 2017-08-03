@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 
 <root_element>
-  <iati-identifier>This is not a unique identifier</iati-identifier><!-- iati-identifier is replicated -->
+  <iati-identifier>This is not a unique identifier</iati-identifier><!-- elements are replicated -->
   <iati-identifier>This is not a unique identifier</iati-identifier>
+  <other_unique_element></other_unique_element>
+  <other_unique_element></other_unique_element>
 </root_element>
