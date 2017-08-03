@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+
+<root_element>
+  <recipient-country code="AF" percentage="50" /><!-- percentages sum to 100 correctly according to test ruleset -->
+  <recipient-region code="489" vocabulary="1" percentage="50" />
+</root_element>

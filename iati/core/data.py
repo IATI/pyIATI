@@ -1,4 +1,5 @@
 """A module containing a core representation of an IATI Dataset."""
+import sys
 from lxml import etree
 import iati.core.exceptions
 import iati.core.utilities
@@ -65,6 +66,10 @@ class Dataset(object):
             ValueError: If a value that is being assigned is not a valid XML string.
             TypeError: If a value that is being assigned is not a string at all.
 
+        Todo:
+            Clarify error messages, for example when a mismatched encoding is used.
+            Perhaps pass on the original lxml error message instead of trying to intrepret what might have gone wrong when running etree.fromstring.
+
         """
         return self._xml_str
 
@@ -77,7 +82,15 @@ class Dataset(object):
         else:
             try:
                 value_stripped = value.strip()
-                self.xml_tree = etree.fromstring(value_stripped)
+
+                # Convert the input to bytes, as etree.fromstring works most consistently with bytes objects, especially if an XML encoding declaration has been used.
+                if (isinstance(value_stripped, str) and
+                        sys.version_info.major > 2):  # Python v2 treats strings as byte objects by default
+                    value_stripped_bytes = value_stripped.encode()
+                else:
+                    value_stripped_bytes = value_stripped
+
+                self.xml_tree = etree.fromstring(value_stripped_bytes)
                 self._xml_str = value_stripped
             except etree.XMLSyntaxError:
                 msg = "The string provided to create a Dataset from is not valid XML."
