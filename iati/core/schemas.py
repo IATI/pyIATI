@@ -55,6 +55,7 @@ class Schema(object):
         self.name = name
         self._schema_base_tree = None
         self.codelists = set()
+        self.rulesets = set()
 
         if isinstance(name, str):
             path = iati.core.resources.get_schema_path(self.name)
