@@ -70,6 +70,9 @@ class ValidationErrorLog(object):
 
     def __eq__(self, other):
         """Test equality with another object."""
+        if len(self._values) != len(other._values):
+            return False
+
         for val in self._values:
             if not val in other._values:
                 return False

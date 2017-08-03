@@ -90,9 +90,28 @@ class TestValidationErrorLog(object):
             error_log_with_warning[0] = potential_ValidationError
 
     def test_error_log_equality_single_error(self, error_log_with_error, error_log_with_warning):
-        """Test equality between Error Logs with a single error in them."""
+        """Test equality between a pair of ValidationErrorLogs.
+
+        Each error log contains the same number of errors. Each has different errors.
+        """
         assert not error_log_with_error == error_log_with_warning
+        assert not error_log_with_warning == error_log_with_error
         assert error_log_with_error != error_log_with_warning
+        assert error_log_with_warning != error_log_with_error
+
+    def test_error_log_equality_extended_log(self, error_log, error_log_with_error):
+        """Test equality between a pair of ValidationErrorLogs.
+
+        One error log is empty. The other has errors in.
+        The empty log is extended with the values in the log that has values.
+        """
+        assert error_log != error_log_with_error
+        assert error_log_with_error != error_log
+
+        error_log.extend(error_log_with_error)
+
+        assert error_log == error_log_with_error
+        assert error_log_with_error == error_log
 
 
 class TestValidation(object):
