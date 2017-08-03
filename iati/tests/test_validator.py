@@ -44,7 +44,7 @@ class TestValidationErrorLog(object):
         error_log = iati.validator.ValidationErrorLog()
 
         assert isinstance(error_log, iati.validator.ValidationErrorLog)
-        assert isinstance(error_log, set)
+        assert isinstance(error_log, list)
 
 
 class TestValidation(object):
@@ -397,7 +397,7 @@ class TestValidatorDetailedOutput(ValidateCodelistsBase):
         """Perform data validation against valid IATI XML that has valid Codelist values.  Obtain detailed error output."""
         data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
 
-        assert iati.validator.full_validation(data, schema_version) == []
+        assert iati.validator.full_validation(data, schema_version) == iati.validator.ValidationErrorLog()
 
     def test_basic_validation_codelist_invalid_detailed_output(self, schema_version):
         """Perform data validation against valid IATI XML that has invalid Codelist values."""

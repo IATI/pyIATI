@@ -49,8 +49,13 @@ class ValidationError(object):
             pass
 
 
-class ValidationErrorLog(set):
-    """A container to keep track of a set of ValidationErrors."""
+class ValidationErrorLog(list):
+    """A container to keep track of a set of ValidationErrors.
+
+    Todo:
+        Consider switching to extending a set.
+
+    """
 
     pass
 
@@ -84,7 +89,7 @@ def _correct_codes(dataset, codelist, error_log=False):
         list of dict: If `error_log` is True. A list of the errors that occurred.
 
     """
-    errors = []
+    errors = ValidationErrorLog()
     mappings = iati.core.default.codelist_mapping()
 
     if not error_log and not codelist.complete:
@@ -140,7 +145,7 @@ def _correct_codelist_values(dataset, schema, error_log=False):
         list of dict: If `error_log` is True. A list of the errors that occurred.
 
     """
-    errors = []
+    errors = ValidationErrorLog()
 
     for codelist in schema.codelists:
         if error_log:
