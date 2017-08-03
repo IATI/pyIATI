@@ -111,7 +111,7 @@ def schemas(bypass_cache=False):
         bypass_cache (bool): Whether the cache should be bypassed, instead reloading data from disk even if it's already been loaded.
 
     Returns:
-        dict: A dictionary containing all the Schemas for versions of the Standard. The name of the schema the key. An iati.core.Schema() is each value.
+        dict: A dictionary containing all the Schemas for versions of the Standard. This returns the name of the Schema (as the key) and a subclass of iati.core.schemas.Schema() (as the value).
 
     Warning:
         The `bypass_cache` parameter could potentially be implemented in a cleaner manner. It also shouldn't really exist until a clear use-case is defined - changes elsewhere in the library may make it redundant.
