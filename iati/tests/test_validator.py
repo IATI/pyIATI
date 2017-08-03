@@ -38,26 +38,43 @@ class TestValidationErrorLog(object):
     """A container for tests relating to Validation Error Logs."""
 
     @pytest.fixture
+    def error(self):
+        """An error."""
+        err_name = 'err-code-not-on-codelist'
+        return iati.validator.ValidationError(err_name)
+
+    @pytest.fixture
+    def warning(self):
+        """A warning."""
+        warning_name = 'warn-code-not-on-codelist'
+        return iati.validator.ValidationError(warning_name)
+
+    @pytest.fixture
     def error_log(self):
         """A basic error log that is initially empty."""
         return iati.validator.ValidationErrorLog()
 
     @pytest.fixture
-    def error_log_with_error(self):
+    def error_log_with_error(self, error):
         """An error log with an error added."""
-        err_name = 'err-code-not-on-codelist'
-        error = iati.validator.ValidationError(err_name)
         error_log = iati.validator.ValidationErrorLog()
         error_log.add(error)
 
         return error_log
 
     @pytest.fixture
-    def error_log_with_warning(self):
+    def error_log_with_warning(self, warning):
         """An error log with a warning added."""
-        warning_name = 'warn-code-not-on-codelist'
-        warning = iati.validator.ValidationError(warning_name)
         error_log = iati.validator.ValidationErrorLog()
+        error_log.add(warning)
+
+        return error_log
+
+    @pytest.fixture
+    def error_log_mixed_contents(self, error, warning):
+        """An error log with both an error and a warning added."""
+        error_log = iati.validator.ValidationErrorLog()
+        error_log.add(error)
         error_log.add(warning)
 
         return error_log
@@ -65,17 +82,27 @@ class TestValidationErrorLog(object):
     def test_error_log_init(self, error_log):
         """Test that a validator ErrorLog can be created and acts as a set."""
         assert isinstance(error_log, iati.validator.ValidationErrorLog)
+        assert len(error_log) == 0
         assert not error_log.contains_errors()
+        assert not error_log.contains_warnings()
 
-    def test_error_log_append_errors(self, error_log_with_error):
-        """Test that errors are identified as errors when appended to the error log."""
+    def test_error_log_add_errors(self, error_log_with_error):
+        """Test that errors are identified as errors when added to the error log."""
         assert len(error_log_with_error) == 1
         assert error_log_with_error.contains_errors()
+        assert not error_log_with_error.contains_warnings()
 
     def test_error_log_add_warnings(self, error_log_with_warning):
         """Test that warnings are not identified as errors when added to the error log."""
         assert len(error_log_with_warning) == 1
         assert not error_log_with_warning.contains_errors()
+        assert error_log_with_warning.contains_warnings()
+
+    def test_error_log_add_mixed(self, error_log_mixed_contents):
+        """Test that a mix of errors and warnings are identified as such when added to the error log."""
+        assert len(error_log_mixed_contents) == 2
+        assert error_log_mixed_contents.contains_errors()
+        assert error_log_mixed_contents.contains_warnings()
 
     @pytest.mark.parametrize("not_ValidationError", iati.core.tests.utilities.find_parameter_by_type([], False))
     def test_error_log_add_incorrect_type(self, error_log, not_ValidationError):
@@ -112,6 +139,21 @@ class TestValidationErrorLog(object):
 
         assert error_log == error_log_with_error
         assert error_log_with_error == error_log
+
+    def test_error_log_extend_from_list(self, error_log, error, warning):
+        """Test extending an error log with values from a list."""
+        to_extend = [error, warning]
+        error_log.extend(to_extend)
+
+        assert len(error_log) == 2
+        assert error in error_log
+        assert warning in error_log
+
+    def test_error_log_extend_from_error_log(self, error_log, error_log_mixed_contents):
+        """Test extending an error log with values from another error log."""
+        error_log.extend(error_log_mixed_contents)
+
+        assert len(error_log) == 2
 
 
 class TestValidation(object):

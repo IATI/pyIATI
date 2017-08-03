@@ -50,7 +50,11 @@ class ValidationError(object):
 
 
 class ValidationErrorLog(object):
-    """A container to keep track of a set of ValidationErrors."""
+    """A container to keep track of a set of ValidationErrors.
+
+    ValidationErrors may be added to the log.
+
+    """
 
     def __init__(self):
         """Initialise the error log."""
@@ -80,7 +84,7 @@ class ValidationErrorLog(object):
         return True
 
     def add(self, value):
-        """Add a value to the Error Log.
+        """Add a single ValidationError to the Error Log.
 
         Args:
             value (iati.validator.ValidationError): The ValidationError to add to the Error Log.
@@ -111,7 +115,7 @@ class ValidationErrorLog(object):
                 pass
 
     def contains_errors(self):
-        """Determine whether there are errors contained.
+        """Determine whether there are errors contained within the ErrorLog.
 
         Note:
             The error log may contain warnings, or may be empty.
@@ -123,6 +127,20 @@ class ValidationErrorLog(object):
         actual_errors = [err for err in self if err.status == 'error']
 
         return len(actual_errors) > 0
+
+    def contains_warnings(self):
+        """Determine whether there are warnings contained within the ErrorLog.
+
+        Note:
+            The error log may contain errors, or may be empty.
+
+        Returns:
+            bool: Whether there are warnings within this error log.
+
+        """
+        actual_warnings = [err for err in self if err.status == 'warning']
+
+        return len(actual_warnings) > 0
 
 
 
