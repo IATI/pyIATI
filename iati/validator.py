@@ -7,14 +7,18 @@ import iati.core.default
 class ValidationError(object):
     """A base class to encapsulate information about Validation Errors."""
 
-    def __init__(self, err_name):
+    def __init__(self, err_name, calling_locals=dict()):
         """Create a new ValidationError.
 
         Args:
             err_name (str): The name of the error to use as a base.
+            calling_locals (dict): The dictionary of local variables from the calling scope. Obtained by calling `locals()`. Default is an empty dictionary.
 
         Raises:
             ValueError: If there is no base error with the provided name.
+
+        Todo:
+            Split message formatting into a child class and raise an error when variables are missing.
 
         """
         try:
@@ -22,8 +26,23 @@ class ValidationError(object):
         except (KeyError, TypeError):
             raise ValueError('{err_name} is not a known type of ValidationError.'.format(**locals()))
 
+        # set general attributes for this type of error
         for key, val in err_detail.items():
             setattr(self, key, val)
+
+        self.status = 'error' if err_name.split('-')[0] =='err' else 'warning'
+
+        # format error messages with context-specific info
+        try:
+            self.help = self.help.format(**calling_locals)
+            self.info = self.info.format(**calling_locals)
+
+            # set general attributes for this type of error that require context from the calling scope
+            self.line_number = calling_locals['line_number']
+            self.context = calling_locals['dataset'].source_around_line(self.line_number)
+        except KeyError as missing_var_err:
+            # raise NameError('The calling scope must contain a `{missing_var_err.args[0]}` variable.'.format(**locals()))
+            pass
 
 
 class ValidationErrorLog(set):
@@ -46,39 +65,6 @@ _ERROR_CODES = {
         'help': 'The `{attr_name}` attribute should contain a value on the `{codelist.name}` Codelist. Note that values not on the Codelist may be valid in particular circumstances.\nSee http://iatistandard.org/202/codelists/{codelist.name} for values on the Codelist.'
     }
 }
-
-
-def _base_error(err_name, calling_locals):
-    """Create the base error with a particular name.
-
-    Args:
-        err_name (str): The name of the error to obtain basic information for.
-        calling_locals (dict): The dictionary of local variables from the calling scope. Obtained by calling `locals()`.
-
-    Returns:
-        dict: A populated base error.
-
-    Raises:
-        ValueError: If the `err_name` is not a valid name for an error.
-
-    """
-    try:
-        base_err = _ERROR_CODES[err_name]
-    except KeyError:
-        raise ValueError
-
-    base_err['name'] = err_name
-    # format error messages with context-specific info
-    base_err['help'] = base_err['help'].format(**calling_locals)
-    base_err['info'] = base_err['info'].format(**calling_locals)
-
-    base_err['status'] = 'error' if err_name.split('-')[0] =='err' else 'warning'
-
-    # obtain additional information
-    base_err['line_number'] = calling_locals['line_number']
-    base_err['context'] = calling_locals['dataset'].source_around_line(base_err['line_number'])
-
-    return base_err
 
 
 def _correct_codes(dataset, codelist, error_log=False):
@@ -121,11 +107,11 @@ def _correct_codes(dataset, codelist, error_log=False):
                 if error_log:
                     line_number = parent.sourceline
                     if codelist.complete:
-                        error = _base_error('err-code-not-on-codelist', locals())
+                        error = ValidationError('err-code-not-on-codelist', locals())
                     else:
-                        error = _base_error('warn-code-not-on-codelist', locals())
+                        error = ValidationError('warn-code-not-on-codelist', locals())
 
-                    error['actual_value'] = code
+                    error.actual_value = code
 
                     errors.append(error)
                 else:
