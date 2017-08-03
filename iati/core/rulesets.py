@@ -364,7 +364,7 @@ class RuleRegexMatches(Rule):
         super(RuleRegexMatches, self).__init__(xpath_base, case)
 
         try:
-            re.compile(case['regex'])
+            re.compile(self.regex)
         except sre_constants.error:
             raise ValueError
 
@@ -399,7 +399,7 @@ class RuleRegexNoMatches(Rule):
         super(RuleRegexNoMatches, self).__init__(xpath_base, case)
 
         try:
-            re.compile(case['regex'])
+            re.compile(self.regex)
         except sre_constants.error:
             raise ValueError
 
