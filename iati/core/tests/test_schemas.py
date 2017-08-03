@@ -39,8 +39,8 @@ class TestSchemas(object):
         iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID,
         iati.core.tests.utilities.SCHEMA_ORGANISATION_NAME_VALID
     ])
-    def schemas_initialised(self, request):
-        """Create both an ActivitySchema and OrganisaionSchema class.
+    def schema_initialised(self, request):
+        """Create and return a single ActivitySchema or OrganisaionSchema object.
         For use where both ActivitySchema and OrganisaionSchema must produce the same result.
 
         Returns:
@@ -61,9 +61,9 @@ class TestSchemas(object):
 
         assert schema.root_element_name == expected_value
 
-    def test_schema_define_from_xsd(self, schemas_initialised):
+    def test_schema_define_from_xsd(self, schema_initialised):
         """Check that a Schema can be generated from an XSD definition."""
-        schema = schemas_initialised
+        schema = schema_initialised
 
         assert isinstance(schema.codelists, set)
         assert len(schema.codelists) == 0
@@ -173,20 +173,20 @@ class TestSchemas(object):
         assert isinstance(tree.getroot().find(included_xpath), etree._Element)
         assert iati.core.utilities.convert_tree_to_schema(tree)
 
-    def test_schema_codelists_add(self, schemas_initialised):
+    def test_schema_codelists_add(self, schema_initialised):
         """Check that it is possible to add Codelists to the Schema."""
         codelist_name = "a test Codelist name"
-        schema = schemas_initialised
+        schema = schema_initialised
         codelist = iati.core.Codelist(codelist_name)
 
         schema.codelists.add(codelist)
 
         assert len(schema.codelists) == 1
 
-    def test_schema_codelists_add_twice(self, schemas_initialised):
+    def test_schema_codelists_add_twice(self, schema_initialised):
         """Check that it is not possible to add the same Codelist to a Schema multiple times."""
         codelist_name = "a test Codelist name"
-        schema = schemas_initialised
+        schema = schema_initialised
         codelist = iati.core.Codelist(codelist_name)
 
         schema.codelists.add(codelist)
@@ -194,10 +194,10 @@ class TestSchemas(object):
 
         assert len(schema.codelists) == 1
 
-    def test_schema_codelists_add_duplicate(self, schemas_initialised):
+    def test_schema_codelists_add_duplicate(self, schema_initialised):
         """Check that it is not possible to add multiple functionally identical Codelists to a Schema."""
         codelist_name = "a test Codelist name"
-        schema = schemas_initialised
+        schema = schema_initialised
         codelist = iati.core.Codelist(codelist_name)
         codelist2 = iati.core.Codelist(codelist_name)
 
@@ -206,10 +206,10 @@ class TestSchemas(object):
 
         assert len(schema.codelists) == 1
 
-    def test_schema_rulesets_add(self, schemas_initialised):
+    def test_schema_rulesets_add(self, schema_initialised):
         """Check that it is possible to add Rulesets to the Schema."""
         codelist_name = "a test Codelist name"
-        schema = schemas_initialised
+        schema = schema_initialised
         ruleset = iati.core.Ruleset()
 
         schema.rulesets.add(ruleset)
@@ -217,11 +217,11 @@ class TestSchemas(object):
         assert len(schema.rulesets) == 1
 
     @pytest.mark.skip(reason='Not implemented')
-    def test_schema_rulesets_add_twice(self, schemas_initialised):
+    def test_schema_rulesets_add_twice(self, schema_initialised):
         """Check that it is not possible to add the sameRulesets to a Schema multiple times."""
         raise NotImplementedError
 
     @pytest.mark.skip(reason='Not implemented')
-    def test_schema_rulesets_add_duplicate(self, schemas_initialised):
+    def test_schema_rulesets_add_duplicate(self, schema_initialised):
         """Check that it is not possible to add multiple functionally identical Rulesets to a Schema."""
         raise NotImplementedError
