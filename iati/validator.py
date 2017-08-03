@@ -68,16 +68,6 @@ class ValidationErrorLog(object):
         """Return an item with the specified key."""
         return self._values[key]
 
-    def __setitem__(self, key, value):
-        """Prevent assignment by keys.
-
-        This is assignments such as `list[key] = val`.
-
-        Raises:
-            NotImplementedError: In all cases where this is called and parameters are correct.
-        """
-        raise NotImplementedError('Items in the error log may not be set directly. Please use `append() instead.')
-
     def __eq__(self, other):
         """Test equality with another object."""
         return self._values == other._values

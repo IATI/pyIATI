@@ -39,31 +39,41 @@ class TestValidationErrorLog(object):
 
     @pytest.fixture
     def error_log(self):
-        """A basic, error log that is initially empty."""
+        """A basic error log that is initially empty."""
         return iati.validator.ValidationErrorLog()
+
+    @pytest.fixture
+    def error_log_with_error(self, error_log):
+        """An error log with an error added."""
+        err_name = 'err-code-not-on-codelist'
+        error = iati.validator.ValidationError(err_name)
+        error_log.add(error)
+
+        return error_log
+
+    @pytest.fixture
+    def error_log_with_warning(self, error_log):
+        """An error log with a warning added."""
+        warning_name = 'warn-code-not-on-codelist'
+        warning = iati.validator.ValidationError(warning_name)
+        error_log.add(warning)
+
+        return error_log
 
     def test_error_log_init(self, error_log):
         """Test that a validator ErrorLog can be created and acts as a set."""
         assert isinstance(error_log, iati.validator.ValidationErrorLog)
         assert not error_log.contains_errors()
 
-    def test_error_log_append_errors(self, error_log):
+    def test_error_log_append_errors(self, error_log_with_error):
         """Test that errors are identified as errors when appended to the error log."""
-        err_name = 'err-code-not-on-codelist'
-        err = iati.validator.ValidationError(err_name)
-        error_log.add(err)
+        assert len(error_log_with_error) == 1
+        assert error_log_with_error.contains_errors()
 
-        assert len(error_log) == 1
-        assert error_log.contains_errors()
-
-    def test_error_log_add_warnings(self, error_log):
+    def test_error_log_add_warnings(self, error_log_with_warning):
         """Test that warnings are not identified as errors when added to the error log."""
-        warning_name = 'warn-code-not-on-codelist'
-        warning = iati.validator.ValidationError(warning_name)
-        error_log.add(warning)
-
-        assert len(error_log) == 1
-        assert not error_log.contains_errors()
+        assert len(error_log_with_warning) == 1
+        assert not error_log_with_warning.contains_errors()
 
     @pytest.mark.parametrize("not_ValidationError", iati.core.tests.utilities.find_parameter_by_type([], False))
     def test_error_log_add_incorrect_type(self, error_log, not_ValidationError):
@@ -72,13 +82,10 @@ class TestValidationErrorLog(object):
             error_log.add(not_ValidationError)
 
     @pytest.mark.parametrize("potential_ValidationError", iati.core.tests.utilities.find_parameter_by_type([], False) + [iati.validator.ValidationError('err-code-not-on-codelist')])
-    def test_error_log_set_index_incorrect_type(self, error_log, potential_ValidationError):
-        """Test that you may only assign ValidationErrors to a ValidationErrorLog."""
-        warning = iati.validator.ValidationError('warn-code-not-on-codelist')
-        error_log.add(warning)
-
-        with pytest.raises(NotImplementedError):
-            error_log[0] = potential_ValidationError
+    def test_error_log_set_index_incorrect_type(self, error_log_with_warning, potential_ValidationError):
+        """Test that you may not add values to an error log via index assignment."""
+        with pytest.raises(TypeError):
+            error_log_with_warning[0] = potential_ValidationError
 
 class TestValidation(object):
     """A container for tests relating to validation."""
