@@ -7,9 +7,9 @@ Todo:
     Account for edge cases and improve documentation.
 
 """
+import json
 import re
 import time
-import json
 import sre_constants
 import jsonschema
 import iati.core.default
@@ -73,7 +73,10 @@ class Ruleset(object):
             Raises a UnicodeDecodeError or json.JSONDecodeError if passed a dodgey bytearray in all Python versions except 3.6.
 
         """
-        self.ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
+        try:
+            self.ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
+        except TypeError:
+            raise ValueError
         self.validate_ruleset()
         self.rules = set()
         self.set_rules()
@@ -87,15 +90,15 @@ class Ruleset(object):
 
     def set_rules(self):
         """Set the Rules of the Ruleset."""
-        try:
-            for xpath_base, rule in self.ruleset.items():
-                for rule_type, cases in rule.items():
-                    for case in cases['cases']:
-                        constructor = locate_constructor_for_rule_type(rule_type)
-                        new_rule = constructor(xpath_base, case)
-                        self.rules.add(new_rule)
-        except ValueError:
-            raise
+        # try:
+        for xpath_base, rule in self.ruleset.items():
+            for rule_type, cases in rule.items():
+                for case in cases['cases']:
+                    constructor = locate_constructor_for_rule_type(rule_type)
+                    new_rule = constructor(xpath_base, case)
+                    self.rules.add(new_rule)
+        # except ValueError:
+        #     raise
 
 
 class Rule(object):
@@ -304,10 +307,10 @@ class RuleDependent(Rule):
         """Assert that either all given `paths` or none of the given `paths` exist in a dataset.xml_tree.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset: an etree created from an XML dataset.
 
         Returns:
-            A boolean value. If no `paths`, or all `paths` are found in the dataset.xml_tree, return `True`.
+            bool: When no `paths`, or all `paths`, are found in the dataset will return `True`.
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
