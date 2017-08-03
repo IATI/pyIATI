@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+
+<root_element>
+  <reporting-org ref="text"></reporting-org><!-- iati-identifier starts with expected prefix -->
+  <iati-identifier>text-1234</iati-identifier>
+</root_element>

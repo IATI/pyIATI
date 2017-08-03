@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
 
-<iati-activities version="2.02">
-  <iati-activity>
-    <iati-identifier>AA-AAA-123456789-ABC123</iati-identifier><!-- iati-identifier matches regex -->
-  </iati-activity>
-</iati-activities>
+<root_element>
+  <iati-identifier>AA-AAA-123456789-ABC123</iati-identifier><!-- iati-identifier matches regex -->
+</root_element>

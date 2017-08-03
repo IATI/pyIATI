@@ -1,9 +1,0 @@
-{
-    "//iati-activity": {
-      "unique": {
-          "cases": [
-            { "paths": ["iati-identifier"] }
-          ]
-        }
-    }
-}
