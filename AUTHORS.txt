@@ -2,4 +2,5 @@ Authors ordered in alphabetical order.
 
 Dale Potter <https://github.com/dalepotter>
 Hayden Field <https://github.com/hayfield>
+Imogen Kutz <https://github.com/allthatilk>
 IATI Technical Team <code@iatistandard.org>

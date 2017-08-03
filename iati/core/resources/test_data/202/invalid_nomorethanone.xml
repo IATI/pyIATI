@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+
+<root_element>
+  <element_that_only_occurs_once></element_that_only_occurs_once>
+  <element_that_only_occurs_once></element_that_only_occurs_once><!-- more than one element that should only occur once -->
+</root_element>

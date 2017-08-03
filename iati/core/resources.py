@@ -196,6 +196,29 @@ def get_test_data_path(name, version=None):
     return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
 
 
+def get_test_ruleset_path(name, version=None):
+    """Determine the path of an IATI test Ruleset file with the given filename.
+
+    Args:
+        name (str): The name of the data file to locate. The filename must not contain the '.json' file extension.
+        version (float): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+
+    Returns:
+        str: The path to a file containing the specified test Ruleset.
+
+    Note:
+        Does not check whether the specified file actually exists.
+
+    Warning:
+        Needs to handle a more complex file structure than a single flat directory.
+
+    Todo:
+        Test this.
+
+    """
+    return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), 'rulesets/{0}'.format(name) + FILE_RULESET_EXTENSION)
+
+
 def get_folder_name_for_version(version=None):
     """Return the folder name for a given version of the Standard.
 
@@ -294,6 +317,24 @@ def get_path_for_version(path, version=None):
     """
     return os.path.join(get_folder_path_for_version(version), path)
 
+def load_as_dataset(path):
+    """Load a resource at the specified path into a dataset.
+
+    Args:
+        path (str): The path to the file that is to be read in.
+
+    Returns:
+        dataset: A Dataset object with the contents of the file at the specified location.
+
+    Warning:
+        Should raise Exceptions when there are problems loading the requested data.
+
+    Todo:
+        Add error handling for when the specified file does not exist.
+
+    """
+    dataset_str = load_as_string(path)
+    return iati.core.Dataset(dataset_str)
 
 def load_as_bytes(path):
     """Load a resource at the specified path into a bytes object.

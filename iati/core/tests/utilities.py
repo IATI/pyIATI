@@ -19,6 +19,43 @@ import decimal
 from lxml import etree
 import iati.core.resources
 
+
+DATASET_FOR_ATLEASTONE_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_atleastone'))
+DATASET_FOR_ATLEASTONE_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_atleastone'))
+"""An etree containing XML data that is not permitted by `RuleAtLeastOne`."""
+
+DATASET_FOR_DEPENDENT_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_dependent'))
+DATASET_FOR_DEPENDENT_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_dependent'))
+"""An etree containing XML data that is not permitted by `RuleDependent`."""
+
+DATASET_FOR_DATEORDER_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_dateorder'))
+DATASET_FOR_DATEORDER_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_dateorder'))
+"""An etree containing XML data that is not permitted by `RuleDateOrder`."""
+
+DATASET_FOR_NOMORETHANONE_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_nomorethanone'))
+DATASET_FOR_NOMORETHANONE_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_nomorethanone'))
+"""An etree containing XML data that is not permitted by `RuleNoMoreThanOne`."""
+
+DATASET_FOR_REGEXMATCHES_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_regexmatches'))
+DATASET_FOR_REGEXMATCHES_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_regexmatches'))
+"""An etree containing XML data that is not permitted by `RuleRegexMatches`."""
+
+DATASET_FOR_REGEXNOMATCHES_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_regexnomatches'))
+DATASET_FOR_REGEXNOMATCHES_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_regexnomatches'))
+"""An etree containing XML data that is not permitted by `RuleRegexNoMatches`."""
+
+DATASET_FOR_STARTSWITH_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_startswith'))
+DATASET_FOR_STARTSWITH_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_startswith'))
+"""An etree containing XML data that is not permitted by `RuleStartsWith`."""
+
+DATASET_FOR_SUM_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_sum'))
+DATASET_FOR_SUM_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_sum'))
+"""An etree containing XML data that is not permitted by `RuleSum`."""
+
+DATASET_FOR_UNIQUE_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_unique'))
+DATASET_FOR_UNIQUE_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_unique'))
+"""An etree containing XML data that is not permitted by `RuleUnique`."""
+
 SCHEMA_NAME_VALID = 'iati-activities-schema'
 """A string containing a valid Schema name."""
 

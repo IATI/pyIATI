@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+
+<root_element>
+  <iati-identifier>/&amp;|?</iati-identifier><!-- iati-identifier does not match regex -->
+</root_element>
