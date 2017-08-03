@@ -67,10 +67,7 @@ class Ruleset(object):
 
         Raises:
             TypeError: When a ruleset_str is not a string.
-            ValueError: When ruleset_str does not validate against the ruleset schema.
-
-        Todo:
-            Raises a UnicodeDecodeError or json.JSONDecodeError if passed a dodgey bytearray in all Python versions except 3.6.
+            ValueError: When a ruleset_str does not validate against the ruleset schema or cannot be correctly decoded.
 
         """
         try:
@@ -82,7 +79,12 @@ class Ruleset(object):
         self.set_rules()
 
     def validate_ruleset(self):
-        """Validate a Ruleset against the Ruleset Schema."""
+        """Validate a Ruleset against the Ruleset Schema.
+
+        Raises:
+            ValueError: When ruleset_str does not validate against the ruleset schema.
+
+        """
         try:
             jsonschema.validate(self.ruleset, iati.core.default.ruleset_schema())
         except jsonschema.ValidationError:
@@ -90,15 +92,12 @@ class Ruleset(object):
 
     def set_rules(self):
         """Set the Rules of the Ruleset."""
-        # try:
         for xpath_base, rule in self.ruleset.items():
             for rule_type, cases in rule.items():
                 for case in cases['cases']:
                     constructor = locate_constructor_for_rule_type(rule_type)
                     new_rule = constructor(xpath_base, case)
                     self.rules.add(new_rule)
-        # except ValueError:
-        #     raise
 
 
 class Rule(object):
@@ -132,9 +131,11 @@ class Rule(object):
     def _normalize_xpath(self, path):
         """Normalize a single xpath by combining it with `xpath_base`.
 
-        Error:
-            Raises an attribute error if self.xpath_base
-            isn't set.
+        Args:
+            path: An xpath in the form of a string.
+
+        Raises:
+            AttributeError: When self.xpath_base isn't set.
 
         Todo:
             Add some logging.
@@ -167,10 +168,7 @@ class Rule(object):
             ValueError: When the case is not valid for the type of Rule.
 
         """
-        try:
-            ruleset_schema_section = self._ruleset_schema_section()
-        except AttributeError:
-            raise
+        ruleset_schema_section = self._ruleset_schema_section()
 
         try:
             jsonschema.validate(case, ruleset_schema_section)
@@ -185,6 +183,7 @@ class Rule(object):
 
         Todo:
             Set non-required properties such as a `condition`.
+
         """
         required_attributes = self._required_case_attributes(self._ruleset_schema_section())
         for attrib in required_attributes:
@@ -235,13 +234,13 @@ class RuleAtLeastOne(Rule):
         super(RuleAtLeastOne, self).__init__(xpath_base, case)
 
     def is_valid_for(self, dataset):
-        """Check `dataset.xml_tree` has at least one instance of a given case for an Element.
+        """Check dataset has at least one instance of a given case for an Element.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset: An IATI Dataset object.
 
         Returns:
-            Boolean value that changes depending on whether the case is found in the dataset.xml_tree.
+            bool: Changes depending on whether the case is found in the dataset.
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
@@ -277,10 +276,10 @@ class RuleDateOrder(Rule):
         """Assert that the date value of `less` is older than the date value of `more`.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset: An IATI Dataset object.
 
         Return:
-            A boolean value. If `less` is older than `more`, return `True`.
+            bool: Changes depending on whether `less` is older than `more`.
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
@@ -307,10 +306,10 @@ class RuleDependent(Rule):
         """Assert that either all given `paths` or none of the given `paths` exist in a dataset.xml_tree.
 
         Args:
-            dataset: an etree created from an XML dataset.
+            dataset: An IATI Dataset object.
 
         Returns:
-            bool: When no `paths`, or all `paths`, are found in the dataset will return `True`.
+            bool: Changes depending on whether all dependent `paths` are found in the dataset if any exist.
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
@@ -336,13 +335,13 @@ class RuleNoMoreThanOne(Rule):
         super(RuleNoMoreThanOne, self).__init__(xpath_base, case)
 
     def is_valid_for(self, dataset):
-        """Check `dataset.xml_tree` has no more than one instance of a given case for an Element.
+        """Check dataset has no more than one instance of a given case for an Element.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset: An IATI Dataset object.
 
         Returns:
-            Boolean value that changes depending on whether one or fewer cases are found in the dataset.xml_tree.
+            bool: Changes depending on whether one or fewer cases are found in the dataset.
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
@@ -361,7 +360,12 @@ class RuleRegexMatches(Rule):
     """Representation of a Rule that checks that the given `paths` must contain values that match the `regex` value."""
 
     def __init__(self, xpath_base, case):
-        """Initialise a `regex_matches` rule."""
+        """Initialise a `regex_matches` rule.
+
+        Raises:
+            ValueError: When the case does not contain a valid regex.
+
+        """
         self.name = "regex_matches"
 
         super(RuleRegexMatches, self).__init__(xpath_base, case)
@@ -375,10 +379,10 @@ class RuleRegexMatches(Rule):
         """Assert that the text of the given `paths` matches the `regex` value.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset: An IATI Dataset object.
 
         Returns:
-            A boolean value. If the text of the given `path` matches the `regex` value, return `True`.
+            bool: Changes depending on whether the given `path` text matches the given regex case.
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
@@ -396,7 +400,12 @@ class RuleRegexNoMatches(Rule):
     """Representation of a Rule that checks that the given `paths` must not contain values that match the `regex` value."""
 
     def __init__(self, xpath_base, case):
-        """Initialise a `regex_no_matches` rule."""
+        """Initialise a `regex_no_matches` rule.
+
+        Raises:
+            ValueError: When the case does not contain a valid regex.
+
+        """
         self.name = "regex_no_matches"
 
         super(RuleRegexNoMatches, self).__init__(xpath_base, case)
@@ -410,10 +419,10 @@ class RuleRegexNoMatches(Rule):
         """Assert that no text of the given `paths` matches the `regex` value.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset: An IATI Dataset object.
 
         Returns:
-            A boolean value. If the text of the given `path` does not match the `regex` value, return `True`.
+            bool: Changes depending on whether the given `path` text does not match the given regex case.
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
@@ -451,10 +460,10 @@ class RuleStartsWith(Rule):
         """Assert that the prefixing text of all given `paths` starts with the text of `start`.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset: An IATI Dataset object.
 
         Returns:
-            A boolean value. If the `path` string starts with the `start` string, return `True`.
+            bool: Changes depending on whether the `path` text starts with the value of `start`.
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
@@ -482,10 +491,10 @@ class RuleSum(Rule):
         """Assert that the total of the values given in `paths` match the given `sum` value.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset: An IATI Dataset object.
 
         Returns:
-            A boolean value. If the `path` values total to the `sum` value, return `True`.
+            bool: Changes depending on whether the `path` values total to the `sum` value.
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
@@ -513,13 +522,13 @@ class RuleUnique(Rule):
         super(RuleUnique, self).__init__(xpath_base, case)
 
     def is_valid_for(self, dataset):
-        """Assert that the given paths are not found in the dataset.xml_tree more than once.
+        """Assert that the given `paths` are not found in the dataset.xml_tree more than once.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset: An IATI Dataset object.
 
         Returns:
-            A boolean value. If no repeated text is found in the dataset.xml_tree for the given paths the value returned will be `True`.
+            bool: Changes depending on whether repeated text is found in the dataset for the given `paths`.
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.

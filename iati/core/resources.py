@@ -241,26 +241,6 @@ def get_folder_name_for_version(version=None):
         raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
 
 
-def get_ruleset_path(name, version=None):
-    """Determine the path of a ruleset with the given name.
-
-    Args:
-        name (str): The name of the ruleset to locate.
-        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that paths to the latest version of the Ruleset are returned.
-
-    Returns:
-        str: The path to a file containing the specified ruleset.
-
-    Note:
-        Does not check whether the specified ruleset actually exists.
-
-    Todo:
-        Test this.
-
-    """
-    return get_path_for_version(os.path.join(PATH_RULESETS, '{0}'.format(name) + FILE_RULESET_EXTENSION), version)
-
-
 def get_schema_path(name, version=None):
     """Determine the path of a schema with the given name.
 
@@ -317,24 +297,6 @@ def get_path_for_version(path, version=None):
     """
     return os.path.join(get_folder_path_for_version(version), path)
 
-def load_as_dataset(path):
-    """Load a resource at the specified path into a dataset.
-
-    Args:
-        path (str): The path to the file that is to be read in.
-
-    Returns:
-        dataset: A Dataset object with the contents of the file at the specified location.
-
-    Warning:
-        Should raise Exceptions when there are problems loading the requested data.
-
-    Todo:
-        Add error handling for when the specified file does not exist.
-
-    """
-    dataset_str = load_as_string(path)
-    return iati.core.Dataset(dataset_str)
 
 def load_as_bytes(path):
     """Load a resource at the specified path into a bytes object.
@@ -352,6 +314,26 @@ def load_as_bytes(path):
 
     """
     return pkg_resources.resource_string(PACKAGE, path)
+
+
+def load_as_dataset(path):
+    """Load a resource at the specified path into a dataset.
+
+    Args:
+    path (str): The path to the file that is to be read in.
+
+    Returns:
+    dataset: A Dataset object with the contents of the file at the specified location.
+
+    Warning:
+    Should raise Exceptions when there are problems loading the requested data.
+
+    Todo:
+    Add error handling for when the specified file does not exist.
+
+    """
+    dataset_str = load_as_string(path)
+    return iati.core.Dataset(dataset_str)
 
 
 def load_as_string(path):
