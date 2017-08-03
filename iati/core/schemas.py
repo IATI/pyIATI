@@ -242,6 +242,14 @@ class Schema(object):
         attributes = element.findall(
             'xsd:complexType/xsd:attribute',
             namespaces=iati.core.constants.NSMAP
+        ) + element.findall(
+            'xsd:complexType/xsd:simpleContent/xsd:extension/xsd:attribute',
+            namespaces=iati.core.constants.NSMAP
+        )
+        if element.get('type') is not None:
+            attributes += self._schema_base_tree.findall(
+            'xsd:complexType[@name="{0}"]/xsd:simpleContent/xsd:extension/xsd:attribute'.format(element.get('type')),
+            namespaces=iati.core.constants.NSMAP
         )
         output = []
         for attr in attributes:

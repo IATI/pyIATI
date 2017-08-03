@@ -209,12 +209,12 @@ class TestSchemas(object):
     @pytest.mark.parametrize("schema_type, xsd_element_name, num_expected_attributes", [
         (default_activity_schema, 'iati-activities', 3),
         (default_activity_schema, 'iati-activity', 6),
-        # (default_activity_schema, 'narrative', 1),  # Contains the 'xml:lang' attribute defined as an extension to the "xsd:string" type  # Accessing complexType attributes is not yet implemented
+        (default_activity_schema, 'narrative', 1),  # Contains the 'xml:lang' attribute defined as an extension to the "xsd:string" type
         (default_activity_schema, 'loan-status', 3),  # Contains the 'currency' and 'value-date' attributes, which are referenced and defined elsewere in the schema.
         (default_activity_schema, 'iati-identifier', 0),  # Contains no attributes
         (default_organisation_schema, 'iati-organisations', 2),
         (default_organisation_schema, 'iati-organisation', 3),
-        # (default_organisation_schema, 'value', 2), # Accessing complexType attributes is not yet implemented
+        (default_organisation_schema, 'value', 2),
         (default_organisation_schema, 'organisation-identifier', 0)  # Contains no attributes
     ])
     def test_get_attributes_in_xsd_element(self, schema_type, xsd_element_name, num_expected_attributes):
@@ -333,11 +333,12 @@ class TestSchemas(object):
 
         result = schema.build_xsd_lookup()
 
+        assert len(result) == 344  # Number of 'fields' in the v2.02 activity standard
         assert 'iati-activities' in result.keys()
         assert 'iati-activities/iati-activity' in result.keys()
         assert 'iati-activities/iati-activity/iati-identifier' in result.keys()
         assert 'iati-activities/iati-activity/sector/@code' in result.keys()
-        assert 'iati-activities/iati-activity/result/indicator/period/target/comment/narrative' in result.keys()  # One of the two deepest nested elements in the v2.02 activity standard.
+        assert 'iati-activities/iati-activity/result/indicator/period/target/comment/narrative' in result.keys()  # Highest level of nesting in the v2.02 activity standard.
         for element in result.values():
             assert isinstance(element, etree._Element)
 
@@ -347,10 +348,11 @@ class TestSchemas(object):
 
         result = schema.build_xsd_lookup()
 
+        assert len(result) == 126  # Number of 'fields' in the v2.02 organisation standard.
         assert 'iati-organisations' in result.keys()
         assert 'iati-organisations/iati-organisation' in result.keys()
         assert 'iati-organisations/iati-organisation/organisation-identifier' in result.keys()
         assert 'iati-organisations/iati-organisation/recipient-org-budget/budget-line/value' in result.keys()
-        # assert 'iati-organisations/iati-organisation/recipient-org-budget/budget-line/value/@currency' in result.keys()  # Accessing complexType attributes is not yet implemented
+        assert 'iati-organisations/iati-organisation/total-budget/budget-line/value/@currency' in result.keys()  # Highest level of nesting in the v2.02 organisation standard.
         for element in result.values():
             assert isinstance(element, etree._Element)
