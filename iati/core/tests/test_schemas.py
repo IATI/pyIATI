@@ -63,12 +63,10 @@ class TestSchemas(object):
 
     def test_schema_define_from_xsd(self, schema_initialised):
         """Check that a Schema can be generated from an XSD definition."""
-        schema = schema_initialised
-
-        assert isinstance(schema.codelists, set)
-        assert len(schema.codelists) == 0
-        assert isinstance(schema.rulesets, set)
-        assert len(schema.rulesets) == 0
+        assert isinstance(schema_initialised.codelists, set)
+        assert len(schema_initialised.codelists) == 0
+        assert isinstance(schema_initialised.rulesets, set)
+        assert len(schema_initialised.rulesets) == 0
 
     @pytest.mark.parametrize("schema_type, expected_local_element", [
         (default_activity_schema, 'iati-activities'),
@@ -176,45 +174,41 @@ class TestSchemas(object):
     def test_schema_codelists_add(self, schema_initialised):
         """Check that it is possible to add Codelists to the Schema."""
         codelist_name = "a test Codelist name"
-        schema = schema_initialised
         codelist = iati.core.Codelist(codelist_name)
 
-        schema.codelists.add(codelist)
+        schema_initialised.codelists.add(codelist)
 
-        assert len(schema.codelists) == 1
+        assert len(schema_initialised.codelists) == 1
 
     def test_schema_codelists_add_twice(self, schema_initialised):
         """Check that it is not possible to add the same Codelist to a Schema multiple times."""
         codelist_name = "a test Codelist name"
-        schema = schema_initialised
         codelist = iati.core.Codelist(codelist_name)
 
-        schema.codelists.add(codelist)
-        schema.codelists.add(codelist)
+        schema_initialised.codelists.add(codelist)
+        schema_initialised.codelists.add(codelist)
 
-        assert len(schema.codelists) == 1
+        assert len(schema_initialised.codelists) == 1
 
     def test_schema_codelists_add_duplicate(self, schema_initialised):
         """Check that it is not possible to add multiple functionally identical Codelists to a Schema."""
         codelist_name = "a test Codelist name"
-        schema = schema_initialised
         codelist = iati.core.Codelist(codelist_name)
         codelist2 = iati.core.Codelist(codelist_name)
 
-        schema.codelists.add(codelist)
-        schema.codelists.add(codelist2)
+        schema_initialised.codelists.add(codelist)
+        schema_initialised.codelists.add(codelist2)
 
-        assert len(schema.codelists) == 1
+        assert len(schema_initialised.codelists) == 1
 
     def test_schema_rulesets_add(self, schema_initialised):
         """Check that it is possible to add Rulesets to the Schema."""
         codelist_name = "a test Codelist name"
-        schema = schema_initialised
         ruleset = iati.core.Ruleset()
 
-        schema.rulesets.add(ruleset)
+        schema_initialised.rulesets.add(ruleset)
 
-        assert len(schema.rulesets) == 1
+        assert len(schema_initialised.rulesets) == 1
 
     @pytest.mark.skip(reason='Not implemented')
     def test_schema_rulesets_add_twice(self, schema_initialised):
