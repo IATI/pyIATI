@@ -360,3 +360,13 @@ class TestSchemas(object):
         assert 'iati-organisations/iati-organisation/total-budget/budget-line/value/@currency' in result.keys()  # Highest level of nesting in the v2.02 organisation standard.
         for element in result.values():
             assert isinstance(element, etree._Element)
+
+    def test_get_documentation_string(self):
+        """Test that an input element should return the expected documentation string."""
+        schema = iati.core.default.schema('iati-activities-schema')
+        element = schema.get_xsd_element('iati-activity')
+
+        result = schema.get_xsd_documentation_string(element)
+
+        assert isinstance(result, str)
+        assert result == 'Top-level element for a single IATI activity report.'

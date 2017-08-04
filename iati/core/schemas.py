@@ -357,6 +357,32 @@ class Schema(object):
 
         return output
 
+    def get_xsd_documentation_string(self, element, language='en', clean_output=True):
+        """Return the xsd:documentation string contained within an input XSD element.
+
+        Args:
+            element (etree._ElementTree): The element to find documentation within.
+            lang (str): The language to find documentation for. Defaults to 'en'.
+            clean_output (bool): Define whether to return the raw documentation or a 'clean' version without unnecessary whitespace. Defaults to True.
+
+        Returns:
+            str: The documentation string contained within the input element.
+
+        Todo:
+            Add more tests.
+
+            Find edge cases for this method - for example, where the element references a complex type, but includes documentation within the non-referenced element.
+
+        """
+        documentation = element.xpath(
+            'xsd:annotation/xsd:documentation/text()',
+            namespaces=iati.core.constants.NSMAP
+        )[0]
+
+        if clean_output:
+            documentation = ' '.join(documentation.split())
+        return documentation
+
 
 class ActivitySchema(Schema):
     """Represenation of an IATI Activity Schema as defined within the IATI SSOT."""
