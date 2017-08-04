@@ -381,6 +381,133 @@ class Schema(object):
             documentation = ' '.join(documentation.split())
         return documentation
 
+    def get_xsd_input_type_for_element(self, element):
+        """Returns the expected XSD data type for a given element.
+
+        Todo:
+            Add tests.
+
+            Implement functionality.
+
+        """
+        raise NotImplementedError
+
+    def get_occurances_for_xsd_element(self, element):
+        """Returns a dictionary containing the allowed minumum and maximum number of occurances for a given element.
+
+        Todo:
+            Add tests.
+
+            Implement functionality.
+
+        """
+        raise NotImplementedError
+
+    def get_codelist_for_xsd_element(self, element):
+        """Returns a list containing allowed codelists for the given element.
+
+        Todo:
+            Add tests.
+
+            Implement functionality.
+
+        """
+        raise NotImplementedError
+
+    def get_rules_for_xsd_element(self, element):
+        """Returns a list containing rules objects for the given element.
+
+        Todo:
+            Add tests.
+
+            Implement functionality.
+
+        """
+        raise NotImplementedError
+
+    def get_guidance_for_xsd_element(self, element):
+        """Returns guidance for the given element.
+
+        Todo:
+            Add tests.
+
+            Implement functionality.
+
+        """
+        raise NotImplementedError
+
+    def get_xsd_parent_element(self, element):
+        """Returns an XPath to the parent element for the given input element.
+
+        Todo:
+            Add tests.
+
+            Implement functionality.
+
+        """
+        raise NotImplementedError
+
+    def get_xsd_sibling_elements(self, element):
+        """Returns a list of XPaths for sibling elements to the given input element.
+
+        Todo:
+            Add tests.
+
+            Implement functionality.
+
+        """
+        raise NotImplementedError
+
+    def get_xsd_child_elements(self, element):
+        """Returns a list of XPaths for child elements to the given input element.
+
+        Todo:
+            Add tests.
+
+            Implement functionality.
+
+        """
+        raise NotImplementedError
+
+    def get_attribute_xpaths_for_xsd_element(self, element):
+        """Returns a list of XPaths for attributes contained within the given element.
+
+        Todo:
+            Add tests.
+
+            Implement functionality.
+
+        """
+        raise NotImplementedError
+
+    def get_full_documentation_for_xsd_element(self, element):
+        """Returns a dictionary containing documentation information for the given element.
+
+        Todo:
+            Add tests.
+
+            Implement functionality.
+
+        """
+        raise NotImplementedError
+
+    def get_documentation_for_xpath(self, xpath):
+        """Returns a dictionary containing documentation for the given XPath.
+
+        Todo:
+            Add tests.
+
+            Implement functionality.
+
+        """
+        # This will be the main user API. Will involve something like:
+        # try:
+        #     element = self._xsd_lookup[xpath]
+        # except IndexError:
+        #     raise Exception
+        # return self.get_full_documentation_for_xsd_element(element)
+        raise NotImplementedError
+
 
 class ActivitySchema(Schema):
     """Represenation of an IATI Activity Schema as defined within the IATI SSOT."""
