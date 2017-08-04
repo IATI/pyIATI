@@ -290,6 +290,9 @@ class RuleDateOrder(Rule):
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
 
+        Todo:
+            Make sure 'NOW' value works as stipulated.
+
         """
         less_date = dataset.xml_tree.xpath(self.less)
         more_date = dataset.xml_tree.xpath(self.more)
@@ -475,13 +478,13 @@ class RuleStartsWith(Rule):
             AttributeError: When an argument is given that is not a dataset object.
 
         """
-        prefixing_str = dataset.xml_tree.xpath(self.start)
+        prefixing_str = dataset.xml_tree.xpath(self.start)[0]
 
         for path in self.paths:
             results = dataset.xml_tree.xpath(path)
             for result in results:
                 el_str = result.text
-                return el_str.startswith(prefixing_str[0])
+                return el_str.startswith(prefixing_str)
 
 
 class RuleSum(Rule):
