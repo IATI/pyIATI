@@ -318,9 +318,7 @@ class Schema(object):
 
         """
         root_element = self.get_xsd_element(self.root_element_name)
-        output = self._build_recursive_xsd_lookup_dict(root_element)
-
-        return output
+        return self._build_recursive_xsd_lookup_dict(root_element)
 
     def _build_recursive_xsd_lookup_dict(self, base_element, base_xpath='', output=None):
         """Recursively builds a lookup dictionary containing an XPath (as keys) with the corresponding lxml represention of the xsd:element or xsd:attribute (as values).
