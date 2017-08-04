@@ -243,7 +243,7 @@ class RuleAtLeastOne(Rule):
         """Check dataset has at least one instance of a given case for an Element.
 
         Args:
-            dataset: An IATI Dataset object.
+            dataset (iati.core.Dataset): An IATI Dataset object.
 
         Returns:
             bool: Changes depending on whether the case is found in the dataset.
@@ -282,7 +282,7 @@ class RuleDateOrder(Rule):
         """Assert that the date value of `less` is older than the date value of `more`.
 
         Args:
-            dataset: An IATI Dataset object.
+            dataset (iati.core.Dataset): An IATI Dataset object.
 
         Return:
             bool: Changes depending on whether `less` is older than `more`.
@@ -312,7 +312,7 @@ class RuleDependent(Rule):
         """Assert that either all given `paths` or none of the given `paths` exist in a dataset.xml_tree.
 
         Args:
-            dataset: An IATI Dataset object.
+            dataset (iati.core.Dataset): An IATI Dataset object.
 
         Returns:
             bool: Changes depending on whether all dependent `paths` are found in the dataset if any exist.
@@ -344,7 +344,7 @@ class RuleNoMoreThanOne(Rule):
         """Check dataset has no more than one instance of a given case for an Element.
 
         Args:
-            dataset: An IATI Dataset object.
+            dataset (iati.core.Dataset): An IATI Dataset object.
 
         Returns:
             bool: Changes depending on whether one or fewer cases are found in the dataset.
@@ -385,7 +385,7 @@ class RuleRegexMatches(Rule):
         """Assert that the text of the given `paths` matches the `regex` value.
 
         Args:
-            dataset: An IATI Dataset object.
+            dataset (iati.core.Dataset): An IATI Dataset object.
 
         Returns:
             bool: Changes depending on whether the given `path` text matches the given regex case.
@@ -425,7 +425,7 @@ class RuleRegexNoMatches(Rule):
         """Assert that no text of the given `paths` matches the `regex` value.
 
         Args:
-            dataset: An IATI Dataset object.
+            dataset (iati.core.Dataset): An IATI Dataset object.
 
         Returns:
             bool: Changes depending on whether the given `path` text does not match the given regex case.
@@ -466,7 +466,7 @@ class RuleStartsWith(Rule):
         """Assert that the prefixing text of all given `paths` starts with the text of `start`.
 
         Args:
-            dataset: An IATI Dataset object.
+            dataset (iati.core.Dataset): An IATI Dataset object.
 
         Returns:
             bool: Changes depending on whether the `path` text starts with the value of `start`.
@@ -497,7 +497,7 @@ class RuleSum(Rule):
         """Assert that the total of the values given in `paths` match the given `sum` value.
 
         Args:
-            dataset: An IATI Dataset object.
+            dataset (iati.core.Dataset): An IATI Dataset object.
 
         Returns:
             bool: Changes depending on whether the `path` values total to the `sum` value.
@@ -531,7 +531,7 @@ class RuleUnique(Rule):
         """Assert that the given `paths` are not found in the dataset.xml_tree more than once.
 
         Args:
-            dataset: An IATI Dataset object.
+            dataset (iati.core.Dataset): An IATI Dataset object.
 
         Returns:
             bool: Changes depending on whether repeated text is found in the dataset for the given `paths`.
