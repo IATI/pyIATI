@@ -123,10 +123,16 @@ class Rule(object):
 
         """
         self.case = case
-        self.xpath_base = xpath_base
+        self.xpath_base = self._check_xpath_base(xpath_base)
         self._valid_rule_configuration(case)
         self._set_case_attributes(case)
         self._normalize_xpaths()
+
+    def _check_xpath_base(self, xpath_base):
+        """Check `xpath_base` is not an empty string."""
+        if xpath_base == '':
+            raise ValueError
+        return xpath_base
 
     def _normalize_xpath(self, path):
         """Normalize a single xpath by combining it with `xpath_base`.
