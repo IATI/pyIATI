@@ -425,6 +425,12 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         else:
             assert basic_rule.more.startswith(basic_rule.xpath_base)
 
+    def test_incorrect_date_format_raises_error(self, rule):
+        """Check that a dataset with dates in an incorrect format raise expected error."""
+        dataset = iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT
+        with pytest.raises(ValueError):
+            rule.is_valid_for(dataset)
+
 
 class TestRuleDependent(RuleSubclassTestBase):
     """A container for tests relating to RuleDependent."""
