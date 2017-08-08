@@ -157,6 +157,7 @@ class TestRuleSubclasses(object):
 
         Todo:
             Ensure the case is valid - an empty dictionary isn't.
+
         """
         case = dict()
 
@@ -212,7 +213,12 @@ class RuleSubclassTestBase(object):
         assert basic_rule.name == rule_type
 
     def test_rule_paths(self, basic_rule):
-        """Check that a Rule subclass has the expected paths."""
+        """Check that a Rule subclass has the expected paths.
+
+        Todo:
+            Check non-path cases are also normalised.
+
+        """
         # Exclude rules with no `paths` attribute.
         if 'paths' in dir(basic_rule):
             for path in basic_rule.paths:
@@ -223,6 +229,7 @@ class RuleSubclassTestBase(object):
 
         Todo:
             Add tests with empty path AND empty xpath_base.
+
         """
         xpath_base = 'an xpath'
 
@@ -234,6 +241,7 @@ class RuleSubclassTestBase(object):
 
         Todo:
             Maybe too much of a shortcut as can't fully pass until all implementations complete. Possibly the wrong abstraction in the long-term.
+
         """
         assert rule.is_valid_for(valid_dataset)
 
@@ -242,6 +250,7 @@ class RuleSubclassTestBase(object):
 
         Todo:
             Maybe too much of a shortcut as can't fully pass until all implementations complete. Possibly the wrong abstraction in the long-term.
+
         """
         assert not rule.is_valid_for(invalid_dataset)
 
@@ -256,11 +265,12 @@ class RuleSubclassTestBase(object):
         with pytest.raises(AttributeError):
             rule.is_valid_for(iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_atleastone')))  # use more generic dataset
 
-    def test_rule_init_raise_error_with_empty_xpath_base_strings(self, rule_constructor, valid_case):
-        """Check that a Rule cannot still be instantiated with and empty xpath_base string."""
-        xpath_base = ''
-        with pytest.raises(ValueError):
-            rule_constructor(xpath_base, valid_case)
+    def test_empty_xpath_base_rule_init(self, rule_empty_xpath_base):
+        """Check that a rule with an empty xpath_base can be instantiated correctly."""
+        # Exclude rules without `paths`.
+        if 'paths' in dir(rule_empty_xpath_base):
+            for path in rule_empty_xpath_base.paths:
+                assert path.startswith(rule_empty_xpath_base.xpath_base)
 
 
 class TestRuleAtLeastOne(RuleSubclassTestBase):
@@ -312,14 +322,15 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         xpath_base = '//root_element'
         return iati.core.RuleAtLeastOne(xpath_base, request.param)
 
-    # @pytest.fixture(params=[
-    #     {'paths': ['element_that_only_occurs_once']},
-    #     {'paths': ['element_that_only_occurs_once', 'element_that_occurs_twice']}
-    # ])
-    # def rule_empty_xpath_base(self, request):
-    #     """Instantiate RuleAtLeastOne with an empty xpath_base string."""
-    #     xpath_base = ''
-    #     return iati.core.RuleAtLeastOne(xpath_base, request.param)
+    @pytest.fixture(params=[
+        {'paths': ['']},
+        {'paths': ['element_that_only_occurs_once']},
+        {'paths': ['element_that_only_occurs_once', 'element_that_occurs_twice']}
+    ])
+    def rule_empty_xpath_base(self, request):
+        """Instantiate RuleAtLeastOne with an empty xpath_base string."""
+        xpath_base = ''
+        return iati.core.RuleAtLeastOne(xpath_base, request.param)
 
 
 class TestRuleDateOrder(RuleSubclassTestBase):
@@ -367,20 +378,20 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         return iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_VALID
 
     @pytest.fixture(params=[
-        {"less": "planned-disbursement/period-start/@iso-date", "more": "planned-disbursement/period-end/@iso-date"}
+        {'less': 'planned-disbursement/period-start/@iso-date', 'more': 'planned-disbursement/period-end/@iso-date'}
     ])
     def rule(self, request):
         """Instantiate RuleDateOrder."""
         xpath_base = '//root_element'
         return iati.core.RuleDateOrder(xpath_base, request.param)
 
-    # @pytest.fixture(params=[
-    #     {"less": "planned-disbursement/period-start/@iso-date", "more": "planned-disbursement/period-end/@iso-date"}
-    # ])
-    # def rule_empty_xpath_base(self, request):
-    #     """Instantiate RuleDateOrder with an empty xpath_base string."""
-    #     xpath_base = ''
-    #     return iati.core.RuleDateOrder(xpath_base, request.param)
+    @pytest.fixture(params=[
+        {'less': 'planned-disbursement/period-start/@iso-date', 'more': 'planned-disbursement/period-end/@iso-date'}
+    ])
+    def rule_empty_xpath_base(self, request):
+        """Instantiate RuleDateOrder with an empty xpath_base string."""
+        xpath_base = ''
+        return iati.core.RuleDateOrder(xpath_base, request.param)
 
     def test_rule_paths_less(self, basic_rule):
         """Check that the `less` value has been combined with the `xpath_base` where required."""
@@ -445,13 +456,14 @@ class TestRuleDependent(RuleSubclassTestBase):
         xpath_base = '//root_element'
         return iati.core.RuleDependent(xpath_base, request.param)
 
-    # @pytest.fixture(params=[
-    #     {"paths": ["transaction/provider-org", "location/point"]}
-    # ])
-    # def rule_empty_xpath_base(self, request):
-    #     """Instantiate RuleDependent with an empty xpath_base string."""
-    #     xpath_base = ''
-    #     return iati.core.RuleDependent(xpath_base, request.param)
+    @pytest.fixture(params=[
+        {'paths': ['']},
+        {'paths': ['transaction/provider-org', 'location/point']}
+    ])
+    def rule_empty_xpath_base(self, request):
+        """Instantiate RuleDependent with an empty xpath_base string."""
+        xpath_base = ''
+        return iati.core.RuleDependent(xpath_base, request.param)
 
 
 class TestRuleNoMoreThanOne(RuleSubclassTestBase):
@@ -495,22 +507,23 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         return iati.core.tests.utilities.DATASET_FOR_NOMORETHANONE_RULE_VALID
 
     @pytest.fixture(params=[
-        {"paths": ["element_that_only_occurs_once"]},
-        {"paths": ["element_that_only_occurs_once", "another_element_that_only_occurs_once"]}
+        {'paths': ['element_that_only_occurs_once']},
+        {'paths': ['element_that_only_occurs_once', 'another_element_that_only_occurs_once']}
     ])
     def rule(self, request):
         """Instantiate RuleNoMoreThanOne."""
         xpath_base = '//root_element'
         return iati.core.RuleNoMoreThanOne(xpath_base, request.param)
 
-    # @pytest.fixture(params=[
-    #     {"paths": ["element_that_only_occurs_once"]},
-    #     {"paths": ["element_that_only_occurs_once", "another_element_that_only_occurs_once"]}
-    # ])
-    # def rule_empty_xpath_base(self, request):
-    #     """Instantiate RuleNoMoreThanOne with an empty xpath_base string."""
-    #     xpath_base = ''
-    #     return iati.core.RuleNoMoreThanOne(xpath_base, request.param)
+    @pytest.fixture(params=[
+        {'paths': ['']},
+        {'paths': ['element_that_only_occurs_once']},
+        {'paths': ['element_that_only_occurs_once', 'another_element_that_only_occurs_once']}
+    ])
+    def rule_empty_xpath_base(self, request):
+        """Instantiate RuleNoMoreThanOne with an empty xpath_base string."""
+        xpath_base = ''
+        return iati.core.RuleNoMoreThanOne(xpath_base, request.param)
 
 
 class TestRuleRegexMatches(RuleSubclassTestBase):
@@ -560,20 +573,21 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         return iati.core.tests.utilities.DATASET_FOR_REGEXMATCHES_RULE_VALID
 
     @pytest.fixture(params=[
-        {"regex": r"[^\/\\&\\|\\?]+", "paths": ["iati-identifier"]}
+        {'regex': r"[^\/\\&\\|\\?]+", 'paths': ['iati-identifier']}
     ])
     def rule(self, request):
         """Instantiate RuleRegexMatches."""
         xpath_base = '//root_element'
         return iati.core.RuleRegexMatches(xpath_base, request.param)
 
-    # @pytest.fixture(params=[
-    #     {"regex": r"[^\/\\&\\|\\?]+", "paths": ["iati-identifier"]}
-    # ])
-    # def rule_empty_xpath_base(self, request):
-    #     """Instantiate RuleRegexMatches with an empty xpath_base string."""
-    #     xpath_base = ''
-    #     return iati.core.RuleRegexMatches(xpath_base, request.param)
+    @pytest.fixture(params=[
+        {'regex': r'[^\/\\&\\|\\?]+', 'paths': ['']},
+        {'regex': r'[^\/\\&\\|\\?]+', 'paths': ['iati-identifier']}
+    ])
+    def rule_empty_xpath_base(self, request):
+        """Instantiate RuleRegexMatches with an empty xpath_base string."""
+        xpath_base = ''
+        return iati.core.RuleRegexMatches(xpath_base, request.param)
 
 
 class TestRuleRegexNoMatches(RuleSubclassTestBase):
@@ -623,20 +637,20 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         return iati.core.tests.utilities.DATASET_FOR_REGEXNOMATCHES_RULE_VALID
 
     @pytest.fixture(params=[
-        {"regex": r"[^\/\\&\\|\\?]+", "paths": ["iati-identifier"]}
+        {'regex': r'[^\/\\&\\|\\?]+', 'paths': ['iati-identifier']}
     ])
     def rule(self, request):
         """Instantiate RuleRegexNoMatches."""
         xpath_base = '//root_element'
         return iati.core.RuleRegexNoMatches(xpath_base, request.param)
 
-    # @pytest.fixture(params=[
-    #     {"regex": r"[^\/\\&\\|\\?]+", "paths": ["iati-identifier"]}
-    # ])
-    # def rule_empty_xpath_base(self, request):
-    #     """Instantiate RuleRegexNoMatches with an empty xpath_base string."""
-    #     xpath_base = ''
-    #     return iati.core.RuleRegexNoMatches(xpath_base, request.param)
+    @pytest.fixture(params=[
+        {'regex': r'[^\/\\&\\|\\?]+', 'paths': ['iati-identifier']}
+    ])
+    def rule_empty_xpath_base(self, request):
+        """Instantiate RuleRegexNoMatches with an empty xpath_base string."""
+        xpath_base = ''
+        return iati.core.RuleRegexNoMatches(xpath_base, request.param)
 
 
 class TestRuleStartsWith(RuleSubclassTestBase):
@@ -685,20 +699,20 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         return iati.core.tests.utilities.DATASET_FOR_STARTSWITH_RULE_VALID
 
     @pytest.fixture(params=[
-        {"start": "reporting-org/@ref", "paths": ["iati-identifier"]}
+        {'start': 'reporting-org/@ref', 'paths': ['iati-identifier']}
     ])
     def rule(self, request):
         """Instantiate RuleStartsWith."""
         xpath_base = '//root_element'
         return iati.core.RuleStartsWith(xpath_base, request.param)
 
-    # @pytest.fixture(params=[
-    #     {"start": "reporting-org/@ref", "paths": ["iati-identifier"]}
-    # ])
-    # def rule_empty_xpath_base(self, request):
-    #     """Instantiate RuleStartsWith with an empty xpath_base string."""
-    #     xpath_base = ''
-    #     return iati.core.RuleStartsWith(xpath_base, request.param)
+    @pytest.fixture(params=[
+        {'start': 'reporting-org/@ref', 'paths': ['iati-identifier']}
+    ])
+    def rule_empty_xpath_base(self, request):
+        """Instantiate RuleStartsWith with an empty xpath_base string."""
+        xpath_base = ''
+        return iati.core.RuleStartsWith(xpath_base, request.param)
 
     def test_rule_paths_start(self, basic_rule):
         """Check that the `start` value has been combined with the `xpath_base`."""
@@ -757,20 +771,20 @@ class TestRuleSum(RuleSubclassTestBase):
         return iati.core.tests.utilities.DATASET_FOR_SUM_RULE_VALID
 
     @pytest.fixture(params=[
-        {"paths": ["recipient-country/@percentage", "recipient-region/@percentage"], "sum": 100}
+        {'paths': ['recipient-country/@percentage', 'recipient-region/@percentage'], 'sum': 100}
     ])
     def rule(self, request):
         """Instantiate RuleSum."""
         xpath_base = '//root_element'
         return iati.core.RuleSum(xpath_base, request.param)
 
-    # @pytest.fixture(params=[
-    #     {"paths": ["recipient-country/@percentage", "recipient-region/@percentage"], "sum": 100}
-    # ])
-    # def rule_empty_xpath_base(self, request):
-    #     """Instantiate RuleSum with an empty xpath_base string."""
-    #     xpath_base = ''
-    #     return iati.core.RuleSum(xpath_base, request.param)
+    @pytest.fixture(params=[
+        {'paths': ['recipient-country/@percentage', 'recipient-region/@percentage'], 'sum': 100}
+    ])
+    def rule_empty_xpath_base(self, request):
+        """Instantiate RuleSum with an empty xpath_base string."""
+        xpath_base = ''
+        return iati.core.RuleSum(xpath_base, request.param)
 
 
 class TestRuleUnique(RuleSubclassTestBase):
@@ -814,19 +828,19 @@ class TestRuleUnique(RuleSubclassTestBase):
         return iati.core.tests.utilities.DATASET_FOR_UNIQUE_RULE_VALID
 
     @pytest.fixture(params=[
-        {"paths": ["iati-identifier"]},
-        {"paths": ["iati-identifier", "other_unique_element"]}
+        {'paths': ['iati-identifier']},
+        {'paths': ['iati-identifier', 'other_unique_element']}
     ])
     def rule(self, request):
         """Instantiate RuleUnique."""
         xpath_base = '//root_element'
         return iati.core.RuleUnique(xpath_base, request.param)
 
-    # @pytest.fixture(params=[
-    #     {"paths": ["iati-identifier"]},
-    #     {"paths": ["iati-identifier", "other_unique_element"]}
-    # ])
-    # def rule_empty_xpath_base(self, request):
-    #     """Instantiate RuleUnique with an empty xpath_base string."""
-    #     xpath_base = ''
-    #     return iati.core.RuleUnique(xpath_base, request.param)
+    @pytest.fixture(params=[
+        {'paths': ['iati-identifier']},
+        {'paths': ['iati-identifier', 'other_unique_element']}
+    ])
+    def rule_empty_xpath_base(self, request):
+        """Instantiate RuleUnique with an empty xpath_base string."""
+        xpath_base = ''
+        return iati.core.RuleUnique(xpath_base, request.param)
