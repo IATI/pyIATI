@@ -398,3 +398,30 @@ class TestSchemas(object):
 
         assert isinstance(result, six.string_types)
         assert result == ''
+
+    def test_get_xsd_input_type_for_element(self, schemas_initialised):
+        """Test that an input type is detected for a given element.
+
+        Todo:
+            Add function in tests.utilities to generate a set of input parameters based on a regex match against the xpaths in schema._xsd_lookup.
+            This would then mean that this test can be split into two: one test for elements, one for attribues.
+        """
+        schema = schemas_initialised
+
+        for xpath, element in schema._xsd_lookup.items():
+            result = schema.get_xsd_input_type_for_element(element)
+            assert isinstance(result, six.string_types)
+            if xpath.split('/').pop().startswith('@'):
+                assert result == 'attribute'
+            else:
+                assert result == 'element'
+
+    @pytest.mark.parametrize("element", iati.core.tests.utilities.find_parameter_by_type([], False))
+    def test_get_xsd_input_type_for_element_invalid_input(self, element):
+        """Test that an unexpected input type raises the expected error."""
+        schema = iati.core.default.schema('iati-activities-schema')
+
+        with pytest.raises(TypeError) as excinfo:
+            schema.get_xsd_input_type_for_element(element)
+
+        assert str(excinfo.value) == 'Unexpected input type entered.'

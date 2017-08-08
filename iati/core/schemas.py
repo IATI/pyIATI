@@ -385,13 +385,20 @@ class Schema(object):
     def get_xsd_input_type_for_element(self, element):
         """Returns the expected XSD data type for a given element.
 
-        Todo:
-            Add tests.
+        Args:
+            element (etree._ElementTree): The element to find the type of.
 
-            Implement functionality.
+        Returns:
+            str: Containing the data type. Will be either 'element' or 'attribute'.
+
+        Todo:
+            Consider if further tests are needed.
 
         """
-        raise NotImplementedError
+        try:
+            return element.tag.split('}')[-1]
+        except AttributeError:
+            raise TypeError('Unexpected input type entered.')
 
     def get_occurances_for_xsd_element(self, element):
         """Returns a dictionary containing the allowed minumum and maximum number of occurances for a given element.
