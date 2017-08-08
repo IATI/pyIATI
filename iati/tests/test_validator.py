@@ -706,6 +706,7 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
         result = iati.validator.full_validation(data, schema_version)[0]
 
         assert isinstance(result, iati.validator.ValidationError)
+        assert result.name == 'err-code-not-on-codelist'
         assert result.status == 'error'
         assert result.line_number == 3
         assert result.context == '\n'.join(xml_str.split('\n')[1:4])
@@ -731,6 +732,7 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
 
         result = iati.validator.full_validation(data, schema_incomplete_codelist)[0]
 
+        assert result.name == 'warn-code-not-on-codelist'
         assert result.line_number == 18
         assert result.context == '\n'.join(xml_str.split('\n')[16:19])
         assert result.status == 'warning'
