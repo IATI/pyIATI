@@ -326,11 +326,17 @@ def _parse_xml_syntax_error(err):
     line_number = err.line
     column_number = err.column
 
-    # create the error
-    if err.type_name == 'ERR_DOCUMENT_EMPTY':
-        error = ValidationError('err-not-xml-empty-document', locals())
-    else:
-        error = ValidationError('err-not-xml-uncategorised-xml-syntax-error', locals())
+    # undertake the mapping between error name formats
+    lxml_to_iati_error_mapping = {
+        'ERR_DOCUMENT_EMPTY': 'err-not-xml-empty-document'
+    }
+
+    try:
+        err_name = lxml_to_iati_error_mapping[err.type_name]
+    except KeyError:
+        err_name = 'err-not-xml-uncategorised-xml-syntax-error'
+
+    error = ValidationError(err_name, locals())
 
     return error
 
