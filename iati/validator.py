@@ -156,7 +156,13 @@ _ERROR_CODES = {
         'description': 'An attribute that should contain a Code from a particular incomplete Codelist contained a value not on the Codelist.',
         'info': '{code} is not a Code on the {codelist.name} Codelist. ',
         'help': 'The `{attr_name}` attribute should contain a value on the `{codelist.name}` Codelist. Note that values not on the Codelist may be valid in particular circumstances.\nSee http://iatistandard.org/202/codelists/{codelist.name} for values on the Codelist.'
-    }
+    },
+    'err-not-iati-xml-uncategorised-document-error': {
+         'category': 'xml',
+         'description': 'An uncategorised error occurred when checking whether a Dataset contains valid IATI data.',
+         'info': '{err}',
+         'help': 'There are many different ways in which a file may not be valid IATI XML. The most common of these have had specific error messages created. This is not currently one of them.\nShould it be identified that this error occurs frequently, a specific error message will be created.'
+     }
 }
 
 
@@ -225,6 +231,39 @@ def _check_codelist_values(dataset, schema):
     return error_log
 
 
+def _check_is_iati_xml(dataset, schema):
+    """Check whether a given Dataset contains valid IATI XML.
+
+    Args:
+        dataset (iati.core.data.Dataset): The Dataset to check validity of.
+        schema (iati.core.schemas.Schema): The Schema to validate the Dataset against.
+
+    Returns:
+        iati.validator.ValidationErrorLog: A log of the errors that occurred.
+
+    Raises:
+        iati.core.exceptions.SchemaError: An error occurred in the parsing of the Schema.
+
+    Todo:
+        Create test against a bad Schema.
+
+    """
+    error_log = ValidationErrorLog()
+
+    try:
+        validator = schema.validator()
+    except iati.core.exceptions.SchemaError as err:
+        raise err
+
+    try:
+        validator.assertValid(dataset.xml_tree)
+    except etree.DocumentInvalid as err:
+        error = ValidationError('err-not-iati-xml-uncategorised-document-error')
+        error_log.add(error)
+
+    return error_log
+
+
 def _correct_codelist_values(dataset, schema):
     """Determine whether a given Dataset has values from Codelists that have been added to a Schema where expected.
 
@@ -281,17 +320,7 @@ def is_iati_xml(dataset, schema):
         Create test against a bad Schema.
 
     """
-    try:
-        validator = schema.validator()
-    except iati.core.exceptions.SchemaError as err:
-        raise err
-
-    try:
-        validator.assertValid(dataset.xml_tree)
-    except etree.DocumentInvalid:
-        return False
-
-    return True
+    return not _check_is_iati_xml(dataset, schema).contains_errors()
 
 
 def is_valid(dataset, schema):
