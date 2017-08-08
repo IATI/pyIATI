@@ -190,11 +190,17 @@ _ERROR_CODES = {
         'info': '{err}',
         'help': 'There are many different ways in which a file may not be valid XML. The most common of these have had specific error messages created. This is not currently one of them.\nShould it be identified that this error occurs frequently, a specific error message will be created.\nFor an introduction to XML see https://www.w3schools.com/Xml/'
     },
+    'err-not-xml-content-at-end': {
+        'category': 'xml',
+        'description': 'An XML file must contain no information after the XML has finished.',
+        'info': '{err}',
+        'help': 'An XML document contains a number of elements that are started and ended using tags. The XML is deemed finished once the number of start tags and the number of end tags is the same.\nThe contents of the data after this point does not matter - it may be valid XML on its own, or may have no meaning.\nShould it be required that additional information be in the document, XML comments may be used. For information about comments in XML, see https://www.w3schools.com/xml/xml_syntax.asp'
+    },
     'err-not-xml-empty-document': {
         'category': 'xml',
-        'description': 'No XML start tag was found within the document. The XML start tag is `<`.',
+        'description': 'An XML file must start with the XML start tag. The XML start tag is `<`.',
         'info': '{err}',
-        'help': 'For an introduction to XML see https://www.w3schools.com/Xml/'
+        'help': 'An XML document must contain only valid XML.\nShould it be required that additional information be in the document, XML comments may be used. For information about comments in XML, see https://www.w3schools.com/xml/xml_syntax.asp'
     }
 }
 
@@ -285,6 +291,7 @@ def _check_is_xml(maybe_xml):
     try:
         _ = etree.fromstring(maybe_xml.strip())
     except etree.XMLSyntaxError as parse_errors:
+        # import pdb;pdb.set_trace()
         for err in parse_errors.error_log:
             error = _parse_xml_syntax_error(err)
             error_log.add(error)
@@ -328,7 +335,8 @@ def _parse_xml_syntax_error(err):
 
     # undertake the mapping between error name formats
     lxml_to_iati_error_mapping = {
-        'ERR_DOCUMENT_EMPTY': 'err-not-xml-empty-document'
+        'ERR_DOCUMENT_EMPTY': 'err-not-xml-empty-document',
+        'ERR_DOCUMENT_END': 'err-not-xml-content-at-end'
     }
 
     try:

@@ -241,8 +241,13 @@ class TestValidateIsXML(object):
 
     @pytest.fixture(params=iati.core.tests.utilities.find_parameter_by_type(['str'], False) + [iati.core.tests.utilities.XML_STR_INVALID])
     def not_xml(self, request):
-        """Not a valid XML string."""
+        """A value that is not a valid XML string."""
         return request.param
+
+    @pytest.fixture
+    def str_not_xml(self):
+        """A string that is not XML."""
+        return 'This is not XML.'
 
     def test_xml_check_valid_xml(self, xml_str):
         """Perform check to see whether a parameter is valid XML. The parameter is valid XML."""
@@ -266,6 +271,33 @@ class TestValidateIsXML(object):
 
         assert len(result) == 0
 
+    def test_xml_check_valid_xml_comments_after_detailed_output(self, xml_str, str_not_xml):
+        """Perform check to see whether a parameter is valid XML. The parameter is valid XML.
+
+        There is a comment added after the XML.
+        Obtain detailed error output.
+        """
+        comment = '<!-- ' + str_not_xml + ' -->'
+        xml_with_comments = xml_str + comment
+
+        result = iati.validator.validate_is_xml(xml_with_comments)
+
+        assert len(result) == 0
+
+    @pytest.mark.skip
+    def test_xml_check_valid_xml_comments_before_detailed_output(self, xml_str, str_not_xml):
+        """Perform check to see whether a parameter is valid XML. The parameter is valid XML.
+
+        There is a comment added before the XML.
+        Obtain detailed error output.
+        """
+        comment = '<!-- ' + str_not_xml + ' -->'
+        xml_with_comments = comment + xml_str
+
+        result = iati.validator.validate_is_xml(xml_with_comments)
+
+        assert len(result) == 0
+
     def test_xml_check_valid_xml_in_dataset_detailed_output(self, xml_str):
         """Perform check to see whether a Dataset is valid XML.
         Obtain detailed error output.
@@ -286,16 +318,50 @@ class TestValidateIsXML(object):
         assert result.contains_errors()
         assert result.contains_error_called('err-not-xml-not-string')
 
-    def test_xml_check_not_xml_str_no_opening_tag(self):
+    def test_xml_check_not_xml_str_no_start_tag(self, str_not_xml):
         """Perform check to locate the XML Syntax Errors in a string.
-        The string has no XML opening tag.
+        The string has no XML start tag.
         """
-        not_xml = 'This is not XML.'
+        result = iati.validator.validate_is_xml(str_not_xml)
+
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-xml-empty-document')
+
+    def test_xml_check_not_xml_str_text_before_xml(self, str_not_xml, xml_str):
+        """Perform check to locate the XML Syntax Errors in a string.
+
+        The string has non-XML text before the XML starts.
+        """
+        not_xml = str_not_xml + xml_str
 
         result = iati.validator.validate_is_xml(not_xml)
 
         assert result.contains_errors()
         assert result.contains_error_called('err-not-xml-empty-document')
+
+    def test_xml_check_not_xml_str_text_after_xml(self, xml_str, str_not_xml):
+        """Perform check to locate the XML Syntax Errors in a string.
+
+        The string has non-XML text before the XML starts.
+        """
+        not_xml = xml_str + str_not_xml
+
+        result = iati.validator.validate_is_xml(not_xml)
+
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-xml-content-at-end')
+
+    def test_xml_check_not_xml_str_xml_after_xml(self, xml_str, str_not_xml):
+        """Perform check to locate the XML Syntax Errors in a string.
+
+        The string is two concatenated XML filed.
+        """
+        not_xml = xml_str + xml_str
+
+        result = iati.validator.validate_is_xml(not_xml)
+
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-xml-content-at-end')
 
 
 class ValidateCodelistsBase(object):
