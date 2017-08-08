@@ -272,8 +272,6 @@ def _check_is_xml(maybe_xml):
         problem_var_type = type(maybe_xml)
         error = ValidationError('err-not-xml-not-string', locals())
         error_log.add(error)
-    except ValueError as err:
-        return False
 
     return error_log
 
@@ -390,7 +388,6 @@ def is_xml(maybe_xml):
         return not error_log.contains_errors()
     else:
         return error_log
-
 
 
 def validate_is_xml(dataset):
