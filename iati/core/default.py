@@ -113,6 +113,7 @@ def activity_schemas():
 
     Todo:
         Handle a `bypass_cache` parameter.
+
     """
     output = {}
     for version in iati.core.constants.STANDARD_VERSIONS:
@@ -130,6 +131,7 @@ def organisation_schemas():
 
     Todo:
         Handle a `bypass_cache` parameter.
+
     """
     output = {}
     for version in iati.core.constants.STANDARD_VERSIONS:
@@ -149,6 +151,7 @@ def schemas():
         Consider the Schema that defines the format of Codelists.
 
         Needs to handle multiple versions of the Schemas. This will probably involve passing in a version as a param, which should tidy up the function too.
+
     """
     schemas_by_type_and_version = {
         'activity': activity_schemas(),
@@ -158,8 +161,9 @@ def schemas():
     latest_version = iati.core.constants.STANDARD_VERSION_LATEST
     for _, schemas_by_version in schemas_by_type_and_version.items():
         schema_object = schemas_by_version[latest_version]
-        name = schema_object._source_path.split(os.sep).pop()[:-len(iati.core.resources.FILE_SCHEMA_EXTENSION)]
-        if (name not in _SCHEMAS.keys()):
+        schema_filename = schema_object._source_path.split(os.sep).pop()
+        name = schema_filename[:-len(iati.core.resources.FILE_SCHEMA_EXTENSION)]
+        if name not in _SCHEMAS.keys():
             _SCHEMAS[name] = schema_object
 
     return _SCHEMAS
