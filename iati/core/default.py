@@ -158,7 +158,7 @@ def schemas():
     latest_version = iati.core.constants.STANDARD_VERSION_LATEST
     for _, schemas_by_version in schemas_by_type_and_version.items():
         schema_object = schemas_by_version[latest_version]
-        name = schema_object.source_path.split(os.sep).pop()[:-len(iati.core.resources.FILE_SCHEMA_EXTENSION)]
+        name = schema_object._source_path.split(os.sep).pop()[:-len(iati.core.resources.FILE_SCHEMA_EXTENSION)]
         if (name not in _SCHEMAS.keys()):
             _SCHEMAS[name] = schema_object
 

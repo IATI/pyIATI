@@ -53,9 +53,9 @@ class Schema(object):
 
         """
         self._schema_base_tree = None
+        self._source_path = path
         self.codelists = set()
         self.rulesets = set()
-        self.source_path = path
 
         try:
             loaded_tree = iati.core.resources.load_as_tree(path)

@@ -36,7 +36,7 @@ class TestSchemas(object):
         schema = iati.core.default.schema(schema_type)
 
         assert schema.root_element_name == expected_root_element_name
-        assert expected_root_element_name in schema.source_path
+        assert expected_root_element_name in schema._source_path
 
     def test_schema_define_from_xsd(self, schema_initialised):
         """Check that a Schema can be generated from an XSD definition."""
