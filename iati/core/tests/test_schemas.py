@@ -1,6 +1,7 @@
 """A module containing tests for the library representation of Schemas."""
 from lxml import etree
 import pytest
+import six
 import iati.core.codelists
 import iati.core.default
 import iati.core.exceptions
@@ -372,14 +373,19 @@ class TestSchemas(object):
         assert result == 'Top-level element for a single IATI activity report.'
 
     def test_get_documentation_string(self, schemas_initialised):
-        """Test that all elements/attributes (except @iso-date) return a non-empty documentation string."""
+        """Test that all elements/attributes (except @iso-date) return a non-empty documentation string.
+
+        Todo:
+            Add function in tests.utilities to generate a set of input parameters based on a regex match against the xpaths in schema._xsd_lookup.
+            This would then mean that this test can specifically exclude paths containing `@iso-date` from the input.
+        """
         schema = schemas_initialised
 
         for xpath, element in schema._xsd_lookup.items():
             if '@iso-date' in xpath:
                 continue  # There is no formal definition for `@iso-date` attributes in (v2.01 & v2.02) of the IATI Standard
             result = schema.get_xsd_documentation_string(element)
-            assert isinstance(result, str)
+            assert isinstance(result, six.string_types)
             assert len(result) > 1
 
     @pytest.mark.parametrize("language", ['ar', 'fr', 'es', 'sw', 'not-a-valid-language'])
@@ -390,5 +396,5 @@ class TestSchemas(object):
 
         result = schema.get_xsd_documentation_string(element, language=language)
 
-        assert isinstance(result, str)
+        assert isinstance(result, six.string_types)
         assert result == ''
