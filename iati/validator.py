@@ -335,6 +335,9 @@ def _parse_xml_syntax_error(err):
     Returns:
         ValidationError: An IATI ValidationError that contains the information from the log entry.
 
+    Todo:
+        Create a small program to determine the common types of errors so that they can be handled as special cases with detailed help info.
+
     """
     # configure local variables for the creation of the error
     line_number = err.line
