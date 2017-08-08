@@ -265,7 +265,6 @@ def _check_is_xml(maybe_xml):
 
     try:
         _ = etree.fromstring(maybe_xml.strip())
-        return True
     except etree.XMLSyntaxError as err:
         return False
     except (AttributeError, TypeError, ValueError):

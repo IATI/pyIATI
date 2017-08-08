@@ -258,12 +258,21 @@ class TestValidateIsXML(object):
 
         assert iati.validator.is_xml(data)
 
-    @pytest.mark.skip
     def test_xml_check_valid_xml_detailed_output(self, xml_str):
         """Perform check to see whether a parameter is valid XML. The parameter is valid XML.
         Obtain detailed error output.
         """
         result = iati.validator.validate_is_xml(xml_str)
+
+        assert len(result) == 0
+
+    def test_xml_check_valid_xml_in_dataset_detailed_output(self, xml_str):
+        """Perform check to see whether a Dataset is valid XML.
+        Obtain detailed error output.
+        """
+        data = iati.core.Dataset(xml_str)
+
+        result = iati.validator.validate_is_xml(data)
 
         assert len(result) == 0
 
@@ -276,18 +285,6 @@ class TestValidateIsXML(object):
 
         assert result.contains_errors()
         assert result.contains_error_called('err-not-xml-not-string')
-
-    @pytest.mark.skip
-    def test_xml_check_valid_xml_in_dataset_detailed_output(self, xml_str):
-        """Perform check to see whether a Dataset is valid XML.
-        Obtain detailed error output.
-        """
-        data = iati.core.Dataset(xml_str)
-
-        result = iati.validator.validate_is_xml(data)
-
-        assert len(result) == 0
-
 
 
 class ValidateCodelistsBase(object):
