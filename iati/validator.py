@@ -304,7 +304,7 @@ def full_validation(dataset, schema):
         Parameters are likely to change in some manner.
 
     Returns:
-        list of dict: A list of dictionaries containing error output. An empty list indicates that there are no errors.
+        iati.validator.ValidationErrorLog: A log of the errors that occurred.
 
     Todo:
         Create test against a bad Schema.
