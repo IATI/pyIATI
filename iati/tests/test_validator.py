@@ -38,15 +38,23 @@ class TestValidationErrorLog(object):
     """A container for tests relating to Validation Error Logs."""
 
     @pytest.fixture
-    def error(self):
+    def err_name(self):
+        """The name of an error."""
+        return 'err-code-not-on-codelist'
+
+    @pytest.fixture
+    def error(self, err_name):
         """An error."""
-        err_name = 'err-code-not-on-codelist'
         return iati.validator.ValidationError(err_name)
 
     @pytest.fixture
-    def warning(self):
+    def warning_name(self):
+        """The name of a warning."""
+        return 'warn-code-not-on-codelist'
+
+    @pytest.fixture
+    def warning(self, warning_name):
         """A warning."""
-        warning_name = 'warn-code-not-on-codelist'
         return iati.validator.ValidationError(warning_name)
 
     @pytest.fixture
