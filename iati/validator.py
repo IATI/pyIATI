@@ -27,6 +27,8 @@ class ValidationError(object):
             raise ValueError('{err_name} is not a known type of ValidationError.'.format(**locals()))
 
         # set general attributes for this type of error
+        self.name = err_name
+
         for key, val in err_detail.items():
             setattr(self, key, val)
 
@@ -97,6 +99,21 @@ class ValidationErrorLog(object):
             raise TypeError('Only ValidationErrors may be added to a ValidationErrorLog.')
 
         self._values.append(value)
+
+    def contains_error_called(self, err_name):
+        """Check the log for an error or warning with the specified name.
+
+        Args:
+            err_name (str): The name of the error to look for.
+
+        Returns:
+            bool: Whether there is an error or warning with the specified name within the log.
+
+        """
+        errors_with_name = [err for err in self._values if err.name == err_name]
+
+        return len(errors_with_name) > 0
+
 
     def extend(self, values):
         """Extend the ErrorLog with ValidationErrors from an iterable.
