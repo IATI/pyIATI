@@ -277,7 +277,7 @@ class TestValidateIsXML(object):
         assert len(result) == 0
 
     @pytest.mark.parametrize("not_str", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
-    def test_xml_check_not_xml(self, not_str):
+    def test_xml_check_not_str_detailed_output(self, not_str):
         """Perform check to see whether a parameter is valid XML. The parameter is not valid XML.
         Obtain detailed error output.
         """
