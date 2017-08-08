@@ -375,6 +375,7 @@ class TestValidateIsXML(object):
 
         assert result.contains_errors()
         assert result.contains_error_called('err-not-xml-content-at-end')
+        assert result.contains_error_called('err-not-xml-xml-prolog-only-at-doc-start')
 
 
 class ValidateCodelistsBase(object):
