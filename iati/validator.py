@@ -43,11 +43,15 @@ class ValidationError(object):
             pass
 
         # set general attributes for this type of error that require context from the calling scope
+        # TODO: Determine what the defaults should be should the appropriate values not be available
         try:
             self.line_number = calling_locals['line_number']
             self.context = calling_locals['dataset'].source_around_line(self.line_number)
         except KeyError:
-            # TODO: Determine what the defaults should be should the appropriate values not be available
+            pass
+        try:
+            self.column_number = calling_locals['column_number']
+        except KeyError:
             pass
 
 
@@ -179,6 +183,18 @@ _ERROR_CODES = {
         'description': 'A variable that is not a string cannot be XML.',
         'info': 'The value provided is a `{problem_var_type}` rather than a `str`.',
         'help': 'A string is a series of characters (letters, numbers, punctuation, etc). For more information about what these are, see https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str'
+    },
+    'err-not-xml-uncategorised-xml-syntax-error': {
+        'category': 'xml',
+        'description': 'An uncategorised syntax error occurred when parsing the XML.',
+        'info': '{err}',
+        'help': 'There are many different ways in which a file may not be valid XML. The most common of these have had specific error messages created. This is not currently one of them.\nShould it be identified that this error occurs frequently, a specific error message will be created.\nFor an introduction to XML see https://www.w3schools.com/Xml/'
+    },
+    'err-not-xml-empty-document': {
+        'category': 'xml',
+        'description': 'No XML start tag was found within the document. The XML start tag is `<`.',
+        'info': '{err}',
+        'help': 'For an introduction to XML see https://www.w3schools.com/Xml/'
     }
 }
 
@@ -257,6 +273,9 @@ def _check_is_xml(maybe_xml):
     Returns:
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
 
+    Todo:
+        Consider how a Dataset may be passed when creating errors so that context can be obtained.
+
     """
     error_log = ValidationErrorLog()
 
@@ -265,8 +284,10 @@ def _check_is_xml(maybe_xml):
 
     try:
         _ = etree.fromstring(maybe_xml.strip())
-    except etree.XMLSyntaxError as err:
-        return False
+    except etree.XMLSyntaxError as parse_errors:
+        for err in parse_errors.error_log:
+            error = _parse_xml_syntax_error(err)
+            error_log.add(error)
     except (AttributeError, TypeError, ValueError):
         problem_var_type = type(maybe_xml)
         error = ValidationError('err-not-xml-not-string', locals())
@@ -289,6 +310,29 @@ def _correct_codelist_values(dataset, schema):
     error_log = _check_codelist_values(dataset, schema)
 
     return not error_log.contains_errors()
+
+
+def _parse_xml_syntax_error(err):
+    """Parse an etree.XMLSyntaxError and convert it to an IATI ValidationError.
+
+    Args:
+        err (etree._LogEntry): A log entry from an `etree.XMLSyntaxError`.
+
+    Returns:
+        ValidationError: An IATI ValidationError that contains the information from the log entry.
+
+    """
+    # configure local variables for the creation of the error
+    line_number = err.line
+    column_number = err.column
+
+    # create the error
+    if err.type_name == 'ERR_DOCUMENT_EMPTY':
+        error = ValidationError('err-not-xml-empty-document', locals())
+    else:
+        error = ValidationError('err-not-xml-uncategorised-xml-syntax-error', locals())
+
+    return error
 
 
 def full_validation(dataset, schema):

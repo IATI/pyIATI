@@ -286,6 +286,17 @@ class TestValidateIsXML(object):
         assert result.contains_errors()
         assert result.contains_error_called('err-not-xml-not-string')
 
+    def test_xml_check_not_xml_str_no_opening_tag(self):
+        """Perform check to locate the XML Syntax Errors in a string.
+        The string has no XML opening tag.
+        """
+        not_xml = 'This is not XML.'
+
+        result = iati.validator.validate_is_xml(not_xml)
+
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-xml-empty-document')
+
 
 class ValidateCodelistsBase(object):
     """A container for fixtures required for Codelist validation tests."""
