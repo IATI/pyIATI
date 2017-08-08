@@ -139,22 +139,14 @@ def organisation_schemas():
     return output
 
 
-def schemas(bypass_cache=False):
+def schemas():
     """Locate all the default IATI Schemas and return them within a dictionary.
-
-    Args:
-        bypass_cache (bool): Whether the cache should be bypassed, instead reloading data from disk even if it's already been loaded.
 
     Returns:
         dict: A dictionary containing all the Schemas for versions of the Standard. This returns the name of the Schema (as the key) and a subclass of iati.core.schemas.Schema() (as the value).
 
-    Warning:
-        The `bypass_cache` parameter could potentially be implemented in a cleaner manner. It also shouldn't really exist until a clear use-case is defined - changes elsewhere in the library may make it redundant.
-
     Todo:
         Consider the Schema that defines the format of Codelists.
-
-        Handle the `bypass_cache` parameter (and test a cache bypass where data is updated).
 
         Needs to handle multiple versions of the Schemas. This will probably involve passing in a version as a param, which should tidy up the function too.
     """
