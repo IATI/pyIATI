@@ -377,7 +377,12 @@ def full_validation(dataset, schema):
         Create test against a bad Schema.
 
     """
-    return _check_codelist_values(dataset, schema)
+    error_log = ValidationErrorLog()
+
+    error_log.extend(_check_is_xml(dataset))
+    error_log.extend(_check_codelist_values(dataset, schema))
+
+    return error_log
 
 
 def is_iati_xml(dataset, schema):

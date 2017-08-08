@@ -412,6 +412,16 @@ class ValidateCodelistsBase(object):
 
 
     @pytest.fixture
+    def schema_basic(self):
+        """A schema with no Codelists added.
+
+        Returns:
+            A valid activity schema with no Codelists added.
+
+        """
+        return iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+
+    @pytest.fixture
     def schema_version(self):
         """A schema with the Version Codelist added.
 
@@ -679,7 +689,7 @@ class TestValidationVocabularies(ValidateCodelistsBase):
         assert iati.validator.is_valid(data, schema_sectors)
 
 
-class TestValidatorDetailedOutput(ValidateCodelistsBase):
+class TestValidatorFullValidation(ValidateCodelistsBase):
     """A container for tests relating to detailed error output from validation."""
 
     def test_basic_validation_codelist_valid_detailed_output(self, schema_version):
@@ -726,3 +736,12 @@ class TestValidatorDetailedOutput(ValidateCodelistsBase):
         assert result.status == 'warning'
         assert 'Country' in result.info
         assert 'Country' in result.help
+
+    def test_basic_validation_not_xml_detailed_output(self, schema_basic):
+        """Perform full validation against a string that is not XML."""
+        not_xml = 'This is not XML.'
+
+        result = iati.validator.full_validation(not_xml, schema_basic)
+
+        assert len(result) == 1
+        assert result.contains_error_called('err-not-xml-empty-document')
