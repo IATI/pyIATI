@@ -392,6 +392,20 @@ class TestValidateIsXML(object):
         assert result.contains_error_called('err-not-xml-content-at-end')
         assert result.contains_error_called('err-not-xml-xml-prolog-only-at-doc-start')
 
+    def test_xml_check_not_xml_str_xml_after_xml_no_prolog_detailed_output(self, xml_str_no_prolog, str_not_xml):
+        """Perform check to locate the XML Syntax Errors in a string.
+
+        The string is two concatenated XML strings. Each contains a prolog.
+        Obtain detailed error output.
+        """
+        not_xml = xml_str_no_prolog + xml_str_no_prolog
+
+        result = iati.validator.validate_is_xml(not_xml)
+
+        assert len(result) == 1
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-xml-content-at-end')
+
 
 class ValidateCodelistsBase(object):
     """A container for fixtures required for Codelist validation tests."""
