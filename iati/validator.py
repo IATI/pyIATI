@@ -295,10 +295,11 @@ def _check_is_xml(maybe_xml):
         maybe_xml = maybe_xml.xml_str
 
     try:
-        _ = etree.fromstring(maybe_xml.strip())
-    except etree.XMLSyntaxError as parse_errors:
+        parser = etree.XMLParser()
+        _ = etree.fromstring(maybe_xml.strip(), parser)
+    except etree.XMLSyntaxError:
         # import pdb;pdb.set_trace()
-        for err in parse_errors.error_log:
+        for err in parser.error_log:
             error = _parse_xml_syntax_error(err)
             error_log.add(error)
     except (AttributeError, TypeError, ValueError):
