@@ -403,6 +403,11 @@ class Schema(object):
     def get_occurances_for_xsd_element(self, element):
         """Returns a dictionary containing the allowed minumum and maximum number of occurances for a given element.
 
+        The function awaits implementation of `get_xsd_parent_element`, as the defined minumum and maximum number of occurances is defined in the parent element.
+
+        Warning:
+            It is likely that the input param will change from `element` to `xpath`.
+
         Todo:
             Add tests.
 
@@ -413,6 +418,9 @@ class Schema(object):
 
     def get_codelist_for_xsd_element(self, element):
         """Returns a list containing allowed codelists for the given element.
+
+        Warning:
+            It is likely that the input param will change from `element` to `xpath`.
 
         Todo:
             Add tests.
@@ -425,6 +433,9 @@ class Schema(object):
     def get_rules_for_xsd_element(self, element):
         """Returns a list containing rules objects for the given element.
 
+        Warning:
+            It is likely that the input param will change from `element` to `xpath`.
+
         Todo:
             Add tests.
 
@@ -435,6 +446,9 @@ class Schema(object):
 
     def get_guidance_for_xsd_element(self, element):
         """Returns guidance for the given element.
+
+        Warning:
+            It is likely that the input param will change from `element` to `xpath`.
 
         Todo:
             Add tests.
@@ -447,6 +461,9 @@ class Schema(object):
     def get_xsd_parent_element(self, element):
         """Returns an XPath to the parent element for the given input element.
 
+        Warning:
+            It is likely that the input param will change from `element` to `xpath`.
+
         Todo:
             Add tests.
 
@@ -457,6 +474,9 @@ class Schema(object):
 
     def get_xsd_sibling_elements(self, element):
         """Returns a list of XPaths for sibling elements to the given input element.
+
+        Warning:
+            It is likely that the input param will change from `element` to `xpath`.
 
         Todo:
             Add tests.
@@ -469,6 +489,9 @@ class Schema(object):
     def get_xsd_child_elements(self, element):
         """Returns a list of XPaths for child elements to the given input element.
 
+        Warning:
+            It is likely that the input param will change from `element` to `xpath`.
+
         Todo:
             Add tests.
 
@@ -477,8 +500,11 @@ class Schema(object):
         """
         raise NotImplementedError
 
-    def get_attribute_xpaths_for_xsd_element(self, element):
+    def get_xpaths_for_xsd_element_attributes(self, element):
         """Returns a list of XPaths for attributes contained within the given element.
+
+        Warning:
+            It is likely that the input param will change from `element` to `xpath`.
 
         Todo:
             Add tests.
@@ -491,6 +517,11 @@ class Schema(object):
     def get_full_documentation_for_xsd_element(self, element):
         """Returns a dictionary containing documentation information for the given element.
 
+        Warning:
+            It is likely that the input param will change from `element` to `xpath`.
+
+            The name of this method may change, depending on work on the components of this.
+
         Todo:
             Add tests.
 
@@ -501,6 +532,9 @@ class Schema(object):
 
     def get_documentation_for_xpath(self, xpath):
         """Returns a dictionary containing documentation for the given XPath.
+
+        Warning:
+            The name of this method may change, depending on work on the components of this.
 
         Todo:
             Add tests.

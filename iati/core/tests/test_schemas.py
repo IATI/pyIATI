@@ -425,3 +425,23 @@ class TestSchemas(object):
             schema.get_xsd_input_type_for_element(element)
 
         assert str(excinfo.value) == 'Unexpected input type entered.'
+
+    @pytest.mark.skip(reason="Not currently implemented (Awaiting implementation of `get_xsd_parent_element`).")
+    @pytest.mark.parametrize("schema, xpath, expected_min, expected_max", [
+        ('iati-activities-schema', 'iati-activities', 0, 'unbounded')
+    ])
+    def test_get_occurances_for_xsd_element(self, schema, xpath, expected_min, expected_max):
+        """Test that an expected result is returned for a set of input xsd elements.
+
+        Todo:
+            Add more test parameters.
+        """
+        schema = iati.core.default.schema(schema)
+        element = schema._xsd_lookup[xpath]
+
+        result = schema.get_occurances_for_xsd_element(element)
+
+        assert isinstance(result, dict)
+        assert len(result) == 2
+        assert result['min_occurs'] == expected_min
+        assert result['max_occurs'] == expected_max
