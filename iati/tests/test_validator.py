@@ -284,20 +284,6 @@ class TestValidateIsXML(object):
 
         assert len(result) == 0
 
-    @pytest.mark.skip
-    def test_xml_check_valid_xml_comments_before_detailed_output(self, xml_str, str_not_xml):
-        """Perform check to see whether a parameter is valid XML. The parameter is valid XML.
-
-        There is a comment added before the XML.
-        Obtain detailed error output.
-        """
-        comment = '<!-- ' + str_not_xml + ' -->'
-        xml_with_comments = comment + xml_str
-
-        result = iati.validator.validate_is_xml(xml_with_comments)
-
-        assert len(result) == 0
-
     def test_xml_check_valid_xml_in_dataset_detailed_output(self, xml_str):
         """Perform check to see whether a Dataset is valid XML.
         Obtain detailed error output.
@@ -338,6 +324,20 @@ class TestValidateIsXML(object):
 
         assert result.contains_errors()
         assert result.contains_error_called('err-not-xml-empty-document')
+
+    def test_xml_check_not_xml_str_comments_before(self, xml_str, str_not_xml):
+        """Perform check to locate the XML Syntax Errors in a string.
+
+        There is a comment added before the XML.
+        Obtain detailed error output.
+        """
+        comment = '<!-- ' + str_not_xml + ' -->'
+        not_xml = comment + xml_str
+
+        result = iati.validator.validate_is_xml(not_xml)
+
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-xml-xml-prolog-only-at-doc-start')
 
     def test_xml_check_not_xml_str_text_after_xml(self, xml_str, str_not_xml):
         """Perform check to locate the XML Syntax Errors in a string.
