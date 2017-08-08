@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<root_element>
+  <planned-disbursement type="1">
+   <period-start iso-date="01-12-2007"/><!-- Dates are not in the correct format -->
+   <period-end iso-date="02-11-2005"/>
+  </planned-disbursement>
+</root_element>

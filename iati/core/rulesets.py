@@ -7,9 +7,9 @@ Todo:
     Account for edge cases and improve documentation.
 
 """
+from datetime import datetime
 import json
 import re
-import time
 import sre_constants
 import jsonschema
 import iati.core.default
@@ -289,6 +289,7 @@ class RuleDateOrder(Rule):
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
+            ValueError: When a date is given that is not in the correct ISO format.
 
         Todo:
             Make sure 'NOW' value works as stipulated.
@@ -296,10 +297,25 @@ class RuleDateOrder(Rule):
         """
         less_date = dataset.xml_tree.xpath(self.less)
         more_date = dataset.xml_tree.xpath(self.more)
-        earlier_date = time.strptime(less_date[0], '%Y-%m-%d')
-        later_date = time.strptime(more_date[0], '%Y-%m-%d')
+        earlier_dates = list()
+        later_dates = list()
 
-        return earlier_date < later_date
+        for date in less_date:
+            if date == 'NOW':
+                earlier_dates.append(datetime.strptime(datetime.today(), '%Y-%m-%d'))
+            earlier_dates.append(datetime.strptime(date, '%Y-%m-%d'))
+
+        for date in more_date:
+            if date == 'NOW':
+                later_dates.append(datetime.today())
+            else:
+                later_dates.append(datetime.strptime(date, '%Y-%m-%d'))
+
+        for (early_date, later_date) in zip(earlier_dates, later_dates):
+            if early_date > later_date:
+                return False
+
+        return True
 
 
 class RuleDependent(Rule):
