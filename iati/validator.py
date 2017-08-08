@@ -156,6 +156,12 @@ _ERROR_CODES = {
         'description': 'An attribute that should contain a Code from a particular incomplete Codelist contained a value not on the Codelist.',
         'info': '{code} is not a Code on the {codelist.name} Codelist. ',
         'help': 'The `{attr_name}` attribute should contain a value on the `{codelist.name}` Codelist. Note that values not on the Codelist may be valid in particular circumstances.\nSee http://iatistandard.org/202/codelists/{codelist.name} for values on the Codelist.'
+    },
+    'err-not-xml-not-string': {
+        'category': 'xml',
+        'description': 'A variable that is not a string cannot be XML.',
+        'info': 'The value provided is a `{problem_var_type}` rather than a `str`.',
+        'help': 'A string is a series of characters (letters, numbers, punctuation, etc). For more information about what these are, see https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str'
     }
 }
 
@@ -221,6 +227,35 @@ def _check_codelist_values(dataset, schema):
 
     for codelist in schema.codelists:
         error_log.extend(_check_codes(dataset, codelist))
+
+    return error_log
+
+
+def _check_is_xml(maybe_xml):
+    """Check whether a given parameter is valid XML.
+
+    Args:
+        maybe_xml (str): An string that may or may not contain valid XML.
+
+    Returns:
+        iati.validator.ValidationErrorLog: A log of the errors that occurred.
+    """
+    error_log = ValidationErrorLog()
+
+    if isinstance(maybe_xml, iati.core.data.Dataset):
+        maybe_xml = maybe_xml.xml_str
+
+    try:
+        _ = etree.fromstring(maybe_xml.strip())
+        return True
+    except etree.XMLSyntaxError as err:
+        return False
+    except (AttributeError, TypeError, ValueError):
+        problem_var_type = type(maybe_xml)
+        error = ValidationError('err-not-xml-not-string', locals())
+        error_log.add(error)
+    except ValueError as err:
+        return False
 
     return error_log
 
@@ -324,7 +359,6 @@ def is_valid(dataset, schema):
 def is_xml(maybe_xml):
     """Determine whether a given parameter is XML.
 
-
     Args:
         maybe_xml (str): An string that may or may not contain valid XML.
 
@@ -332,14 +366,10 @@ def is_xml(maybe_xml):
         bool: A boolean indicating whether the given Dataset is valid XML.
 
     """
-    if isinstance(maybe_xml, iati.core.data.Dataset):
-        maybe_xml = maybe_xml.xml_str
+    error_log = _check_is_xml(maybe_xml)
 
-    try:
-        _ = etree.fromstring(maybe_xml.strip())
-        return True
-    except etree.XMLSyntaxError as err:
-        return False
-    except (AttributeError, TypeError, ValueError):
-        return False
+    if isinstance(error_log, ValidationErrorLog):
+        return not error_log.contains_errors()
+    else:
+        return error_log
 
