@@ -239,6 +239,11 @@ class TestValidateIsXML(object):
         """A valid XML string."""
         return request.param
 
+    @pytest.fixture
+    def xml_str_no_prolog(self, xml_str):
+        """A valid XML string with the prolog removed."""
+        return '\n'.join(xml_str.strip().split('\n')[1:])
+
     @pytest.fixture(params=iati.core.tests.utilities.find_parameter_by_type(['str'], False) + [iati.core.tests.utilities.XML_STR_INVALID])
     def not_xml(self, request):
         """A value that is not a valid XML string."""
@@ -272,8 +277,9 @@ class TestValidateIsXML(object):
         assert len(result) == 0
 
     def test_xml_check_valid_xml_comments_after_detailed_output(self, xml_str, str_not_xml):
-        """Perform check to see whether a parameter is valid XML. The parameter is valid XML.
+        """Perform check to see string a parameter is valid XML.
 
+        The string is valid XML.
         There is a comment added after the XML.
         Obtain detailed error output.
         """
@@ -284,14 +290,15 @@ class TestValidateIsXML(object):
 
         assert len(result) == 0
 
-    def test_xml_check_valid_xml_str_comments_before_no_prolog(self, xml_str, str_not_xml):
-        """Perform check to see whether a parameter is valid XML. The parameter is valid XML.
+    def test_xml_check_valid_xml_str_comments_before_no_prolog_detailed_output(self, xml_str_no_prolog, str_not_xml):
+        """Perform check to see whether a string is valid XML.
 
-        There is a comment added before the XML. There is no XMl prolog.
+        The string is valid XML.
+        There is a comment added before the XML. There is no XML prolog.
         Obtain detailed error output.
         """
         comment = '<!-- ' + str_not_xml + ' -->'
-        xml_prefixed_with_comment = comment + '\n'.join(xml_str.strip().split('\n')[1:])
+        xml_prefixed_with_comment = comment + xml_str_no_prolog
 
         result = iati.validator.validate_is_xml(xml_prefixed_with_comment)
 
@@ -299,6 +306,7 @@ class TestValidateIsXML(object):
 
     def test_xml_check_valid_xml_in_dataset_detailed_output(self, xml_str):
         """Perform check to see whether a Dataset is valid XML.
+
         Obtain detailed error output.
         """
         data = iati.core.Dataset(xml_str)
@@ -310,6 +318,7 @@ class TestValidateIsXML(object):
     @pytest.mark.parametrize("not_str", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_xml_check_not_str_detailed_output(self, not_str):
         """Perform check to see whether a parameter is valid XML. The parameter is not valid XML.
+
         Obtain detailed error output.
         """
         result = iati.validator.validate_is_xml(not_str)
@@ -319,7 +328,9 @@ class TestValidateIsXML(object):
 
     def test_xml_check_not_xml_str_no_start_tag_detailed_output(self, str_not_xml):
         """Perform check to locate the XML Syntax Errors in a string.
+
         The string has no XML start tag.
+        Obtain detailed error output.
         """
         result = iati.validator.validate_is_xml(str_not_xml)
 
@@ -330,6 +341,7 @@ class TestValidateIsXML(object):
         """Perform check to locate the XML Syntax Errors in a string.
 
         The string has non-XML text before the XML starts.
+        Obtain detailed error output.
         """
         not_xml = str_not_xml + xml_str
 
@@ -356,6 +368,7 @@ class TestValidateIsXML(object):
         """Perform check to locate the XML Syntax Errors in a string.
 
         The string has non-XML text before the XML starts.
+        Obtain detailed error output.
         """
         not_xml = xml_str + str_not_xml
 
@@ -367,7 +380,8 @@ class TestValidateIsXML(object):
     def test_xml_check_not_xml_str_xml_after_xml_detailed_output(self, xml_str, str_not_xml):
         """Perform check to locate the XML Syntax Errors in a string.
 
-        The string is two concatenated XML filed.
+        The string is two concatenated XML strings. Each contains a prolog.
+        Obtain detailed error output.
         """
         not_xml = xml_str + xml_str
 
