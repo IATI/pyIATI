@@ -256,6 +256,7 @@ def _check_is_xml(maybe_xml):
 
     Returns:
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
+
     """
     error_log = ValidationErrorLog()
 
@@ -389,4 +390,18 @@ def is_xml(maybe_xml):
         return not error_log.contains_errors()
     else:
         return error_log
+
+
+
+def validate_is_xml(dataset):
+    """Check whether a Dataset contains valid XML.
+
+    Args:
+        dataset (iati.core.Dataset): The Dataset to check validity of.
+
+    Returns:
+        iati.validator.ValidationErrorLog: A log of the errors that occurred.
+
+    """
+    return _check_is_xml(dataset)
 
