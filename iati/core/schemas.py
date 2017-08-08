@@ -361,21 +361,22 @@ class Schema(object):
         Args:
             element (etree._ElementTree): The element to find documentation within.
             lang (str): The language to find documentation for. Defaults to 'en'.
-            clean_output (bool): Define whether to return the raw documentation or a 'clean' version without unnecessary whitespace. Defaults to True.
+            clean_output (bool): Define whether to return the raw documentation (i.e. False) or a 'clean' version without unnecessary whitespace (i.e. True). Defaults to True.
 
         Returns:
             str: The documentation string contained within the input element.
 
         Todo:
-            Add more tests.
-
             Find edge cases for this method - for example, where the element references a complex type, but includes documentation within the non-referenced element.
 
         """
-        documentation = element.xpath(
-            'xsd:annotation/xsd:documentation/text()',
-            namespaces=iati.core.constants.NSMAP
-        )[0]
+        try:
+            documentation = element.xpath(
+                'xsd:annotation/xsd:documentation[@xml:lang="{0}"]/text()'.format(language),
+                namespaces=iati.core.constants.NSMAP
+            )[0]
+        except IndexError:  # Arises when the xpath returns an empty list
+            documentation = ''
 
         if clean_output:
             documentation = ' '.join(documentation.split())

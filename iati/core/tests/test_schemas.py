@@ -362,7 +362,7 @@ class TestSchemas(object):
             assert isinstance(element, etree._Element)
 
     def test_get_documentation_string(self):
-        """Test that an input element should return the expected documentation string."""
+        """Test that an input element returns the expected documentation string."""
         schema = iati.core.default.schema('iati-activities-schema')
         element = schema.get_xsd_element('iati-activity')
 
@@ -370,3 +370,25 @@ class TestSchemas(object):
 
         assert isinstance(result, str)
         assert result == 'Top-level element for a single IATI activity report.'
+
+    def test_get_documentation_string(self, schemas_initialised):
+        """Test that all elements/attributes (except @iso-date) return a non-empty documentation string."""
+        schema = schemas_initialised
+
+        for xpath, element in schema._xsd_lookup.items():
+            if '@iso-date' in xpath:
+                continue  # There is no formal definition for `@iso-date` attributes in (v2.01 & v2.02) of the IATI Standard
+            result = schema.get_xsd_documentation_string(element)
+            assert isinstance(result, str)
+            assert len(result) > 1
+
+    @pytest.mark.parametrize("language", ['ar', 'fr', 'es', 'sw', 'not-a-valid-language'])
+    def test_get_documentation_string_no_documentation_for_lang(self, language):
+        """Test that an input element returns an empty string for documentation that does not exist for an input language."""
+        schema = iati.core.default.schema('iati-activities-schema')
+        element = schema.get_xsd_element('iati-activity')
+
+        result = schema.get_xsd_documentation_string(element, language=language)
+
+        assert isinstance(result, str)
+        assert result == ''
