@@ -317,7 +317,7 @@ class TestValidateIsXML(object):
         assert result.contains_errors()
         assert result.contains_error_called('err-not-xml-not-string')
 
-    def test_xml_check_not_xml_str_no_start_tag(self, str_not_xml):
+    def test_xml_check_not_xml_str_no_start_tag_detailed_output(self, str_not_xml):
         """Perform check to locate the XML Syntax Errors in a string.
         The string has no XML start tag.
         """
@@ -326,7 +326,7 @@ class TestValidateIsXML(object):
         assert result.contains_errors()
         assert result.contains_error_called('err-not-xml-empty-document')
 
-    def test_xml_check_not_xml_str_text_before_xml(self, str_not_xml, xml_str):
+    def test_xml_check_not_xml_str_text_before_xml_detailed_output(self, str_not_xml, xml_str):
         """Perform check to locate the XML Syntax Errors in a string.
 
         The string has non-XML text before the XML starts.
@@ -338,7 +338,7 @@ class TestValidateIsXML(object):
         assert result.contains_errors()
         assert result.contains_error_called('err-not-xml-empty-document')
 
-    def test_xml_check_not_xml_str_comments_before(self, xml_str, str_not_xml):
+    def test_xml_check_not_xml_str_comments_before_detailed_output(self, xml_str, str_not_xml):
         """Perform check to locate the XML Syntax Errors in a string.
 
         There is a comment added before the XML. The XML contains a prolog.
@@ -352,7 +352,7 @@ class TestValidateIsXML(object):
         assert result.contains_errors()
         assert result.contains_error_called('err-not-xml-xml-prolog-only-at-doc-start')
 
-    def test_xml_check_not_xml_str_text_after_xml(self, xml_str, str_not_xml):
+    def test_xml_check_not_xml_str_text_after_xml_detailed_output(self, xml_str, str_not_xml):
         """Perform check to locate the XML Syntax Errors in a string.
 
         The string has non-XML text before the XML starts.
@@ -364,7 +364,7 @@ class TestValidateIsXML(object):
         assert result.contains_errors()
         assert result.contains_error_called('err-not-xml-content-at-end')
 
-    def test_xml_check_not_xml_str_xml_after_xml(self, xml_str, str_not_xml):
+    def test_xml_check_not_xml_str_xml_after_xml_detailed_output(self, xml_str, str_not_xml):
         """Perform check to locate the XML Syntax Errors in a string.
 
         The string is two concatenated XML filed.
