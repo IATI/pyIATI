@@ -8,11 +8,11 @@ import iati.core.utilities
 
 
 class Schema(object):
-    """Represenation of a Schema as defined within the IATI SSOT. This is used as a base class for ActivitySchema and OrganisationSchema.
+    """Represenation of a Schema as defined within the IATI SSOT. This is used as a base class for ActivitySchema and OrganisationSchema and should not be instantiated directly.
 
     Attributes:
         codelists (set): The Codelists asspciated with this Schema. This is a read-only attribute.
-        root_element_name (str): The name of the root element within the XSD schema that the class represents.
+        root_element_name (str): The name of the root element within the XML Schema that the class represents.
 
     Warning:
         The private attribute allowing access to the base Schema Tree is likely to change in determining a good way of accessing the contained schema content.
@@ -30,7 +30,7 @@ class Schema(object):
         """Initialise a Schema.
 
         Args:
-            path (str): The path to the schema that is being initialised.
+            path (str): The path to the Schema that is being initialised.
 
         Raises:
             iati.core.exceptions.SchemaError: An error occurred during the creation of the Schema.

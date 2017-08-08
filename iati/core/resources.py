@@ -125,7 +125,7 @@ def get_all_activity_schema_paths(version=None):
         ValueError: When a specified version is not a valid version of the IATI Standard.
 
     Returns:
-        list: A list of paths to all of the activity Schemas at the specified version of the Standard.
+        list of str: A list of paths to all of the activity Schemas at the specified version of the Standard.
 
     Warning:
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.

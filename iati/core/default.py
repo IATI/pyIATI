@@ -169,7 +169,7 @@ def schema(name, version=None):
     """Return a default Schema with the specified name for the specified version of the Standard.
 
     Args:
-        name (str): The name of the Schema to locate.
+        name (str): The name of the Schema to locate. Current values are 'iati-activities-schema' or 'iati-organisations-schema'.
         version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
 
     Returns:
