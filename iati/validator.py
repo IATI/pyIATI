@@ -457,10 +457,7 @@ def is_xml(maybe_xml):
     """
     error_log = _check_is_xml(maybe_xml)
 
-    if isinstance(error_log, ValidationErrorLog):
-        return not error_log.contains_errors()
-    else:
-        return error_log
+    return not error_log.contains_errors()
 
 
 def validate_is_xml(dataset):
