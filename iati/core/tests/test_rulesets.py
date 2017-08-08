@@ -4,6 +4,7 @@ import iati.core.default
 import iati.core.rulesets
 import iati.core.resources
 import iati.core.tests.utilities
+import lxml
 
 
 class TestRuleset(object):
@@ -187,10 +188,39 @@ class RuleSubclassTestBase(object):
     """A base class for Rule subclass tests."""
 
     @pytest.fixture
-    def basic_rule(self, rule_constructor, valid_case):
+    def xpath_base(self):
+        """xpath_base."""
+        return '//root_element'
+
+    @pytest.fixture
+    def empty_xpath_base(self):
+        """Empty_xpath_base."""
+        return ''
+
+    @pytest.fixture
+    def basic_rule(self, rule_constructor, valid_case, xpath_base):
         """Instantiate a basic Rule subclass."""
-        xpath_base = 'an xpath'
         return rule_constructor(xpath_base, valid_case)
+
+    @pytest.fixture
+    def rule(self, rule_constructor, xpath_base, case_for_is_valid_for):
+        """Blah blah blah.
+
+        Todo:
+            Rename this function.
+
+        """
+        return rule_constructor(xpath_base, case_for_is_valid_for)
+
+    @pytest.fixture
+    def rule_empty_xpath_base(self, rule_constructor, valid_case, empty_xpath_base):
+        """Instantiate a basic Rule subclass with an empty xpath_base."""
+        return rule_constructor(empty_xpath_base, valid_case)
+
+    @pytest.fixture
+    def rule_empty_xpath_base_and_paths(self, rule_constructor, empty_xpath_base, empty_path_case):
+        """Instantiate a basic Rule subclass with an empty xpath_base."""
+        return rule_constructor(empty_xpath_base, empty_path_case)
 
     @pytest.fixture
     def rule_constructor(self, rule_type):
@@ -225,12 +255,7 @@ class RuleSubclassTestBase(object):
                 assert path.startswith(basic_rule.xpath_base)
 
     def test_rule_invalid_case(self, rule_constructor, invalid_case):
-        """Check that a rule cannot be instantiated when the case is invalid.
-
-        Todo:
-            Add tests with empty path AND empty xpath_base.
-
-        """
+        """Check that a rule cannot be instantiated when the case is invalid."""
         xpath_base = 'an xpath'
 
         with pytest.raises(ValueError):
@@ -265,12 +290,18 @@ class RuleSubclassTestBase(object):
         with pytest.raises(AttributeError):
             rule.is_valid_for(iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_atleastone')))  # use more generic dataset
 
-    def test_empty_xpath_base_rule_init(self, rule_empty_xpath_base):
-        """Check that a rule with an empty xpath_base can be instantiated correctly."""
+    def test_empty_xpath_base_rule_init_normalised_paths(self, rule_empty_xpath_base):
+        """Check that a rule with an empty xpath_base can be instantiated correctly with normalised `paths`."""
         # Exclude rules without `paths`.
         if 'paths' in dir(rule_empty_xpath_base):
             for path in rule_empty_xpath_base.paths:
                 assert path.startswith(rule_empty_xpath_base.xpath_base)
+
+    def test_empty_xpath_base_empty_path_is_valid_for(self, rule_empty_xpath_base_and_paths, valid_dataset):
+        """Check that a rule with an empty xpath_base and paths raises error."""
+        # RuleStartswith raises an IndexError instead.
+        with pytest.raises((lxml.etree.XPathEvalError, IndexError)):
+            rule_empty_xpath_base_and_paths.is_valid_for(valid_dataset)
 
 
 class TestRuleAtLeastOne(RuleSubclassTestBase):
@@ -317,20 +348,13 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         {'paths': ['element_that_only_occurs_once']},
         {'paths': ['element_that_only_occurs_once', 'element_that_occurs_twice']}
     ])
-    def rule(self, request):
+    def case_for_is_valid_for(self, request):
         """Instantiate RuleAtLeastOne."""
-        xpath_base = '//root_element'
-        return iati.core.RuleAtLeastOne(xpath_base, request.param)
+        return request.param
 
-    @pytest.fixture(params=[
-        {'paths': ['']},
-        {'paths': ['element_that_only_occurs_once']},
-        {'paths': ['element_that_only_occurs_once', 'element_that_occurs_twice']}
-    ])
-    def rule_empty_xpath_base(self, request):
-        """Instantiate RuleAtLeastOne with an empty xpath_base string."""
-        xpath_base = ''
-        return iati.core.RuleAtLeastOne(xpath_base, request.param)
+    @pytest.fixture
+    def empty_path_case(self):
+        return {'paths': ['']}
 
 
 class TestRuleDateOrder(RuleSubclassTestBase):
@@ -380,18 +404,12 @@ class TestRuleDateOrder(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {'less': 'planned-disbursement/period-start/@iso-date', 'more': 'planned-disbursement/period-end/@iso-date'}
     ])
-    def rule(self, request):
-        """Instantiate RuleDateOrder."""
-        xpath_base = '//root_element'
-        return iati.core.RuleDateOrder(xpath_base, request.param)
+    def case_for_is_valid_for(self, request):
+        return request.param
 
-    @pytest.fixture(params=[
-        {'less': 'planned-disbursement/period-start/@iso-date', 'more': 'planned-disbursement/period-end/@iso-date'}
-    ])
-    def rule_empty_xpath_base(self, request):
-        """Instantiate RuleDateOrder with an empty xpath_base string."""
-        xpath_base = ''
-        return iati.core.RuleDateOrder(xpath_base, request.param)
+    @pytest.fixture
+    def empty_path_case(self):
+        return {'less': '', 'more': ''}
 
     def test_rule_paths_less(self, basic_rule):
         """Check that the `less` value has been combined with the `xpath_base` where required."""
@@ -451,19 +469,13 @@ class TestRuleDependent(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {"paths": ["transaction/provider-org", "location/point"]}
     ])
-    def rule(self, request):
-        """Instantiate RuleDependent."""
-        xpath_base = '//root_element'
-        return iati.core.RuleDependent(xpath_base, request.param)
+    def case_for_is_valid_for(self, request):
+        """Test case for RuleDependent function."""
+        return request.param
 
-    @pytest.fixture(params=[
-        {'paths': ['']},
-        {'paths': ['transaction/provider-org', 'location/point']}
-    ])
-    def rule_empty_xpath_base(self, request):
-        """Instantiate RuleDependent with an empty xpath_base string."""
-        xpath_base = ''
-        return iati.core.RuleDependent(xpath_base, request.param)
+    @pytest.fixture
+    def empty_path_case(self):
+        return {'paths': ['']}
 
 
 class TestRuleNoMoreThanOne(RuleSubclassTestBase):
@@ -510,20 +522,13 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         {'paths': ['element_that_only_occurs_once']},
         {'paths': ['element_that_only_occurs_once', 'another_element_that_only_occurs_once']}
     ])
-    def rule(self, request):
+    def case_for_is_valid_for(self, request):
         """Instantiate RuleNoMoreThanOne."""
-        xpath_base = '//root_element'
-        return iati.core.RuleNoMoreThanOne(xpath_base, request.param)
+        return request.param
 
-    @pytest.fixture(params=[
-        {'paths': ['']},
-        {'paths': ['element_that_only_occurs_once']},
-        {'paths': ['element_that_only_occurs_once', 'another_element_that_only_occurs_once']}
-    ])
-    def rule_empty_xpath_base(self, request):
-        """Instantiate RuleNoMoreThanOne with an empty xpath_base string."""
-        xpath_base = ''
-        return iati.core.RuleNoMoreThanOne(xpath_base, request.param)
+    @pytest.fixture
+    def empty_path_case(self):
+        return {'paths': ['']}
 
 
 class TestRuleRegexMatches(RuleSubclassTestBase):
@@ -575,19 +580,13 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {'regex': r"[^\/\\&\\|\\?]+", 'paths': ['iati-identifier']}
     ])
-    def rule(self, request):
+    def case_for_is_valid_for(self, request):
         """Instantiate RuleRegexMatches."""
-        xpath_base = '//root_element'
-        return iati.core.RuleRegexMatches(xpath_base, request.param)
+        return request.param
 
-    @pytest.fixture(params=[
-        {'regex': r'[^\/\\&\\|\\?]+', 'paths': ['']},
-        {'regex': r'[^\/\\&\\|\\?]+', 'paths': ['iati-identifier']}
-    ])
-    def rule_empty_xpath_base(self, request):
-        """Instantiate RuleRegexMatches with an empty xpath_base string."""
-        xpath_base = ''
-        return iati.core.RuleRegexMatches(xpath_base, request.param)
+    @pytest.fixture
+    def empty_path_case(self):
+        return {'regex': r'[^\/\\&\\|\\?]+', 'paths': ['']}
 
 
 class TestRuleRegexNoMatches(RuleSubclassTestBase):
@@ -639,18 +638,13 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {'regex': r'[^\/\\&\\|\\?]+', 'paths': ['iati-identifier']}
     ])
-    def rule(self, request):
+    def case_for_is_valid_for(self, request):
         """Instantiate RuleRegexNoMatches."""
-        xpath_base = '//root_element'
-        return iati.core.RuleRegexNoMatches(xpath_base, request.param)
+        return request.param
 
-    @pytest.fixture(params=[
-        {'regex': r'[^\/\\&\\|\\?]+', 'paths': ['iati-identifier']}
-    ])
-    def rule_empty_xpath_base(self, request):
-        """Instantiate RuleRegexNoMatches with an empty xpath_base string."""
-        xpath_base = ''
-        return iati.core.RuleRegexNoMatches(xpath_base, request.param)
+    @pytest.fixture
+    def empty_path_case(self):
+        return {'regex': r'[^\/\\&\\|\\?]+', 'paths': ['']}
 
 
 class TestRuleStartsWith(RuleSubclassTestBase):
@@ -701,18 +695,13 @@ class TestRuleStartsWith(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {'start': 'reporting-org/@ref', 'paths': ['iati-identifier']}
     ])
-    def rule(self, request):
+    def case_for_is_valid_for(self, request):
         """Instantiate RuleStartsWith."""
-        xpath_base = '//root_element'
-        return iati.core.RuleStartsWith(xpath_base, request.param)
+        return request.param
 
-    @pytest.fixture(params=[
-        {'start': 'reporting-org/@ref', 'paths': ['iati-identifier']}
-    ])
-    def rule_empty_xpath_base(self, request):
-        """Instantiate RuleStartsWith with an empty xpath_base string."""
-        xpath_base = ''
-        return iati.core.RuleStartsWith(xpath_base, request.param)
+    @pytest.fixture
+    def empty_path_case(self):
+        return {'start': 'reporting-org/@ref', 'paths': ['']}
 
     def test_rule_paths_start(self, basic_rule):
         """Check that the `start` value has been combined with the `xpath_base`."""
@@ -773,18 +762,13 @@ class TestRuleSum(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {'paths': ['recipient-country/@percentage', 'recipient-region/@percentage'], 'sum': 100}
     ])
-    def rule(self, request):
+    def case_for_is_valid_for(self, request):
         """Instantiate RuleSum."""
-        xpath_base = '//root_element'
-        return iati.core.RuleSum(xpath_base, request.param)
+        return request.param
 
-    @pytest.fixture(params=[
-        {'paths': ['recipient-country/@percentage', 'recipient-region/@percentage'], 'sum': 100}
-    ])
-    def rule_empty_xpath_base(self, request):
-        """Instantiate RuleSum with an empty xpath_base string."""
-        xpath_base = ''
-        return iati.core.RuleSum(xpath_base, request.param)
+    @pytest.fixture
+    def empty_path_case(self):
+        return {'paths': [''], 'sum': 100}
 
 
 class TestRuleUnique(RuleSubclassTestBase):
@@ -831,16 +815,10 @@ class TestRuleUnique(RuleSubclassTestBase):
         {'paths': ['iati-identifier']},
         {'paths': ['iati-identifier', 'other_unique_element']}
     ])
-    def rule(self, request):
+    def case_for_is_valid_for(self, request):
         """Instantiate RuleUnique."""
-        xpath_base = '//root_element'
-        return iati.core.RuleUnique(xpath_base, request.param)
+        return request.param
 
-    @pytest.fixture(params=[
-        {'paths': ['iati-identifier']},
-        {'paths': ['iati-identifier', 'other_unique_element']}
-    ])
-    def rule_empty_xpath_base(self, request):
-        """Instantiate RuleUnique with an empty xpath_base string."""
-        xpath_base = ''
-        return iati.core.RuleUnique(xpath_base, request.param)
+    @pytest.fixture
+    def empty_path_case(self):
+        return {'paths': ['']}

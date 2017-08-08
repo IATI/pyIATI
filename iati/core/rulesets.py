@@ -127,7 +127,6 @@ class Rule(object):
         self._valid_rule_configuration(case)
         self._set_case_attributes(case)
         self._normalize_xpaths()
-        
 
     def _normalize_xpath(self, path):
         """Normalize a single xpath by combining it with `xpath_base`.
@@ -245,6 +244,7 @@ class RuleAtLeastOne(Rule):
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
+            XPathEvalError: When no valid xpath argument is given.
 
         """
         found_paths = set()
@@ -285,6 +285,7 @@ class RuleDateOrder(Rule):
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
             ValueError: When a date is given that is not in the correct ISO format.
+            XPathEvalError: When no valid xpath argument is given.
 
         Todo:
             Make sure 'NOW' value works as stipulated.
@@ -333,6 +334,7 @@ class RuleDependent(Rule):
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
+            XPathEvalError: When no valid xpath argument is given.
 
         """
         found_paths = 0
@@ -365,6 +367,7 @@ class RuleNoMoreThanOne(Rule):
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
+            XPathEvalError: When no valid xpath argument is given.
 
         """
         compliant_paths = set()
@@ -406,6 +409,7 @@ class RuleRegexMatches(Rule):
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
+            XPathEvalError: When no valid xpath argument is given.
 
         """
         pattern = re.compile(self.case['regex'])
@@ -446,6 +450,7 @@ class RuleRegexNoMatches(Rule):
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
+            XPathEvalError: When no valid xpath argument is given.
 
         """
         pattern = re.compile(self.case['regex'])
@@ -487,6 +492,7 @@ class RuleStartsWith(Rule):
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
+            IndexError: When no valid xpath argument is given.
 
         """
         prefixing_str = dataset.xml_tree.xpath(self.start)[0]
@@ -518,6 +524,7 @@ class RuleSum(Rule):
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
+            XPathEvalError: When no valid xpath argument is given.
 
         """
         sum_values = list()
@@ -552,6 +559,7 @@ class RuleUnique(Rule):
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
+            XPathEvalError: When no valid xpath argument is given.
 
         Todo:
             Consider better methods for specifying which elements in the tree contain non-permitted duplication, such as bucket sort.
