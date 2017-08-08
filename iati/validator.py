@@ -206,7 +206,7 @@ _ERROR_CODES = {
         'category': 'xml',
         'description': 'The XML prolog must occur at the start of the document.',
         'info': '{err}',
-        'help': 'The XML prolog specifies how a computer must read the rest of the XML file. It looks something like `<?xml version="1.0" encoding="UTF-8"?>`. Since it tells the computer how to read the XML file, it must occur at the start of an XML document without any content before it.\nFor more information about the XML prolog, see https://www.w3schools.com/xml/xml_syntax.asp'
+        'help': 'The XML prolog specifies how a computer must read the rest of the XML file. Since it tells the computer how to read the XML file, it must occur at the start of an XML document without any content before it.\nIt looks similar to: `<?xml version="1.0" encoding="UTF-8"?>`.\nFor more information about the XML prolog, see https://www.w3schools.com/xml/xml_syntax.asp'
     }
 }
 
@@ -297,7 +297,7 @@ def _check_is_xml(maybe_xml):
     try:
         _ = etree.fromstring(maybe_xml.strip())
     except etree.XMLSyntaxError as parse_errors:
-        # import pdb;pdb.set_trace()
+        import pdb;pdb.set_trace()
         for err in parse_errors.error_log:
             error = _parse_xml_syntax_error(err)
             error_log.add(error)

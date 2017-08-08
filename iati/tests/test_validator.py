@@ -284,6 +284,19 @@ class TestValidateIsXML(object):
 
         assert len(result) == 0
 
+    def test_xml_check_valid_xml_str_comments_before_no_prolog(self, xml_str, str_not_xml):
+        """Perform check to see whether a parameter is valid XML. The parameter is valid XML.
+
+        There is a comment added before the XML. There is no XMl prolog.
+        Obtain detailed error output.
+        """
+        comment = '<!-- ' + str_not_xml + ' -->'
+        xml_prefixed_with_comment = comment + '\n'.join(xml_str.strip().split('\n')[1:])
+
+        result = iati.validator.validate_is_xml(xml_prefixed_with_comment)
+
+        assert len(result) == 0
+
     def test_xml_check_valid_xml_in_dataset_detailed_output(self, xml_str):
         """Perform check to see whether a Dataset is valid XML.
         Obtain detailed error output.
@@ -328,7 +341,7 @@ class TestValidateIsXML(object):
     def test_xml_check_not_xml_str_comments_before(self, xml_str, str_not_xml):
         """Perform check to locate the XML Syntax Errors in a string.
 
-        There is a comment added before the XML.
+        There is a comment added before the XML. The XML contains a prolog.
         Obtain detailed error output.
         """
         comment = '<!-- ' + str_not_xml + ' -->'
