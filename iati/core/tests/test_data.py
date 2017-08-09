@@ -49,10 +49,8 @@ class TestDatasets(object):
 
     def test_dataset_invalid_xml_string(self):
         """Test Dataset creation with a string that is not valid XML."""
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(iati.core.exceptions.ValidationError) as excinfo:
             iati.core.Dataset(iati.core.tests.utilities.XML_STR_INVALID)
-
-        assert 'The string provided to create a Dataset from is not valid XML.' == str(excinfo.value)
 
     @pytest.mark.parametrize("not_xml", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_dataset_number_not_xml(self, not_xml):
@@ -95,10 +93,8 @@ class TestDatasets(object):
         """Test assignment to the xml_str property with an invalid XML string."""
         data = dataset_initialised
 
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(iati.core.exceptions.ValidationError) as excinfo:
             data.xml_str = iati.core.tests.utilities.XML_STR_INVALID
-
-        assert 'The string provided to create a Dataset from is not valid XML.' == str(excinfo.value)
 
     def test_dataset_xml_str_assignment_tree(self, dataset_initialised):
         """Test assignment to the xml_str property with an ElementTree."""
@@ -219,10 +215,8 @@ class TestDatasets(object):
         </iati-activities>""".format(encoding_declared)
         xml_encoded = xml.encode(encoding_used)  # Encode the whole string in line with the specified encoding
 
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(iati.core.exceptions.ValidationError) as excinfo:
             dataset = iati.core.data.Dataset(xml_encoded)
-
-        assert str(excinfo.value) == 'The string provided to create a Dataset from is not valid XML.'
 
 
 class TestDatasetSourceFinding(object):

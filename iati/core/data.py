@@ -64,7 +64,7 @@ class Dataset(object):
         """Return a string representation of the XML being represented.
 
         Raises:
-            ValueError: If a value that is being assigned is not a valid XML string.
+            iati.core.exceptions.ValidationError: If a value that is being assigned is not a valid XML string.
             TypeError: If a value that is being assigned is not a string at all.
 
         Todo:
@@ -91,16 +91,16 @@ class Dataset(object):
                 else:
                     value_stripped_bytes = value_stripped
 
-                if iati.validator.is_xml(value_stripped_bytes):
+                validation_error_log = iati.validator.validate_is_xml(value_stripped_bytes)
+
+                if not validation_error_log.contains_errors():
                     self.xml_tree = etree.fromstring(value_stripped_bytes)
                     self._xml_str = value_stripped
                 else:
-                    err_log = iati.validator.validate_is_xml(value_stripped_bytes)
-                    if err_log.contains_error_of_type(TypeError):
+                    if validation_error_log.contains_error_of_type(TypeError):
                         raise TypeError
-                    msg = "The string provided to create a Dataset from is not valid XML."
-                    iati.core.utilities.log_error(msg)
-                    raise ValueError(msg)
+                    else:
+                        raise iati.core.exceptions.ValidationError(validation_error_log)
             except (AttributeError, TypeError):
                 msg = "Datasets can only be ElementTrees or strings containing valid XML, using the xml_tree and xml_str attributes respectively. Actual type: {0}".format(type(value))
                 iati.core.utilities.log_error(msg)
