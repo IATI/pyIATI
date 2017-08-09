@@ -52,6 +52,8 @@ class TestDatasets(object):
         with pytest.raises(iati.core.exceptions.ValidationError) as excinfo:
             iati.core.Dataset(iati.core.tests.utilities.XML_STR_INVALID)
 
+        assert excinfo.value.error_log.contains_error_called('err-not-xml-empty-document')
+
     @pytest.mark.parametrize("not_xml", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_dataset_number_not_xml(self, not_xml):
         """Test Dataset creation when it's passed a number rather than a string or etree."""
@@ -95,6 +97,8 @@ class TestDatasets(object):
 
         with pytest.raises(iati.core.exceptions.ValidationError) as excinfo:
             data.xml_str = iati.core.tests.utilities.XML_STR_INVALID
+
+        excinfo.value.error_log.contains_error_called('err-not-xml-empty-document')
 
     def test_dataset_xml_str_assignment_tree(self, dataset_initialised):
         """Test assignment to the xml_str property with an ElementTree."""
