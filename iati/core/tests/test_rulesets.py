@@ -149,13 +149,11 @@ class TestRuleSubclasses(object):
         """List constructors for the various types of Rule."""
         return request.param
 
-    # @pytest.mark.parametrize("rule_constructor", rule_constructors)
     def test_rule_init_no_parameters(self, rule_constructor):
         """Check that a Rule cannot be created when no parameters are given."""
         with pytest.raises(TypeError):
             rule_constructor()
 
-    # @pytest.mark.parametrize("rule_constructor", rule_constructors)
     @pytest.mark.parametrize("xpath_base", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_rule_init_invalid_xpath_base(self, rule_constructor, xpath_base):
         """Check that a Rule cannot be created when xpath_base is not a string."""
@@ -164,7 +162,6 @@ class TestRuleSubclasses(object):
         with pytest.raises(ValueError):
             rule_constructor(xpath_base, case)
 
-    # @pytest.mark.parametrize("rule_constructor", rule_constructors)
     @pytest.mark.parametrize("case", iati.core.tests.utilities.find_parameter_by_type(['mapping'], False))
     def test_rule_init_invalid_case(self, rule_constructor, case):
         """Check that a Rule cannot be created when case is not a dictionary."""
@@ -173,7 +170,6 @@ class TestRuleSubclasses(object):
         with pytest.raises(ValueError):
             rule_constructor(xpath_base, case)
 
-    # @pytest.mark.parametrize("rule_constructor", rule_constructors)
     def test_rule_init_invalid_case_property(self, rule_constructor):
         """Check that a Rule cannot be created when a case has a property that is not permitted."""
         xpath_base = 'an xpath'
