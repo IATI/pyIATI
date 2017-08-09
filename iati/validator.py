@@ -327,7 +327,7 @@ def validate_is_iati_xml(dataset, schema):
          iati.validator.ValidationErrorLog: A log of the errors that occurred.
 
     """
-    return _check_is_iati_xml(dataset)
+    return _check_is_iati_xml(dataset, schema)
 
 
 def is_iati_xml(dataset, schema):

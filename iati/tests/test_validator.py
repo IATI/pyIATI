@@ -272,11 +272,15 @@ class TestIsValidIATIXML(object):
 
     def test_xml_check_valid_xml(self, iati_dataset, schema_basic):
         """Perform check to see whether a parameter is valid IATI XML. The parameter is valid IATI XML."""
-        assert iati.validator.is_iati_xml(iati_dataset, schema_basic)
+        result = iati.validator.validate_is_iati_xml(iati_dataset, schema_basic)
+
+        assert len(result) == 0
 
     def test_xml_check_not_xml(self, not_iati_dataset, schema_basic):
         """Perform check to see whether a parameter is valid IATI XML. The parameter is not valid IATI XML."""
-        assert not iati.validator.is_iati_xml(not_iati_dataset, schema_basic)
+        result = iati.validator.validate_is_iati_xml(not_iati_dataset, schema_basic)
+
+        assert result.contains_errors()
 
 
 class ValidateCodelistsBase(object):
