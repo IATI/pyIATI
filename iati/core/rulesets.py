@@ -4,7 +4,7 @@ Note:
     Rulesets are under-implemented since it is expected that their implementation will be similar to that of Codelists, which is currently unstable. Once Codelist stability has been increased, Rulesets may be fully-implemented.
 
 Todo:
-    Account for edge cases and improve documentation.
+    Review for edge cases.
 
 """
 from datetime import datetime
@@ -17,38 +17,6 @@ import iati.core.utilities
 
 
 _VALID_RULE_TYPES = ["atleast_one", "dependent", "sum", "date_order", "no_more_than_one", "regex_matches", "regex_no_matches", "startswith", "unique"]
-
-
-def locate_constructor_for_rule_type(rule_type):
-    """Locate the constructor for specific rule types.
-
-    Args:
-        rule_type (str): The name of the type of Rule to identify the class for.
-
-    Returns:
-        Rule implementation: A constructor for a class that inherits from Rule.
-
-    Raises:
-        KeyError: When a non-permitted `rule_type` is provided.
-
-    Todo:
-        Determine scope of this function, and how much testing is therefore required.
-        This is only external to Ruleset to help with testing. Changing code to make testing easier is smelly.
-
-    """
-    possible_rule_types = {
-        'atleast_one': RuleAtLeastOne,
-        'date_order': RuleDateOrder,
-        'dependent': RuleDependent,
-        'no_more_than_one': RuleNoMoreThanOne,
-        'regex_matches': RuleRegexMatches,
-        'regex_no_matches': RuleRegexNoMatches,
-        'startswith': RuleStartsWith,
-        'sum': RuleSum,
-        'unique': RuleUnique
-    }
-
-    return possible_rule_types[rule_type]
 
 
 class Ruleset(object):
@@ -95,9 +63,36 @@ class Ruleset(object):
         for xpath_base, rule in self.ruleset.items():
             for rule_type, cases in rule.items():
                 for case in cases['cases']:
-                    constructor = locate_constructor_for_rule_type(rule_type)
+                    constructor = self.locate_constructor_for_rule_type(rule_type)
                     new_rule = constructor(xpath_base, case)
                     self.rules.add(new_rule)
+
+    def locate_constructor_for_rule_type(self, rule_type):
+        """Locate the constructor for specific rule types.
+
+        Args:
+        rule_type (str): The name of the type of Rule to identify the class for.
+
+        Returns:
+        Rule implementation: A constructor for a class that inherits from Rule.
+
+        Raises:
+        KeyError: When a non-permitted `rule_type` is provided.
+
+        """
+        possible_rule_types = {
+            'atleast_one': RuleAtLeastOne,
+            'date_order': RuleDateOrder,
+            'dependent': RuleDependent,
+            'no_more_than_one': RuleNoMoreThanOne,
+            'regex_matches': RuleRegexMatches,
+            'regex_no_matches': RuleRegexNoMatches,
+            'startswith': RuleStartsWith,
+            'sum': RuleSum,
+            'unique': RuleUnique
+        }
+
+        return possible_rule_types[rule_type]
 
 
 class Rule(object):

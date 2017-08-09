@@ -5,6 +5,7 @@ import iati.core.rulesets
 import iati.core.resources
 import iati.core.tests.utilities
 import lxml
+from iati.core.rulesets import Ruleset
 
 
 class TestRuleset(object):
@@ -142,7 +143,9 @@ class TestRule(object):
 class TestRuleSubclasses(object):
     """A container for tests relating to all Rule subclasses."""
 
-    rule_constructors = list(map(iati.core.rulesets.locate_constructor_for_rule_type, iati.core.rulesets._VALID_RULE_TYPES))
+    rule_constructors = list()
+    for rule_type in iati.core.rulesets._VALID_RULE_TYPES:
+        rule_constructors.append(Ruleset.locate_constructor_for_rule_type(Ruleset, rule_type))
     """A list of constructors for the various types of Rule."""
 
     @pytest.mark.parametrize("rule_constructor", rule_constructors)
@@ -225,7 +228,7 @@ class RuleSubclassTestBase(object):
     @pytest.fixture
     def rule_constructor(self, rule_type):
         """Return the constructor for the current Rule type."""
-        return iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
+        return Ruleset.locate_constructor_for_rule_type(Ruleset, rule_type)
 
     def test_rule_init_valid_parameter_types(self, basic_rule):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
