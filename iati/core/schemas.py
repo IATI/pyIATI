@@ -585,6 +585,24 @@ class Schema(object):
         # return self.get_full_documentation_for_xsd_element(element)
         raise NotImplementedError
 
+    def is_element_attribute(self, element):
+        """Check whether given element is an attribute.
+
+        Returns:
+            bool: Changes depending on whether a given element is an attribute.
+
+        Raises:
+            TypeError: When given an argument of a non-permitted type.
+
+        """
+        try:
+            element_type = element.tag.split('}')[-1]
+            if element_type not in ['attribute', 'element']:
+                raise ValueError
+        except AttributeError:
+            raise TypeError
+
+        return element_type == 'attribute'
 
 class ActivitySchema(Schema):
     """Represenation of an IATI Activity Schema as defined within the IATI SSOT."""
