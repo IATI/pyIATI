@@ -19,6 +19,34 @@ import iati.core.utilities
 _VALID_RULE_TYPES = ["atleast_one", "dependent", "sum", "date_order", "no_more_than_one", "regex_matches", "regex_no_matches", "startswith", "unique"]
 
 
+def locate_constructor_for_rule_type(rule_type):
+    """Locate the constructor for specific rule types.
+
+    Args:
+    rule_type (str): The name of the type of Rule to identify the class for.
+
+    Returns:
+    Rule implementation: A constructor for a class that inherits from Rule.
+
+    Raises:
+    KeyError: When a non-permitted `rule_type` is provided.
+
+    """
+    possible_rule_types = {
+        'atleast_one': RuleAtLeastOne,
+        'date_order': RuleDateOrder,
+        'dependent': RuleDependent,
+        'no_more_than_one': RuleNoMoreThanOne,
+        'regex_matches': RuleRegexMatches,
+        'regex_no_matches': RuleRegexNoMatches,
+        'startswith': RuleStartsWith,
+        'sum': RuleSum,
+        'unique': RuleUnique
+    }
+
+    return possible_rule_types[rule_type]
+
+
 class Ruleset(object):
     """Representation of a Ruleset as defined within the IATI SSOT.
 
@@ -44,7 +72,7 @@ class Ruleset(object):
             raise ValueError
         self.validate_ruleset()
         self.rules = set()
-        self.set_rules()
+        self._set_rules()
 
     def validate_ruleset(self):
         """Validate a Ruleset against the Ruleset Schema.
@@ -58,41 +86,15 @@ class Ruleset(object):
         except jsonschema.ValidationError:
             raise ValueError
 
-    def set_rules(self):
+    def _set_rules(self):
         """Set the Rules of the Ruleset."""
         for xpath_base, rule in self.ruleset.items():
             for rule_type, cases in rule.items():
                 for case in cases['cases']:
-                    constructor = self.locate_constructor_for_rule_type(rule_type)
+                    constructor = locate_constructor_for_rule_type(rule_type)
                     new_rule = constructor(xpath_base, case)
                     self.rules.add(new_rule)
 
-    def locate_constructor_for_rule_type(self, rule_type):
-        """Locate the constructor for specific rule types.
-
-        Args:
-        rule_type (str): The name of the type of Rule to identify the class for.
-
-        Returns:
-        Rule implementation: A constructor for a class that inherits from Rule.
-
-        Raises:
-        KeyError: When a non-permitted `rule_type` is provided.
-
-        """
-        possible_rule_types = {
-            'atleast_one': RuleAtLeastOne,
-            'date_order': RuleDateOrder,
-            'dependent': RuleDependent,
-            'no_more_than_one': RuleNoMoreThanOne,
-            'regex_matches': RuleRegexMatches,
-            'regex_no_matches': RuleRegexNoMatches,
-            'startswith': RuleStartsWith,
-            'sum': RuleSum,
-            'unique': RuleUnique
-        }
-
-        return possible_rule_types[rule_type]
 
 
 class Rule(object):

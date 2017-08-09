@@ -4,7 +4,6 @@ import iati.core.default
 import iati.core.rulesets
 import iati.core.resources
 import iati.core.tests.utilities
-from iati.core.rulesets import Ruleset
 import lxml
 
 
@@ -143,18 +142,20 @@ class TestRule(object):
 class TestRuleSubclasses(object):
     """A container for tests relating to all Rule subclasses."""
 
-    rule_constructors = list()
-    for rule_type in iati.core.rulesets._VALID_RULE_TYPES:
-        rule_constructors.append(Ruleset.locate_constructor_for_rule_type(Ruleset, rule_type))
-    """A list of constructors for the various types of Rule."""
+    @pytest.fixture(params=[
+        iati.core.rulesets.locate_constructor_for_rule_type(rule_type) for rule_type in iati.core.rulesets._VALID_RULE_TYPES
+    ])
+    def rule_constructor(self, request):
+        """List constructors for the various types of Rule."""
+        return request.param
 
-    @pytest.mark.parametrize("rule_constructor", rule_constructors)
+    # @pytest.mark.parametrize("rule_constructor", rule_constructors)
     def test_rule_init_no_parameters(self, rule_constructor):
         """Check that a Rule cannot be created when no parameters are given."""
         with pytest.raises(TypeError):
             rule_constructor()
 
-    @pytest.mark.parametrize("rule_constructor", rule_constructors)
+    # @pytest.mark.parametrize("rule_constructor", rule_constructors)
     @pytest.mark.parametrize("xpath_base", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_rule_init_invalid_xpath_base(self, rule_constructor, xpath_base):
         """Check that a Rule cannot be created when xpath_base is not a string."""
@@ -163,7 +164,7 @@ class TestRuleSubclasses(object):
         with pytest.raises(ValueError):
             rule_constructor(xpath_base, case)
 
-    @pytest.mark.parametrize("rule_constructor", rule_constructors)
+    # @pytest.mark.parametrize("rule_constructor", rule_constructors)
     @pytest.mark.parametrize("case", iati.core.tests.utilities.find_parameter_by_type(['mapping'], False))
     def test_rule_init_invalid_case(self, rule_constructor, case):
         """Check that a Rule cannot be created when case is not a dictionary."""
@@ -172,7 +173,7 @@ class TestRuleSubclasses(object):
         with pytest.raises(ValueError):
             rule_constructor(xpath_base, case)
 
-    @pytest.mark.parametrize("rule_constructor", rule_constructors)
+    # @pytest.mark.parametrize("rule_constructor", rule_constructors)
     def test_rule_init_invalid_case_property(self, rule_constructor):
         """Check that a Rule cannot be created when a case has a property that is not permitted."""
         xpath_base = 'an xpath'
@@ -218,7 +219,7 @@ class RuleSubclassTestBase(object):
     @pytest.fixture
     def rule_constructor(self, rule_type):
         """Instantiate the current Rule type."""
-        return Ruleset.locate_constructor_for_rule_type(Ruleset, rule_type)
+        return iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
 
     def test_rule_init_valid_parameter_types(self, basic_rule):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
