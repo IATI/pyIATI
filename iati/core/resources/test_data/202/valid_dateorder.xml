@@ -6,5 +6,7 @@
    <period-end iso-date="2014-12-31" />
    <period-start iso-date="2017-01-01" /><!-- Dates are in the correct order -->
    <period-end iso-date="NOW" />
+   <period-start iso-date="2014-01-01+5:00" /><!-- Dates are in the correct order but have timezone values -->
+   <period-end iso-date="2014-12-31+5:00" />
   </planned-disbursement>
 </root_element>

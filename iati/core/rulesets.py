@@ -284,11 +284,11 @@ class RuleDateOrder(Rule):
 
         Raises:
             AttributeError: When an argument is given that is not a dataset object.
-            ValueError: When a date is given that is not in the correct ISO format.
+            ValueError: When a date is given that is not in the correct xsd:date format.
             XPathEvalError: When no valid xpath argument is given.
 
-        Todo:
-            Make sure 'NOW' value works as stipulated.
+        Note:
+            `date` restricted to 10 characters in order to exclude possible timezone values.
 
         """
         less_date = dataset.xml_tree.xpath(self.less)
@@ -299,13 +299,13 @@ class RuleDateOrder(Rule):
         for date in less_date:
             if date == 'NOW':
                 earlier_dates.append(datetime.strptime(datetime.today(), '%Y-%m-%d'))
-            earlier_dates.append(datetime.strptime(date, '%Y-%m-%d'))
+            earlier_dates.append(datetime.strptime(date[0:10], '%Y-%m-%d'))
 
         for date in more_date:
             if date == 'NOW':
                 later_dates.append(datetime.today())
             else:
-                later_dates.append(datetime.strptime(date, '%Y-%m-%d'))
+                later_dates.append(datetime.strptime(date[0:10], '%Y-%m-%d'))
 
         for (early_date, later_date) in zip(earlier_dates, later_dates):
             if early_date > later_date:

@@ -39,7 +39,7 @@ class TestRuleset(object):
 
     def test_ruleset_init_ruleset_str_invalid(self):
         """Check that a Ruleset cannot be created when given a string that is not a Ruleset."""
-        not_a_ruleset_str = 'this is not a ruleset: it is a cat'
+        not_a_ruleset_str = 'this is not a ruleset: it is a cat. Meow, meow.'
 
         with pytest.raises(ValueError):
             iati.core.Ruleset(not_a_ruleset_str)
