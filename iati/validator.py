@@ -118,6 +118,20 @@ class ValidationErrorLog(object):
 
         return len(errors_with_name) > 0
 
+    def contains_error_of_type(self, err_type):
+        """Check the log for an error or warning with the specified base exception type.
+
+        Args:
+            err_type (type): The type of the error to look for.
+
+        Returns:
+            bool: Whether there is an error or warning with the specified type within the log.
+
+        """
+        errors_with_type = [err for err in self._values if err.base_exception == err_type]
+
+        return len(errors_with_type) > 0
+
 
     def extend(self, values):
         """Extend the ErrorLog with ValidationErrors from an iterable.
@@ -167,42 +181,49 @@ class ValidationErrorLog(object):
 
 _ERROR_CODES = {
     'err-code-not-on-codelist': {
+        'base_exception': ValueError,
         'category': 'codelist',
         'description': 'An attribute that requires a Code from a particular complete Codelist contained a value not on the Codelist.',
         'info': '{code} is not a valid Code on the {codelist.name} Codelist.',
         'help': 'The `{attr_name}` attribute must contain a value on the `{codelist.name}` Codelist.\nSee http://iatistandard.org/202/codelists/{codelist.name} for permitted values.'
     },
     'warn-code-not-on-codelist': {
+        'base_exception': Warning,
         'category': 'codelist',
         'description': 'An attribute that should contain a Code from a particular incomplete Codelist contained a value not on the Codelist.',
         'info': '{code} is not a Code on the {codelist.name} Codelist. ',
         'help': 'The `{attr_name}` attribute should contain a value on the `{codelist.name}` Codelist. Note that values not on the Codelist may be valid in particular circumstances.\nSee http://iatistandard.org/202/codelists/{codelist.name} for values on the Codelist.'
     },
     'err-not-xml-not-string': {
+        'base_exception': TypeError,
         'category': 'xml',
         'description': 'A variable that is not a string cannot be XML.',
         'info': 'The value provided is a `{problem_var_type}` rather than a `str`.',
         'help': 'A string is a series of characters (letters, numbers, punctuation, etc). For more information about what these are, see https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str'
     },
     'err-not-xml-uncategorised-xml-syntax-error': {
+        'base_exception': Exception,
         'category': 'xml',
         'description': 'An uncategorised syntax error occurred when parsing the XML.',
         'info': '{err}',
         'help': 'There are many different ways in which a file may not be valid XML. The most common of these have had specific error messages created. This is not currently one of them.\nShould it be identified that this error occurs frequently, a specific error message will be created.\nFor an introduction to XML see https://www.w3schools.com/Xml/'
     },
     'err-not-xml-content-at-end': {
+        'base_exception': ValueError,
         'category': 'xml',
         'description': 'An XML file must contain no information after the XML has finished.',
         'info': '{err}',
         'help': 'An XML document contains a number of elements that are started and ended using tags. The XML is deemed finished once the number of start tags and the number of end tags is the same.\nThe contents of the data after this point does not matter - it may be valid XML on its own, or may have no meaning.\nShould it be required that additional information be in the document, XML comments may be used. For information about comments in XML, see https://www.w3schools.com/xml/xml_syntax.asp'
     },
     'err-not-xml-empty-document': {
+        'base_exception': ValueError,
         'category': 'xml',
         'description': 'An XML file must start with the XML start tag. The XML start tag is `<`.',
         'info': '{err}',
         'help': 'An XML document must contain only valid XML.\nShould it be required that additional information be in the document, XML comments may be used. Comments may not, however, be right at the very start of the document. For information about comments in XML, see https://www.w3schools.com/xml/xml_syntax.asp'
     },
     'err-not-xml-xml-prolog-only-at-doc-start': {
+        'base_exception': ValueError,
         'category': 'xml',
         'description': 'The XML prolog must occur at the start of the document.',
         'info': '{err}',

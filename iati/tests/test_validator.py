@@ -29,6 +29,7 @@ class TestValidationError(object):
 
         assert isinstance(err, iati.validator.ValidationError)
         assert err.name == err_name
+        assert err.base_exception == ValueError
         assert err.category == err_detail['category']
         assert err.description == err_detail['description']
         assert err.info == err_detail['info']
@@ -44,6 +45,11 @@ class TestValidationErrorLog(object):
         return 'err-code-not-on-codelist'
 
     @pytest.fixture
+    def err_type(self, err_name):
+        """The type of an error."""
+        return iati.validator._ERROR_CODES[err_name]['base_exception']
+
+    @pytest.fixture
     def error(self, err_name):
         """An error."""
         return iati.validator.ValidationError(err_name)
@@ -52,6 +58,16 @@ class TestValidationErrorLog(object):
     def warning_name(self):
         """The name of a warning."""
         return 'warn-code-not-on-codelist'
+
+    @pytest.fixture
+    def warning_type(self, warning_name):
+        """The type of an error."""
+        return iati.validator._ERROR_CODES[warning_name]['base_exception']
+
+    @pytest.fixture
+    def unused_exception_type(self):
+        """An exception type that is not covered by the ValidationErrors."""
+        return MemoryError
 
     @pytest.fixture
     def warning(self, warning_name):
@@ -95,29 +111,34 @@ class TestValidationErrorLog(object):
         assert not error_log.contains_errors()
         assert not error_log.contains_warnings()
 
-    def test_error_log_add_errors(self, error_log_with_error, err_name, warning_name):
+    def test_error_log_add_errors(self, error_log_with_error, err_name, warning_name, err_type):
         """Test that errors are identified as errors when added to the error log."""
         assert len(error_log_with_error) == 1
         assert error_log_with_error.contains_errors()
         assert not error_log_with_error.contains_warnings()
         assert error_log_with_error.contains_error_called(err_name)
         assert not error_log_with_error.contains_error_called(warning_name)
+        assert error_log_with_error.contains_error_of_type(err_type)
 
-    def test_error_log_add_warnings(self, error_log_with_warning, err_name, warning_name):
+    def test_error_log_add_warnings(self, error_log_with_warning, err_name, warning_name, warning_type):
         """Test that warnings are not identified as errors when added to the error log."""
         assert len(error_log_with_warning) == 1
         assert not error_log_with_warning.contains_errors()
         assert error_log_with_warning.contains_warnings()
         assert not error_log_with_warning.contains_error_called(err_name)
         assert error_log_with_warning.contains_error_called(warning_name)
+        assert error_log_with_warning.contains_error_of_type(warning_type)
 
-    def test_error_log_add_mixed(self, error_log_mixed_contents, err_name, warning_name):
+    def test_error_log_add_mixed(self, error_log_mixed_contents, err_name, warning_name, err_type, warning_type, unused_exception_type):
         """Test that a mix of errors and warnings are identified as such when added to the error log."""
         assert len(error_log_mixed_contents) == 2
         assert error_log_mixed_contents.contains_errors()
         assert error_log_mixed_contents.contains_warnings()
         assert error_log_mixed_contents.contains_error_called(err_name)
         assert error_log_mixed_contents.contains_error_called(warning_name)
+        assert error_log_mixed_contents.contains_error_of_type(err_type)
+        assert error_log_mixed_contents.contains_error_of_type(warning_type)
+        assert not error_log_mixed_contents.contains_error_of_type(unused_exception_type)
 
     @pytest.mark.parametrize("not_ValidationError", iati.core.tests.utilities.find_parameter_by_type([], False))
     def test_error_log_add_incorrect_type(self, error_log, not_ValidationError):
