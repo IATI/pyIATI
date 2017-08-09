@@ -331,7 +331,7 @@ def _check_is_xml(maybe_xml):
 
     try:
         parser = etree.XMLParser()
-        hi = etree.fromstring(maybe_xml.strip(), parser)
+        _ = etree.fromstring(maybe_xml.strip(), parser)
     except etree.XMLSyntaxError:
         # import pdb;pdb.set_trace()
         for err in parser.error_log:
