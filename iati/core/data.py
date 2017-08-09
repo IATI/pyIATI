@@ -96,7 +96,7 @@ class Dataset(object):
                     self._xml_str = value_stripped
                 else:
                     err_log = iati.validator.validate_is_xml(value_stripped_bytes)
-                    if err_log.contains_error_called('err-not-xml-not-string'):
+                    if err_log.contains_error_of_type(TypeError):
                         raise TypeError
                     msg = "The string provided to create a Dataset from is not valid XML."
                     iati.core.utilities.log_error(msg)
