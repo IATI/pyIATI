@@ -238,12 +238,18 @@ class TestValidation(object):
 
     def test_error_code_attributes(self):
         """Check that error codes have the required attributes."""
-        expected_attributes = ['category', 'description', 'info', 'help']
+        expected_attributes = [
+            ('base_exception', type),
+            ('category', str),
+            ('description', str),
+            ('info', str),
+            ('help', str)
+        ]
         for err_code_name, err_code in iati.validator._ERROR_CODES.items():
             code_attrs = err_code.keys()
-            for attr in expected_attributes:
-                assert attr in code_attrs
-                assert isinstance(err_code[attr], str)
+            for (attr_name, attr_type) in expected_attributes:
+                assert attr_name in code_attrs
+                assert isinstance(err_code[attr_name], attr_type)
 
 
 class TestValidateIsXML(object):
