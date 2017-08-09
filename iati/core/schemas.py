@@ -471,15 +471,30 @@ class Schema(object):
             ValueError: If the input XPath is not a valid XPath for this Schema.
 
         Todo:
-            Consider if this functionality should build/call a nested dictionary containing xpath elements for this Schema.
+            Split creation of parent and child xpath dictionary into a new method, and possibly run at __init__.
 
         """
+        xpath_original = xpath
         if xpath not in self._xsd_lookup.keys():
             raise ValueError('The input XPath is not a valid XPath for this Schema.')
 
-        xpath_components = xpath.split('/')
-        parent_xpath = '/'.join(xpath_components[:-1])
-        return parent_xpath if parent_xpath != '' else None
+        # Make a dictionary of parent and child xpaths
+        xpath_parent_child_dict = OrderedDict()
+        for xpath in self._xsd_lookup.keys():
+            xpath_components = xpath.split('/')
+            last_component = xpath_components.pop()
+            xpath_parent = '/'.join(xpath_components)
+            if xpath not in xpath_parent_child_dict.keys() and not last_component.startswith('@'):
+                xpath_parent_child_dict[xpath] = []
+
+            if xpath_parent != '':
+                xpath_parent_child_dict[xpath_parent].append(xpath)
+
+        for parent_xpath, child_xpaths in xpath_parent_child_dict.items():
+            if xpath_original in child_xpaths:
+                return parent_xpath
+
+        return None  # The input XPath was not found in any of the child XPaths.
 
     def get_xsd_sibling_elements(self, element):
         """Returns a list of XPaths for sibling elements to the given input element.
