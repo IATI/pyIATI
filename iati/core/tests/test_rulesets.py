@@ -4,8 +4,8 @@ import iati.core.default
 import iati.core.rulesets
 import iati.core.resources
 import iati.core.tests.utilities
-import lxml
 from iati.core.rulesets import Ruleset
+import lxml
 
 
 class TestRuleset(object):
@@ -17,7 +17,7 @@ class TestRuleset(object):
             iati.core.Ruleset()
 
     def test_ruleset_init_ruleset_str_valid(self):
-        """Check that a Ruleset can be created when given a JSON Ruleset in string format."""
+        """Check that a Ruleset is created when given a JSON Ruleset in string format."""
         ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": []}}}'
 
         ruleset = iati.core.Ruleset(ruleset_str)
@@ -40,7 +40,7 @@ class TestRuleset(object):
 
     def test_ruleset_init_ruleset_str_invalid(self):
         """Check that a Ruleset cannot be created when given a string that is not a Ruleset."""
-        not_a_ruleset_str = 'this is not a ruleset: it is a cat. Meow, meow.'
+        not_a_ruleset_str = 'This is not a ruleset: It is a cat. Meow, meow.'
 
         with pytest.raises(ValueError):
             iati.core.Ruleset(not_a_ruleset_str)
@@ -157,12 +157,7 @@ class TestRuleSubclasses(object):
     @pytest.mark.parametrize("rule_constructor", rule_constructors)
     @pytest.mark.parametrize("xpath_base", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_rule_init_invalid_xpath_base(self, rule_constructor, xpath_base):
-        """Check that a Rule cannot be created when xpath_base is not a string.
-
-        Todo:
-            Ensure the case is valid - an empty dictionary isn't.
-
-        """
+        """Check that a Rule cannot be created when xpath_base is not a string."""
         case = dict()
 
         with pytest.raises(ValueError):
@@ -192,7 +187,7 @@ class RuleSubclassTestBase(object):
 
     @pytest.fixture
     def xpath_base(self):
-        """xpath_base."""
+        """Return valid xpath_base."""
         return '//root_element'
 
     @pytest.fixture
@@ -207,12 +202,7 @@ class RuleSubclassTestBase(object):
 
     @pytest.fixture
     def rule(self, rule_constructor, xpath_base, case_for_is_valid_for):
-        """Blah blah blah.
-
-        Todo:
-            Rename this function.
-
-        """
+        """Instantiate a rule with specific cases for checking the `is_valid_for` function."""
         return rule_constructor(xpath_base, case_for_is_valid_for)
 
     @pytest.fixture
@@ -222,12 +212,12 @@ class RuleSubclassTestBase(object):
 
     @pytest.fixture
     def rule_empty_xpath_base_and_paths(self, rule_constructor, empty_xpath_base, empty_path_case):
-        """Instantiate a basic Rule subclass with an empty xpath_base."""
+        """Instantiate a basic Rule subclass with an empty xpath_base and empty path case."""
         return rule_constructor(empty_xpath_base, empty_path_case)
 
     @pytest.fixture
     def rule_constructor(self, rule_type):
-        """Return the constructor for the current Rule type."""
+        """Instantiate the current Rule type."""
         return Ruleset.locate_constructor_for_rule_type(Ruleset, rule_type)
 
     def test_rule_init_valid_parameter_types(self, basic_rule):
@@ -246,12 +236,7 @@ class RuleSubclassTestBase(object):
         assert basic_rule.name == rule_type
 
     def test_rule_paths(self, basic_rule):
-        """Check that a Rule subclass has the expected paths.
-
-        Todo:
-            Check non-path cases are also normalised.
-
-        """
+        """Check that a Rule subclass has the expected paths."""
         # Exclude rules with no `paths` attribute.
         if 'paths' in dir(basic_rule):
             for path in basic_rule.paths:
@@ -265,21 +250,11 @@ class RuleSubclassTestBase(object):
             rule_constructor(xpath_base, invalid_case)
 
     def test_is_valid_for(self, valid_dataset, rule):
-        """Check that a given rule returns the expected result when given a dataset.
-
-        Todo:
-            Maybe too much of a shortcut as can't fully pass until all implementations complete. Possibly the wrong abstraction in the long-term.
-
-        """
+        """Check that a given rule returns the expected result when given a dataset."""
         assert rule.is_valid_for(valid_dataset)
 
     def test_is_invalid_for(self, invalid_dataset, rule):
-        """Check that a given rule returns the expected result when given a dataset.
-
-        Todo:
-            Maybe too much of a shortcut as can't fully pass until all implementations complete. Possibly the wrong abstraction in the long-term.
-
-        """
+        """Check that a given rule returns the expected result when given a dataset."""
         assert not rule.is_valid_for(invalid_dataset)
 
     @pytest.mark.parametrize("junk_data", iati.core.tests.utilities.find_parameter_by_type([], False))
@@ -301,7 +276,7 @@ class RuleSubclassTestBase(object):
                 assert path.startswith(rule_empty_xpath_base.xpath_base)
 
     def test_empty_xpath_base_empty_path_is_valid_for(self, rule_empty_xpath_base_and_paths, valid_dataset):
-        """Check that a rule with an empty xpath_base and paths raises error."""
+        """Check that a rule with an empty xpath_base and empty paths raises error."""
         # RuleStartswith raises an IndexError instead.
         with pytest.raises((lxml.etree.XPathEvalError, IndexError)):
             rule_empty_xpath_base_and_paths.is_valid_for(valid_dataset)
@@ -352,11 +327,12 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         {'paths': ['element_that_only_occurs_once', 'element_that_occurs_twice']}
     ])
     def case_for_is_valid_for(self, request):
-        """Instantiate RuleAtLeastOne."""
+        """Case to check the `is_valid_for` function of RuleAtLeastOne."""
         return request.param
 
     @pytest.fixture
     def empty_path_case(self):
+        """Empty path string for RuleAtLeastOne."""
         return {'paths': ['']}
 
 
@@ -408,10 +384,12 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'planned-disbursement/period-start/@iso-date', 'more': 'planned-disbursement/period-end/@iso-date'}
     ])
     def case_for_is_valid_for(self, request):
+        """Case to check the `is_valid_for` function of RuleDateOrder."""
         return request.param
 
     @pytest.fixture
     def empty_path_case(self):
+        """Empty strings for RuleDateOrder."""
         return {'less': '', 'more': ''}
 
     def test_rule_paths_less(self, basic_rule):
@@ -430,9 +408,8 @@ class TestRuleDateOrder(RuleSubclassTestBase):
 
     def test_incorrect_date_format_raises_error(self, rule):
         """Check that a dataset with dates in an incorrect format raise expected error."""
-        dataset = iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT
         with pytest.raises(ValueError):
-            rule.is_valid_for(dataset)
+            rule.is_valid_for(iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT)
 
 
 class TestRuleDependent(RuleSubclassTestBase):
@@ -479,11 +456,12 @@ class TestRuleDependent(RuleSubclassTestBase):
         {"paths": ["transaction/provider-org", "location/point"]}
     ])
     def case_for_is_valid_for(self, request):
-        """Test case for RuleDependent function."""
+        """Case to check the `is_valid_for` function of RuleDependent."""
         return request.param
 
     @pytest.fixture
     def empty_path_case(self):
+        """Empty path string for RuleDependent."""
         return {'paths': ['']}
 
 
@@ -532,11 +510,12 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         {'paths': ['element_that_only_occurs_once', 'another_element_that_only_occurs_once']}
     ])
     def case_for_is_valid_for(self, request):
-        """Instantiate RuleNoMoreThanOne."""
+        """Case to check the `is_valid_for` function of RuleNoMoreThanOne."""
         return request.param
 
     @pytest.fixture
     def empty_path_case(self):
+        """Empty path string for RuleNoMoreThanOne."""
         return {'paths': ['']}
 
 
@@ -590,11 +569,12 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         {'regex': r"[^\/\\&\\|\\?]+", 'paths': ['iati-identifier']}
     ])
     def case_for_is_valid_for(self, request):
-        """Instantiate RuleRegexMatches."""
+        """Case to check the `is_valid_for` function of RuleRegexMatches."""
         return request.param
 
     @pytest.fixture
     def empty_path_case(self):
+        """Empty path string for RuleRegexMatches."""
         return {'regex': r'[^\/\\&\\|\\?]+', 'paths': ['']}
 
 
@@ -648,11 +628,12 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         {'regex': r'[^\/\\&\\|\\?]+', 'paths': ['iati-identifier']}
     ])
     def case_for_is_valid_for(self, request):
-        """Instantiate RuleRegexNoMatches."""
+        """Case to check the `is_valid_for` function of RuleRegexNoMatches."""
         return request.param
 
     @pytest.fixture
     def empty_path_case(self):
+        """Empty path string for RuleRegexNoMatches."""
         return {'regex': r'[^\/\\&\\|\\?]+', 'paths': ['']}
 
 
@@ -705,11 +686,12 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         {'start': 'reporting-org/@ref', 'paths': ['iati-identifier']}
     ])
     def case_for_is_valid_for(self, request):
-        """Instantiate RuleStartsWith."""
+        """Case to check the `is_valid_for` function of RuleStartsWith."""
         return request.param
 
     @pytest.fixture
     def empty_path_case(self):
+        """Empty path string for RuleStartsWith."""
         return {'start': 'reporting-org/@ref', 'paths': ['']}
 
     def test_rule_paths_start(self, basic_rule):
@@ -772,11 +754,12 @@ class TestRuleSum(RuleSubclassTestBase):
         {'paths': ['recipient-country/@percentage', 'recipient-region/@percentage'], 'sum': 100}
     ])
     def case_for_is_valid_for(self, request):
-        """Instantiate RuleSum."""
+        """Case to check the `is_valid_for` function of RuleSum."""
         return request.param
 
     @pytest.fixture
     def empty_path_case(self):
+        """Empty path string for RuleSum."""
         return {'paths': [''], 'sum': 100}
 
 
@@ -825,9 +808,10 @@ class TestRuleUnique(RuleSubclassTestBase):
         {'paths': ['iati-identifier', 'other_unique_element']}
     ])
     def case_for_is_valid_for(self, request):
-        """Instantiate RuleUnique."""
+        """Case to check the `is_valid_for` function of RuleUnique."""
         return request.param
 
     @pytest.fixture
     def empty_path_case(self):
+        """Empty path string for RuleUnique."""
         return {'paths': ['']}

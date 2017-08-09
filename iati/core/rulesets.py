@@ -102,6 +102,7 @@ class Rule(object):
 
     Todo:
         Determine whether this should be an Abstract Base Class.
+        Standardise normalized paths.
 
     """
 
@@ -141,12 +142,7 @@ class Rule(object):
         return self.xpath_base + '/' + path
 
     def _normalize_xpaths(self):
-        """Normalize xpaths by combining them with `xpath_base`.
-
-        Todo:
-            Discuss appropriate edge cases and what is going on here.
-
-        """
+        """Normalize xpaths by combining them with `xpath_base`."""
         self.paths = [self._normalize_xpath(path) for path in self.paths]
 
     def _valid_rule_configuration(self, case):
@@ -283,7 +279,7 @@ class RuleDateOrder(Rule):
             XPathEvalError: When no valid xpath argument is given.
 
         Note:
-            `date` restricted to 10 characters in order to exclude possible timezone values.
+            `date` restricted to 10 characters in order to exclude possible timezone values but suboptimal solution.
 
         """
         less_date = dataset.xml_tree.xpath(self.less)
@@ -495,8 +491,8 @@ class RuleStartsWith(Rule):
         for path in self.paths:
             results = dataset.xml_tree.xpath(path)
             for result in results:
-                el_str = result.text
-                return el_str.startswith(prefixing_str)
+                element_string = result.text
+                return element_string.startswith(prefixing_str)
 
 
 class RuleSum(Rule):
