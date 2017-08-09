@@ -156,7 +156,10 @@ class TestValidationErrorLog(object):
         assert error_log_with_error == error_log
 
     def test_error_log_extend_from_list(self, error_log, error, warning):
-        """Test extending an error log with values from a list."""
+        """Test extending an error log with values from a list.
+
+        The list contains ValidationErrors.
+        """
         to_extend = [error, warning]
         error_log.extend(to_extend)
 
@@ -169,6 +172,24 @@ class TestValidationErrorLog(object):
         error_log.extend(error_log_mixed_contents)
 
         assert len(error_log) == 2
+
+    @pytest.mark.parametrize("iterable", iati.core.tests.utilities.find_parameter_by_type(['bytearray', 'iter', 'list', 'mapping', 'memory', 'range', 'set', 'str', 'tuple', 'view']))
+    def test_error_log_extend_from_iterable(self, error_log, iterable):
+        """Test extending an error log with a iterable.
+
+        None of the iterables contain ValidationErrors.
+        """
+        error_log.extend(iterable)
+
+        assert len(error_log) == 0
+
+    @pytest.mark.parametrize("non_iterable", iati.core.tests.utilities.find_parameter_by_type(['bytearray', 'iter', 'list', 'mapping', 'memory', 'range', 'set', 'str', 'tuple', 'view'], False))
+    def test_error_log_extend_from_non_iterable(self, error_log, non_iterable):
+        """Test extending an error log with a non-iterable."""
+        with pytest.raises(TypeError):
+            error_log.extend(non_iterable)
+
+        assert len(error_log) == 0
 
 
 class TestValidation(object):
