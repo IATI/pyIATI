@@ -462,3 +462,16 @@ class TestSchemas(object):
 
         assert type(result) == type(expected_parent)
         assert result == expected_parent
+
+    @pytest.mark.parametrize("bad_xpath", [
+        'not-a-valid-xpath',
+        'iati-organisations/iati-activity/iati-identifier'  # Mix of XPaths within the activity and organsation standards.
+    ])
+    def test_get_xsd_parent_element_raises_exception(self, schemas_initialised, bad_xpath):
+        """Test that an invalid expected parent element name is returned for a given schema and xpath."""
+        schema = schemas_initialised
+
+        with pytest.raises(ValueError) as excinfo:
+            schema.get_parent_xpath_for_xpath(bad_xpath)
+
+        assert str(excinfo.value) == 'The input XPath is not a valid XPath for this Schema.'

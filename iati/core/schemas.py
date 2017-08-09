@@ -467,10 +467,16 @@ class Schema(object):
         Returns:
             str or None: An XPath relating to the parent element for the input XPath. Returns None if there is no parent element.
 
+        Raises:
+            ValueError: If the input XPath is not a valid XPath for this Schema.
+
         Todo:
             Consider if this functionality should build/call a nested dictionary containing xpath elements for this Schema.
 
         """
+        if xpath not in self._xsd_lookup.keys():
+            raise ValueError('The input XPath is not a valid XPath for this Schema.')
+
         xpath_components = xpath.split('/')
         parent_xpath = '/'.join(xpath_components[:-1])
         return parent_xpath if parent_xpath != '' else None
