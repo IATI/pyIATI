@@ -66,6 +66,7 @@ class Schema(object):
             self._schema_base_tree = loaded_tree
             self._flatten_includes()
             self._xsd_lookup = self._build_xsd_lookup_dict()
+            self._xpath_lookup = self._build_xpath_parent_child_dict()
 
     def _change_include_to_xinclude(self, tree):
         """Change the method in which common elements are included.
@@ -355,6 +356,24 @@ class Schema(object):
 
         return output
 
+    def _build_xpath_parent_child_dict(self):
+        """Builds a dictionary of parent and child XPaths.
+
+        Returns:
+            OrderedDict: Containing an XPath for an element (as keys) and a list of XPaths for all child attributes/elements (as values).
+        """
+        output = OrderedDict()
+        for xpath in self._xsd_lookup.keys():
+            xpath_components = xpath.split('/')
+            last_component = xpath_components.pop()
+            xpath_parent = '/'.join(xpath_components)
+            if xpath not in output.keys() and not last_component.startswith('@'):
+                output[xpath] = []
+
+            if xpath_parent != '':
+                output[xpath_parent].append(xpath)
+        return output
+
     def get_xsd_documentation_string(self, element, language='en', clean_output=True):
         """Return the xsd:documentation string contained within an input XSD element.
 
@@ -470,28 +489,12 @@ class Schema(object):
         Raises:
             ValueError: If the input XPath is not a valid XPath for this Schema.
 
-        Todo:
-            Split creation of parent and child xpath dictionary into a new method, and possibly run at __init__.
-
         """
-        xpath_original = xpath
         if xpath not in self._xsd_lookup.keys():
             raise ValueError('The input XPath is not a valid XPath for this Schema.')
 
-        # Make a dictionary of parent and child xpaths
-        xpath_parent_child_dict = OrderedDict()
-        for xpath in self._xsd_lookup.keys():
-            xpath_components = xpath.split('/')
-            last_component = xpath_components.pop()
-            xpath_parent = '/'.join(xpath_components)
-            if xpath not in xpath_parent_child_dict.keys() and not last_component.startswith('@'):
-                xpath_parent_child_dict[xpath] = []
-
-            if xpath_parent != '':
-                xpath_parent_child_dict[xpath_parent].append(xpath)
-
-        for parent_xpath, child_xpaths in xpath_parent_child_dict.items():
-            if xpath_original in child_xpaths:
+        for parent_xpath, child_xpaths in self._xpath_lookup.items():
+            if xpath in child_xpaths:
                 return parent_xpath
 
         return None  # The input XPath was not found in any of the child XPaths.
