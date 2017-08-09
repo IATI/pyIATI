@@ -228,6 +228,20 @@ _ERROR_CODES = {
         'description': 'The XML prolog must occur at the start of the document.',
         'info': '{err}',
         'help': 'The XML prolog specifies how a computer must read the rest of the XML file. Since it tells the computer how to read the XML file, it must occur at the start of an XML document without any content before it.\nIt looks similar to: `<?xml version="1.0" encoding="UTF-8"?>`.\nFor more information about the XML prolog, see https://www.w3schools.com/xml/xml_syntax.asp'
+    },
+    'err-encoding-invalid': {
+        'base_exception': ValueError,
+        'category': 'file',
+        'description': 'The encoding specified within the XML prolog is different from the actual encoding of the XML file.',
+        'info': '{err}',
+        'help': 'The encoding of a file specifies how a computer should interpret the 1s and 0s that it is made up of. For more information about encoding, see https://www.w3.org/International/questions/qa-what-is-encoding\nThe XML prolog looks similar to: `<?xml version="1.0" encoding="UTF-8"?>`. For more information about the XML prolog, see https://www.w3schools.com/xml/xml_syntax.asp'
+    },
+    'err-encoding-unsupported': {
+        'base_exception': ValueError,
+        'category': 'file',
+        'description': 'The encoding of the XML file is not supported by a tool used by IATI.',
+        'info': '{err}',
+        'help': 'The encoding of a file specifies how a computer should interpret the 1s and 0s that it is made up of. For more information about encoding, see https://www.w3.org/International/questions/qa-what-is-encoding'
     }
 }
 
@@ -368,8 +382,12 @@ def _parse_xml_syntax_error(err):
     lxml_to_iati_error_mapping = {
         'ERR_DOCUMENT_EMPTY': 'err-not-xml-empty-document',
         'ERR_DOCUMENT_END': 'err-not-xml-content-at-end',
+        'ERR_INVALID_ENCODING': 'err-encoding-invalid',
+        'ERR_UNSUPPORTED_ENCODING': 'err-encoding-unsupported',
         'ERR_RESERVED_XML_NAME': 'err-not-xml-xml-prolog-only-at-doc-start'
     }
+
+    # import pdb;pdb.set_trace()
 
     try:
         err_name = lxml_to_iati_error_mapping[err.type_name]
