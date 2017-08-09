@@ -530,21 +530,21 @@ class TestSchemas(object):
         ('iati-organisations-schema', 'iati-organisations/iati-organisation/@default-currency', True),
         ('iati-organisations-schema', 'iati-organisations/iati-organisation/name', False)
     ])
-    def test_is_element_attribute(self, schema, xpath, expected_result):
+    def test_is_xsd_element_attribute(self, schema, xpath, expected_result):
         """Check whether XML schema element is an attribute."""
         schema = iati.core.default.schema(schema)
         element = schema._xsd_lookup[xpath]
 
-        result = schema.is_element_attribute(element)
+        result = schema.is_xsd_element_attribute(element)
 
         assert result is expected_result
 
     @pytest.mark.parametrize("junk_data", iati.core.tests.utilities.find_parameter_by_type([], False))
-    def test_is_element_attribute_raises_expected_error(self, junk_data, schemas_initialised):
+    def test_is_xsd_element_attribute_raises_expected_error(self, junk_data, schemas_initialised):
         """Check that unexpected input type raises the expected error."""
 
         with pytest.raises(TypeError):
-            schemas_initialised.is_element_attribute(junk_data)
+            schemas_initialised.is_xsd_element_attribute(junk_data)
 
     def test_non_schema_element_raises_error(self, schemas_initialised):
         """Check that a non-schema XML element raises the expected error."""
@@ -552,4 +552,4 @@ class TestSchemas(object):
         dataset_element = dataset.find('iati-activity')
 
         with pytest.raises(ValueError):
-            schemas_initialised.is_element_attribute(dataset_element)
+            schemas_initialised.is_xsd_element_attribute(dataset_element)

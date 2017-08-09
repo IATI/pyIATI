@@ -585,7 +585,7 @@ class Schema(object):
         # return self.get_full_documentation_for_xsd_element(element)
         raise NotImplementedError
 
-    def is_element_attribute(self, element):
+    def is_xsd_element_attribute(self, element):
         """Check whether given element is an attribute.
 
         Returns:
@@ -603,6 +603,7 @@ class Schema(object):
             raise TypeError
 
         return element_type == 'attribute'
+
 
 class ActivitySchema(Schema):
     """Represenation of an IATI Activity Schema as defined within the IATI SSOT."""
