@@ -445,3 +445,20 @@ class TestSchemas(object):
         assert len(result) == 2
         assert result['min_occurs'] == expected_min
         assert result['max_occurs'] == expected_max
+
+    @pytest.mark.parametrize("schema, xpath, expected_parent", [
+        ('iati-activities-schema', 'iati-activities', None),
+        ('iati-activities-schema', 'iati-activities/iati-activity', 'iati-activities'),
+        ('iati-activities-schema', 'iati-activities/iati-activity/activity-date/@iso-date', 'iati-activities/iati-activity/activity-date'),
+        ('iati-organisations-schema', 'iati-organisations/iati-organisation/@last-updated-datetime', 'iati-organisations/iati-organisation'),
+        ('iati-organisations-schema', 'iati-organisations/iati-organisation/iati-identifier', 'iati-organisations/iati-organisation'),
+        ('iati-organisations-schema', 'iati-organisations/iati-organisation/total-budget/period-end/@iso-date', 'iati-organisations/iati-organisation/total-budget/period-end')
+    ])
+    def test_get_xsd_parent_element(self, schema, xpath, expected_parent):
+        """Test that the expected parent element name is returned for a given schema and xpath."""
+        schema = iati.core.default.schema(schema)
+
+        result = schema.get_parent_xpath_for_xpath(xpath)
+
+        assert type(result) == type(expected_parent)
+        assert result == expected_parent

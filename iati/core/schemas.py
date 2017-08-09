@@ -458,19 +458,22 @@ class Schema(object):
         """
         raise NotImplementedError
 
-    def get_xsd_parent_element(self, element):
-        """Returns an XPath to the parent element for the given input element.
+    def get_parent_xpath_for_xpath(self, xpath):
+        """Returns an XPath refering to the parent element for the element/attribute at the given input XPath.
 
-        Warning:
-            It is likely that the input param will change from `element` to `xpath`.
+        Args:
+            xpath (str): The XPath to find the parent for.
+
+        Returns:
+            str or None: An XPath relating to the parent element for the input XPath. Returns None if there is no parent element.
 
         Todo:
-            Add tests.
-
-            Implement functionality.
+            Consider if this functionality should build/call a nested dictionary containing xpath elements for this Schema.
 
         """
-        raise NotImplementedError
+        xpath_components = xpath.split('/')
+        parent_xpath = '/'.join(xpath_components[:-1])
+        return parent_xpath if parent_xpath != '' else None
 
     def get_xsd_sibling_elements(self, element):
         """Returns a list of XPaths for sibling elements to the given input element.
