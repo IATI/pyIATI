@@ -451,7 +451,7 @@ class TestSchemas(object):
         ('iati-activities-schema', 'iati-activities/iati-activity', 'iati-activities'),
         ('iati-activities-schema', 'iati-activities/iati-activity/activity-date/@iso-date', 'iati-activities/iati-activity/activity-date'),
         ('iati-organisations-schema', 'iati-organisations/iati-organisation/@last-updated-datetime', 'iati-organisations/iati-organisation'),
-        ('iati-organisations-schema', 'iati-organisations/iati-organisation/iati-identifier', 'iati-organisations/iati-organisation'),
+        ('iati-organisations-schema', 'iati-organisations/iati-organisation/organisation-identifier', 'iati-organisations/iati-organisation'),
         ('iati-organisations-schema', 'iati-organisations/iati-organisation/total-budget/period-end/@iso-date', 'iati-organisations/iati-organisation/total-budget/period-end')
     ])
     def test_get_xsd_parent_element(self, schema, xpath, expected_parent):
