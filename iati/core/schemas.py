@@ -513,19 +513,27 @@ class Schema(object):
         """
         raise NotImplementedError
 
-    def get_xsd_child_elements(self, element):
-        """Returns a list of XPaths for child elements to the given input element.
+    def get_xpaths_for_child_types(self, xpath):
+        """Returns a list of XPaths for elements/attributes that are children of the element at the input XPath.
 
-        Warning:
-            It is likely that the input param will change from `element` to `xpath`.
+        Args:
+            xpath (str): The XPath refering to an element or attribute within this Schema.
 
-        Todo:
-            Add tests.
+        Returns:
+            list of str / None: List containing XPaths that refer to child elements. None if the input XPath is an attribute.
 
-            Implement functionality.
+        Raises:
+            ValueError: If the input XPath is not a valid XPath for this Schema.
 
         """
-        raise NotImplementedError
+        if xpath not in self._xsd_lookup.keys():
+            raise ValueError('The input XPath is not a valid XPath for this Schema.')
+
+        try:
+            return self._xpath_lookup[xpath]
+        except KeyError:
+            return None
+
 
     def get_xpaths_for_xsd_element_attributes(self, element):
         """Returns a list of XPaths for attributes contained within the given element.

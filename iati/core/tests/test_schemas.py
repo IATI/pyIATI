@@ -463,15 +463,63 @@ class TestSchemas(object):
         assert type(result) == type(expected_parent)
         assert result == expected_parent
 
+    @pytest.mark.parametrize("method_that_raises_valueerror", [
+        'get_parent_xpath_for_xpath',
+        'get_xpaths_for_child_types'
+    ])
     @pytest.mark.parametrize("bad_xpath", [
         'not-a-valid-xpath',
         'iati-organisations/iati-activity/iati-identifier'  # Mix of XPaths within the activity and organsation standards.
     ])
-    def test_get_xsd_parent_element_raises_exception(self, schemas_initialised, bad_xpath):
+    def test_get_xsd_parent_element_raises_exception(self, schemas_initialised, method_that_raises_valueerror, bad_xpath):
         """Test that an invalid expected parent element name is returned for a given schema and xpath."""
         schema = schemas_initialised
+        method_to_run_with_bad_xpath = getattr(schema, method_that_raises_valueerror)
 
         with pytest.raises(ValueError) as excinfo:
-            schema.get_parent_xpath_for_xpath(bad_xpath)
+            method_to_run_with_bad_xpath(bad_xpath)
 
         assert str(excinfo.value) == 'The input XPath is not a valid XPath for this Schema.'
+
+    @pytest.mark.parametrize("schema, xpath, expected_num_child_types, expected_child_type", [
+        ('iati-activities-schema', 'iati-activities', 4, 'iati-activities/iati-activity'),
+        ('iati-activities-schema', 'iati-activities/iati-activity', 39, 'iati-activities/iati-activity/document-link'),
+        ('iati-activities-schema', 'iati-activities/iati-activity/activity-date/narrative', 1, 'iati-activities/iati-activity/activity-date/narrative/@xml:lang'),
+        ('iati-organisations-schema', 'iati-organisations/iati-organisation', 12, 'iati-organisations/iati-organisation/@last-updated-datetime'),
+        ('iati-organisations-schema', 'iati-organisations/iati-organisation/total-budget', 5, 'iati-organisations/iati-organisation/total-budget/value'),
+        ('iati-organisations-schema', 'iati-organisations/iati-organisation/total-budget/period-end', 1, 'iati-organisations/iati-organisation/total-budget/period-end/@iso-date')
+    ])
+    def test_get_xpaths_for_child_types(self, schema, xpath, expected_num_child_types, expected_child_type):
+        """Test that the expected child types are returned for a given schema and xpath."""
+        schema = iati.core.default.schema(schema)
+
+        result = schema.get_xpaths_for_child_types(xpath)
+
+        assert isinstance(result, list)
+        assert len(result) == expected_num_child_types
+        assert expected_child_type in result
+
+    @pytest.mark.parametrize("schema, xpath", [
+        ('iati-activities-schema', 'iati-activities/iati-activity/iati-identifier'),
+        ('iati-organisations-schema', 'iati-organisations/iati-organisation/organisation-identifier')
+    ])
+    def test_get_xpaths_for_child_types_empty(self, schema, xpath):
+        """Test that the no child types are returned for elements which contain no child types."""
+        schema = iati.core.default.schema(schema)
+
+        result = schema.get_xpaths_for_child_types(xpath)
+
+        assert isinstance(result, list)
+        assert len(result) == 0
+
+    @pytest.mark.parametrize("schema, xpath", [
+        ('iati-activities-schema', 'iati-activities/iati-activity/@last-updated-datetime'),
+        ('iati-organisations-schema', 'iati-organisations/iati-organisation/document-link/@format')
+    ])
+    def test_get_xpaths_for_child_types_attribute(self, schema, xpath):
+        """Test that the an input XPath referring to an attribute returns the expected type."""
+        schema = iati.core.default.schema(schema)
+
+        result = schema.get_xpaths_for_child_types(xpath)
+
+        assert type(result) == type(None)
