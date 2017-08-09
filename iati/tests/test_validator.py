@@ -242,6 +242,43 @@ class TestValidation(object):
                 assert isinstance(err_code[attr], str)
 
 
+class TestIsValidIATIXML(object):
+    """A container for tests checking whether a value is valid IATI XML."""
+
+    @pytest.fixture
+    def schema_basic(self):
+        """A schema with no Codelists added.
+
+        Returns:
+            A valid activity schema with no Codelists added.
+
+        """
+        return iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+
+    @pytest.fixture(params=[
+         iati.core.tests.utilities.XML_STR_VALID_IATI,
+         iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE
+    ])
+    def iati_dataset(self, request):
+        """A valid IATI XML string."""
+        return iati.core.Dataset(request.param)
+
+    @pytest.fixture(params=[
+         iati.core.tests.utilities.XML_STR_VALID_NOT_IATI
+    ])
+    def not_iati_dataset(self, request):
+        """A valid XML string that is not valid IATI XML."""
+        return iati.core.Dataset(request.param)
+
+    def test_xml_check_valid_xml(self, iati_dataset, schema_basic):
+        """Perform check to see whether a parameter is valid IATI XML. The parameter is valid IATI XML."""
+        assert iati.validator.is_iati_xml(iati_dataset, schema_basic)
+
+    def test_xml_check_not_xml(self, not_iati_dataset, schema_basic):
+        """Perform check to see whether a parameter is valid IATI XML. The parameter is not valid IATI XML."""
+        assert not iati.validator.is_iati_xml(not_iati_dataset, schema_basic)
+
+
 class ValidateCodelistsBase(object):
     """A container for fixtures required for Codelist validation tests."""
 
