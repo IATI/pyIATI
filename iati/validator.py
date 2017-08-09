@@ -317,19 +317,6 @@ def full_validation(dataset, schema):
     return _check_codelist_values(dataset, schema)
 
 
-def validate_is_iati_xml(dataset, schema):
-    """Check whether a Dataset contains valid IATI XML.
-
-     Args:
-         dataset (iati.core.Dataset): The Dataset to check validity of.
-
-     Returns:
-         iati.validator.ValidationErrorLog: A log of the errors that occurred.
-
-    """
-    return _check_is_iati_xml(dataset, schema)
-
-
 def is_iati_xml(dataset, schema):
     """Determine whether a given Dataset's XML is valid against the specified Schema.
 
@@ -400,3 +387,14 @@ def is_xml(maybe_xml):
     except (etree.XMLSyntaxError, AttributeError, TypeError, ValueError):
         return False
 
+def validate_is_iati_xml(dataset, schema):
+    """Check whether a Dataset contains valid IATI XML.
+
+     Args:
+         dataset (iati.core.Dataset): The Dataset to check validity of.
+
+     Returns:
+         iati.validator.ValidationErrorLog: A log of the errors that occurred.
+
+    """
+    return _check_is_iati_xml(dataset, schema)
