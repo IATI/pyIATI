@@ -193,19 +193,18 @@ class TestDatasets(object):
     @pytest.mark.parametrize("encoding_declared, encoding_used", [
         ("UTF-16", "UTF-8"),
         ("UTF-16", "ISO-8859-1"),
+        ("UTF-16", "ASCII"),
         ("UTF-16", "BIG5"),
         ("UTF-16", "EUC-JP")
-        # ("ASCII", "UTF-16"),
-        # ("ISO-8859-1", "UTF-16")
-        # ("ISO-8859-2", "UTF-16"),
-        # ("BIG5", "UTF-16"),
-        # ("EUC-JP", "UTF-16")
     ])
     def test_instantiation_dataset_from_string_with_encoding_mismatch(self, encoding_declared, encoding_used):
         """Test that an error is raised when attempting to create a dataset where a string is encoded significantly differently from what is defined within the XML encoding declaration.
 
         Todo:
             Amend error message, when the todo in iati.core.data.Dataset.xml_str() has been resolved.
+
+        Note:
+            There are a number of other errors that may be raised with alternative encoding mismatches. These are not supported since it does not appear likely enough that they will occur and be a large issue in practice.
 
         """
         xml = """<?xml version="1.0" encoding="{}"?>

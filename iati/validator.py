@@ -331,7 +331,7 @@ def _check_is_xml(maybe_xml):
 
     try:
         parser = etree.XMLParser()
-        _ = etree.fromstring(maybe_xml.strip(), parser)
+        hi = etree.fromstring(maybe_xml.strip(), parser)
     except etree.XMLSyntaxError:
         # import pdb;pdb.set_trace()
         for err in parser.error_log:
@@ -386,8 +386,6 @@ def _parse_xml_syntax_error(err):
         'ERR_UNSUPPORTED_ENCODING': 'err-encoding-unsupported',
         'ERR_RESERVED_XML_NAME': 'err-not-xml-xml-prolog-only-at-doc-start'
     }
-
-    # import pdb;pdb.set_trace()
 
     try:
         err_name = lxml_to_iati_error_mapping[err.type_name]
