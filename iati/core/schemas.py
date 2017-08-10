@@ -202,6 +202,32 @@ class Schema(object):
             namespaces=iati.core.constants.NSMAP
         )
 
+    def get_child_xsd_element_definitions(self, parent_element):
+        """Return a list of child element definitions for a given lxml.etree represention of an xsd:element.
+
+        Args:
+            parent_element (etree._ElementTree): The parent represention of an XSD element to find child definitions for.
+
+        Returns:
+            list of etree._ElementTree: A list containing representions of XSD element definitions that are children to the input element.  If there are no child elements, this will be an empty list.
+
+        Warning:
+            At present this is tightly coupled to the iati-activities-schema, iati-organisations-schema and iati-common schemas. The behaviour for other types of schema is undefined.
+
+        """
+        child_elements_and_refs = parent_element.findall(
+            'xsd:complexType/xsd:sequence/xsd:element',
+            namespaces=iati.core.constants.NSMAP
+        )  # This will find all elements defined directly within the schema, or cited by reference.
+
+        # Look for corresponding complexType and add to the child_elements_and_refs
+        if parent_element.get('type') is not None:
+            child_elements_and_refs += self._schema_base_tree.findall(
+                'xsd:complexType[@name="{0}"]/xsd:sequence/xsd:element'.format(parent_element.get('type')),
+                namespaces=iati.core.constants.NSMAP
+            )
+        return child_elements_and_refs
+
     def get_child_xsd_elements(self, parent_element):
         """Return a list of child elements for a given lxml.etree represention of an xsd:element.
 
@@ -215,21 +241,8 @@ class Schema(object):
             At present this is tightly coupled to the iati-activities-schema, iati-organisations-schema and iati-common schemas. The behaviour for other types of schema is undefined.
 
         """
-        child_elements_and_refs = parent_element.findall(
-            'xsd:complexType/xsd:sequence/xsd:element',
-            namespaces=iati.core.constants.NSMAP
-        )  # This will find all elements defined directly within the schema, or cited by reference.
-
-        # Look for corresponding complexType and add to the child_elements_and_refs
-        if parent_element.get('type') is not None:
-            complexType_children = self._schema_base_tree.findall(
-                'xsd:complexType[@name="{0}"]/xsd:sequence/xsd:element'.format(parent_element.get('type')),
-                namespaces=iati.core.constants.NSMAP
-            )
-            child_elements_and_refs = child_elements_and_refs + complexType_children
-
         output = []
-        for element_or_ref in child_elements_and_refs:
+        for element_or_ref in self.get_child_xsd_element_definitions(parent_element):
             if element_or_ref.get('ref') is not None:
                 # This element is defined via a reference to an xsd:element defined elsewhere in the schema.
                 output.append(self.get_xsd_element(element_or_ref.get('ref')))
@@ -441,20 +454,31 @@ class Schema(object):
 
         Todo:
             Possibly refactor: Could be split into two functions for finding min/max occurs for an element or an attribute.
+            Should also split the code to filter for the element/attribute definition into a seperate function.
 
         """
+        # Deal with special case for root elements, which can be defined up to once.
+        if xpath == self.root_element_name:
+            return {
+                'min_occurs': 0,
+                'max_occurs': 1
+            }
+
         element_or_attr = self._xsd_lookup[xpath]
         element_or_attr_name = self.get_xsd_element_or_attribute_name(element_or_attr)
         parent_xpath = self.get_parent_xpath_for_xpath(xpath)
         parent_element = self._xsd_lookup[parent_xpath]
 
         if self.is_xsd_element_element(element_or_attr):
-            definition = parent_element.xpath(
-                'xsd:complexType/xsd:sequence/xsd:element[@name="{0}" or @ref="{0}"]'.format(element_or_attr_name),
-                namespaces=iati.core.constants.NSMAP
-            )
-            min_occurs = definition[0].get('minOccurs')
-            max_occurs = definition[0].get('maxOccurs')
+            element_definitions = self.get_child_xsd_element_definitions(parent_element)
+            element = [elem for elem in element_definitions
+                if element_or_attr_name in [
+                    self.get_xsd_element_or_attribute_name(elem),
+                    elem.get('ref')
+                ]
+            ]  # Filter to return the element definition for the input XPath.
+            min_occurs = element[0].get('minOccurs')
+            max_occurs = element[0].get('maxOccurs')
         elif self.is_xsd_element_attribute(element_or_attr):
             attr_definitions = self.get_attributes_definitions_in_xsd_element(parent_element)
             attribute = [attr for attr in attr_definitions

@@ -444,6 +444,17 @@ class TestSchemas(object):
         assert result['min_occurs'] == expected_min
         assert result['max_occurs'] == expected_max
 
+    def test_get_occurances_for_xpath_all_xpaths(self, schemas_initialised):
+        """Test that an expected result type is returned for all Xpaths within a schema."""
+        schema = schemas_initialised
+
+        for xpath in schema._xsd_lookup.keys():
+            result = schema.get_occurances_for_xpath(xpath)
+            assert isinstance(result, dict)
+            assert len(result) == 2
+            assert isinstance(result['min_occurs'], int)
+            assert isinstance(result['max_occurs'], (int, six.string_types))  # max_occurs may return 'unbounded'
+
     @pytest.mark.parametrize("schema, xpath, expected_parent", [
         ('iati-activities-schema', 'iati-activities', None),
         ('iati-activities-schema', 'iati-activities/iati-activity', 'iati-activities'),
