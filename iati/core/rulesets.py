@@ -236,7 +236,7 @@ class RuleAtLeastOne(Rule):
             dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            bool: Changes depending on whether the case is found in the Dataset.
+            bool: Return `True` when the case is found in the Dataset.
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
@@ -276,7 +276,7 @@ class RuleDateOrder(Rule):
             dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Return:
-            bool: Changes depending on whether `less` is older than `more`.
+            bool: Return `True` when `less` is chronologically before `more`.
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
@@ -326,7 +326,7 @@ class RuleDependent(Rule):
             dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            bool: Changes depending on whether all dependent `paths` are found in the Dataset if any exist.
+            bool: Return `True` when all dependent `paths` are found in the Dataset, if any exist.
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
@@ -359,7 +359,7 @@ class RuleNoMoreThanOne(Rule):
             dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            bool: Changes depending on whether one or fewer cases are found in the Dataset.
+            bool: Return `True` when one or fewer cases are found in the Dataset.
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
@@ -401,7 +401,7 @@ class RuleRegexMatches(Rule):
             dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            bool: Changes depending on whether the given `path` text matches the given regex case.
+            bool: Return `True` when the given `path` text matches the given regex case.
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
@@ -442,7 +442,7 @@ class RuleRegexNoMatches(Rule):
             dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            bool: Changes depending on whether the given `path` text does not match the given regex case.
+            bool: Return `True` when the given `path` text does not match the given regex case.
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
@@ -484,7 +484,7 @@ class RuleStartsWith(Rule):
             dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            bool: Changes depending on whether the `path` text starts with the value of `start`.
+            bool: Return `True` when the `path` text starts with the value of `start`.
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
@@ -516,7 +516,7 @@ class RuleSum(Rule):
             dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            bool: Changes depending on whether the `path` values total to the `sum` value.
+            bool: Return `True` when the `path` values total to the `sum` value.
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
@@ -551,7 +551,7 @@ class RuleUnique(Rule):
             dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            bool: Changes depending on whether repeated text is found in the dataset for the given `paths`.
+            bool: Return `True` when repeated text is found in the dataset for the given `paths`.
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
