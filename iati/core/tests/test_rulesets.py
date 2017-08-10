@@ -193,7 +193,7 @@ class RuleSubclassTestBase(object):
         return ''
 
     @pytest.fixture
-    def basic_rule(self, rule_constructor, valid_case, xpath_base):
+    def rule_basic_init(self, rule_constructor, valid_case, xpath_base):
         """Instantiate a basic Rule subclass."""
         return rule_constructor(xpath_base, valid_case)
 
@@ -217,27 +217,27 @@ class RuleSubclassTestBase(object):
         """Instantiate the current Rule type."""
         return iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
 
-    def test_rule_init_valid_parameter_types(self, basic_rule):
+    def test_rule_init_valid_parameter_types(self, rule_basic_init):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
-        assert isinstance(basic_rule, iati.core.Rule)
+        assert isinstance(rule_basic_init, iati.core.Rule)
 
-    def test_rule_attributes_from_case(self, basic_rule):
+    def test_rule_attributes_from_case(self, rule_basic_init):
         """Check that a Rule subclass has case attributes set."""
-        required_attributes = basic_rule._required_case_attributes(basic_rule._ruleset_schema_section())
+        required_attributes = rule_basic_init._required_case_attributes(rule_basic_init._ruleset_schema_section())
         for attrib in required_attributes:
             # Ensure that the attribute exists - if not, an AttributeError will be raised
-            getattr(basic_rule, attrib)
+            getattr(rule_basic_init, attrib)
 
-    def test_rule_name(self, basic_rule, rule_type):
+    def test_rule_name(self, rule_basic_init, rule_type):
         """Check that a Rule subclass has the expected name."""
-        assert basic_rule.name == rule_type
+        assert rule_basic_init.name == rule_type
 
-    def test_rule_paths(self, basic_rule):
+    def test_rule_paths(self, rule_basic_init):
         """Check that a Rule subclass has the expected paths."""
         # Exclude rules with no `paths` attribute.
-        if 'paths' in dir(basic_rule):
-            for path in basic_rule.paths:
-                assert path.startswith(basic_rule.xpath_base)
+        if 'paths' in dir(rule_basic_init):
+            for path in rule_basic_init.paths:
+                assert path.startswith(rule_basic_init.xpath_base)
 
     def test_rule_invalid_case(self, rule_constructor, invalid_case):
         """Check that a rule cannot be instantiated when the case is invalid."""
@@ -389,19 +389,19 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         """Empty strings for RuleDateOrder."""
         return {'less': '', 'more': ''}
 
-    def test_rule_paths_less(self, basic_rule):
+    def test_rule_paths_less(self, rule_basic_init):
         """Check that the `less` value has been combined with the `xpath_base` where required."""
-        if basic_rule.less.endswith(basic_rule.special_case):
-            assert basic_rule.less == basic_rule.special_case
+        if rule_basic_init.less.endswith(rule_basic_init.special_case):
+            assert rule_basic_init.less == rule_basic_init.special_case
         else:
-            assert basic_rule.less.startswith(basic_rule.xpath_base)
+            assert rule_basic_init.less.startswith(rule_basic_init.xpath_base)
 
-    def test_rule_paths_more(self, basic_rule):
+    def test_rule_paths_more(self, rule_basic_init):
         """Check that the `more` value has been combined with the `xpath_base` where required."""
-        if basic_rule.more.endswith(basic_rule.special_case):
-            assert basic_rule.more == basic_rule.special_case
+        if rule_basic_init.more.endswith(rule_basic_init.special_case):
+            assert rule_basic_init.more == rule_basic_init.special_case
         else:
-            assert basic_rule.more.startswith(basic_rule.xpath_base)
+            assert rule_basic_init.more.startswith(rule_basic_init.xpath_base)
 
     def test_incorrect_date_format_raises_error(self, rule):
         """Check that a dataset with dates in an incorrect format raise expected error."""
@@ -691,9 +691,9 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         """Empty path string for RuleStartsWith."""
         return {'start': 'reporting-org/@ref', 'paths': ['']}
 
-    def test_rule_paths_start(self, basic_rule):
+    def test_rule_paths_start(self, rule_basic_init):
         """Check that the `start` value has been combined with the `xpath_base`."""
-        assert basic_rule.start.startswith(basic_rule.xpath_base)
+        assert rule_basic_init.start.startswith(rule_basic_init.xpath_base)
 
 
 class TestRuleSum(RuleSubclassTestBase):
