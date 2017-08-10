@@ -271,9 +271,14 @@ class RuleSubclassTestBase(object):
             rule_is_valid_for_case.is_valid_for(junk_data)
 
     def test_is_valid_for_raises_error_when_passed_an_etree(self, rule_is_valid_for_case):
-        """Check that an error is raised if an etree is given as an argument instead of a dataset."""
+        """Check that an error is raised if an etree is given as an argument instead of a dataset.
+
+        Todo:
+            Use more generic dataset.
+
+        """
         with pytest.raises(AttributeError):
-            rule_is_valid_for_case.is_valid_for(iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_atleastone')))  # use more generic dataset
+            rule_is_valid_for_case.is_valid_for(iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_atleastone')))
 
     def test_empty_xpath_base_rule_init_normalised_paths(self, rule_empty_xpath_base):
         """Check that a Rule with an empty xpath_base can be instantiated correctly with normalised `paths`."""
