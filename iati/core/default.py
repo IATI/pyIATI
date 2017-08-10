@@ -122,7 +122,7 @@ def ruleset(version=None):
 
 
 def ruleset_schema(version=None):
-    """Todo: Add docstring."""
+    """Return the specified Ruleset schema."""
     name = 'ruleset_schema'
 
     path = iati.core.resources.get_ruleset_path(name, version)

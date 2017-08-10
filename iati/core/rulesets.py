@@ -1,4 +1,4 @@
-"""A module containg a core representation of IATI Rulesets.
+"""A module containing a core representation of IATI Rulesets.
 
 Note:
     Rulesets are under-implemented since it is expected that their implementation will be similar to that of Codelists, which is currently unstable. Once Codelist stability has been increased, Rulesets may be fully-implemented.
