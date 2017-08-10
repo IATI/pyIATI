@@ -125,10 +125,27 @@ class Rule(object):
 
         """
         self.case = case
-        self.xpath_base = xpath_base
+        self.xpath_base = self._valid_xpath_base(xpath_base)
         self._valid_rule_configuration(case)
         self._set_case_attributes(case)
         self._normalize_xpaths()
+
+    def _valid_xpath_base(self, xpath_base):
+        """Check that a valid `xpath_base` is given for a Rule.
+
+        Args:
+            xpath_base(str): The root of an XPath query.
+
+        Returns:
+            str: A valid XPath root.
+
+        Raises:
+            TypeError: When an argument is given that is not a string.
+
+        """
+        if isinstance(xpath_base, str):
+            return xpath_base
+        raise TypeError
 
     def _normalize_xpath(self, path):
         """Normalize a single XPath by combining it with `xpath_base`.
@@ -145,7 +162,7 @@ class Rule(object):
         """
         if path == '':
             return self.xpath_base
-        return self.xpath_base + '/' + path
+        return '/'.join([self.xpath_base, path])
 
     def _normalize_xpaths(self):
         """Normalize xpaths by combining them with `xpath_base`.

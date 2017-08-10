@@ -159,14 +159,6 @@ class TestRuleSubclasses(object):
         with pytest.raises(TypeError):
             rule_constructor()
 
-    @pytest.mark.parametrize("xpath_base", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
-    def test_rule_init_invalid_xpath_base(self, rule_constructor, xpath_base):
-        """Check that a Rule cannot be created when xpath_base is not a string."""
-        case = dict()
-
-        with pytest.raises(ValueError):
-            rule_constructor(xpath_base, case)
-
     @pytest.mark.parametrize("case", iati.core.tests.utilities.find_parameter_by_type(['mapping'], False))
     def test_rule_init_invalid_case(self, rule_constructor, case):
         """Check that a Rule cannot be created when case is not a dictionary."""
@@ -227,6 +219,12 @@ class RuleSubclassTestBase(object):
         """
         return iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
 
+    @pytest.mark.parametrize("xpath_base", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    def test_rule_init_invalid_xpath_base(self, rule_constructor, xpath_base, valid_case):
+        """Check that a Rule subclass cannot be created when xpath_base is not a string."""
+        with pytest.raises(TypeError):
+            rule_constructor(xpath_base, valid_case)
+
     def test_rule_init_valid_parameter_types(self, rule_basic_init):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
         assert isinstance(rule_basic_init, iati.core.Rule)
@@ -281,8 +279,10 @@ class RuleSubclassTestBase(object):
             rule_is_valid_for_case.is_valid_for(iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_atleastone')))
 
     def test_empty_xpath_base_rule_init_normalised_paths(self, rule_empty_xpath_base):
-        """Check that a Rule with an empty xpath_base can be instantiated correctly with normalised `paths`."""
-        # Exclude rules without `paths`.
+        """Check that a Rule with an empty xpath_base can be instantiated correctly with normalised `paths`.
+
+        Note:
+            Rules without `paths` are checked for correct normalisation in their own TestRuleSubclass."""
         if 'paths' in dir(rule_empty_xpath_base):
             for path in rule_empty_xpath_base.paths:
                 assert path.startswith(rule_empty_xpath_base.xpath_base)
