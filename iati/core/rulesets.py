@@ -167,7 +167,7 @@ class Rule(object):
 
         """
         try:
-            jsonschema.validate(case, self.ruleset_schema_section)
+            jsonschema.validate(case, self._ruleset_schema_section())
         except jsonschema.ValidationError:
             raise ValueError
 
