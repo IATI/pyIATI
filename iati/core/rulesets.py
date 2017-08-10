@@ -5,6 +5,7 @@ Note:
 
 Todo:
     Review for edge cases.
+    Consider how we should handle lxml errors.
 
 """
 from datetime import datetime
@@ -158,7 +159,7 @@ class Rule(object):
             case (dict): A dictionary of values, generally parsed as a case from a Ruleset.
 
         Raises:
-            AttributeError: When the Rule name is unset or not a permitted rule_type.
+            AttributeError: When the Rule name is unset or does not have the required attributes.
             ValueError: When the case is not valid for the type of Rule.
 
         Note:
@@ -205,7 +206,7 @@ class Rule(object):
             dict: A dictionary of the relevant part of the Ruleset Schema, based on the Rule's name.
 
         Raises:
-            AttributeError: When the Rule name is unset or not a permitted rule_type.
+            AttributeError: When the Rule name is unset or does not have the required attributes.
 
         """
         ruleset_schema = iati.core.default.ruleset_schema()
@@ -238,8 +239,8 @@ class RuleAtLeastOne(Rule):
             bool: Changes depending on whether the case is found in the Dataset.
 
         Raises:
-            AttributeError: When an argument is given that is not a Dataset object.
-            XPathEvalError: When no valid xpath argument is given.
+            AttributeError: When an argument is given that does not have the required attributes.
+            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         """
         found_paths = set()
@@ -278,9 +279,9 @@ class RuleDateOrder(Rule):
             bool: Changes depending on whether `less` is older than `more`.
 
         Raises:
-            AttributeError: When an argument is given that is not a Dataset object.
+            AttributeError: When an argument is given that does not have the required attributes.
             ValueError: When a date is given that is not in the correct xsd:date format.
-            XPathEvalError: When no valid xpath argument is given.
+            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         Note:
             `date` restricted to 10 characters in order to exclude possible timezone values.
@@ -328,8 +329,8 @@ class RuleDependent(Rule):
             bool: Changes depending on whether all dependent `paths` are found in the Dataset if any exist.
 
         Raises:
-            AttributeError: When an argument is given that is not a Dataset object.
-            XPathEvalError: When no valid xpath argument is given.
+            AttributeError: When an argument is given that does not have the required attributes.
+            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         """
         found_paths = 0
@@ -361,8 +362,8 @@ class RuleNoMoreThanOne(Rule):
             bool: Changes depending on whether one or fewer cases are found in the Dataset.
 
         Raises:
-            AttributeError: When an argument is given that is not a Dataset object.
-            XPathEvalError: When no valid xpath argument is given.
+            AttributeError: When an argument is given that does not have the required attributes.
+            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         """
         compliant_paths = set()
@@ -403,8 +404,8 @@ class RuleRegexMatches(Rule):
             bool: Changes depending on whether the given `path` text matches the given regex case.
 
         Raises:
-            AttributeError: When an argument is given that is not a Dataset object.
-            XPathEvalError: When no valid xpath argument is given.
+            AttributeError: When an argument is given that does not have the required attributes.
+            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         """
         pattern = re.compile(self.case['regex'])
@@ -444,8 +445,8 @@ class RuleRegexNoMatches(Rule):
             bool: Changes depending on whether the given `path` text does not match the given regex case.
 
         Raises:
-            AttributeError: When an argument is given that is not a Dataset object.
-            XPathEvalError: When no valid xpath argument is given.
+            AttributeError: When an argument is given that does not have the required attributes.
+            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         """
         pattern = re.compile(self.case['regex'])
@@ -486,8 +487,8 @@ class RuleStartsWith(Rule):
             bool: Changes depending on whether the `path` text starts with the value of `start`.
 
         Raises:
-            AttributeError: When an argument is given that is not a dataset object.
-            IndexError: When no valid xpath argument is given.
+            AttributeError: When an argument is given that does not have the required attributes.
+            IndexError: When no valid XPath is available.
 
         """
         prefixing_str = dataset.xml_tree.xpath(self.start)[0]
@@ -518,8 +519,8 @@ class RuleSum(Rule):
             bool: Changes depending on whether the `path` values total to the `sum` value.
 
         Raises:
-            AttributeError: When an argument is given that is not a dataset object.
-            XPathEvalError: When no valid xpath argument is given.
+            AttributeError: When an argument is given that does not have the required attributes.
+            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         """
         sum_values = list()
@@ -553,8 +554,8 @@ class RuleUnique(Rule):
             bool: Changes depending on whether repeated text is found in the dataset for the given `paths`.
 
         Raises:
-            AttributeError: When an argument is given that is not a dataset object.
-            XPathEvalError: When no valid xpath argument is given.
+            AttributeError: When an argument is given that does not have the required attributes.
+            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         Todo:
             Consider better methods for specifying which elements in the tree contain non-permitted duplication, such as bucket sort.
