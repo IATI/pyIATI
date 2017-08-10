@@ -11,6 +11,7 @@ Todo:
 from datetime import datetime
 import json
 import re
+import six
 import sre_constants
 import jsonschema
 import iati.core.default
@@ -143,7 +144,7 @@ class Rule(object):
             TypeError: When an argument is given that is not a string.
 
         """
-        if isinstance(xpath_base, str):
+        if isinstance(xpath_base, six.string_types):
             return xpath_base
         raise TypeError
 
