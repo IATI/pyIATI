@@ -332,9 +332,6 @@ class Schema(object):
         Returns:
             OrderedDict: Containing an XPath (as keys) with the corresponding lxml represention of the xsd:element or xsd:attribute (as values).
 
-        Todo:
-            Rename to an internal method.
-
         """
         if output is None:
             output = OrderedDict()
