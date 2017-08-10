@@ -481,7 +481,7 @@ class TestSchemas(object):
 
         assert str(excinfo.value) == 'The input XPath is not a valid XPath for this Schema.'
 
-    @pytest.mark.parametrize("schema, xpath, expected_num_child_types, expected_child_type", [
+    @pytest.mark.parametrize("schema, xpath, expected_num_child_types, expected_child_xpath", [
         ('iati-activities-schema', 'iati-activities', 4, 'iati-activities/iati-activity'),
         ('iati-activities-schema', 'iati-activities/iati-activity', 39, 'iati-activities/iati-activity/document-link'),
         ('iati-activities-schema', 'iati-activities/iati-activity/activity-date/narrative', 1, 'iati-activities/iati-activity/activity-date/narrative/@xml:lang'),
@@ -489,7 +489,7 @@ class TestSchemas(object):
         ('iati-organisations-schema', 'iati-organisations/iati-organisation/total-budget', 5, 'iati-organisations/iati-organisation/total-budget/value'),
         ('iati-organisations-schema', 'iati-organisations/iati-organisation/total-budget/period-end', 1, 'iati-organisations/iati-organisation/total-budget/period-end/@iso-date')
     ])
-    def test_get_xpaths_for_child_types(self, schema, xpath, expected_num_child_types, expected_child_type):
+    def test_get_xpaths_for_child_types(self, schema, xpath, expected_num_child_types, expected_child_xpath):
         """Test that the expected child types are returned for a given schema and xpath."""
         schema = iati.core.default.schema(schema)
 
@@ -497,7 +497,7 @@ class TestSchemas(object):
 
         assert isinstance(result, list)
         assert len(result) == expected_num_child_types
-        assert expected_child_type in result
+        assert expected_child_xpath in result
 
     @pytest.mark.parametrize("schema, xpath", [
         ('iati-activities-schema', 'iati-activities/iati-activity/iati-identifier'),
