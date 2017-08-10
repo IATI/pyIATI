@@ -295,13 +295,13 @@ class RuleDateOrder(Rule):
         for date in less_date:
             if date == 'NOW':
                 earlier_dates.append(datetime.strptime(datetime.today(), '%Y-%m-%d'))
-            earlier_dates.append(datetime.strptime(date[0:10], '%Y-%m-%d'))
+            earlier_dates.append(datetime.strptime(date[:10], '%Y-%m-%d'))
 
         for date in more_date:
             if date == 'NOW':
                 later_dates.append(datetime.today())
             else:
-                later_dates.append(datetime.strptime(date[0:10], '%Y-%m-%d'))
+                later_dates.append(datetime.strptime(date[:10], '%Y-%m-%d'))
 
         for (early_date, later_date) in zip(earlier_dates, later_dates):
             if early_date > later_date:
