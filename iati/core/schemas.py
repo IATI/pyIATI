@@ -239,20 +239,20 @@ class Schema(object):
 
         return output
 
-    def get_attributes_in_xsd_element(self, element):
-        """Return a list of attribute elements that are contained within a given lxml.etree represention of an xsd:element.
+    def get_attributes_definitions_in_xsd_element(self, element):
+        """Return a list of attribute defintions that are contained within a given lxml.etree represention of an xsd:element.
 
         Args:
-            element (etree._ElementTree): The lxml represention of an XSD element to find attributes for.
+            element (etree._ElementTree): The lxml represention of an XSD element to find attribute definitions for.
 
         Returns:
-            list of etree._ElementTree: A list containing representions of XSD attributes that are contained witin the input element. If there are no attributes, this will be an empty list.
+            list of etree._ElementTree: A list containing representions of XSD attribute definitions that are contained witin the input element. If there are no attributes, this will be an empty list.
 
         Warning:
             At present this is tightly coupled to the IATI iati-activities-schema, iati-organisations-schema and iati-common schemas. The behaviour for other types of schema is undefined.
 
         Todo:
-            Possibly refactor.
+            Test this.
 
         """
         attributes = element.findall(
@@ -267,8 +267,22 @@ class Schema(object):
             'xsd:complexType[@name="{0}"]/xsd:simpleContent/xsd:extension/xsd:attribute'.format(element.get('type')),
             namespaces=iati.core.constants.NSMAP
         )
+        return attributes
+
+    def get_attributes_in_xsd_element(self, element):
+        """Return a list of attribute elements that are contained within a given lxml.etree represention of an xsd:element.
+
+        Args:
+            element (etree._ElementTree): The lxml represention of an XSD element to find attributes for.
+
+        Returns:
+            list of etree._ElementTree: A list containing representions of XSD attributes that are contained witin the input element. If there are no attributes, this will be an empty list.
+
+        Warning:
+            At present this is tightly coupled to the IATI iati-activities-schema, iati-organisations-schema and iati-common schemas. The behaviour for other types of schema is undefined.
+        """
         output = []
-        for attr in attributes:
+        for attr in self.get_attributes_definitions_in_xsd_element(element):
             if attr.get('ref') is not None and not self.is_attribute_xml_lang(attr):
                 output.append(self.get_xsd_attribute(attr.get('ref')))
             else:
@@ -416,21 +430,46 @@ class Schema(object):
         except AttributeError:
             raise TypeError('Unexpected input type entered.')
 
-    def get_occurances_for_xsd_element(self, element):
-        """Returns a dictionary containing the allowed minumum and maximum number of occurances for a given element.
+    def get_occurances_for_xpath(self, xpath):
+        """Returns a dictionary containing the allowed minumum and maximum number of occurances for a given XPath.
 
-        The function awaits implementation of `get_xsd_parent_element`, as the defined minumum and maximum number of occurances is defined in the parent element.
+        Args:
+            xpath (str): The XPath for the element or attribute to find the occurance information for.
 
-        Warning:
-            It is likely that the input param will change from `element` to `xpath`.
+        Returns:
+            dict: Containing 'min_occurs' and 'max_occurs' (as keys), with the number of allowed occurances (as values). Values are integers or str 'unbounded'.
 
         Todo:
-            Add tests.
-
-            Implement functionality.
+            Possibly refactor: Could be split into two functions for finding min/max occurs for an element or an attribute.
 
         """
-        raise NotImplementedError
+        element_or_attr = self._xsd_lookup[xpath]
+        element_or_attr_name = self.get_xsd_element_or_attribute_name(element_or_attr)
+        parent_xpath = self.get_parent_xpath_for_xpath(xpath)
+        parent_element = self._xsd_lookup[parent_xpath]
+
+        if self.is_xsd_element_element(element_or_attr):
+            definition = parent_element.xpath(
+                'xsd:complexType/xsd:sequence/xsd:element[@name="{0}" or @ref="{0}"]'.format(element_or_attr_name),
+                namespaces=iati.core.constants.NSMAP
+            )
+            min_occurs = definition[0].get('minOccurs')
+            max_occurs = definition[0].get('maxOccurs')
+        elif self.is_xsd_element_attribute(element_or_attr):
+            attr_definitions = self.get_attributes_definitions_in_xsd_element(parent_element)
+            attribute = [attr for attr in attr_definitions
+                if element_or_attr_name in [
+                    self.get_xsd_element_or_attribute_name(attr),
+                    attr.get('ref')
+                ]
+            ]  # Filter to return the attribute definition for the input XPath.
+            min_occurs = '1' if attribute[0].get('use') == 'required' else '0'
+            max_occurs = '1'  # An attribute can only be used once
+
+        return {
+            'min_occurs': int(min_occurs) if min_occurs.isdigit() else min_occurs,
+            'max_occurs': int(max_occurs) if max_occurs.isdigit() else max_occurs
+        }
 
     def get_codelist_for_xsd_element(self, element):
         """Returns a list containing allowed codelists for the given element.

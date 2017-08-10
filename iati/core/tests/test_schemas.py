@@ -426,23 +426,21 @@ class TestSchemas(object):
 
         assert str(excinfo.value) == 'Unexpected input type entered.'
 
-    @pytest.mark.skip(reason="Not currently implemented (Awaiting implementation of `get_xsd_parent_element`).")
     @pytest.mark.parametrize("schema, xpath, expected_min, expected_max", [
-        ('iati-activities-schema', 'iati-activities', 0, 'unbounded')
+        ('iati-activities-schema', 'iati-activities/iati-activity', 1, 'unbounded'),  # Element occurances are defined by xsd:element/@ref
+        ('iati-activities-schema', 'iati-activities/iati-activity/title', 1, 1),  # Element occurances are defined by xsd:element/@name
+        ('iati-activities-schema', 'iati-activities/iati-activity/transaction/transaction-type', 1, 1),
+        ('iati-activities-schema', 'iati-activities/iati-activity/contact-info/department', 0, 1),
+        ('iati-activities-schema', 'iati-activities/iati-activity/@last-updated-datetime', 0, 1),
+        ('iati-activities-schema', 'iati-activities/iati-activity/default-tied-status/@code', 1, 1),
+        ('iati-activities-schema', 'iati-activities/iati-activity/transaction/value/@currency', 0, 1)  #_Attribute occurances are defined within xsd:complexType name="currencyType"
     ])
-    def test_get_occurances_for_xsd_element(self, schema, xpath, expected_min, expected_max):
-        """Test that an expected result is returned for a set of input xsd elements.
-
-        Todo:
-            Add more test parameters.
-        """
+    def test_get_occurances_for_xpath_examples(self, schema, xpath, expected_min, expected_max):
+        """Test that an expected result is returned for a set of input XPaths."""
         schema = iati.core.default.schema(schema)
-        element = schema._xsd_lookup[xpath]
 
-        result = schema.get_occurances_for_xsd_element(element)
+        result = schema.get_occurances_for_xpath(xpath)
 
-        assert isinstance(result, dict)
-        assert len(result) == 2
         assert result['min_occurs'] == expected_min
         assert result['max_occurs'] == expected_max
 
@@ -553,5 +551,5 @@ class TestSchemas(object):
 
         with pytest.raises(ValueError) as execinfo:
             schemas_initialised.is_xsd_element_attribute(dataset_element)
-            
+
         assert 'but expected attribute or element' in str(execinfo.value)
