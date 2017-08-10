@@ -1,10 +1,10 @@
 """A module containing tests for the library representation of Rulesets."""
 import pytest
+import lxml
 import iati.core.default
 import iati.core.rulesets
 import iati.core.resources
 import iati.core.tests.utilities
-import lxml
 
 
 class TestRuleset(object):

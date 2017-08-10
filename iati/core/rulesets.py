@@ -488,7 +488,7 @@ class RuleStartsWith(Rule):
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
-            IndexError: When no valid XPath is available.
+            IndexError: When XPath query result is not iterable.
 
         """
         prefixing_str = dataset.xml_tree.xpath(self.start)[0]
