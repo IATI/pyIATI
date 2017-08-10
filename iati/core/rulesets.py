@@ -88,14 +88,17 @@ class Ruleset(object):
             raise ValueError
 
     def _set_rules(self):
-        """Set the Rules of the Ruleset."""
+        """Set the Rules of the Ruleset.
+
+        Extract each case of each Rule from the Ruleset and add to initialised `rules` set.
+
+        """
         for xpath_base, rule in self.ruleset.items():
             for rule_type, cases in rule.items():
                 for case in cases['cases']:
                     constructor = locate_constructor_for_rule_type(rule_type)
                     new_rule = constructor(xpath_base, case)
                     self.rules.add(new_rule)
-
 
 
 class Rule(object):
