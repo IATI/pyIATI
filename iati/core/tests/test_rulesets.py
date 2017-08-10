@@ -198,7 +198,7 @@ class RuleSubclassTestBase(object):
         return rule_constructor(xpath_base, valid_case)
 
     @pytest.fixture
-    def rule(self, rule_constructor, xpath_base, case_for_is_valid_for):
+    def rule_is_valid_for_case(self, rule_constructor, xpath_base, case_for_is_valid_for):
         """Instantiate a rule with specific cases for checking the `is_valid_for` function."""
         return rule_constructor(xpath_base, case_for_is_valid_for)
 
@@ -246,24 +246,24 @@ class RuleSubclassTestBase(object):
         with pytest.raises(ValueError):
             rule_constructor(xpath_base, invalid_case)
 
-    def test_is_valid_for(self, valid_dataset, rule):
+    def test_is_valid_for(self, valid_dataset, rule_is_valid_for_case):
         """Check that a given rule returns the expected result when given a dataset."""
-        assert rule.is_valid_for(valid_dataset)
+        assert rule_is_valid_for_case.is_valid_for(valid_dataset)
 
-    def test_is_invalid_for(self, invalid_dataset, rule):
+    def test_is_invalid_for(self, invalid_dataset, rule_is_valid_for_case):
         """Check that a given rule returns the expected result when given a dataset."""
-        assert not rule.is_valid_for(invalid_dataset)
+        assert not rule_is_valid_for_case.is_valid_for(invalid_dataset)
 
     @pytest.mark.parametrize("junk_data", iati.core.tests.utilities.find_parameter_by_type([], False))
-    def test_is_valid_for_raises_error_on_non_permitted_argument(self, rule, junk_data):
+    def test_is_valid_for_raises_error_on_non_permitted_argument(self, rule_is_valid_for_case, junk_data):
         """Check that a given rule returns expected error when passed an argument that is not a dataset."""
         with pytest.raises(AttributeError):
-            rule.is_valid_for(junk_data)
+            rule_is_valid_for_case.is_valid_for(junk_data)
 
-    def test_is_valid_for_raises_error_when_passed_an_etree(self, rule):
+    def test_is_valid_for_raises_error_when_passed_an_etree(self, rule_is_valid_for_case):
         """Check that an error is raised if an etree is given as an argument instead of a dataset."""
         with pytest.raises(AttributeError):
-            rule.is_valid_for(iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_atleastone')))  # use more generic dataset
+            rule_is_valid_for_case.is_valid_for(iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_atleastone')))  # use more generic dataset
 
     def test_empty_xpath_base_rule_init_normalised_paths(self, rule_empty_xpath_base):
         """Check that a rule with an empty xpath_base can be instantiated correctly with normalised `paths`."""
@@ -403,10 +403,10 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         else:
             assert rule_basic_init.more.startswith(rule_basic_init.xpath_base)
 
-    def test_incorrect_date_format_raises_error(self, rule):
+    def test_incorrect_date_format_raises_error(self, rule_is_valid_for_case):
         """Check that a dataset with dates in an incorrect format raise expected error."""
         with pytest.raises(ValueError):
-            rule.is_valid_for(iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT)
+            rule_is_valid_for_case.is_valid_for(iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT)
 
 
 class TestRuleDependent(RuleSubclassTestBase):
