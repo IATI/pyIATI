@@ -585,7 +585,40 @@ class Schema(object):
         # return self.get_full_documentation_for_xsd_element(element)
         raise NotImplementedError
 
+    def is_this_an_xsd_element(self, element):
+        """Raise error if not an XML schema element.
+
+        Returns:
+            str: An expected value of a given XML schema element.
+
+        Raises:
+            TypeError: When given an argument of a non-permitted type.
+            ValueError: When given an XML element that is not a valid schema element.
+
+        """
+        expected_values = ['attribute', 'element']
+        element_type = self.get_xsd_input_type_for_element(element)
+        if element_type not in expected_values:
+            raise ValueError('Got {0} but expected {1}'.format(element_type, ' or '.join(expected_values)))
+
+        return element_type
+
     def is_xsd_element_attribute(self, element):
+        """Check whether given element is an attribute.
+
+        Returns:
+            bool: Changes depending on whether a given element is an attribute.
+
+        Raises:
+            TypeError: When given an argument of a non-permitted type.
+            ValueError: When given an XML element that is not a valid schema element.
+
+        """
+        element_type = self.is_this_an_xsd_element(element)
+
+        return element_type == 'attribute'
+
+    def is_xsd_element_element(self, element):
         """Check whether given element is an attribute.
 
         Returns:
@@ -595,14 +628,9 @@ class Schema(object):
             TypeError: When given an argument of a non-permitted type.
 
         """
-        try:
-            element_type = element.tag.split('}')[-1]
-            if element_type not in ['attribute', 'element']:
-                raise ValueError
-        except AttributeError:
-            raise TypeError
+        element_type = self.is_this_an_xsd_element(element)
 
-        return element_type == 'attribute'
+        return element_type == 'element'
 
 
 class ActivitySchema(Schema):

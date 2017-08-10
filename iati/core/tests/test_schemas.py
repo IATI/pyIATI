@@ -551,5 +551,7 @@ class TestSchemas(object):
         dataset = iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid'))
         dataset_element = dataset.find('iati-activity')
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError) as execinfo:
             schemas_initialised.is_xsd_element_attribute(dataset_element)
+            
+        assert 'but expected attribute or element' in str(execinfo.value)
