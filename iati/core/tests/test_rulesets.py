@@ -257,24 +257,24 @@ class RuleSubclassTestBase(object):
             rule_constructor(xpath_base, invalid_case)
 
     def test_is_valid_for(self, valid_dataset, rule_is_valid_for_case):
-        """Check that a given Rule returns the expected result when given a dataset."""
+        """Check that a given Rule returns the expected result when given Dataset."""
         assert rule_is_valid_for_case.is_valid_for(valid_dataset)
 
     def test_is_invalid_for(self, invalid_dataset, rule_is_valid_for_case):
-        """Check that a given Rule returns the expected result when given a dataset."""
+        """Check that a given Rule returns the expected result when given a Dataset."""
         assert not rule_is_valid_for_case.is_valid_for(invalid_dataset)
 
     @pytest.mark.parametrize("junk_data", iati.core.tests.utilities.find_parameter_by_type([], False))
     def test_is_valid_for_raises_error_on_non_permitted_argument(self, rule_is_valid_for_case, junk_data):
-        """Check that a given Rule returns expected error when passed an argument that is not a dataset."""
+        """Check that a given Rule returns expected error when passed an argument that is not a Dataset."""
         with pytest.raises(AttributeError):
             rule_is_valid_for_case.is_valid_for(junk_data)
 
     def test_is_valid_for_raises_error_when_passed_an_etree(self, rule_is_valid_for_case):
-        """Check that an error is raised if an etree is given as an argument instead of a dataset.
+        """Check that an error is raised if an etree is given as an argument instead of a Dataset.
 
         Todo:
-            Use more generic dataset.
+            Use more generic Dataset.
 
         """
         with pytest.raises(AttributeError):
