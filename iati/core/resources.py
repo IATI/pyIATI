@@ -316,16 +316,16 @@ def load_as_dataset(path):
     """Load a resource at the specified path into a dataset.
 
     Args:
-    path (str): The path to the file that is to be read in.
+        path (str): The path to the file that is to be read in.
 
     Returns:
-    dataset: A Dataset object with the contents of the file at the specified location.
+        dataset: A Dataset object with the contents of the file at the specified location.
 
     Warning:
-    Should raise Exceptions when there are problems loading the requested data.
+        Should raise Exceptions when there are problems loading the requested data.
 
     Todo:
-    Add error handling for when the specified file does not exist.
+        Add error handling for when the specified file does not exist.
 
     """
     dataset_str = load_as_string(path)
