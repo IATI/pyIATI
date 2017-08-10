@@ -26,7 +26,7 @@ def locate_constructor_for_rule_type(rule_type):
         rule_type (str): The name of the type of Rule to identify the class for.
 
     Returns:
-        Rule implementation: A constructor for a class that inherits from Rule.
+        type: A constructor for a class that inherits from Rule.
 
     Raises:
         KeyError: When a non-permitted `rule_type` is provided.
