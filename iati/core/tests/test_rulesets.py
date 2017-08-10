@@ -146,7 +146,7 @@ class TestRuleSubclasses(object):
         iati.core.rulesets.locate_constructor_for_rule_type(rule_type) for rule_type in iati.core.rulesets._VALID_RULE_TYPES
     ])
     def rule_constructor(self, request):
-        """List constructors for the various types of Rule."""
+        """Return constructor for the current type of Rule."""
         return request.param
 
     def test_rule_init_no_parameters(self, rule_constructor):
