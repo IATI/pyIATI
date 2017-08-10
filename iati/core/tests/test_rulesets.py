@@ -146,7 +146,12 @@ class TestRuleSubclasses(object):
         iati.core.rulesets.locate_constructor_for_rule_type(rule_type) for rule_type in iati.core.rulesets._VALID_RULE_TYPES
     ])
     def rule_constructor(self, request):
-        """Return constructor for the current type of Rule."""
+        """Return constructor for the current type of Rule.
+
+        Note:
+            Differs from fixture of same name in RuleSubclassTestBase as specifies rule_type by _VALID_RULE_TYPES rather than via specific TestRuleSubclass.
+
+        """
         return request.param
 
     def test_rule_init_no_parameters(self, rule_constructor):
@@ -194,27 +199,32 @@ class RuleSubclassTestBase(object):
 
     @pytest.fixture
     def rule_basic_init(self, rule_constructor, valid_case, xpath_base):
-        """Instantiate a basic Rule subclass."""
+        """Basic Rule subclass."""
         return rule_constructor(xpath_base, valid_case)
 
     @pytest.fixture
     def rule_is_valid_for_case(self, rule_constructor, xpath_base, case_for_is_valid_for):
-        """Instantiate a rule with specific cases for checking the `is_valid_for` function."""
+        """Rule with specific cases for checking the `is_valid_for` function."""
         return rule_constructor(xpath_base, case_for_is_valid_for)
 
     @pytest.fixture
     def rule_empty_xpath_base(self, rule_constructor, valid_case, empty_xpath_base):
-        """Instantiate a basic Rule subclass with an empty xpath_base."""
+        """Basic Rule subclass with an empty xpath_base."""
         return rule_constructor(empty_xpath_base, valid_case)
 
     @pytest.fixture
     def rule_empty_xpath_base_and_paths(self, rule_constructor, empty_xpath_base, empty_path_case):
-        """Instantiate a basic Rule subclass with an empty xpath_base and empty path case."""
+        """Basic Rule subclass with an empty xpath_base and empty path case."""
         return rule_constructor(empty_xpath_base, empty_path_case)
 
     @pytest.fixture
     def rule_constructor(self, rule_type):
-        """Instantiate the current Rule type."""
+        """Current Rule type.
+
+        Note:
+            Differs from fixture of same name in TestRuleSubclass as specifies rule_type via specific TestRuleSubclass fixture.
+
+        """
         return iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
 
     def test_rule_init_valid_parameter_types(self, rule_basic_init):
@@ -240,23 +250,23 @@ class RuleSubclassTestBase(object):
                 assert path.startswith(rule_basic_init.xpath_base)
 
     def test_rule_invalid_case(self, rule_constructor, invalid_case):
-        """Check that a rule cannot be instantiated when the case is invalid."""
+        """Check that a Rule cannot be instantiated when the case is invalid."""
         xpath_base = 'an xpath'
 
         with pytest.raises(ValueError):
             rule_constructor(xpath_base, invalid_case)
 
     def test_is_valid_for(self, valid_dataset, rule_is_valid_for_case):
-        """Check that a given rule returns the expected result when given a dataset."""
+        """Check that a given Rule returns the expected result when given a dataset."""
         assert rule_is_valid_for_case.is_valid_for(valid_dataset)
 
     def test_is_invalid_for(self, invalid_dataset, rule_is_valid_for_case):
-        """Check that a given rule returns the expected result when given a dataset."""
+        """Check that a given Rule returns the expected result when given a dataset."""
         assert not rule_is_valid_for_case.is_valid_for(invalid_dataset)
 
     @pytest.mark.parametrize("junk_data", iati.core.tests.utilities.find_parameter_by_type([], False))
     def test_is_valid_for_raises_error_on_non_permitted_argument(self, rule_is_valid_for_case, junk_data):
-        """Check that a given rule returns expected error when passed an argument that is not a dataset."""
+        """Check that a given Rule returns expected error when passed an argument that is not a dataset."""
         with pytest.raises(AttributeError):
             rule_is_valid_for_case.is_valid_for(junk_data)
 
@@ -266,14 +276,14 @@ class RuleSubclassTestBase(object):
             rule_is_valid_for_case.is_valid_for(iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_atleastone')))  # use more generic dataset
 
     def test_empty_xpath_base_rule_init_normalised_paths(self, rule_empty_xpath_base):
-        """Check that a rule with an empty xpath_base can be instantiated correctly with normalised `paths`."""
+        """Check that a Rule with an empty xpath_base can be instantiated correctly with normalised `paths`."""
         # Exclude rules without `paths`.
         if 'paths' in dir(rule_empty_xpath_base):
             for path in rule_empty_xpath_base.paths:
                 assert path.startswith(rule_empty_xpath_base.xpath_base)
 
     def test_empty_xpath_base_empty_path_is_valid_for(self, rule_empty_xpath_base_and_paths, valid_dataset):
-        """Check that a rule with an empty xpath_base and empty paths raises error."""
+        """Check that a Rule with an empty xpath_base and empty paths raises error."""
         # RuleStartswith raises an IndexError instead.
         with pytest.raises((lxml.etree.XPathEvalError, IndexError)):
             rule_empty_xpath_base_and_paths.is_valid_for(valid_dataset)
@@ -284,7 +294,7 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
 
     @pytest.fixture
     def rule_type(self):
-        """Type of rule."""
+        """Type of Rule."""
         return 'atleast_one'
 
     @pytest.fixture(params=[
@@ -294,7 +304,7 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         {'paths': ['path_1', 'path_1']}  # duplicate paths
     ])
     def valid_case(self, request):
-        """Permitted case for this rule."""
+        """Permitted case for this Rule."""
         return request.param
 
     @pytest.fixture(params=[
@@ -306,7 +316,7 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         {'paths': {'path_1'}}  # dictionary paths
     ])
     def invalid_case(self, request):
-        """Non-permitted case for this rule."""
+        """Non-permitted case for this Rule."""
         return request.param
 
     @pytest.fixture
@@ -338,7 +348,7 @@ class TestRuleDateOrder(RuleSubclassTestBase):
 
     @pytest.fixture
     def rule_type(self):
-        """Type of rule."""
+        """Type of Rule."""
         return 'date_order'
 
     @pytest.fixture(params=[
@@ -351,7 +361,7 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'start-xpath', 'more': '2017-07-26T13:19:05.493Z'}  # `more` is a string-formatted date
     ])
     def valid_case(self, request):
-        """Permitted case for this rule."""
+        """Permitted case for this Rule."""
         return request.param
 
     @pytest.fixture(params=[
@@ -364,7 +374,7 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'more': ['end']}  # more is a list
     ])
     def invalid_case(self, request):
-        """Non-permitted case for this rule."""
+        """Non-permitted case for this Rule."""
         return request.param
 
     @pytest.fixture
@@ -414,7 +424,7 @@ class TestRuleDependent(RuleSubclassTestBase):
 
     @pytest.fixture
     def rule_type(self):
-        """Type of rule."""
+        """Type of Rule."""
         return 'dependent'
 
     @pytest.fixture(params=[
@@ -424,7 +434,7 @@ class TestRuleDependent(RuleSubclassTestBase):
         {'paths': ['path_1', 'path_1']}  # duplicate paths
     ])
     def valid_case(self, request):
-        """Permitted case for this rule."""
+        """Permitted case for this Rule."""
         return request.param
 
     @pytest.fixture(params=[
@@ -436,7 +446,7 @@ class TestRuleDependent(RuleSubclassTestBase):
         {'paths': {'path_1'}}  # path value is dictionary instead of list
     ])
     def invalid_case(self, request):
-        """Non-permitted case for this rule."""
+        """Non-permitted case for this Rule."""
         return request.param
 
     @pytest.fixture
@@ -467,7 +477,7 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
 
     @pytest.fixture
     def rule_type(self):
-        """Type of rule."""
+        """Type of Rule."""
         return 'no_more_than_one'
 
     @pytest.fixture(params=[
@@ -477,7 +487,7 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         {'paths': ['path_1', 'path_1']}  # duplicate paths
     ])
     def valid_case(self, request):
-        """Permitted case for this rule."""
+        """Permitted case for this Rule."""
         return request.param
 
     @pytest.fixture(params=[
@@ -489,7 +499,7 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         {'paths': {'path_1'}}  # dictionary paths
     ])
     def invalid_case(self, request):
-        """Non-permitted case for this rule."""
+        """Non-permitted case for this Rule."""
         return request.param
 
     @pytest.fixture
@@ -521,7 +531,7 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
 
     @pytest.fixture
     def rule_type(self):
-        """Type of rule."""
+        """Type of Rule."""
         return 'regex_matches'
 
     @pytest.fixture(params=[
@@ -532,7 +542,7 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         {'regex': '', 'paths': ['path_1']}  # single path with regex
     ])
     def valid_case(self, request):
-        """Permitted case for this rule."""
+        """Permitted case for this Rule."""
         return request.param
 
     @pytest.fixture(params=[
@@ -549,7 +559,7 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         {'regex': ['some regex'], 'paths': 'path_1'}  # list regex
     ])
     def invalid_case(self, request):
-        """Non-permitted case for this rule."""
+        """Non-permitted case for this Rule."""
         return request.param
 
     @pytest.fixture
@@ -580,7 +590,7 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
 
     @pytest.fixture
     def rule_type(self):
-        """Type of rule."""
+        """Type of Rule."""
         return 'regex_no_matches'
 
     @pytest.fixture(params=[
@@ -591,7 +601,7 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         {'regex': '', 'paths': ['path_1']}  # single path with regex
     ])
     def valid_case(self, request):
-        """Permitted case for this rule."""
+        """Permitted case for this Rule."""
         return request.param
 
     @pytest.fixture(params=[
@@ -608,7 +618,7 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         {'regex': ['some regex'], 'paths': 'path_1'}  # list regex
     ])
     def invalid_case(self, request):
-        """Non-permitted case for this rule."""
+        """Non-permitted case for this Rule."""
         return request.param
 
     @pytest.fixture
@@ -639,7 +649,7 @@ class TestRuleStartsWith(RuleSubclassTestBase):
 
     @pytest.fixture
     def rule_type(self):
-        """Type of rule."""
+        """Type of Rule."""
         return 'startswith'
 
     @pytest.fixture(params=[
@@ -650,7 +660,7 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         {'start': '', 'paths': ['path_1']}  # single path with prefix
     ])
     def valid_case(self, request):
-        """Permitted case for this rule."""
+        """Permitted case for this Rule."""
         return request.param
 
     @pytest.fixture(params=[
@@ -666,7 +676,7 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         {'start': ['prefix-xpath'], 'paths': ['path_1']}  # list start
     ])
     def invalid_case(self, request):
-        """Non-permitted case for this rule."""
+        """Non-permitted case for this Rule."""
         return request.param
 
     @pytest.fixture
@@ -701,7 +711,7 @@ class TestRuleSum(RuleSubclassTestBase):
 
     @pytest.fixture
     def rule_type(self):
-        """Type of rule."""
+        """Type of Rule."""
         return 'sum'
 
     @pytest.fixture(params=[
@@ -718,7 +728,7 @@ class TestRuleSum(RuleSubclassTestBase):
         {'paths': ['path_1'], 'sum': 2.99792458e6}  # exponential sum
     ])
     def valid_case(self, request):
-        """Permitted case for this rule."""
+        """Permitted case for this Rule."""
         return request.param
 
     @pytest.fixture(params=[
@@ -734,7 +744,7 @@ class TestRuleSum(RuleSubclassTestBase):
         {'sum': [100], 'paths': 'path_1'}  # list sum
     ])
     def invalid_case(self, request):
-        """Non-permitted case for this rule."""
+        """Non-permitted case for this Rule."""
         return request.param
 
     @pytest.fixture
@@ -765,7 +775,7 @@ class TestRuleUnique(RuleSubclassTestBase):
 
     @pytest.fixture
     def rule_type(self):
-        """Type of rule."""
+        """Type of Rule."""
         return 'unique'
 
     @pytest.fixture(params=[
@@ -775,7 +785,7 @@ class TestRuleUnique(RuleSubclassTestBase):
         {'paths': ['path_1', 'path_1']}  # duplicate paths
     ])
     def valid_case(self, request):
-        """Permitted case for this rule."""
+        """Permitted case for this Rule."""
         return request.param
 
     @pytest.fixture(params=[
@@ -787,7 +797,7 @@ class TestRuleUnique(RuleSubclassTestBase):
         {'paths': {'path_1'}}
     ])
     def invalid_case(self, request):
-        """Non-permitted case for this rule."""
+        """Non-permitted case for this Rule."""
         return request.param
 
     @pytest.fixture
