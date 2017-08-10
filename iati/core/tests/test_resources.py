@@ -20,7 +20,7 @@ class TestResources(object):
         '1.00',
         '1',
         1,
-        1.01,  # A verion must be specified as a string
+        1.01,  # A version must be specified as a string
         'string'
     ])
     def test_get_folder_name_for_version_invalid_version(self, version):
