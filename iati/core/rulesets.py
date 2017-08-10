@@ -20,7 +20,7 @@ _VALID_RULE_TYPES = ["atleast_one", "dependent", "sum", "date_order", "no_more_t
 
 
 def locate_constructor_for_rule_type(rule_type):
-    """Locate the constructor for specific rule types.
+    """Locate the constructor for specific Rule types.
 
     Args:
         rule_type (str): The name of the type of Rule to identify the class for.
@@ -62,8 +62,8 @@ class Ruleset(object):
             ruleset_str (str): A string that represents a Ruleset.
 
         Raises:
-            TypeError: When a ruleset_str is not a string.
-            ValueError: When a ruleset_str does not validate against the ruleset schema or cannot be correctly decoded.
+            TypeError: When a `ruleset_str` is not a string.
+            ValueError: When a `ruleset_str` does not validate against the Ruleset Schema or cannot be correctly decoded.
 
         """
         try:
@@ -78,7 +78,7 @@ class Ruleset(object):
         """Validate a Ruleset against the Ruleset Schema.
 
         Raises:
-            ValueError: When ruleset_str does not validate against the ruleset schema.
+            ValueError: When `ruleset_str` does not validate against the Ruleset Schema.
 
         """
         try:
@@ -127,13 +127,13 @@ class Rule(object):
         self._normalize_xpaths()
 
     def _normalize_xpath(self, path):
-        """Normalize a single xpath by combining it with `xpath_base`.
+        """Normalize a single XPath by combining it with `xpath_base`.
 
         Args:
-            path: An xpath in the form of a string.
+            path(str): An XPath.
 
         Raises:
-            AttributeError: When self.xpath_base isn't set.
+            AttributeError: When the `xpath_base` isn't set.
 
         Todo:
             Add some logging.
@@ -144,27 +144,29 @@ class Rule(object):
         return self.xpath_base + '/' + path
 
     def _normalize_xpaths(self):
-        """Normalize xpaths by combining them with `xpath_base`."""
+        """Normalize xpaths by combining them with `xpath_base`.
+
+        May be overridden in child class that does not use `paths`.
+
+        """
         self.paths = [self._normalize_xpath(path) for path in self.paths]
 
     def _valid_rule_configuration(self, case):
         """Check that a configuration being passed into a Rule is valid for the given type of Rule.
 
-        Note:
-            The `name` attribute on the class must be set to a valid rule_type before this function is called.
-
         Args:
             case (dict): A dictionary of values, generally parsed as a case from a Ruleset.
 
         Raises:
-            AttributeError: When the Rule's name is unset or not a permitted rule_type.
+            AttributeError: When the Rule name is unset or not a permitted rule_type.
             ValueError: When the case is not valid for the type of Rule.
 
-        """
-        ruleset_schema_section = self._ruleset_schema_section()
+        Note:
+            The `name` attribute on the class must be set to a valid rule_type before this function is called.
 
+        """
         try:
-            jsonschema.validate(case, ruleset_schema_section)
+            jsonschema.validate(case, self.ruleset_schema_section)
         except jsonschema.ValidationError:
             raise ValueError
 
@@ -203,7 +205,7 @@ class Rule(object):
             dict: A dictionary of the relevant part of the Ruleset Schema, based on the Rule's name.
 
         Raises:
-            AttributeError: When the Rule's name is unset or not a permitted rule_type.
+            AttributeError: When the Rule name is unset or not a permitted rule_type.
 
         """
         ruleset_schema = iati.core.default.ruleset_schema()
@@ -227,16 +229,16 @@ class RuleAtLeastOne(Rule):
         super(RuleAtLeastOne, self).__init__(xpath_base, case)
 
     def is_valid_for(self, dataset):
-        """Check dataset has at least one instance of a given case for an Element.
+        """Check Dataset has at least one instance of a given case for an Element.
 
         Args:
-            dataset (iati.core.Dataset): An IATI Dataset object.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            bool: Changes depending on whether the case is found in the dataset.
+            bool: Changes depending on whether the case is found in the Dataset.
 
         Raises:
-            AttributeError: When an argument is given that is not a dataset object.
+            AttributeError: When an argument is given that is not a Dataset object.
             XPathEvalError: When no valid xpath argument is given.
 
         """
@@ -270,18 +272,18 @@ class RuleDateOrder(Rule):
         """Assert that the date value of `less` is older than the date value of `more`.
 
         Args:
-            dataset (iati.core.Dataset): An IATI Dataset object.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Return:
             bool: Changes depending on whether `less` is older than `more`.
 
         Raises:
-            AttributeError: When an argument is given that is not a dataset object.
+            AttributeError: When an argument is given that is not a Dataset object.
             ValueError: When a date is given that is not in the correct xsd:date format.
             XPathEvalError: When no valid xpath argument is given.
 
         Note:
-            `date` restricted to 10 characters in order to exclude possible timezone values but suboptimal solution.
+            `date` restricted to 10 characters in order to exclude possible timezone values.
 
         """
         less_date = dataset.xml_tree.xpath(self.less)
@@ -317,16 +319,16 @@ class RuleDependent(Rule):
         super(RuleDependent, self).__init__(xpath_base, case)
 
     def is_valid_for(self, dataset):
-        """Assert that either all given `paths` or none of the given `paths` exist in a dataset.xml_tree.
+        """Assert that either all given `paths` or none of the given `paths` exist in a Dataset.
 
         Args:
-            dataset (iati.core.Dataset): An IATI Dataset object.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            bool: Changes depending on whether all dependent `paths` are found in the dataset if any exist.
+            bool: Changes depending on whether all dependent `paths` are found in the Dataset if any exist.
 
         Raises:
-            AttributeError: When an argument is given that is not a dataset object.
+            AttributeError: When an argument is given that is not a Dataset object.
             XPathEvalError: When no valid xpath argument is given.
 
         """
@@ -353,13 +355,13 @@ class RuleNoMoreThanOne(Rule):
         """Check dataset has no more than one instance of a given case for an Element.
 
         Args:
-            dataset (iati.core.Dataset): An IATI Dataset object.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            bool: Changes depending on whether one or fewer cases are found in the dataset.
+            bool: Changes depending on whether one or fewer cases are found in the Dataset.
 
         Raises:
-            AttributeError: When an argument is given that is not a dataset object.
+            AttributeError: When an argument is given that is not a Dataset object.
             XPathEvalError: When no valid xpath argument is given.
 
         """
@@ -376,7 +378,7 @@ class RuleRegexMatches(Rule):
     """Representation of a Rule that checks that the given `paths` must contain values that match the `regex` value."""
 
     def __init__(self, xpath_base, case):
-        """Initialise a `regex_matches` rule.
+        """Initialise a `regex_matches` Rule.
 
         Raises:
             ValueError: When the case does not contain a valid regex.
@@ -395,13 +397,13 @@ class RuleRegexMatches(Rule):
         """Assert that the text of the given `paths` matches the `regex` value.
 
         Args:
-            dataset (iati.core.Dataset): An IATI Dataset object.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
             bool: Changes depending on whether the given `path` text matches the given regex case.
 
         Raises:
-            AttributeError: When an argument is given that is not a dataset object.
+            AttributeError: When an argument is given that is not a Dataset object.
             XPathEvalError: When no valid xpath argument is given.
 
         """
@@ -417,7 +419,7 @@ class RuleRegexNoMatches(Rule):
     """Representation of a Rule that checks that the given `paths` must not contain values that match the `regex` value."""
 
     def __init__(self, xpath_base, case):
-        """Initialise a `regex_no_matches` rule.
+        """Initialise a `regex_no_matches` Rule.
 
         Raises:
             ValueError: When the case does not contain a valid regex.
@@ -436,13 +438,13 @@ class RuleRegexNoMatches(Rule):
         """Assert that no text of the given `paths` matches the `regex` value.
 
         Args:
-            dataset (iati.core.Dataset): An IATI Dataset object.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
             bool: Changes depending on whether the given `path` text does not match the given regex case.
 
         Raises:
-            AttributeError: When an argument is given that is not a dataset object.
+            AttributeError: When an argument is given that is not a Dataset object.
             XPathEvalError: When no valid xpath argument is given.
 
         """
@@ -463,7 +465,7 @@ class RuleStartsWith(Rule):
     """
 
     def __init__(self, xpath_base, case):
-        """Initialise a `startswith` rule."""
+        """Initialise a `startswith` Rule."""
         self.name = "startswith"
 
         super(RuleStartsWith, self).__init__(xpath_base, case)
@@ -478,7 +480,7 @@ class RuleStartsWith(Rule):
         """Assert that the prefixing text of all given `paths` starts with the text of `start`.
 
         Args:
-            dataset (iati.core.Dataset): An IATI Dataset object.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
             bool: Changes depending on whether the `path` text starts with the value of `start`.
@@ -510,7 +512,7 @@ class RuleSum(Rule):
         """Assert that the total of the values given in `paths` match the given `sum` value.
 
         Args:
-            dataset (iati.core.Dataset): An IATI Dataset object.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
             bool: Changes depending on whether the `path` values total to the `sum` value.
@@ -545,7 +547,7 @@ class RuleUnique(Rule):
         """Assert that the given `paths` are not found in the dataset.xml_tree more than once.
 
         Args:
-            dataset (iati.core.Dataset): An IATI Dataset object.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
             bool: Changes depending on whether repeated text is found in the dataset for the given `paths`.
