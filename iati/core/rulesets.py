@@ -307,6 +307,9 @@ class RuleDateOrder(Rule):
         Note:
             `date` restricted to 10 characters in order to exclude possible timezone values.
 
+        Todo:
+            Reimplement 'NOW' as curently incorrect.
+
         """
         less_date = dataset.xml_tree.xpath(self.less)
         more_date = dataset.xml_tree.xpath(self.more)
@@ -325,7 +328,7 @@ class RuleDateOrder(Rule):
                 later_dates.append(datetime.strptime(date[:10], '%Y-%m-%d'))
 
         for (early_date, later_date) in zip(earlier_dates, later_dates):
-            if early_date > later_date:
+            if early_date >= later_date:
                 return False
 
         return True

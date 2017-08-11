@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <root_element>
-  <transaction><!-- Does not contain all dependencies for transactions -->
-    <provider-org></provider-org>
-  </transaction>
+  <element1><!-- Does not contain all dependencies for transactions -->
+    <element2></element2>
+  </element1>
 </root_element>

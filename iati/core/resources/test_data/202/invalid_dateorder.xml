@@ -1,8 +1,12 @@
 <?xml version="1.0"?>
 
 <root_element>
-  <planned-disbursement type="1">
-   <period-start iso-date="2017-11-01" /><!-- Dates are not in the correct order -->
-   <period-end iso-date="2017-03-01" />
-  </planned-disbursement>
+  <element1 type="1">
+   <start iso-date="2017-11-01" /><!-- Dates are not in the correct order -->
+   <end iso-date="2017-03-01" />
+ </element1>
+  <element2 type="1">
+   <start iso-date="01-12-2007"/><!-- Dates are not in the correct xsd:date format -->
+   <end iso-date="02-11-2005"/>
+ </element2>
 </root_element>
