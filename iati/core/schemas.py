@@ -1,5 +1,6 @@
 """A module containing a core representation of IATI Schemas."""
 from collections import OrderedDict
+from copy import copy
 from lxml import etree
 import iati.core.codelists
 import iati.core.constants
@@ -559,19 +560,29 @@ class Schema(object):
 
         return None  # The input XPath was not found in any of the child XPaths.
 
-    def get_xsd_sibling_elements(self, element):
-        """Returns a list of XPaths for sibling elements to the given input element.
+    def get_xpaths_for_sibling_types(self, xpath, same_type=False):
+        """Returns a list of XPaths that refer to elements that are at the same level as the input XPath.
 
-        Warning:
-            It is likely that the input param will change from `element` to `xpath`.
+        Args:
+            xpath (str): An XPath representing an XSD element or attribute to find the siblings for.
+            same_type (bool): If set to True, this ensures that only sibling elements of the same data type will be returned. Defaults to True.
 
-        Todo:
-            Add tests.
-
-            Implement functionality.
+        Returns:
+            list: Containing XPaths for the elements/attributes that are at the same level in this Schema.
 
         """
-        raise NotImplementedError
+        parent_xpath = self.get_parent_xpath_for_xpath(xpath)
+        sibling_xpaths = self.get_xpaths_for_child_types(parent_xpath)
+        sibling_xpaths.remove(xpath)  # Remove the input XPath from child types
+
+        element = self._xsd_lookup[xpath]
+        if same_type and self.is_xsd_element_attribute(element):
+            sibling_xpaths = [path for path in sibling_xpaths if self.is_xsd_element_attribute(self._xsd_lookup[path])]
+
+        if same_type and self.is_xsd_element_element(element):
+            sibling_xpaths = [path for path in sibling_xpaths if self.is_xsd_element_element(self._xsd_lookup[path])]
+
+        return sibling_xpaths
 
     def get_xpaths_for_child_types(self, xpath):
         """Returns a list of XPaths for elements/attributes that are children of the element at the input XPath.
@@ -590,10 +601,9 @@ class Schema(object):
             raise ValueError('The input XPath is not a valid XPath for this Schema.')
 
         try:
-            return self._xpath_lookup[xpath]
+            return copy(self._xpath_lookup[xpath])
         except KeyError:
             return None
-
 
     def get_xpaths_for_xsd_element_attributes(self, element):
         """Returns a list of XPaths for attributes contained within the given element.

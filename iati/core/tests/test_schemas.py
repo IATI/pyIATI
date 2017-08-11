@@ -564,3 +564,20 @@ class TestSchemas(object):
             schemas_initialised.is_xsd_element_attribute(dataset_element)
 
         assert 'but expected attribute or element' in str(execinfo.value)
+
+    @pytest.mark.parametrize("schema, xpath, same_type, expected_num_siblings, expected_sibling_xpath", [
+        ('iati-activities-schema', 'iati-activities/iati-activity/sector', True, 32, 'iati-activities/iati-activity/document-link'),
+        ('iati-activities-schema', 'iati-activities/iati-activity/sector', False, 38, 'iati-activities/iati-activity/@default-currency'),
+        ('iati-activities-schema', 'iati-activities/iati-activity/result/indicator/period/target', True, 3, 'iati-activities/iati-activity/result/indicator/period/actual'),
+        ('iati-organisations-schema', 'iati-organisations/iati-organisation/total-budget/value', True, 3, 'iati-organisations/iati-organisation/total-budget/budget-line'),
+        ('iati-organisations-schema', 'iati-organisations/iati-organisation/total-budget/value', False, 4, 'iati-organisations/iati-organisation/total-budget/@status'),
+        ('iati-organisations-schema', 'iati-organisations/iati-organisation/recipient-region-budget/recipient-region', False, 5, 'iati-organisations/iati-organisation/recipient-region-budget/@status')
+    ])
+    def test_get_xpaths_for_sibling_types(self, schema, xpath, same_type, expected_num_siblings, expected_sibling_xpath):
+        """Test that an expected number of siblings are found for given input XPath"""
+        schema = iati.core.default.schema(schema)
+
+        result = schema.get_xpaths_for_sibling_types(xpath, same_type)
+
+        assert len(result) == expected_num_siblings
+        assert expected_sibling_xpath in result
