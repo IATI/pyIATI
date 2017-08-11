@@ -4,8 +4,12 @@
   <!--empty path strings given-->
   <element1>2000-12-01</element1><!--first element is in the correct date order-->
   <element2>2000-12-24</element2><!--first element is in the correct date order-->
-  <element3>2016-01-01</element3><!--duplicate path strings given-->
-  <element6 attribute="2014-01-01" /><!--Attribute dates are in the correct order-->
-  <element7 attribute="2014-12-31" /><!--Attribute dates are in the correct order-->
-  <element8 attribute="2014-01-01" /><!--duplicate attribute paths given-->
+  <element3>2017-08-04</element3><!--more is NOW-->
+  <element4>9999-12-01</element4><!--less is NOW-->
+  <element5>2016-01-01</element5><!--duplicate path strings given-->
+  <element6 attribute="2014-01-01"></element6><!--Attribute dates are in the correct order-->
+  <element7 attribute="2014-12-31"></element7><!--Attribute dates are in the correct order-->
+  <element8 attribute="2017-01-01"></element8><!--more attribute is NOW-->
+  <element9 attribute="9999-12-01"></element9><!--less attribute is NOW-->
+  <element10 attribute="2015-04-03"></element10><!--duplicate attribute path given-->
 </root_element>

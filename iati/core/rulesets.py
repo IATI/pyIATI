@@ -315,24 +315,33 @@ class RuleDateOrder(Rule):
             Implement functionality to ignore function call if `less` or `more` do not return dates.
 
         """
-        less_date = dataset.xml_tree.xpath(self.less)
-        more_date = dataset.xml_tree.xpath(self.more)
+        def _is_value_NOW(value):
+            """Set `less_date` and `more_date` to current date when `NOW` value given."""
+            if value == 'NOW':
+                value = datetime.today()
+            else:
+                return dataset.xml_tree.xpath(value)
+
+        less_date = _is_value_NOW(self.less)
+        more_date = _is_value_NOW(self.more)
+
         earlier_dates = list()
         later_dates = list()
 
-        for date in less_date:
-            if date == 'NOW':
-                earlier_dates.append(datetime.strptime(datetime.today(), '%Y-%m-%d'))
-            earlier_dates.append(datetime.strptime(date[:10], '%Y-%m-%d'))
+        if isinstance(less_date, datetime):
+            earlier_dates.append(less_date)
+        else:
+            for date in less_date:
+                earlier_dates.append(datetime.strptime(date.text[:10], '%Y-%m-%d'))
 
-        for date in more_date:
-            if date == 'NOW':
-                later_dates.append(datetime.today())
-            else:
-                later_dates.append(datetime.strptime(date[:10], '%Y-%m-%d'))
+        if isinstance(more_date, datetime):
+            later_dates.append(more_date)
+        else:
+            for date in more_date:
+                later_dates.append(datetime.strptime(date.text[:10], '%Y-%m-%d'))
 
         for (early_date, later_date) in zip(earlier_dates, later_dates):
-            if early_date >= later_date:
+            if early_date > later_date:
                 return False
 
         return True

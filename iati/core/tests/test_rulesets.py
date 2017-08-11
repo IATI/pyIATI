@@ -358,97 +358,97 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         """Empty path string for RuleAtLeastOne."""
         return {'paths': ['']}
 
-#
-# class TestRuleDateOrder(RuleSubclassTestBase):
-#     """A container for tests relating to RuleDateOrder.
-#
-#     Todo:
-#         Are equal dates actually accounted for in the definition of this Rule?
-#         Reimplement 'NOW' as current implementation incorrect.
-#         Test implementation of functionality to ignore function call if `less` or `more` do not return dates.
-#
-#     """
-#
-#     @pytest.fixture
-#     def rule_type(self):
-#         """Type of Rule."""
-#         return 'date_order'
-#
-#     @pytest.fixture(params=[
-#         # {'less': '', 'more': ''},  # `less` and `more` empty strings
-#         {'less': 'element1', 'more': 'element2'},  # both `less` and `more` present
-#         # {'less': 'start-xpath', 'more': 'NOW'},  # `more` as NOW
-#         # {'less': 'NOW', 'more': 'end-xpath'},  # `less` as NOW
-#         # {'less': 'NOW', 'more': 'NOW'},  # both `less` and `more` as NOW
-#         {'less': 'element3', 'more': 'element3'},  # both `less` and `more` duplicate xpath
-#         # {'less': '', 'more': 'element4'},  # `less` is an empty string
-#         # {'less': 'element5', 'more': ''},  # `more` is an empty string
-#         {'less': 'element4/@attribute', 'more': 'element4/@attribute'},  # both `less` and `more` present
-#         # {'less': 'start-xpath/@attribute', 'more': 'NOW'},  # `more` as NOW
-#         # {'less': 'NOW', 'more': 'end-xpath/@attribute'},  # `less` as NOW
-#         {'less': 'element5/@attribute', 'more': 'element5/@attribute'},  # both `less` and `more` duplicate xpath
-#         # {'less': '', 'more': 'end-xpath/@attribute'},  # `less` is a string-formatted date
-#         # {'less': 'start-xpath/@attribute', 'more': ''}  # `more` is a string-formatted date
-#     ])
-#     def valid_case(self, request):
-#         """Permitted case for this Rule."""
-#         return request.param
-#
-#     @pytest.fixture(params=[
-#         {'less': 'start'},  # missing required attribute - `more`
-#         {'more': 'end'},  # missing required attribute - `less`
-#         {'less': 1501075031590, 'more': 'end-xpath'},  # `less` is not a string
-#         {'less': 'start-xpath', 'more': 1501075031590},  # `more` is not a string
-#         {},  # empty dictionary
-#         {'less': ['start']},  # less is a list
-#         {'more': ['end']}  # more is a list
-#     ])
-#     def invalid_case(self, request):
-#         """Non-permitted case for this Rule."""
-#         return request.param
-#
-#     @pytest.fixture
-#     def invalid_dataset(self):
-#         """Invalid dataset for this Rule."""
-#         return iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID
-#
-#     @pytest.fixture
-#     def valid_dataset(self):
-#         """Return valid dataset for this Rule."""
-#         return iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_VALID
-#
-#     # @pytest.fixture(params=[
-#     #     {'less': 'planned-disbursement/period-start/@iso-date', 'more': 'planned-disbursement/period-end/@iso-date'}
-#     # ])
-#     # def case_for_is_valid_for(self, request):
-#     #     """Case to check the `is_valid_for` function of RuleDateOrder."""
-#     #     return request.param
-#
-#     @pytest.fixture
-#     def empty_path_case(self):
-#         """Empty strings for RuleDateOrder."""
-#         return {'less': '', 'more': ''}
-#
-#     def test_rule_paths_less(self, rule_basic_init):
-#         """Check that the `less` value has been combined with the `xpath_base` where required."""
-#         if rule_basic_init.less.endswith(rule_basic_init.special_case):
-#             assert rule_basic_init.less == rule_basic_init.special_case
-#         else:
-#             assert rule_basic_init.less.startswith(rule_basic_init.xpath_base)
-#
-#     def test_rule_paths_more(self, rule_basic_init):
-#         """Check that the `more` value has been combined with the `xpath_base` where required."""
-#         if rule_basic_init.more.endswith(rule_basic_init.special_case):
-#             assert rule_basic_init.more == rule_basic_init.special_case
-#         else:
-#             assert rule_basic_init.more.startswith(rule_basic_init.xpath_base)
-#
-#     # def test_incorrect_date_format_raises_error(self, rule_is_valid_for_case):
-#     #     """Check that a dataset with dates in an incorrect format raise expected error."""
-#     #     with pytest.raises(ValueError):
-#     #         rule_is_valid_for_case.is_valid_for(iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT)
-#
-#
+
+class TestRuleDateOrder(RuleSubclassTestBase):
+    """A container for tests relating to RuleDateOrder.
+
+    Todo:
+        Are equal dates actually accounted for in the definition of this Rule?
+        Reimplement 'NOW' as current implementation incorrect.
+        Test implementation of functionality to ignore function call if `less` or `more` do not return dates.
+
+    """
+
+    @pytest.fixture
+    def rule_type(self):
+        """Type of Rule."""
+        return 'date_order'
+
+    @pytest.fixture(params=[
+        # {'less': '', 'more': ''},  # `less` and `more` empty strings
+        {'less': 'element1', 'more': 'element2'},  # both `less` and `more` present
+        {'less': 'element3', 'more': 'NOW'},  # `more` as NOW
+        {'less': 'NOW', 'more': 'element4'},  # `less` as NOW
+        # {'less': 'NOW', 'more': 'NOW'},  # both `less` and `more` as NOW
+        {'less': 'element5', 'more': 'element5'},  # both `less` and `more` duplicate xpath
+        # {'less': '', 'more': 'element4'},  # `less` is an empty string
+        # {'less': 'element5', 'more': ''},  # `more` is an empty string
+        {'less': 'element6/@attribute', 'more': 'element6/@attribute'},  # both `less` and `more` present
+        {'less': 'element7/@attribute', 'more': 'NOW'},  # `more` as NOW
+        {'less': 'NOW', 'more': 'element8/@attribute'},  # `less` as NOW
+        {'less': 'element9/@attribute', 'more': 'element9/@attribute'},  # both `less` and `more` duplicate xpath
+        # {'less': '', 'more': 'end-xpath/@attribute'},  # `less` is an empty string
+        # {'less': 'start-xpath/@attribute', 'more': ''}  # `more` is an empty string
+    ])
+    def valid_case(self, request):
+        """Permitted case for this Rule."""
+        return request.param
+
+    @pytest.fixture(params=[
+        {'less': 'start'},  # missing required attribute - `more`
+        {'more': 'end'},  # missing required attribute - `less`
+        {'less': 1501075031590, 'more': 'end-xpath'},  # `less` is not a string
+        {'less': 'start-xpath', 'more': 1501075031590},  # `more` is not a string
+        {},  # empty dictionary
+        {'less': ['start']},  # less is a list
+        {'more': ['end']}  # more is a list
+    ])
+    def invalid_case(self, request):
+        """Non-permitted case for this Rule."""
+        return request.param
+
+    @pytest.fixture
+    def invalid_dataset(self):
+        """Invalid dataset for this Rule."""
+        return iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID
+
+    @pytest.fixture
+    def valid_dataset(self):
+        """Return valid dataset for this Rule."""
+        return iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_VALID
+
+    # @pytest.fixture(params=[
+    #     {'less': 'planned-disbursement/period-start/@iso-date', 'more': 'planned-disbursement/period-end/@iso-date'}
+    # ])
+    # def case_for_is_valid_for(self, request):
+    #     """Case to check the `is_valid_for` function of RuleDateOrder."""
+    #     return request.param
+
+    @pytest.fixture
+    def empty_path_case(self):
+        """Empty strings for RuleDateOrder."""
+        return {'less': '', 'more': ''}
+
+    def test_rule_paths_less(self, rule_basic_init):
+        """Check that the `less` value has been combined with the `xpath_base` where required."""
+        if rule_basic_init.less.endswith(rule_basic_init.special_case):
+            assert rule_basic_init.less == rule_basic_init.special_case
+        else:
+            assert rule_basic_init.less.startswith(rule_basic_init.xpath_base)
+
+    def test_rule_paths_more(self, rule_basic_init):
+        """Check that the `more` value has been combined with the `xpath_base` where required."""
+        if rule_basic_init.more.endswith(rule_basic_init.special_case):
+            assert rule_basic_init.more == rule_basic_init.special_case
+        else:
+            assert rule_basic_init.more.startswith(rule_basic_init.xpath_base)
+
+    # def test_incorrect_date_format_raises_error(self, rule_is_valid_for_case):
+    #     """Check that a dataset with dates in an incorrect format raise expected error."""
+    #     with pytest.raises(ValueError):
+    #         rule_is_valid_for_case.is_valid_for(iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT)
+
+
 # class TestRuleDependent(RuleSubclassTestBase):
 #     """A container for tests relating to RuleDependent."""
 #
