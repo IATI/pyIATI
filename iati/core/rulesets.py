@@ -264,12 +264,15 @@ class RuleAtLeastOne(Rule):
             XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         """
+        path_queries = set()
         found_paths = set()
 
         for path in self.paths:
+            path_queries.add(path)
             if dataset.xml_tree.xpath(path) != list():
                 found_paths.add(path)
-        return len(found_paths) == len(self.paths)
+
+        return len(found_paths) == len(path_queries)
 
 
 class RuleDateOrder(Rule):
@@ -309,6 +312,7 @@ class RuleDateOrder(Rule):
 
         Todo:
             Reimplement 'NOW' as curently incorrect.
+            Implement functionality to ignore function call if `less` or `more` do not return dates.
 
         """
         less_date = dataset.xml_tree.xpath(self.less)

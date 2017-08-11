@@ -1,16 +1,11 @@
 <?xml version="1.0"?>
 
 <root_element>
-  2017-01-01<!--empty path strings given-->
+  <!--empty path strings given-->
   <element1>2000-12-01</element1><!--first element is in the correct date order-->
   <element2>2000-12-24</element2><!--first element is in the correct date order-->
   <element3>2016-01-01</element3><!--duplicate path strings given-->
-  <element4>2015-01-01</element4><!--less is an empty string-->
-
-  <element1 attribute="2014-01-01" /><!--Attribute dates are in the correct order-->
-  <element2 attribute="2014-12-31" /><!--Attribute dates are in the correct order-->
-  <!-- <element3 iso-date="2017-01-01" /><!--More element is 'NOW'-->
-  <!-- <element4 iso-date="NOW" /><!--More element is 'NOW'-->
-  <period-start iso-date="2014-01-01+5:00" /><!-- Dates are in the correct order but have timezone values -->
-  <period-end iso-date="2014-12-31+5:00" />
+  <element6 attribute="2014-01-01" /><!--Attribute dates are in the correct order-->
+  <element7 attribute="2014-12-31" /><!--Attribute dates are in the correct order-->
+  <element8 attribute="2014-01-01" /><!--duplicate attribute paths given-->
 </root_element>

@@ -4,11 +4,9 @@
   <element1></element1><!--single element-->
   <element2></element2><!--multiple elements-->
   <element3></element3><!--multiple elements-->
-  <element4></element4><!--duplicate elements-->
-  <element4></element4><!--duplicate elements-->
+  <element4></element4><!--duplicate element path-->
   <element5 attribute=""></element5><!--single attribute-->
   <element6 attribute=""></element6><!--multiple attributes-->
   <element7 attribute=""></element7><!--multiple attrubutes-->
-  <element8 attribute=""></element8><!--duplicate attrubutes-->
-  <element8 attribute=""></element8><!--duplicate attrubutes-->
+  <element8 attribute=""></element8><!--duplicate attrubute path-->
 </root_element>
