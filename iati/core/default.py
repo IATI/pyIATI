@@ -8,6 +8,7 @@ Todo:
     Implement more than Codelists.
 
 """
+from copy import deepcopy
 import os
 import iati.core.codelists
 import iati.core.constants
@@ -50,20 +51,20 @@ def codelist(name, version=None):
 
     """
     try:
-        codelist_found = codelists()[name]
-        return codelist_found
+        codelist_found = codelists(version, True)[name]
+        return deepcopy(codelist_found)
     except (KeyError, TypeError):
         msg = "There is no default Codelist in version {0} of the Standard with the name {1}.".format(version, name)
         iati.core.utilities.log_warning(msg)
         raise ValueError(msg)
 
 
-def codelists(version=None, bypass_cache=False):
+def codelists(version=None, use_cache=False):
     """Locate the default Codelists for the specified version of the Standard.
 
     Args:
         version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelist is returned.
-        bypass_cache (bool): Whether the cache should be bypassed, instead reloading data from disk even if it's already been loaded.
+        use_cache (bool): Whether the cache should be used rather than loading the Codelists from disk again. A `deepcopy()` should be performed on any returned value before it is modified.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -72,9 +73,9 @@ def codelists(version=None, bypass_cache=False):
         dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.core.Codelist() instances.
 
     Warning:
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+        Setting `use_cache` to `True` is dangerous since it does not return a deep copy of the Codelists. This means that modification of a returned Codelist will modify the Codelist everywhere. A `deepcopy()` should be performed on any returned value before it is modified.
 
-        The `bypass_cache` parameter could potentially be implemented in a cleaner manner. It also shouldn't really exist until a clear use-case is defined - changes elsewhere in the library may make it redundant.
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
     Todo:
         Actually handle versions, including errors.
@@ -89,7 +90,7 @@ def codelists(version=None, bypass_cache=False):
     for path in paths:
         _, filename = os.path.split(path)
         name = filename[:-len(iati.core.resources.FILE_CODELIST_EXTENSION)]  # Get the name of the codelist, without the '.xml' file extension
-        if (name not in _CODELISTS.keys()) or bypass_cache:
+        if (name not in _CODELISTS.keys()) or not use_cache:
             xml_str = iati.core.resources.load_as_string(path)
             codelist_found = iati.core.Codelist(name, xml=xml_str)
             _CODELISTS[name] = codelist_found
