@@ -383,10 +383,10 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element5', 'more': 'element5'},  # both `less` and `more` duplicate xpath
         # {'less': '', 'more': 'element4'},  # `less` is an empty string
         # {'less': 'element5', 'more': ''},  # `more` is an empty string
-        {'less': 'element6/@attribute', 'more': 'element6/@attribute'},  # both `less` and `more` present
-        {'less': 'element7/@attribute', 'more': 'NOW'},  # `more` as NOW
-        {'less': 'NOW', 'more': 'element8/@attribute'},  # `less` as NOW
-        {'less': 'element9/@attribute', 'more': 'element9/@attribute'},  # both `less` and `more` duplicate xpath
+        {'less': 'element6/@attribute', 'more': 'element7/@attribute'},  # both `less` and `more` present
+        {'less': 'element8/@attribute', 'more': 'NOW'},  # `more` as NOW
+        {'less': 'NOW', 'more': 'element9/@attribute'},  # `less` as NOW
+        {'less': 'element10/@attribute', 'more': 'element10/@attribute'},  # both `less` and `more` duplicate xpath
         # {'less': '', 'more': 'end-xpath/@attribute'},  # `less` is an empty string
         # {'less': 'start-xpath/@attribute', 'more': ''}  # `more` is an empty string
     ])

@@ -320,7 +320,9 @@ class RuleDateOrder(Rule):
             if value == 'NOW':
                 value = datetime.today()
             else:
-                return dataset.xml_tree.xpath(value)
+                date = dataset.xml_tree.xpath(value)[0].text
+                import pdb; pdb.set_trace()
+                return datetime.strptime(date[:10], '%Y-%m-%d')
 
         less_date = _is_value_NOW(self.less)
         more_date = _is_value_NOW(self.more)
@@ -332,19 +334,20 @@ class RuleDateOrder(Rule):
             earlier_dates.append(less_date)
         else:
             for date in less_date:
-                earlier_dates.append(datetime.strptime(date.text[:10], '%Y-%m-%d'))
+                earlier_dates.append(date)#(datetime.strptime(date.text[:10], '%Y-%m-%d'))
 
         if isinstance(more_date, datetime):
             later_dates.append(more_date)
         else:
             for date in more_date:
-                later_dates.append(datetime.strptime(date.text[:10], '%Y-%m-%d'))
+                later_dates.append(date)#(datetime.strptime(date.text[:10], '%Y-%m-%d'))
 
-        for (early_date, later_date) in zip(earlier_dates, later_dates):
+        for early_date, later_date in zip(earlier_dates, later_dates):
             if early_date > later_date:
                 return False
 
         return True
+
 
 
 class RuleDependent(Rule):
