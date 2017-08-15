@@ -135,24 +135,26 @@ class Rule(object):
         """Check that a valid `context` is given for a Rule.
 
         Args:
-            context(str): The root of an XPath query.
+            context (str): The XPath expression that selects XML elements that the Rule acts against.
 
         Returns:
-            str: A valid XPath root.
+            str: A valid XPath.
 
         Raises:
             TypeError: When an argument is given that is not a string.
 
         """
         if isinstance(context, six.string_types):
-            return context
+            if context is not '':
+                return context
+            raise ValueError
         raise TypeError
 
     def _normalize_xpath(self, path):
         """Normalize a single XPath by combining it with `context`.
 
         Args:
-            path(str): An XPath.
+            path (str): An XPath.
 
         Raises:
             AttributeError: When the `context` isn't set.
@@ -162,7 +164,7 @@ class Rule(object):
 
         """
         if path == '':
-            return self.context
+            raise ValueError
         return '/'.join([self.context, path])
 
     def _normalize_xpaths(self):
@@ -316,20 +318,27 @@ class RuleDateOrder(Rule):
             Implement functionality to ignore function call if `less` or `more` do not return dates.
 
         """
-        def format_type(value):
-            """Return the correct date string format from given value."""
-            # Special case
-            if value == 'NOW':
-                return datetime.today()
-            # Normal case
-            try:
-                return datetime.strptime(dataset.xml_tree.xpath(value)[0].text, '%Y-%m-%d')
-            except AttributeError:
-                return datetime.strptime(dataset.xml_tree.xpath(value)[0], '%Y-%m-%d')
+        def find_contextualised_element(dataset):
+            """Find the specific element in context for the Rule."""
+            return dataset.xml_tree.xpath(self.context)
 
-        early_date = format_type(self.less)
-        later_date = format_type(self.more)
-        import pdb; pdb.set_trace()
+        def format_type(contextualised_element, value):
+            """Return the correct date string format from given value."""
+            for sub_element in contextualised_element:
+                # Special case
+                if value == 'NOW':
+                    return datetime.today()
+                # Normal case
+                try:
+                    return datetime.strptime(sub_element.xpath(value)[0].text, '%Y-%m-%d')
+                except AttributeError:
+                    return datetime.strptime(sub_element.xpath(value)[0], '%Y-%m-%d')
+
+        contextualised_element = find_contextualised_element(dataset)
+
+        early_date = format_type(contextualised_element, self.less)
+        later_date = format_type(contextualised_element, self.more)
+
         return early_date < later_date
 
 
