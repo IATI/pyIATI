@@ -222,19 +222,19 @@ _ERROR_CODES = {
         'info': '{err}',
         'help': 'An XML document must contain only valid XML.\nShould it be required that additional information be in the document, XML comments may be used. Comments may not, however, be right at the very start of the document. For information about comments in XML, see https://www.w3schools.com/xml/xml_syntax.asp'
     },
-    'err-not-xml-xml-prolog-only-at-doc-start': {
+    'err-not-xml-xml-text-decl-only-at-doc-start': {
         'base_exception': ValueError,
         'category': 'xml',
-        'description': 'The XML prolog must occur at the start of the document.',
+        'description': 'The XML text declaration must occur at the start of the document.',
         'info': '{err}',
-        'help': 'The XML prolog specifies how a computer must read the rest of the XML file. Since it tells the computer how to read the XML file, it must occur at the start of an XML document without any content before it.\nIt looks similar to: `<?xml version="1.0" encoding="UTF-8"?>`.\nFor more information about the XML prolog, see https://www.w3schools.com/xml/xml_syntax.asp'
+        'help': 'The XML text declaration specifies how a computer must read the rest of the XML file. Since it tells the computer how to read the XML file, it must occur at the start of an XML document without any content before it.\nIt looks similar to: `<?xml version="1.0" encoding="UTF-8"?>`.\nFor more information about the XML text declaration, see https://www.w3schools.com/xml/xml_syntax.asp and https://www.w3.org/TR/2000/REC-xml-20001006#sec-TextDecl'
     },
     'err-encoding-invalid': {
         'base_exception': ValueError,
         'category': 'file',
-        'description': 'The encoding specified within the XML prolog is different from the actual encoding of the XML file.',
+        'description': 'The encoding specified within the XML text declaration is different from the actual encoding of the XML file.',
         'info': '{err}',
-        'help': 'The encoding of a file specifies how a computer should interpret the 1s and 0s that it is made up of. For more information about encoding, see https://www.w3.org/International/questions/qa-what-is-encoding\nThe XML prolog looks similar to: `<?xml version="1.0" encoding="UTF-8"?>`. For more information about the XML prolog, see https://www.w3schools.com/xml/xml_syntax.asp'
+        'help': 'The encoding of a file specifies how a computer should interpret the 1s and 0s that it is made up of. For more information about encoding, see https://www.w3.org/International/questions/qa-what-is-encoding\nThe XML text declaration looks similar to: `<?xml version="1.0" encoding="UTF-8"?>`. For more information about the XML text declaration, see https://www.w3schools.com/xml/xml_syntax.asp and https://www.w3.org/TR/2000/REC-xml-20001006#sec-TextDecl'
     },
     'err-encoding-unsupported': {
         'base_exception': ValueError,
@@ -384,7 +384,7 @@ def _parse_xml_syntax_error(err):
         'ERR_DOCUMENT_END': 'err-not-xml-content-at-end',
         'ERR_INVALID_ENCODING': 'err-encoding-invalid',
         'ERR_UNSUPPORTED_ENCODING': 'err-encoding-unsupported',
-        'ERR_RESERVED_XML_NAME': 'err-not-xml-xml-prolog-only-at-doc-start'
+        'ERR_RESERVED_XML_NAME': 'err-not-xml-xml-text-decl-only-at-doc-start'
     }
 
     try:

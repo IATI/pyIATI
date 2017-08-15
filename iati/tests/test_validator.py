@@ -267,8 +267,8 @@ class TestValidateIsXML(object):
         return request.param
 
     @pytest.fixture
-    def xml_str_no_prolog(self, xml_str):
-        """A valid XML string with the prolog removed."""
+    def xml_str_no_text_decl(self, xml_str):
+        """A valid XML string with the text declaration removed."""
         return '\n'.join(xml_str.strip().split('\n')[1:])
 
     @pytest.fixture(params=iati.core.tests.utilities.find_parameter_by_type(['str'], False) + [iati.core.tests.utilities.XML_STR_INVALID])
@@ -317,15 +317,15 @@ class TestValidateIsXML(object):
 
         assert len(result) == 0
 
-    def test_xml_check_valid_xml_str_comments_before_no_prolog_detailed_output(self, xml_str_no_prolog, str_not_xml):
+    def test_xml_check_valid_xml_str_comments_before_no_text_decl_detailed_output(self, xml_str_no_text_decl, str_not_xml):
         """Perform check to see whether a string is valid XML.
 
         The string is valid XML.
-        There is a comment added before the XML. There is no XML prolog.
+        There is a comment added before the XML. There is no XML text declaration.
         Obtain detailed error output.
         """
         comment = '<!-- ' + str_not_xml + ' -->'
-        xml_prefixed_with_comment = comment + xml_str_no_prolog
+        xml_prefixed_with_comment = comment + xml_str_no_text_decl
 
         result = iati.validator.validate_is_xml(xml_prefixed_with_comment)
 
@@ -380,7 +380,7 @@ class TestValidateIsXML(object):
     def test_xml_check_not_xml_str_comments_before_detailed_output(self, xml_str, str_not_xml):
         """Perform check to locate the XML Syntax Errors in a string.
 
-        There is a comment added before the XML. The XML contains a prolog.
+        There is a comment added before the XML. The XML contains a text declaration.
         Obtain detailed error output.
         """
         comment = '<!-- ' + str_not_xml + ' -->'
@@ -389,7 +389,7 @@ class TestValidateIsXML(object):
         result = iati.validator.validate_is_xml(not_xml)
 
         assert result.contains_errors()
-        assert result.contains_error_called('err-not-xml-xml-prolog-only-at-doc-start')
+        assert result.contains_error_called('err-not-xml-xml-text-decl-only-at-doc-start')
 
     def test_xml_check_not_xml_str_text_after_xml_detailed_output(self, xml_str, str_not_xml):
         """Perform check to locate the XML Syntax Errors in a string.
@@ -407,7 +407,7 @@ class TestValidateIsXML(object):
     def test_xml_check_not_xml_str_xml_after_xml_detailed_output(self, xml_str, str_not_xml):
         """Perform check to locate the XML Syntax Errors in a string.
 
-        The string is two concatenated XML strings. Each contains a prolog.
+        The string is two concatenated XML strings. Each contains a text declaration.
         Obtain detailed error output.
         """
         not_xml = xml_str + xml_str
@@ -417,15 +417,15 @@ class TestValidateIsXML(object):
         assert len(result) == 2
         assert result.contains_errors()
         assert result.contains_error_called('err-not-xml-content-at-end')
-        assert result.contains_error_called('err-not-xml-xml-prolog-only-at-doc-start')
+        assert result.contains_error_called('err-not-xml-xml-text-decl-only-at-doc-start')
 
-    def test_xml_check_not_xml_str_xml_after_xml_no_prolog_detailed_output(self, xml_str_no_prolog, str_not_xml):
+    def test_xml_check_not_xml_str_xml_after_xml_no_text_decl_detailed_output(self, xml_str_no_text_decl, str_not_xml):
         """Perform check to locate the XML Syntax Errors in a string.
 
-        The string is two concatenated XML strings. Each contains a prolog.
+        The string is two concatenated XML strings. Each contains a text declaration.
         Obtain detailed error output.
         """
-        not_xml = xml_str_no_prolog + xml_str_no_prolog
+        not_xml = xml_str_no_text_decl + xml_str_no_text_decl
 
         result = iati.validator.validate_is_xml(not_xml)
 
