@@ -1,6 +1,7 @@
 """A module containing tests for the library representation of default values."""
 import pytest
 import iati.core.codelists
+import iati.core.constants
 import iati.core.default
 import iati.core.schemas
 
@@ -47,17 +48,49 @@ class TestDefault(object):
         for _, codelist in codelists.items():
             assert isinstance(codelist, iati.core.Codelist)
 
+    def test_default_activity_schemas(self):
+        """Check that the default ActivitySchemas are correct.
+
+        Todo:
+            Check internal values beyond the schemas being the correct type.
+        """
+        schemas = iati.core.default.activity_schemas()
+
+        assert isinstance(schemas, dict)
+        assert len(schemas) == 1
+        for _, schema in schemas.items():
+            assert isinstance(schema, iati.core.ActivitySchema)
+
+    def test_default_organisation_schemas(self):
+        """Check that the default ActivitySchemas are correct.
+
+        Todo:
+            Check internal values beyond the schemas being the correct type.
+        """
+        schemas = iati.core.default.organisation_schemas()
+
+        assert isinstance(schemas, dict)
+        assert len(schemas) == 1
+        for _, schema in schemas.items():
+            assert isinstance(schema, iati.core.OrganisationSchema)
+
     def test_default_schemas(self):
         """Check that the default Schemas are correct.
 
         Todo:
             Check internal values beyond the schemas being the correct type.
-
-            Check for the correct number of Schemas.
         """
+        version = iati.core.constants.STANDARD_VERSION_LATEST
         schemas = iati.core.default.schemas()
 
         assert isinstance(schemas, dict)
-        assert len(schemas) == 1
-        for _, schema in schemas.items():
-            assert isinstance(schema, iati.core.Schema)
+        assert isinstance(schemas[version], dict)
+        assert len(schemas[version]) == 2
+        for schema in schemas[version].values():
+            assert isinstance(schema, (iati.core.ActivitySchema, iati.core.OrganisationSchema))
+
+    @pytest.mark.parametrize("invalid_name", iati.core.tests.utilities.find_parameter_by_type([], False))
+    def test_default_schema(self, invalid_name):
+        """Check that an Error is raised when attempting to load a Schema name that does not exist."""
+        with pytest.raises((ValueError, TypeError)):
+            iati.core.default.schema(invalid_name)

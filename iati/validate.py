@@ -16,5 +16,9 @@ def is_valid(dataset, schema):
 
     Warning:
         Parameters are likely to change in some manner.
+
+    Todo:
+        Consider if functionality should take account of differences between iati.core.Schema, iati.core.ActivtySchema and iati.core.OrganisationSchema
+
     """
     raise NotImplementedError
