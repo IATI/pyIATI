@@ -124,6 +124,9 @@ class ValidationErrorLog(object):
         Note:
             All ValidationErrors within the iterable shall be added. Any other contents shall not, and will fail to be added silently.
 
+        Raises:
+            TypeError: When values is not an iterable.
+
         """
         for value in values:
             try:
