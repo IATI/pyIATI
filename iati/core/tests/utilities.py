@@ -24,9 +24,9 @@ SCHEMA_ACTIVITY_NAME_VALID = 'iati-activities-schema'
 SCHEMA_ORGANISATION_NAME_VALID = 'iati-organisations-schema'
 """A string containing a valid IATI Organisaion Schema name."""
 
-XML_STR_VALID_NOT_IATI = '<parent><child attribute="value" /></parent>'
+XML_STR_VALID_NOT_IATI = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_not_iati'))
 """A string containing valid XML that is not valid against the IATI schema."""
-XML_STR_VALID_IATI = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid'))
+XML_STR_VALID_IATI = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati'))
 """A string containing valid IATI XML."""
 XML_STR_VALID_IATI_INVALID_CODE = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_invalid_code'))
 """A string containing valid IATI XML, but an invalid Code valid."""
@@ -111,6 +111,8 @@ def find_parameter_by_type(types, type_as_specified=True):
         valid_keys = [key for key in TYPE_TEST_DATA.keys() if key not in valid_keys_as_specified]
     else:
         valid_keys = valid_keys_as_specified
+
+    valid_keys = sorted(valid_keys)
 
     results = []
 

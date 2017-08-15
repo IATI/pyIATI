@@ -8,18 +8,20 @@
 #
 
 # linters
-flake8==3.2.1 # rq.filter: <4.0
+flake8==3.4.1 # rq.filter: <4.0
 pydocstyle==2.0.0 # rq.filter: <3.0
-pylint==1.6.5 # rq.filter: <2.0
+pylint==1.7.2 # rq.filter: <2.0
 
 # code complexity
 radon==2.0.2 # rq.filter: <3.0
 
 # testing tools
-pytest==3.0.5 # rq.filter: <4.0
-pytest-cov==2.4.0 # rq.filter: <3.0
+pytest==3.2.0 # rq.filter: <4.0
+pytest-cov==2.5.1 # rq.filter: <3.0
+pytest-xdist==1.18.2 # rq.filter: <2.0
 
 # python2/python3 compatibility library
+future==0.16.0 # rq.filter: <1.0
 six==1.10.0 # rq.filter: <2.0
 
 #
@@ -27,5 +29,5 @@ six==1.10.0 # rq.filter: <2.0
 #
 
 # documentation
-Sphinx==1.5.2 # rq.filter: <2.0
-sphinx_rtd_theme==0.1.9 # rq.filter: <1.0
+Sphinx==1.6.3 # rq.filter: <2.0
+sphinx-rtd-theme==0.2.4 # rq.filter: <1.0
