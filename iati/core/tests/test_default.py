@@ -1,6 +1,7 @@
 """A module containing tests for the library representation of default values."""
 import pytest
 import iati.core.codelists
+import iati.core.constants
 import iati.core.default
 import iati.core.schemas
 
@@ -79,11 +80,13 @@ class TestDefault(object):
         Todo:
             Check internal values beyond the schemas being the correct type.
         """
+        version = iati.core.constants.STANDARD_VERSION_LATEST
         schemas = iati.core.default.schemas()
 
         assert isinstance(schemas, dict)
-        assert len(schemas) == 2
-        for _, schema in schemas.items():
+        assert isinstance(schemas[version], dict)
+        assert len(schemas[version]) == 2
+        for schema in schemas[version].values():
             assert isinstance(schema, (iati.core.ActivitySchema, iati.core.OrganisationSchema))
 
     @pytest.mark.parametrize("invalid_name", iati.core.tests.utilities.find_parameter_by_type([], False))
