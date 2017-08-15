@@ -171,7 +171,7 @@ class Rule(object):
         May be overridden in child class that does not use `paths`.
 
         """
-        self.paths = [self._normalize_xpath(path) for path in self.paths]
+        self.normalized_paths = [self._normalize_xpath(path) for path in self.paths]
 
     def _valid_rule_configuration(self, case):
         """Check that a configuration being passed into a Rule is valid for the given type of Rule.
@@ -287,11 +287,12 @@ class RuleDateOrder(Rule):
 
     def _normalize_xpaths(self):
         """Normalize xpaths by combining them with `xpath_base`."""
+        self.normalized_paths = list()
         if self.less is not self.special_case:
-            self.less = self._normalize_xpath(self.less)
+            self.normalized_paths.append(self._normalize_xpath(self.less))
 
         if self.more is not self.special_case:
-            self.more = self._normalize_xpath(self.more)
+            self.normalized_paths.append(self._normalize_xpath(self.more))
 
     def is_valid_for(self, dataset):
         """Assert that the date value of `less` is older than the date value of `more`.
@@ -315,39 +316,21 @@ class RuleDateOrder(Rule):
             Implement functionality to ignore function call if `less` or `more` do not return dates.
 
         """
-        def _is_value_NOW(value):
-            """Set `less_date` and `more_date` to current date when `NOW` value given."""
+        def format_type(value):
+            """Return the correct date string format from given value."""
+            # Special case
             if value == 'NOW':
-                value = datetime.today()
-            else:
-                date = dataset.xml_tree.xpath(value)[0].text
-                import pdb; pdb.set_trace()
-                return datetime.strptime(date[:10], '%Y-%m-%d')
+                return datetime.today()
+            # Normal case
+            try:
+                return datetime.strptime(dataset.xml_tree.xpath(value)[0].text, '%Y-%m-%d')
+            except AttributeError:
+                return datetime.strptime(dataset.xml_tree.xpath(value)[0], '%Y-%m-%d')
 
-        less_date = _is_value_NOW(self.less)
-        more_date = _is_value_NOW(self.more)
-
-        earlier_dates = list()
-        later_dates = list()
-
-        if isinstance(less_date, datetime):
-            earlier_dates.append(less_date)
-        else:
-            for date in less_date:
-                earlier_dates.append(date)#(datetime.strptime(date.text[:10], '%Y-%m-%d'))
-
-        if isinstance(more_date, datetime):
-            later_dates.append(more_date)
-        else:
-            for date in more_date:
-                later_dates.append(date)#(datetime.strptime(date.text[:10], '%Y-%m-%d'))
-
-        for early_date, later_date in zip(earlier_dates, later_dates):
-            if early_date > later_date:
-                return False
-
-        return True
-
+        early_date = format_type(self.less)
+        later_date = format_type(self.more)
+        import pdb; pdb.set_trace()
+        return early_date < later_date
 
 
 class RuleDependent(Rule):
@@ -515,7 +498,7 @@ class RuleStartsWith(Rule):
         """Normalize xpaths by combining them with `xpath_base`."""
         super(RuleStartsWith, self)._normalize_xpaths()
 
-        self.start = self._normalize_xpath(self.start)
+        self.normalized_paths.append(self._normalize_xpath(self.start))
 
     def is_valid_for(self, dataset):
         """Assert that the prefixing text of all given `paths` starts with the text of `start`.
