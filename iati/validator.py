@@ -470,7 +470,7 @@ def is_xml(maybe_xml):
     """Determine whether a given parameter is XML.
 
     Args:
-        maybe_xml (str): An string that may or may not contain valid XML.
+        maybe_xml (str): An string that may or may not be valid XML.
 
     Returns:
         bool: A boolean indicating whether the given Dataset is valid XML.
@@ -481,15 +481,15 @@ def is_xml(maybe_xml):
     return not error_log.contains_errors()
 
 
-def validate_is_xml(dataset):
+def validate_is_xml(maybe_xml):
     """Check whether a Dataset contains valid XML.
 
     Args:
-        dataset (iati.core.Dataset): The Dataset to check validity of.
+        maybe_xml (str): An string that may or may not be valid XML.
 
     Returns:
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
 
     """
-    return _check_is_xml(dataset)
+    return _check_is_xml(maybe_xml)
 
