@@ -123,20 +123,20 @@ class TestRule(object):
 
     def test_rule_class_cannot_be_instantiated_directly_without_name(self):
         """Check that Rule itself cannot be directly instantiated."""
-        xpath_base = 'an xpath'
+        context = 'an xpath'
         case = {'paths': ['path_1', 'path_2']}
 
         with pytest.raises(AttributeError):
-            iati.core.Rule(xpath_base, case)
+            iati.core.Rule(context, case)
 
     def test_rule_class_cannot_be_instantiated_directly_with_name(self):
         """Check that Rule itself cannot be directly instantiated with a Rule name."""
         name = 'atleast_one'
-        xpath_base = 'an xpath'
+        context = 'an xpath'
         case = {'paths': ['path_1', 'path_2']}
 
         with pytest.raises(TypeError):
-            iati.core.Rule(name, xpath_base, case)
+            iati.core.Rule(name, context, case)
 
 
 class TestRuleSubclasses(object):
@@ -162,57 +162,57 @@ class TestRuleSubclasses(object):
     @pytest.mark.parametrize("case", iati.core.tests.utilities.find_parameter_by_type(['mapping'], False))
     def test_rule_init_invalid_case(self, rule_constructor, case):
         """Check that a Rule cannot be created when case is not a dictionary."""
-        xpath_base = 'an xpath'
+        context = 'an xpath'
 
         with pytest.raises(ValueError):
-            rule_constructor(xpath_base, case)
+            rule_constructor(context, case)
 
     def test_rule_init_invalid_case_property(self, rule_constructor):
         """Check that a Rule cannot be created when a case has a property that is not permitted."""
-        xpath_base = 'an xpath'
+        context = 'an xpath'
         case = {'thisis_an_invalidkey': ['this_is_a_value']}
 
         with pytest.raises(ValueError):
-            rule_constructor(xpath_base, case)
+            rule_constructor(context, case)
 
 
 class RuleSubclassTestBase(object):
     """A base class for Rule subclass tests."""
 
     @pytest.fixture
-    def xpath_base(self):
-        """Return valid xpath_base."""
+    def context(self):
+        """Return valid context."""
         return '//root_element'
 
     @pytest.fixture
-    def empty_xpath_base(self):
-        """Empty_xpath_base."""
+    def empty_context(self):
+        """Empty_context."""
         return ''
 
     @pytest.fixture
-    def rule_basic_init(self, rule_constructor, instantiating_case, xpath_base):
+    def rule_basic_init(self, rule_constructor, instantiating_case, context):
         """Rule subclass."""
-        return rule_constructor(xpath_base, instantiating_case)
+        return rule_constructor(context, instantiating_case)
 
     # @pytest.fixture
-    # def rule_is_valid_for_case(self, rule_constructor, xpath_base, case_for_is_valid_for):
+    # def rule_is_valid_for_case(self, rule_constructor, context, case_for_is_valid_for):
     #     """Rule with specific cases for checking the `is_valid_for` function."""
-    #     return rule_constructor(xpath_base, case_for_is_valid_for)
+    #     return rule_constructor(context, case_for_is_valid_for)
 
     @pytest.fixture
-    def rule_empty_xpath_base(self, rule_constructor, instantiating_case, empty_xpath_base):
-        """Rule subclass with an empty xpath_base."""
-        return rule_constructor(empty_xpath_base, instantiating_case)
+    def rule_empty_context(self, rule_constructor, instantiating_case, empty_context):
+        """Rule subclass with an empty context."""
+        return rule_constructor(empty_context, instantiating_case)
 
     @pytest.fixture
-    def rule_valid_empty_case(self, empty_path_case, xpath_base, rule_constructor):
+    def rule_valid_empty_case(self, empty_path_case, context, rule_constructor):
         """Rule with a valid empty path case."""
-        return rule_constructor(xpath_base, empty_path_case)
+        return rule_constructor(context, empty_path_case)
 
     @pytest.fixture
-    def rule_empty_xpath_base_and_paths(self, rule_constructor, empty_xpath_base, empty_path_case):
-        """Rule subclass with an empty xpath_base and empty path case."""
-        return rule_constructor(empty_xpath_base, empty_path_case)
+    def rule_empty_context_and_paths(self, rule_constructor, empty_context, empty_path_case):
+        """Rule subclass with an empty context and empty path case."""
+        return rule_constructor(empty_context, empty_path_case)
 
     @pytest.fixture
     def rule_constructor(self, rule_type):
@@ -248,19 +248,19 @@ class RuleSubclassTestBase(object):
         # Exclude rules with no `paths` attribute.
         if 'paths' in dir(rule_basic_init):
             for path in rule_basic_init.paths:
-                assert path.startswith(rule_basic_init.xpath_base)
+                assert path.startswith(rule_basic_init.context)
 
-    @pytest.mark.parametrize("xpath_base", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
-    def test_rule_init_invalid_xpath_base(self, rule_constructor, xpath_base, instantiating_case):
-        """Check that a Rule subclass cannot be created when xpath_base is not a string."""
+    @pytest.mark.parametrize("context", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    def test_rule_init_invalid_context(self, rule_constructor, context, instantiating_case):
+        """Check that a Rule subclass cannot be created when context is not a string."""
         with pytest.raises(TypeError):
-            rule_constructor(xpath_base, instantiating_case)
+            rule_constructor(context, instantiating_case)
 
     def test_rule_invalid_case(self, rule_constructor, uninstantiating_case):
         """Check that a Rule cannot be instantiated when the case is invalid."""
-        xpath_base = 'an xpath'
+        context = 'an xpath'
         with pytest.raises(ValueError):
-            rule_constructor(xpath_base, uninstantiating_case)
+            rule_constructor(context, uninstantiating_case)
 
     def test_is_valid_for(self, instantiating_dataset, rule_basic_init):
         """Check that a given Rule returns the expected result when given Dataset."""
@@ -287,22 +287,22 @@ class RuleSubclassTestBase(object):
         with pytest.raises(AttributeError):
             rule_basic_init.is_valid_for(iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_atleastone')))
 
-    def test_empty_xpath_base_rule_init_normalised_paths(self, rule_empty_xpath_base):
-        """Check that a Rule with an empty xpath_base can be instantiated correctly with normalised `paths`.
+    def test_empty_context_rule_init_normalised_paths(self, rule_empty_context):
+        """Check that a Rule with an empty context can be instantiated correctly with normalised `paths`.
 
         Note:
             Rules without `paths` are checked for correct normalisation in their own TestRuleSubclass.
 
         """
-        if 'paths' in dir(rule_empty_xpath_base):
-            for path in rule_empty_xpath_base.paths:
-                assert path.startswith(rule_empty_xpath_base.xpath_base)
+        if 'paths' in dir(rule_empty_context):
+            for path in rule_empty_context.paths:
+                assert path.startswith(rule_empty_context.context)
 
-    def test_empty_xpath_base_empty_path_is_valid_for(self, rule_empty_xpath_base_and_paths, valid_dataset):
-        """Check that a Rule with an empty xpath_base and empty paths raises error."""
+    def test_empty_context_empty_path_is_valid_for(self, rule_empty_context_and_paths, valid_dataset):
+        """Check that a Rule with an empty context and empty paths raises error."""
         # RuleStartswith raises an IndexError instead.
         with pytest.raises((lxml.etree.XPathEvalError, IndexError)):
-            rule_empty_xpath_base_and_paths.is_valid_for(valid_dataset)
+            rule_empty_context_and_paths.is_valid_for(valid_dataset)
 
 
 class TestRuleAtLeastOne(RuleSubclassTestBase):
@@ -453,18 +453,18 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         return {'less': '', 'more': ''}
 
     def test_rule_paths_less(self, rule_basic_init):
-        """Check that the `less` value has been combined with the `xpath_base` where required."""
+        """Check that the `less` value has been combined with the `context` where required."""
         if rule_basic_init.less.endswith(rule_basic_init.special_case):
             assert rule_basic_init.less == rule_basic_init.special_case
         else:
-            assert rule_basic_init.less.startswith(rule_basic_init.xpath_base)
+            assert rule_basic_init.less.startswith(rule_basic_init.context)
 
     def test_rule_paths_more(self, rule_basic_init):
-        """Check that the `more` value has been combined with the `xpath_base` where required."""
+        """Check that the `more` value has been combined with the `context` where required."""
         if rule_basic_init.more.endswith(rule_basic_init.special_case):
             assert rule_basic_init.more == rule_basic_init.special_case
         else:
-            assert rule_basic_init.more.startswith(rule_basic_init.xpath_base)
+            assert rule_basic_init.more.startswith(rule_basic_init.context)
 
     # def test_incorrect_date_format_raises_error(self, rule_is_valid_for_case):
     #     """Check that a dataset with dates in an incorrect format raise expected error."""
@@ -765,8 +765,8 @@ class TestRuleDateOrder(RuleSubclassTestBase):
 #         return {'start': 'reporting-org/@ref', 'paths': ['']}
 #
 #     def test_rule_paths_start(self, rule_basic_init):
-#         """Check that the `start` value has been combined with the `xpath_base`."""
-#         assert rule_basic_init.start.startswith(rule_basic_init.xpath_base)
+#         """Check that the `start` value has been combined with the `context`."""
+#         assert rule_basic_init.start.startswith(rule_basic_init.context)
 #
 #
 # class TestRuleSum(RuleSubclassTestBase):

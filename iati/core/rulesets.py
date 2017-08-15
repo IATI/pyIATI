@@ -94,11 +94,11 @@ class Ruleset(object):
         Extract each case of each Rule from the Ruleset and add to initialised `rules` set.
 
         """
-        for xpath_base, rule in self.ruleset.items():
+        for context, rule in self.ruleset.items():
             for rule_type, cases in rule.items():
                 for case in cases['cases']:
                     constructor = locate_constructor_for_rule_type(rule_type)
-                    new_rule = constructor(xpath_base, case)
+                    new_rule = constructor(context, case)
                     self.rules.add(new_rule)
 
 
@@ -113,11 +113,11 @@ class Rule(object):
 
     """
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise a Rule.
 
         Args:
-            xpath_base (str): The base of the XPath that the Rule will act upon.
+            context (str): The base of the XPath that the Rule will act upon.
             case (dict): Specific configuration for this instance of the Rule.
 
         Raises:
@@ -126,16 +126,16 @@ class Rule(object):
 
         """
         self.case = case
-        self.xpath_base = self._valid_xpath_base(xpath_base)
+        self.context = self._valid_context(context)
         self._valid_rule_configuration(case)
         self._set_case_attributes(case)
         self._normalize_xpaths()
 
-    def _valid_xpath_base(self, xpath_base):
-        """Check that a valid `xpath_base` is given for a Rule.
+    def _valid_context(self, context):
+        """Check that a valid `context` is given for a Rule.
 
         Args:
-            xpath_base(str): The root of an XPath query.
+            context(str): The root of an XPath query.
 
         Returns:
             str: A valid XPath root.
@@ -144,29 +144,29 @@ class Rule(object):
             TypeError: When an argument is given that is not a string.
 
         """
-        if isinstance(xpath_base, six.string_types):
-            return xpath_base
+        if isinstance(context, six.string_types):
+            return context
         raise TypeError
 
     def _normalize_xpath(self, path):
-        """Normalize a single XPath by combining it with `xpath_base`.
+        """Normalize a single XPath by combining it with `context`.
 
         Args:
             path(str): An XPath.
 
         Raises:
-            AttributeError: When the `xpath_base` isn't set.
+            AttributeError: When the `context` isn't set.
 
         Todo:
             Add some logging.
 
         """
         if path == '':
-            return self.xpath_base
-        return '/'.join([self.xpath_base, path])
+            return self.context
+        return '/'.join([self.context, path])
 
     def _normalize_xpaths(self):
-        """Normalize xpaths by combining them with `xpath_base`.
+        """Normalize xpaths by combining them with `context`.
 
         May be overridden in child class that does not use `paths`.
 
@@ -244,11 +244,11 @@ class Rule(object):
 class RuleAtLeastOne(Rule):
     """Representation of a Rule that checks that there is at least one Element matching a given XPath."""
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise an `atleast_one` rule."""
         self.name = "atleast_one"
 
-        super(RuleAtLeastOne, self).__init__(xpath_base, case)
+        super(RuleAtLeastOne, self).__init__(context, case)
 
     def is_valid_for(self, dataset):
         """Check Dataset has at least one instance of a given case for an Element.
@@ -278,15 +278,15 @@ class RuleAtLeastOne(Rule):
 class RuleDateOrder(Rule):
     """Representation of a Rule that checks that the date value of `more` is the most recent value in comparison to the date value of `less`."""
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise a `date_order` rule."""
         self.name = "date_order"
         self.special_case = 'NOW'  # Was a constant sort of
 
-        super(RuleDateOrder, self).__init__(xpath_base, case)
+        super(RuleDateOrder, self).__init__(context, case)
 
     def _normalize_xpaths(self):
-        """Normalize xpaths by combining them with `xpath_base`."""
+        """Normalize xpaths by combining them with `context`."""
         self.normalized_paths = list()
         if self.less is not self.special_case:
             self.normalized_paths.append(self._normalize_xpath(self.less))
@@ -336,11 +336,11 @@ class RuleDateOrder(Rule):
 class RuleDependent(Rule):
     """Representation of a Rule that checks that if one of the elements in a given `path` exists then all its dependent paths must also exist."""
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise a `dependent` rule."""
         self.name = "dependent"
 
-        super(RuleDependent, self).__init__(xpath_base, case)
+        super(RuleDependent, self).__init__(context, case)
 
     def is_valid_for(self, dataset):
         """Assert that either all given `paths` or none of the given `paths` exist in a Dataset.
@@ -369,11 +369,11 @@ class RuleDependent(Rule):
 class RuleNoMoreThanOne(Rule):
     """Representation of a Rule that checks that there is no more than one Element matching a given XPath."""
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise a `no_more_than_one` rule."""
         self.name = "no_more_than_one"
 
-        super(RuleNoMoreThanOne, self).__init__(xpath_base, case)
+        super(RuleNoMoreThanOne, self).__init__(context, case)
 
     def is_valid_for(self, dataset):
         """Check dataset has no more than one instance of a given case for an Element.
@@ -401,7 +401,7 @@ class RuleNoMoreThanOne(Rule):
 class RuleRegexMatches(Rule):
     """Representation of a Rule that checks that the given `paths` must contain values that match the `regex` value."""
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise a `regex_matches` Rule.
 
         Raises:
@@ -410,7 +410,7 @@ class RuleRegexMatches(Rule):
         """
         self.name = "regex_matches"
 
-        super(RuleRegexMatches, self).__init__(xpath_base, case)
+        super(RuleRegexMatches, self).__init__(context, case)
 
         try:
             re.compile(self.regex)
@@ -442,7 +442,7 @@ class RuleRegexMatches(Rule):
 class RuleRegexNoMatches(Rule):
     """Representation of a Rule that checks that the given `paths` must not contain values that match the `regex` value."""
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise a `regex_no_matches` Rule.
 
         Raises:
@@ -451,7 +451,7 @@ class RuleRegexNoMatches(Rule):
         """
         self.name = "regex_no_matches"
 
-        super(RuleRegexNoMatches, self).__init__(xpath_base, case)
+        super(RuleRegexNoMatches, self).__init__(context, case)
 
         try:
             re.compile(self.regex)
@@ -488,14 +488,14 @@ class RuleStartsWith(Rule):
 
     """
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise a `startswith` Rule."""
         self.name = "startswith"
 
-        super(RuleStartsWith, self).__init__(xpath_base, case)
+        super(RuleStartsWith, self).__init__(context, case)
 
     def _normalize_xpaths(self):
-        """Normalize xpaths by combining them with `xpath_base`."""
+        """Normalize xpaths by combining them with `context`."""
         super(RuleStartsWith, self)._normalize_xpaths()
 
         self.normalized_paths.append(self._normalize_xpath(self.start))
@@ -526,11 +526,11 @@ class RuleStartsWith(Rule):
 class RuleSum(Rule):
     """Representation of a Rule that checks that the values in given `path` attributes must sum to the given `sum` value."""
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise a `sum` rule."""
         self.name = "sum"
 
-        super(RuleSum, self).__init__(xpath_base, case)
+        super(RuleSum, self).__init__(context, case)
 
     def is_valid_for(self, dataset):
         """Assert that the total of the values given in `paths` match the given `sum` value.
@@ -561,11 +561,11 @@ class RuleSum(Rule):
 class RuleUnique(Rule):
     """Representation of a Rule that checks that the text of each given path must be unique."""
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise a `unique` rule."""
         self.name = "unique"
 
-        super(RuleUnique, self).__init__(xpath_base, case)
+        super(RuleUnique, self).__init__(context, case)
 
     def is_valid_for(self, dataset):
         """Assert that the given `paths` are not found in the dataset.xml_tree more than once.
