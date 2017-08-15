@@ -225,6 +225,11 @@ class TestDatasetWithEncoding(object):
         Note:
             There are a number of other errors that may be raised with alternative encoding mismatches. These are not supported since it does not appear likely enough that they will occur and be a large issue in practice.
 
+            This is due to a pair of issues with libxml2 (the underlying library behind lxml):
+
+            1. It only supports a limited number of encodings out-of-the-box.
+            2. Different encoding pairs (whether supported or unsupported by libxml2; byte-equivalent-subsets or distinct encodings; and more), will return different error codes in what one would expect to act as equivalent situations.
+
         """
         xml = xml_needing_encoding.format(encoding_declared)
         xml_encoded = xml.encode(encoding_used)  # Encode the whole string in line with the specified encoding
