@@ -127,7 +127,7 @@ def activity_schemas(use_cache=False):
     output = {}
     for version in iati.core.constants.STANDARD_VERSIONS:
         activity_schema_paths = iati.core.resources.get_all_activity_schema_paths(version)
-        if not use_cache or 'iati-activities-schema' not in _SCHEMAS.get(version, {}).keys():
+        if ('iati-activities-schema' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
             if version not in _SCHEMAS.keys():
                 _SCHEMAS[version] = {}
             _SCHEMAS[version]['iati-activities-schema'] = iati.core.ActivitySchema(activity_schema_paths[0])
@@ -153,7 +153,7 @@ def organisation_schemas(use_cache=False):
     output = {}
     for version in iati.core.constants.STANDARD_VERSIONS:
         organisation_schema_paths = iati.core.resources.get_all_organisation_schema_paths(version)
-        if not use_cache or 'iati-organisations-schema' not in _SCHEMAS.get(version, {}).keys():
+        if ('iati-organisations-schema' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
             if version not in _SCHEMAS.keys():
                 _SCHEMAS[version] = {}
             _SCHEMAS[version]['iati-organisations-schema'] = iati.core.OrganisationSchema(organisation_schema_paths[0])
@@ -183,6 +183,7 @@ def schemas(use_cache=False):
     """
     activity_schemas(use_cache)
     organisation_schemas(use_cache)
+
     return _SCHEMAS  # Both activity_schemas and organisation_schemas will update the _SCHEMAS constant.
 
 
