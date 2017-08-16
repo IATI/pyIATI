@@ -419,9 +419,12 @@ def _parse_lxml_log_entry(log_entry):
         Create a small program to determine the common types of errors so that they can be handled as special cases with detailed help info.
 
     """
+    # set the `err` variable so it can be used in error string formatting via locals()
+    err = log_entry
+
     # configure local variables for the creation of the error
-    line_number = log_entry.line
-    column_number = log_entry.column
+    line_number = err.line
+    column_number = err.column
 
     # undertake the mapping between error name formats
     lxml_to_iati_error_mapping = {
@@ -434,7 +437,7 @@ def _parse_lxml_log_entry(log_entry):
     }
 
     try:
-        err_name = lxml_to_iati_error_mapping[log_entry.type_name]
+        err_name = lxml_to_iati_error_mapping[err.type_name]
     except KeyError:
         err_name = 'err-not-xml-uncategorised-xml-syntax-error'
 
