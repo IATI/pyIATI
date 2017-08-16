@@ -253,59 +253,56 @@ class TestValidationBasicIATI(object):
 
         return iati.core.Dataset(xml_str)
 
-    def test_basic_validation_valid(self):
+    @pytest.fixture
+    def schema_basic(self):
+        """A schema with no Codelists added."""
+        return iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+
+    def test_basic_validation_valid(self, schema_basic):
         """Perform a super simple data validation against a valid Dataset."""
         data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
-        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
         assert iati.validator.is_xml(data.xml_str)
-        assert iati.validator.is_iati_xml(data, schema)
-        assert iati.validator.is_valid(data, schema)
+        assert iati.validator.is_iati_xml(data, schema_basic)
+        assert iati.validator.is_valid(data, schema_basic)
 
-    def test_basic_validation_should_pass_from_ssot(self, iati_dataset_valid_from_ssot):
+    def test_basic_validation_should_pass_from_ssot(self, iati_dataset_valid_from_ssot, schema_basic):
         """Perform check to see whether a parameter is valid IATI XML.
 
         The parameter is valid IATI XML. It is sourced from the SSOT.
         """
-        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        assert iati.validator.is_iati_xml(iati_dataset_valid_from_ssot, schema_basic)
 
-        assert iati.validator.is_iati_xml(iati_dataset_valid_from_ssot, schema)
-
-    def test_basic_validation_invalid(self):
+    def test_basic_validation_invalid(self, schema_basic):
         """Perform a super simple data validation against an invalid Dataset."""
         data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_NOT_IATI)
-        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
         assert iati.validator.is_xml(data.xml_str)
-        assert not iati.validator.is_iati_xml(data, schema)
-        assert not iati.validator.is_valid(data, schema)
+        assert not iati.validator.is_iati_xml(data, schema_basic)
+        assert not iati.validator.is_valid(data, schema_basic)
 
-    def test_basic_validation_should_fail_from_ssot(self, iati_dataset_invalid_from_ssot):
+    def test_basic_validation_should_fail_from_ssot(self, iati_dataset_invalid_from_ssot, schema_basic):
         """Perform check to see whether a parameter is valid IATI XML.
 
         The parameter is notvalid IATI XML. It is sourced from the SSOT.
         """
-        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        assert not iati.validator.is_iati_xml(iati_dataset_invalid_from_ssot, schema_basic)
 
-        assert not iati.validator.is_iati_xml(iati_dataset_invalid_from_ssot, schema)
-
-    def test_basic_validation_invalid_missing_required_element(self):
+    def test_basic_validation_invalid_missing_required_element(self, schema_basic):
         """Perform a super simple data validation against a Dataset that is invalid due to a missing required element."""
         data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT)
-        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
         assert iati.validator.is_xml(data.xml_str)
-        assert not iati.validator.is_iati_xml(data, schema)
-        assert not iati.validator.is_valid(data, schema)
+        assert not iati.validator.is_iati_xml(data, schema_basic)
+        assert not iati.validator.is_valid(data, schema_basic)
 
-    def test_basic_validation_invalid_missing_required_element_from_common(self):
+    def test_basic_validation_invalid_missing_required_element_from_common(self, schema_basic):
         """Perform a super simple data validation against a Dataset that is invalid due to a missing required element that is defined in iati-common.xsd."""
         data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT_COMMON)
-        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
         assert iati.validator.is_xml(data.xml_str)
-        assert not iati.validator.is_iati_xml(data, schema)
-        assert not iati.validator.is_valid(data, schema)
+        assert not iati.validator.is_iati_xml(data, schema_basic)
+        assert not iati.validator.is_valid(data, schema_basic)
 
 
 class TestValidateIsXML(object):
@@ -495,12 +492,7 @@ class TestIsValidIATIXML(object):
 
     @pytest.fixture
     def schema_basic(self):
-        """A schema with no Codelists added.
-
-        Returns:
-            A valid activity schema with no Codelists added.
-
-        """
+        """A schema with no Codelists added."""
         return iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
     @pytest.fixture(params=[
