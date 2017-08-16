@@ -1,6 +1,5 @@
 """A module containing tests for the library representation of Rulesets."""
 import pytest
-import lxml
 import iati.core.default
 import iati.core.rulesets
 import iati.core.resources
@@ -143,7 +142,7 @@ class TestRuleSubclasses(object):
     """A container for tests relating to all Rule subclasses."""
 
     @pytest.fixture(params=[
-        iati.core.rulesets.locate_constructor_for_rule_type(rule_type) for rule_type in iati.core.rulesets._VALID_RULE_TYPES
+        iati.core.rulesets.constructor_for_rule_type(rule_type) for rule_type in iati.core.rulesets._VALID_RULE_TYPES
     ])
     def rule_constructor(self, request):
         """Return constructor for the current type of Rule.
@@ -180,7 +179,7 @@ class RuleSubclassTestBase(object):
     """A base class for Rule subclass tests."""
 
     @pytest.fixture
-    def context(self):
+    def valid_context(self):
         """Return valid context."""
         return '//root_element'
 
@@ -190,19 +189,19 @@ class RuleSubclassTestBase(object):
         return ''
 
     @pytest.fixture
-    def rule_basic_init(self, rule_constructor, instantiating_case, context):
+    def rule_basic_init(self, rule_constructor, instantiating_case, valid_context):
         """Rule subclass."""
-        return rule_constructor(context, instantiating_case)
+        return rule_constructor(valid_context, instantiating_case)
 
     @pytest.fixture
-    def rule_is_valid_for(self, rule_constructor, validating_case, context):
+    def rule_is_valid_for(self, rule_constructor, validating_case, valid_context):
         """Rule subclass for validation."""
-        return rule_constructor(context, validating_case)
+        return rule_constructor(valid_context, validating_case)
 
-    # @pytest.fixture
-    # def rule_is_valid_for_case(self, rule_constructor, context, case_for_is_valid_for):
-    #     """Rule with specific cases for checking the `is_valid_for` function."""
-    #     return rule_constructor(context, case_for_is_valid_for)
+    @pytest.fixture
+    def rule_is_invalid_for(self, rule_constructor, invalidating_case, valid_context):
+        """Rule with specific cases for checking the `is_valid_for` function."""
+        return rule_constructor(valid_context, invalidating_case)
 
     @pytest.fixture
     def rule_constructor(self, rule_type):
@@ -212,7 +211,7 @@ class RuleSubclassTestBase(object):
             Differs from fixture of same name in TestRuleSubclass as specifies rule_type via specific TestRuleSubclass fixture.
 
         """
-        return iati.core.rulesets.locate_constructor_for_rule_type(rule_type)
+        return iati.core.rulesets.constructor_for_rule_type(rule_type)
 
     def test_rule_init_valid_parameter_types(self, rule_basic_init):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
@@ -258,9 +257,9 @@ class RuleSubclassTestBase(object):
         # import pdb; pdb.set_trace()
         assert rule_is_valid_for.is_valid_for(valid_dataset)
 
-    # def test_is_invalid_for(self, invalid_dataset, rule_is_valid_for_case):
-    #     """Check that a given Rule returns the expected result when given a Dataset."""
-    #     assert not rule_is_valid_for_case.is_valid_for(invalid_dataset)
+    def test_is_invalid_for(self, invalid_dataset, rule_is_invalid_for):
+        """Check that a given Rule returns the expected result when given a Dataset."""
+        assert not rule_is_invalid_for.is_valid_for(invalid_dataset)
 
     @pytest.mark.parametrize("junk_data", iati.core.tests.utilities.find_parameter_by_type([], False))
     def test_is_valid_for_raises_error_on_non_permitted_argument(self, rule_basic_init, junk_data):
@@ -291,12 +290,13 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         {'paths': ['element1']},  # single path
         {'paths': ['element2', 'element3']},  # multiple paths
         {'paths': ['element4', 'element4']},  # duplicate paths
-        {'paths': ['element5/@attribute']},  # single path for attribute
-        {'paths': ['element6/@attribute', 'element7/@attribute']},  # multiple paths for attribute
-        {'paths': ['element8/@attribute', 'element8/@attribute']}
+        {'paths': ['element5', 'element5/element6']},  # nested paths
+        {'paths': ['element7/@attribute']},  # single path for attribute
+        {'paths': ['element8/@attribute', 'element9/@attribute']},  # multiple paths for attribute
+        {'paths': ['element10/@attribute', 'element10/@attribute']}
     ]
 
-    all_invalid_cases = [
+    uninstantiating_cases = [
         {'paths': []},  # empty path array
         {'paths': ['']},  # path is an empty string
         {'paths': 'element'},  # non-array `paths`
@@ -311,12 +311,23 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         {'paths': {'element/@attribute'}}  # dictionary paths
     ]
 
+    invalidating_cases = [
+        {'paths': ['element1']},  # single path, no elements
+        {'paths': ['element2', 'element3', 'element4']},  # nested paths, one element missing
+        {'paths': ['element5', 'element6']},  # multiple paths, one element missing
+        {'paths': ['element7', 'element8']},  # multiple paths, both elements missing
+        {'paths': ['element9/@attribute']},  # single path, no attributes
+        {'paths': ['element10/@attribute', 'element11/@attribute', 'element12/@attribute']},  # nested paths, one attribute missing
+        {'paths': ['element13/@attribute', 'element14/@attribute']},  # multiple paths, one attribute missing
+        {'paths': ['element15/@attribute', 'element16/@attribute']}  # multiple paths, both attributes missing
+    ]
+
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
         """Permitted case for instatiating this Rule."""
         return request.param
 
-    @pytest.fixture(params=all_invalid_cases)
+    @pytest.fixture(params=uninstantiating_cases)
     def uninstantiating_case(self, request):
         """Non-permitted case for instatiating this Rule."""
         return request.param
@@ -324,6 +335,11 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
     @pytest.fixture(params=all_valid_cases)
     def validating_case(self, request):
         """Permitted cases for validating an XML dataset against RuleAtLeastOne."""
+        return request.param
+
+    @pytest.fixture(params=invalidating_cases)
+    def invalidating_case(self, request):
+        """Permitted cases for invalidating an XML dataset against RuleAtLeastOne."""
         return request.param
 
     @pytest.fixture
@@ -344,34 +360,31 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         RuleDateOrder is special and is implemented in a weird way. It is not a happy duck. Therefore, it has special cases that will instantiate but are not valid, which is not the case with other Rules.
 
     Todo:
-        Are equal dates actually accounted for in the definition of this Rule?
-        Reimplement 'NOW' as current implementation incorrect.
         Test implementation of functionality to ignore function call if `less` or `more` do not return dates.
 
     """
 
     instatiating_cases = [
         {'less': 'element5', 'more': 'element5'},  # both `less` and `more` duplicate xpath
-        # {'less': '2017-07-26T13:19:05.493Z', 'more': 'elementx'}, # `less` is a string-formatted date
-        # {'less': 'elementx', 'more': '2017-07-26T13:19:05.493Z'},  #`more` is a string-formatted date
-        # {'less': 'NOW', 'more': 'NOW'},  # both `less` and `more` as NOW
-        # {'less': '2017-07-26T13:19:05.493Z', 'more': 'elementx/@attribute'}, # `less` is a string-formatted date
-        # {'less': 'elementx/@attribute', 'more': '2017-07-26T13:19:05.493Z'}  #`more` is a string-formatted date
+        {'less': '2017-07-26T13:19:05.493Z', 'more': 'elementx'}, # `less` is a string-formatted date
+        {'less': 'elementx', 'more': '2017-07-26T13:19:05.493Z'},  #`more` is a string-formatted date
+        {'less': 'NOW', 'more': 'NOW'},  # both `less` and `more` as NOW
+        {'less': '2017-07-26T13:19:05.493Z', 'more': 'elementx/@attribute'}, # `less` is a string-formatted date
+        {'less': 'elementx/@attribute', 'more': '2017-07-26T13:19:05.493Z'},  #`more` is a string-formatted date
         {'less': 'element10/@attribute', 'more': 'element10/@attribute'}
     ]  # both `less` and `more` duplicate xpath
 
     validating_cases = [
-        # {'less': '', 'more': ''},  # `less` and `more` empty strings
         {'less': 'element1', 'more': 'element2'},  # both `less` and `more` present
         {'less': 'element3', 'more': 'NOW'},  # `more` as NOW
         {'less': 'NOW', 'more': 'element4'},  # `less` as NOW
-        # {'less': '', 'more': 'element4'},  # `less` is an empty string
-        # {'less': 'element5', 'more': ''},  # `more` is an empty string
-        {'less': 'element6/@attribute', 'more': 'element7/@attribute'},  # both `less` and `more` present
-        {'less': 'element8/@attribute', 'more': 'NOW'},  # `more` as NOW
-        {'less': 'NOW', 'more': 'element9/@attribute'}  # `less` as NOW
-        # {'less': '', 'more': 'end-xpath/@attribute'},  # `less` is an empty string
-        # {'less': 'start-xpath/@attribute', 'more': ''}  # `more` is an empty string
+        {'less': '', 'more': 'element4'},  # `less` is an empty string
+        {'less': 'element5', 'more': 'element6'},  # `more` is an empty string
+        {'less': 'element7/@attribute', 'more': 'element8/@attribute'},  # both `less` and `more` present
+        {'less': 'element9/@attribute', 'more': 'NOW'},  # `more` as NOW
+        {'less': 'NOW', 'more': 'element10/@attribute'},  # `less` as NOW
+        {'less': '', 'more': 'element11/@attribute'},  # `less` is an empty string
+        {'less': 'element12/@attribute', 'more': ''}  # `more` is an empty string
     ]
 
     all_valid_cases = instatiating_cases + validating_cases
@@ -417,20 +430,6 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_VALID
 
-    # def test_rule_paths_less(self, rule_basic_init):
-    #     """Check that the `less` value has been combined with the `context` where required."""
-    #     if rule_basic_init.less.endswith(rule_basic_init.special_case):
-    #         assert rule_basic_init.normalized_paths == rule_basic_init.special_case
-    #     else:
-    #         assert rule_basic_init.normalized_paths.startswith(rule_basic_init.context)
-    #
-    # def test_rule_paths_more(self, rule_basic_init):
-    #     """Check that the `more` value has been combined with the `context` where required."""
-    #     if rule_basic_init.more.endswith(rule_basic_init.special_case):
-    #         assert rule_basic_init.normalized_paths == rule_basic_init.special_case
-    #     else:
-    #         assert rule_basic_init.normalized_paths.startswith(rule_basic_init.context)
-
     # def test_incorrect_date_format_raises_error(self, rule_is_valid_for_case):
     #     """Check that a dataset with dates in an incorrect format raise expected error."""
     #     with pytest.raises(ValueError):
@@ -440,34 +439,42 @@ class TestRuleDateOrder(RuleSubclassTestBase):
 class TestRuleDependent(RuleSubclassTestBase):
     """A container for tests relating to RuleDependent."""
 
-    @pytest.fixture
-    def rule_type(self):
-        """Type of Rule."""
-        return 'dependent'
+    all_valid_cases = [
+        {'paths': ['element1']},  # single path
+        {'paths': ['element2', 'element3']},  # multiple paths
+        {'paths': ['element4', 'element4']},  # duplicate paths
+        {'paths': ['element5', 'element6']}  # for nested paths
+    ]
 
-    @pytest.fixture(params=[
-        {'paths': ['path_1']},  # single path
-        {'paths': ['path_1', 'path_2']},  # multiple paths
-        {'paths': ['path_1', 'path_1']}  # duplicate paths
-    ])
-    def instantiating_case(self, request):
-        """Permitted case for this Rule."""
-        return request.param
-
-    @pytest.fixture(params=[
+    all_invalid_cases = [
         {'paths': []},  # empty path array
+        {'paths': ['']},  # path is an empty string
         {'paths': 'path_1'},  # non-array `paths`
         {'paths': [3]},  # non-string value in path array
         {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
         {},  # empty dictionary
         {'paths': {'path_1'}}  # path value is dictionary instead of list
-    ])
+    ]
+
+    @pytest.fixture
+    def rule_type(self):
+        """Type of Rule."""
+        return 'dependent'
+
+    @pytest.fixture(params=all_valid_cases)
+    def instantiating_case(self, request):
+        """Permitted case for this Rule."""
+        return request.param
+
+    @pytest.fixture(params=all_invalid_cases)
     def uninstantiating_case(self, request):
         """Non-permitted case for instatiating this Rule."""
         return request.param
 
+    @pytest.fixture(params=all_valid_cases)
     def validating_case(self, request):
         """Permitted cases for validating an XML dataset against RuleDependent."""
+        return request.param
 
     @pytest.fixture
     def invalid_dataset(self):
@@ -479,50 +486,45 @@ class TestRuleDependent(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_DEPENDENT_RULE_VALID
 
-    @pytest.fixture(params=[
-        {"paths": ["transaction/provider-org", "location/point"]}
-    ])
-    def case_for_is_valid_for(self, request):
-        """Case to check the `is_valid_for` function of RuleDependent."""
-        return request.param
-
-    @pytest.fixture
-    def empty_path_case(self):
-        """Empty path string for RuleDependent."""
-        return {'paths': ['']}
-
 
 class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     """A container for tests relating to RuleNoMoreThanOne."""
+
+    all_valid_cases = [
+        {'paths': ['element1']},  # single path
+        {'paths': ['element2', 'element3']},  # multiple paths
+        {'paths': ['element4', 'element4']}  # duplicate paths
+    ]
+
+    all_invalid_cases = [
+        {'paths': []},  # empty path array
+        {'paths': ['']},  # path is an empty string
+        {'paths': 'path_1'},  # non-array `paths`
+        {'paths': [3]},  # non-string value in path array
+        {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
+        {},  # empty dictionary
+        {'paths': {'path_1'}}  # dictionary paths
+    ]
 
     @pytest.fixture
     def rule_type(self):
         """Type of Rule."""
         return 'no_more_than_one'
 
-    @pytest.fixture(params=[
-        {'paths': ['path_1']},  # single path
-        {'paths': ['path_1', 'path_2']},  # multiple paths
-        {'paths': ['path_1', 'path_1']}  # duplicate paths
-    ])
+    @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
         """Permitted case for instatiating this Rule."""
         return request.param
 
-    @pytest.fixture(params=[
-        {'paths': []},  # empty path array
-        {'paths': 'path_1'},  # non-array `paths`
-        {'paths': [3]},  # non-string value in path array
-        {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
-        {},  # empty dictionary
-        {'paths': {'path_1'}}  # dictionary paths
-    ])
+    @pytest.fixture(params=all_invalid_cases)
     def uninstantiating_case(self, request):
         """Non-permitted case for instatiating this Rule."""
         return request.param
 
+    @pytest.fixture(params=all_valid_cases)
     def validating_case(self, request):
         """Permitted cases for validating an XML dataset against RuleNoMoreThanOne."""
+        return request.param
 
     @pytest.fixture
     def invalid_dataset(self):
@@ -534,18 +536,18 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_NOMORETHANONE_RULE_VALID
 
-    @pytest.fixture(params=[
-        {'paths': ['element_that_only_occurs_once']},
-        {'paths': ['element_that_only_occurs_once', 'another_element_that_only_occurs_once']}
-    ])
-    def case_for_is_valid_for(self, request):
-        """Case to check the `is_valid_for` function of RuleNoMoreThanOne."""
-        return request.param
+    # @pytest.fixture(params=[
+    #     {'paths': ['element_that_only_occurs_once']},
+    #     {'paths': ['element_that_only_occurs_once', 'another_element_that_only_occurs_once']}
+    # ])
+    # def case_for_is_valid_for(self, request):
+    #     """Case to check the `is_valid_for` function of RuleNoMoreThanOne."""
+    #     return request.param
 
-    @pytest.fixture
-    def empty_path_case(self):
-        """Empty path string for RuleNoMoreThanOne."""
-        return {'paths': ['']}
+    # @pytest.fixture
+    # def empty_path_case(self):
+    #     """Empty path string for RuleNoMoreThanOne."""
+    #     return {'paths': ['']}
 
 
 class TestRuleRegexMatches(RuleSubclassTestBase):

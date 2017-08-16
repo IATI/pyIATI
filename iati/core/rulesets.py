@@ -11,9 +11,9 @@ Todo:
 from datetime import datetime
 import json
 import re
-import six
 import sre_constants
 import jsonschema
+import six
 import iati.core.default
 import iati.core.utilities
 
@@ -21,7 +21,7 @@ import iati.core.utilities
 _VALID_RULE_TYPES = ["atleast_one", "dependent", "sum", "date_order", "no_more_than_one", "regex_matches", "regex_no_matches", "startswith", "unique"]
 
 
-def locate_constructor_for_rule_type(rule_type):
+def constructor_for_rule_type(rule_type):
     """Locate the constructor for specific Rule types.
 
     Args:
@@ -97,7 +97,7 @@ class Ruleset(object):
         for context, rule in self.ruleset.items():
             for rule_type, cases in rule.items():
                 for case in cases['cases']:
-                    constructor = locate_constructor_for_rule_type(rule_type)
+                    constructor = constructor_for_rule_type(rule_type)
                     new_rule = constructor(context, case)
                     self.rules.add(new_rule)
 
@@ -145,7 +145,7 @@ class Rule(object):
 
         """
         if isinstance(context, six.string_types):
-            if context is not '':
+            if context != '':
                 return context
             raise ValueError
         raise TypeError
@@ -242,6 +242,18 @@ class Rule(object):
 
         return partial_schema
 
+    def _find_context_elements(self, dataset):
+        """Find the specific elements in context for the Rule.
+
+        Args:
+            dataset (iati.core.Dataset): The Dataset to be chacked for validity against the Rule.
+
+        Returns:
+            list: A list of all elements found for the given context.
+
+        """
+        return dataset.xml_tree.xpath(self.context)
+
 
 class RuleAtLeastOne(Rule):
     """Representation of a Rule that checks that there is at least one Element matching a given XPath."""
@@ -266,13 +278,16 @@ class RuleAtLeastOne(Rule):
             XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         """
+        context_elements = self._find_context_elements(dataset)
+
         path_queries = set()
         found_paths = set()
 
         for path in self.paths:
             path_queries.add(path)
-            if dataset.xml_tree.xpath(path) != list():
-                found_paths.add(path)
+            for context_element in context_elements:
+                if context_element.xpath(path) != list():
+                    found_paths.add(path)
 
         return len(found_paths) == len(path_queries)
 
@@ -314,30 +329,35 @@ class RuleDateOrder(Rule):
             `date` restricted to 10 characters in order to exclude possible timezone values.
 
         Todo:
-            Reimplement 'NOW' as curently incorrect.
+            Account for multiple elements in context.
             Implement functionality to ignore function call if `less` or `more` do not return dates.
 
         """
-        def find_contextualised_element(dataset):
-            """Find the specific element in context for the Rule."""
-            return dataset.xml_tree.xpath(self.context)
+        def extract_dates(context_elements, value):
+            """Return the correct date string format from given value.
 
-        def format_type(contextualised_element, value):
-            """Return the correct date string format from given value."""
-            for sub_element in contextualised_element:
+            Args:
+                context_elements (list): A list of elements in the given context for the Rule.
+                value (str): An XPath or special string.
+
+            Returns:
+                datetime.datetime: A datetime object.
+
+            """
+            for context_element in context_elements:
                 # Special case
-                if value == 'NOW':
+                if value == self.special_case:
                     return datetime.today()
                 # Normal case
                 try:
-                    return datetime.strptime(sub_element.xpath(value)[0].text, '%Y-%m-%d')
+                    return datetime.strptime(context_element.xpath(value)[0].text, '%Y-%m-%d')
                 except AttributeError:
-                    return datetime.strptime(sub_element.xpath(value)[0], '%Y-%m-%d')
+                    return datetime.strptime(context_element.xpath(value)[0], '%Y-%m-%d')
 
-        contextualised_element = find_contextualised_element(dataset)
+        context_elements = self._find_context_elements(dataset)
 
-        early_date = format_type(contextualised_element, self.less)
-        later_date = format_type(contextualised_element, self.more)
+        early_date = extract_dates(context_elements, self.less)
+        later_date = extract_dates(context_elements, self.more)
 
         return early_date < later_date
 
