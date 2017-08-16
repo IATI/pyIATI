@@ -64,7 +64,7 @@ def codelists(version=None, use_cache=False):
 
     Args:
         version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelist is returned.
-        use_cache (bool): Whether the cache should be used rather than loading the Codelists from disk again. A `deepcopy()` should be performed on any returned value before it is modified.
+        use_cache (bool): Whether the cache should be used rather than loading the Codelists from disk again. If used, a `deepcopy()` should be performed on any returned Codelist before it is modified.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -106,11 +106,11 @@ This removes the need to repeatedly load a Schema from disk each time it is acce
 """
 
 
-def activity_schemas(bypass_cache=False):
+def activity_schemas(use_cache=False):
     """Return a dictionary of the default ActivitySchema objects for all versions of the Standard.
 
     Args:
-        bypass_cache (bool): Whether the cache should be bypassed, instead reloading data from disk even if it's already been loaded.
+        use_cache (bool): Whether the cache should be used rather than loading the Schema from disk again. If used, a `deepcopy()` should be performed on any returned Schema before it is modified.
 
     Returns:
         dict: Containing the version (as keys) and a corresponding ActivitySchema object (as values).
@@ -121,7 +121,7 @@ def activity_schemas(bypass_cache=False):
     output = {}
     for version in iati.core.constants.STANDARD_VERSIONS:
         activity_schema_paths = iati.core.resources.get_all_activity_schema_paths(version)
-        if bypass_cache or 'iati-activities-schema' not in _SCHEMAS.get(version, {}).keys():
+        if not use_cache or 'iati-activities-schema' not in _SCHEMAS.get(version, {}).keys():
             if version not in _SCHEMAS.keys():
                 _SCHEMAS[version] = {}
             _SCHEMAS[version]['iati-activities-schema'] = iati.core.ActivitySchema(activity_schema_paths[0])
@@ -132,11 +132,11 @@ def activity_schemas(bypass_cache=False):
     return output
 
 
-def organisation_schemas(bypass_cache=False):
+def organisation_schemas(use_cache=False):
     """Return a dictionary of the default OrganisationSchema objects for all versions of the Standard.
 
     Args:
-        bypass_cache (bool): Whether the cache should be bypassed, instead reloading data from disk even if it's already been loaded.
+        use_cache (bool): Whether the cache should be used rather than loading the Schema from disk again. If used, a `deepcopy()` should be performed on any returned Schema before it is modified.
 
     Returns:
         dict: Containing the version (as keys) and a corresponding OrganisationSchema object (as values).
@@ -147,7 +147,7 @@ def organisation_schemas(bypass_cache=False):
     output = {}
     for version in iati.core.constants.STANDARD_VERSIONS:
         organisation_schema_paths = iati.core.resources.get_all_organisation_schema_paths(version)
-        if bypass_cache or 'iati-organisations-schema' not in _SCHEMAS.get(version, {}).keys():
+        if not use_cache or 'iati-organisations-schema' not in _SCHEMAS.get(version, {}).keys():
             if version not in _SCHEMAS.keys():
                 _SCHEMAS[version] = {}
             _SCHEMAS[version]['iati-organisations-schema'] = iati.core.OrganisationSchema(organisation_schema_paths[0])
@@ -158,11 +158,11 @@ def organisation_schemas(bypass_cache=False):
     return output
 
 
-def schemas(bypass_cache=False):
+def schemas(use_cache=False):
     """Locate all the default IATI Schemas and return them within a dictionary.
 
     Args:
-        bypass_cache (bool): Whether the cache should be bypassed, instead reloading data from disk even if it's already been loaded.
+        use_cache (bool): Whether the cache should be used rather than loading the Schema from disk again. If used, a `deepcopy()` should be performed on any returned Schema before it is modified.
 
     Returns:
         dict: A dictionary containing all the Schemas for versions of the Standard. This returns the name of the Schema (as the key) and a subclass of iati.core.schemas.Schema() (as the value).
@@ -175,8 +175,8 @@ def schemas(bypass_cache=False):
         Needs to handle multiple versions of the Schemas. This will probably involve passing in a version as a param, which should tidy up the function too.
 
     """
-    activity_schemas(bypass_cache)
-    organisation_schemas(bypass_cache)
+    activity_schemas(use_cache)
+    organisation_schemas(use_cache)
     return _SCHEMAS  # Both activity_schemas and organisation_schemas will update the _SCHEMAS constant.
 
 
