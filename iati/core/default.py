@@ -20,6 +20,9 @@ _CODELISTS = {}
 
 This removes the need to repeatedly load a Codelist from disk each time it is accessed.
 
+Warning:
+    Modifying values directly obtained from this cache can potentially cause unexpected behavior. As such, it is highly recommended to perform a `deepcopy()` on any accessed Codelist before it is modified in any way.
+
 """
 
 
@@ -102,6 +105,9 @@ _SCHEMAS = {}
 """A cache of loaded Schemas.
 
 This removes the need to repeatedly load a Schema from disk each time it is accessed.
+
+Warning:
+    Modifying values directly obtained from this cache can potentially cause unexpected behavior. As such, it is highly recommended to perform a `deepcopy()` on any accessed Schema before it is modified in any way.
 
 """
 
