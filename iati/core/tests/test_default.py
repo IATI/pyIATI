@@ -25,7 +25,7 @@ class TestDefault(object):
         for code in codelist.codes:
             assert isinstance(code, iati.core.Code)
 
-    @pytest.mark.parametrize("name", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    @pytest.mark.parametrize("name", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_default_codelist_invalid(self, name):
         """Check that trying to find a default Codelist with an invalid name raises an error."""
         with pytest.raises(ValueError) as excinfo:
@@ -89,7 +89,7 @@ class TestDefault(object):
         for schema in schemas[version].values():
             assert isinstance(schema, (iati.core.ActivitySchema, iati.core.OrganisationSchema))
 
-    @pytest.mark.parametrize("invalid_name", iati.core.tests.utilities.find_parameter_by_type([], False))
+    @pytest.mark.parametrize("invalid_name", iati.core.tests.utilities.generate_test_types([], True))
     def test_default_schema(self, invalid_name):
         """Check that an Error is raised when attempting to load a Schema name that does not exist."""
         with pytest.raises((ValueError, TypeError)):

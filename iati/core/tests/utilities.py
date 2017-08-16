@@ -95,19 +95,19 @@ TYPE_TEST_DATA = {
 """Generic test data of various Python builtin types."""
 
 
-def find_parameter_by_type(types, type_as_specified=True):
+def generate_test_types(types, invert_types=False):
     """Find a number of values of the specified type to pass to a test function.
 
     Args:
         types (list of str): The types of parameter that should be looked for.
-        type_as_specified (bool): Whether to look for values as specified or everything else. Default True.
+        invert_types (bool): Whether to invert the list of types being looked for, instead returning everything else. Default False.
 
     Returns:
         list: A list of values to pass to the test function.
 
     """
     valid_keys_as_specified = [key for key in types if key in TYPE_TEST_DATA]
-    if not type_as_specified:
+    if invert_types:
         valid_keys = [key for key in TYPE_TEST_DATA.keys() if key not in valid_keys_as_specified]
     else:
         valid_keys = valid_keys_as_specified

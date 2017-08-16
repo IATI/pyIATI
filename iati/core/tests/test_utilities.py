@@ -73,7 +73,7 @@ class TestUtilities(object):
 
         assert 'There is already a namespace called' in str(excinfo.value)
 
-    @pytest.mark.parametrize("not_a_tree", iati.core.tests.utilities.find_parameter_by_type([], False))
+    @pytest.mark.parametrize("not_a_tree", iati.core.tests.utilities.generate_test_types([], True))
     def test_add_namespace_no_schema(self, not_a_tree):
         """Check that attempting to add a namespace to something that isn't a Schema raises an error."""
         ns_name = 'xsd'
@@ -84,7 +84,7 @@ class TestUtilities(object):
 
         assert 'The `tree` parameter must be of type `etree._ElementTree` - it was of type' in str(excinfo.value)
 
-    @pytest.mark.parametrize("ns_name", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    @pytest.mark.parametrize("ns_name", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_add_namespace_nsname_non_str(self, ns_name):
         """Check that attempting to add a namespace with a name that is not a string acts correctly.
 
@@ -110,7 +110,7 @@ class TestUtilities(object):
 
         assert 'The `new_ns_name` parameter must be a non-empty string.' in str(excinfo.value)
 
-    @pytest.mark.parametrize("ns_uri", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    @pytest.mark.parametrize("ns_uri", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_add_namespace_nsuri_non_str(self, ns_uri):
         """Check that attempting to add a namespace uri that is not a string acts correctly.
 
@@ -168,7 +168,7 @@ class TestUtilities(object):
 
         assert excinfo.typename == 'XMLSyntaxError'
 
-    @pytest.mark.parametrize("not_xml", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    @pytest.mark.parametrize("not_xml", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_convert_xml_to_tree_not_str(self, not_xml):
         """Check that an invalid string raises an error when an attempt is made to convert it to an etree."""
         with pytest.raises(ValueError) as excinfo:
