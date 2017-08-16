@@ -131,9 +131,8 @@ def activity_schemas(use_cache=False):
             if version not in _SCHEMAS.keys():
                 _SCHEMAS[version] = {}
             _SCHEMAS[version]['iati-activities-schema'] = iati.core.ActivitySchema(activity_schema_paths[0])
-            output[version] = _SCHEMAS[version]['iati-activities-schema']
-        else:
-            output[version] = _SCHEMAS[version]['iati-activities-schema']
+
+        output[version] = _SCHEMAS[version]['iati-activities-schema']
 
     return output
 
@@ -157,9 +156,8 @@ def organisation_schemas(use_cache=False):
             if version not in _SCHEMAS.keys():
                 _SCHEMAS[version] = {}
             _SCHEMAS[version]['iati-organisations-schema'] = iati.core.OrganisationSchema(organisation_schema_paths[0])
-            output[version] = _SCHEMAS[version]['iati-organisations-schema']
-        else:
-            output[version] = _SCHEMAS[version]['iati-organisations-schema']
+
+        output[version] = _SCHEMAS[version]['iati-organisations-schema']
 
     return output
 
