@@ -85,10 +85,10 @@ def get_all_codelist_paths(version=None):
 
     """
     files = pkg_resources.resource_listdir(PACKAGE, get_path_for_version(PATH_CODELISTS, version))
-    paths = [get_codelist_path(file, version) for file in files]
-    paths_codelists_only = [path for path in paths if path[-4:] == FILE_CODELIST_EXTENSION]
+    files_codelists_only = [file_name for file_name in files if file_name[-4:] == FILE_CODELIST_EXTENSION]
+    paths = [get_codelist_path(file_name, version) for file_name in files_codelists_only]
 
-    return paths_codelists_only
+    return paths
 
 
 def get_all_schema_paths(version=None):
