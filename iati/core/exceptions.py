@@ -28,4 +28,8 @@ class ValidationError(ValueError):
         This is too general to identify many specific problems.
     """
 
-    pass
+    def __init__(self, error_log):
+        """Initialise a ValidationError."""
+        self.error_log = error_log
+
+        super(ValidationError, self).__init__()

@@ -29,6 +29,7 @@ class TestValidationError(object):
 
         assert isinstance(err, iati.validator.ValidationError)
         assert err.name == err_name
+        assert err.base_exception == ValueError
         assert err.category == err_detail['category']
         assert err.description == err_detail['description']
         assert err.info == err_detail['info']
@@ -44,6 +45,11 @@ class TestValidationErrorLog(object):
         return 'err-code-not-on-codelist'
 
     @pytest.fixture
+    def err_type(self, err_name):
+        """The type of an error."""
+        return iati.validator._ERROR_CODES[err_name]['base_exception']
+
+    @pytest.fixture
     def error(self, err_name):
         """An error."""
         return iati.validator.ValidationError(err_name)
@@ -52,6 +58,16 @@ class TestValidationErrorLog(object):
     def warning_name(self):
         """The name of a warning."""
         return 'warn-code-not-on-codelist'
+
+    @pytest.fixture
+    def warning_type(self, warning_name):
+        """The type of an error."""
+        return iati.validator._ERROR_CODES[warning_name]['base_exception']
+
+    @pytest.fixture
+    def unused_exception_type(self):
+        """An exception type that is not covered by the ValidationErrors."""
+        return MemoryError
 
     @pytest.fixture
     def warning(self, warning_name):
@@ -95,29 +111,34 @@ class TestValidationErrorLog(object):
         assert not error_log.contains_errors()
         assert not error_log.contains_warnings()
 
-    def test_error_log_add_errors(self, error_log_with_error, err_name, warning_name):
+    def test_error_log_add_errors(self, error_log_with_error, err_name, warning_name, err_type):
         """Test that errors are identified as errors when added to the error log."""
         assert len(error_log_with_error) == 1
         assert error_log_with_error.contains_errors()
         assert not error_log_with_error.contains_warnings()
         assert error_log_with_error.contains_error_called(err_name)
         assert not error_log_with_error.contains_error_called(warning_name)
+        assert error_log_with_error.contains_error_of_type(err_type)
 
-    def test_error_log_add_warnings(self, error_log_with_warning, err_name, warning_name):
+    def test_error_log_add_warnings(self, error_log_with_warning, err_name, warning_name, warning_type):
         """Test that warnings are not identified as errors when added to the error log."""
         assert len(error_log_with_warning) == 1
         assert not error_log_with_warning.contains_errors()
         assert error_log_with_warning.contains_warnings()
         assert not error_log_with_warning.contains_error_called(err_name)
         assert error_log_with_warning.contains_error_called(warning_name)
+        assert error_log_with_warning.contains_error_of_type(warning_type)
 
-    def test_error_log_add_mixed(self, error_log_mixed_contents, err_name, warning_name):
+    def test_error_log_add_mixed(self, error_log_mixed_contents, err_name, warning_name, err_type, warning_type, unused_exception_type):
         """Test that a mix of errors and warnings are identified as such when added to the error log."""
         assert len(error_log_mixed_contents) == 2
         assert error_log_mixed_contents.contains_errors()
         assert error_log_mixed_contents.contains_warnings()
         assert error_log_mixed_contents.contains_error_called(err_name)
         assert error_log_mixed_contents.contains_error_called(warning_name)
+        assert error_log_mixed_contents.contains_error_of_type(err_type)
+        assert error_log_mixed_contents.contains_error_of_type(warning_type)
+        assert not error_log_mixed_contents.contains_error_of_type(unused_exception_type)
 
     @pytest.mark.parametrize("not_ValidationError", iati.core.tests.utilities.find_parameter_by_type([], False))
     def test_error_log_add_incorrect_type(self, error_log, not_ValidationError):
@@ -195,23 +216,6 @@ class TestValidationErrorLog(object):
 class TestValidation(object):
     """A container for tests relating to validation."""
 
-    @pytest.mark.parametrize("xml", [iati.core.tests.utilities.XML_STR_VALID_NOT_IATI, iati.core.tests.utilities.XML_STR_VALID_IATI, iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE, iati.core.tests.utilities.XML_STR_LEADING_WHITESPACE])
-    def test_xml_check_valid_xml(self, xml):
-        """Perform check to see whether a parameter is valid XML. The parameter is valid XML."""
-        assert iati.validator.is_xml(xml)
-
-    @pytest.mark.parametrize("not_xml", iati.core.tests.utilities.find_parameter_by_type(['str'], False) + [iati.core.tests.utilities.XML_STR_INVALID])
-    def test_xml_check_not_xml(self, not_xml):
-        """Perform check to see whether a parameter is valid XML. The parameter is not valid XML."""
-        assert not iati.validator.is_xml(not_xml)
-
-    @pytest.mark.parametrize("xml", [iati.core.tests.utilities.XML_STR_VALID_NOT_IATI, iati.core.tests.utilities.XML_STR_VALID_IATI, iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE, iati.core.tests.utilities.XML_STR_LEADING_WHITESPACE])
-    def test_xml_check_valid_xml_in_dataset(self, xml):
-        """Perform check to see whether a Dataset is deemed valid XML."""
-        data = iati.core.Dataset(xml)
-
-        assert iati.validator.is_xml(data)
-
     def test_basic_validation_valid(self):
         """Perform a super simple data validation against a valid Dataset."""
         data = iati.core.Dataset(iati.core.tests.utilities.XML_STR_VALID_IATI)
@@ -255,17 +259,215 @@ class TestValidation(object):
 
     def test_error_code_attributes(self):
         """Check that error codes have the required attributes."""
-        expected_attributes = ['category', 'description', 'info', 'help']
+        expected_attributes = [
+            ('base_exception', type),
+            ('category', str),
+            ('description', str),
+            ('info', str),
+            ('help', str)
+        ]
         for err_code_name, err_code in iati.validator._ERROR_CODES.items():
             code_attrs = err_code.keys()
-            for attr in expected_attributes:
-                assert attr in code_attrs
-                assert isinstance(err_code[attr], str)
+            for (attr_name, attr_type) in expected_attributes:
+                assert attr_name in code_attrs
+                assert isinstance(err_code[attr_name], attr_type)
+
+
+class TestValidateIsXML(object):
+    """A container for tests checking whether a value is valid XML."""
+
+
+    @pytest.fixture(params=[
+        iati.core.tests.utilities.XML_STR_VALID_NOT_IATI,
+        iati.core.tests.utilities.XML_STR_VALID_IATI,
+        iati.core.tests.utilities.XML_STR_VALID_IATI_INVALID_CODE,
+        iati.core.tests.utilities.XML_STR_LEADING_WHITESPACE
+    ])
+    def xml_str(self, request):
+        """A valid XML string."""
+        return request.param
+
+    @pytest.fixture
+    def xml_str_no_text_decl(self, xml_str):
+        """A valid XML string with the text declaration removed."""
+        return '\n'.join(xml_str.strip().split('\n')[1:])
+
+    @pytest.fixture(params=iati.core.tests.utilities.find_parameter_by_type(['str'], False) + [iati.core.tests.utilities.XML_STR_INVALID])
+    def not_xml(self, request):
+        """A value that is not a valid XML string."""
+        return request.param
+
+    @pytest.fixture
+    def str_not_xml(self):
+        """A string that is not XML."""
+        return 'This is not XML.'
+
+    def test_xml_check_valid_xml(self, xml_str):
+        """Perform check to see whether a parameter is valid XML. The parameter is valid XML."""
+        assert iati.validator.is_xml(xml_str)
+
+    def test_xml_check_not_xml(self, not_xml):
+        """Perform check to see whether a parameter is valid XML. The parameter is not valid XML."""
+        assert not iati.validator.is_xml(not_xml)
+
+    def test_xml_check_valid_xml_in_dataset(self, xml_str):
+        """Perform check to see whether a Dataset is deemed valid XML."""
+        data = iati.core.Dataset(xml_str)
+
+        assert iati.validator.is_xml(data)
+
+    def test_xml_check_valid_xml_detailed_output(self, xml_str):
+        """Perform check to see whether a parameter is valid XML. The parameter is valid XML.
+        Obtain detailed error output.
+        """
+        result = iati.validator.validate_is_xml(xml_str)
+
+        assert len(result) == 0
+
+    def test_xml_check_valid_xml_comments_after_detailed_output(self, xml_str, str_not_xml):
+        """Perform check to see string a parameter is valid XML.
+
+        The string is valid XML.
+        There is a comment added after the XML.
+        Obtain detailed error output.
+        """
+        comment = '<!-- ' + str_not_xml + ' -->'
+        xml_with_comments = xml_str + comment
+
+        result = iati.validator.validate_is_xml(xml_with_comments)
+
+        assert len(result) == 0
+
+    def test_xml_check_valid_xml_str_comments_before_no_text_decl_detailed_output(self, xml_str_no_text_decl, str_not_xml):
+        """Perform check to see whether a string is valid XML.
+
+        The string is valid XML.
+        There is a comment added before the XML. There is no XML text declaration.
+        Obtain detailed error output.
+        """
+        comment = '<!-- ' + str_not_xml + ' -->'
+        xml_prefixed_with_comment = comment + xml_str_no_text_decl
+
+        result = iati.validator.validate_is_xml(xml_prefixed_with_comment)
+
+        assert len(result) == 0
+
+    def test_xml_check_valid_xml_in_dataset_detailed_output(self, xml_str):
+        """Perform check to see whether a Dataset is valid XML.
+
+        Obtain detailed error output.
+        """
+        data = iati.core.Dataset(xml_str)
+
+        result = iati.validator.validate_is_xml(data)
+
+        assert len(result) == 0
+
+    @pytest.mark.parametrize("not_str", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    def test_xml_check_not_str_detailed_output(self, not_str):
+        """Perform check to see whether a parameter is valid XML. The parameter is not valid XML.
+
+        Obtain detailed error output.
+        """
+        result = iati.validator.validate_is_xml(not_str)
+
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-xml-not-string')
+
+    def test_xml_check_not_xml_str_no_start_tag_detailed_output(self, str_not_xml):
+        """Perform check to locate the XML Syntax Errors in a string.
+
+        The string has no XML start tag.
+        Obtain detailed error output.
+        """
+        result = iati.validator.validate_is_xml(str_not_xml)
+
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-xml-empty-document')
+
+    def test_xml_check_not_xml_str_text_before_xml_detailed_output(self, str_not_xml, xml_str):
+        """Perform check to locate the XML Syntax Errors in a string.
+
+        The string has non-XML text before the XML starts.
+        Obtain detailed error output.
+        """
+        not_xml = str_not_xml + xml_str
+
+        result = iati.validator.validate_is_xml(not_xml)
+
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-xml-empty-document')
+
+    def test_xml_check_not_xml_str_comments_before_detailed_output(self, xml_str, str_not_xml):
+        """Perform check to locate the XML Syntax Errors in a string.
+
+        There is a comment added before the XML. The XML contains a text declaration.
+        Obtain detailed error output.
+        """
+        comment = '<!-- ' + str_not_xml + ' -->'
+        not_xml = comment + xml_str
+
+        result = iati.validator.validate_is_xml(not_xml)
+
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-xml-xml-text-decl-only-at-doc-start')
+
+    def test_xml_check_not_xml_str_text_after_xml_detailed_output(self, xml_str, str_not_xml):
+        """Perform check to locate the XML Syntax Errors in a string.
+
+        The string has non-XML text before the XML starts.
+        Obtain detailed error output.
+        """
+        not_xml = xml_str + str_not_xml
+
+        result = iati.validator.validate_is_xml(not_xml)
+
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-xml-content-at-end')
+
+    def test_xml_check_not_xml_str_xml_after_xml_detailed_output(self, xml_str, str_not_xml):
+        """Perform check to locate the XML Syntax Errors in a string.
+
+        The string is two concatenated XML strings. Each contains a text declaration.
+        Obtain detailed error output.
+        """
+        not_xml = xml_str + xml_str
+
+        result = iati.validator.validate_is_xml(not_xml)
+
+        assert len(result) == 2
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-xml-content-at-end')
+        assert result.contains_error_called('err-not-xml-xml-text-decl-only-at-doc-start')
+
+    def test_xml_check_not_xml_str_xml_after_xml_no_text_decl_detailed_output(self, xml_str_no_text_decl, str_not_xml):
+        """Perform check to locate the XML Syntax Errors in a string.
+
+        The string is two concatenated XML strings. Each contains a text declaration.
+        Obtain detailed error output.
+        """
+        not_xml = xml_str_no_text_decl + xml_str_no_text_decl
+
+        result = iati.validator.validate_is_xml(not_xml)
+
+        assert len(result) == 1
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-xml-content-at-end')
 
 
 class ValidateCodelistsBase(object):
     """A container for fixtures required for Codelist validation tests."""
 
+
+    @pytest.fixture
+    def schema_basic(self):
+        """A schema with no Codelists added.
+
+        Returns:
+            A valid activity schema with no Codelists added.
+
+        """
+        return iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
 
     @pytest.fixture
     def schema_version(self):
@@ -535,7 +737,7 @@ class TestValidationVocabularies(ValidateCodelistsBase):
         assert iati.validator.is_valid(data, schema_sectors)
 
 
-class TestValidatorDetailedOutput(ValidateCodelistsBase):
+class TestValidatorFullValidation(ValidateCodelistsBase):
     """A container for tests relating to detailed error output from validation."""
 
     def test_basic_validation_codelist_valid_detailed_output(self, schema_version):
@@ -552,6 +754,7 @@ class TestValidatorDetailedOutput(ValidateCodelistsBase):
         result = iati.validator.full_validation(data, schema_version)[0]
 
         assert isinstance(result, iati.validator.ValidationError)
+        assert result.name == 'err-code-not-on-codelist'
         assert result.status == 'error'
         assert result.line_number == 3
         assert result.context == '\n'.join(xml_str.split('\n')[1:4])
@@ -577,8 +780,18 @@ class TestValidatorDetailedOutput(ValidateCodelistsBase):
 
         result = iati.validator.full_validation(data, schema_incomplete_codelist)[0]
 
+        assert result.name == 'warn-code-not-on-codelist'
         assert result.line_number == 18
         assert result.context == '\n'.join(xml_str.split('\n')[16:19])
         assert result.status == 'warning'
         assert 'Country' in result.info
         assert 'Country' in result.help
+
+    def test_basic_validation_not_xml_detailed_output(self, schema_basic):
+        """Perform full validation against a string that is not XML."""
+        not_xml = 'This is not XML.'
+
+        result = iati.validator.full_validation(not_xml, schema_basic)
+
+        assert len(result) == 1
+        assert result.contains_error_called('err-not-xml-empty-document')
