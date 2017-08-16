@@ -54,7 +54,7 @@ class TestDatasets(object):
 
         assert str(excinfo.value) == 'The string provided to create a Dataset from is not valid XML.'
 
-    @pytest.mark.parametrize("not_xml", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    @pytest.mark.parametrize("not_xml", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_dataset_number_not_xml(self, not_xml):
         """Test Dataset creation when it's passed a number rather than a string or etree."""
         with pytest.raises(TypeError) as excinfo:
@@ -109,7 +109,7 @@ class TestDatasets(object):
 
         assert str(excinfo.value) == 'If setting a dataset with an ElementTree, use the xml_tree property, not the xml_str property.'
 
-    @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_dataset_xml_str_assignment_invalid_value(self, dataset_initialised, invalid_value):
         """Test assignment to the xml_str property with a value that is very much not valid."""
         data = dataset_initialised
@@ -148,7 +148,7 @@ class TestDatasets(object):
 
         assert 'If setting a dataset with the xml_property, an ElementTree should be provided, not a' in str(excinfo.value)
 
-    @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_dataset_xml_tree_assignment_invalid_value(self, dataset_initialised, invalid_value):
         """Test assignment to the xml_tree property with a value that is very much not valid."""
         data = dataset_initialised
@@ -283,7 +283,7 @@ class TestDatasetSourceFinding(object):
         with pytest.raises(ValueError):
             data.source_at_line(num_lines_xml)
 
-    @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.find_parameter_by_type(['int'], False))
+    @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.generate_test_types(['int'], True))
     def test_dataset_xml_str_source_at_line_invalid_line_type(self, invalid_value, data):
         """Test obtaining source of a particular line. Line numbers are not valid."""
         with pytest.raises(TypeError):
@@ -390,7 +390,7 @@ class TestDatasetSourceFinding(object):
             with pytest.raises(ValueError):
                 data.source_around_line(line_num, -1)
 
-    @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.find_parameter_by_type(['int'], False))
+    @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.generate_test_types(['int'], True))
     def test_dataset_xml_str_source_around_line_invalid_context_lines(self, invalid_value, data, num_lines_xml):
         """Test obtaining source of a particular line.
 
