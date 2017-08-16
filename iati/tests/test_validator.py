@@ -213,8 +213,34 @@ class TestValidationErrorLog(object):
         assert len(error_log) == 0
 
 
-class TestValidation(object):
-    """A container for tests relating to validation."""
+class TestValidationAuxiliaryData(object):
+    """A container for tests relating to auxiliary validation data."""
+
+
+    def test_error_code_names(self):
+        """Check that the names of error codes are all in the correct format."""
+        for err_code_name in iati.validator._ERROR_CODES.keys():
+            assert err_code_name.split('-')[0] in ['err', 'warn']
+
+    def test_error_code_attributes(self):
+        """Check that error codes have the required attributes."""
+        expected_attributes = [
+            ('base_exception', type),
+            ('category', str),
+            ('description', str),
+            ('info', str),
+            ('help', str)
+        ]
+        for err_code_name, err_code in iati.validator._ERROR_CODES.items():
+            code_attrs = err_code.keys()
+            for (attr_name, attr_type) in expected_attributes:
+                assert attr_name in code_attrs
+                assert isinstance(err_code[attr_name], attr_type)
+
+
+class TestValidationBasicIATI(object):
+    """A container for tests relating to very basic validation of IATI data."""
+
 
     def test_basic_validation_valid(self):
         """Perform a super simple data validation against a valid Dataset."""
@@ -251,26 +277,6 @@ class TestValidation(object):
         assert iati.validator.is_xml(data.xml_str)
         assert not iati.validator.is_iati_xml(data, schema)
         assert not iati.validator.is_valid(data, schema)
-
-    def test_error_code_names(self):
-        """Check that the names of error codes are all in the correct format."""
-        for err_code_name in iati.validator._ERROR_CODES.keys():
-            assert err_code_name.split('-')[0] in ['err', 'warn']
-
-    def test_error_code_attributes(self):
-        """Check that error codes have the required attributes."""
-        expected_attributes = [
-            ('base_exception', type),
-            ('category', str),
-            ('description', str),
-            ('info', str),
-            ('help', str)
-        ]
-        for err_code_name, err_code in iati.validator._ERROR_CODES.items():
-            code_attrs = err_code.keys()
-            for (attr_name, attr_type) in expected_attributes:
-                assert attr_name in code_attrs
-                assert isinstance(err_code[attr_name], attr_type)
 
 
 class TestValidateIsXML(object):
