@@ -81,7 +81,7 @@ class TestResources(object):
         """Check that test data is being found in specified subfolders."""
         paths = iati.core.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail')
 
-        assert len(paths) == 242
+        assert len(paths) == 237
 
     @pytest.mark.parametrize('codelist', [
         'Name',
