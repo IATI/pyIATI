@@ -489,6 +489,13 @@ class TestIsValidIATIXML(object):
         """A valid XML string that is not valid IATI XML."""
         return iati.core.Dataset(request.param)
 
+    @pytest.fixture(params=[
+        iati.core.tests.utilities.XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT,
+        iati.core.tests.utilities.XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT_COMMON
+    ])
+    def not_iati_dataset_missing_required_el(self, request):
+        return iati.core.Dataset(request.param)
+
     def test_xml_check_valid_xml(self, iati_dataset, schema_basic):
         """Perform check to see whether a parameter is valid IATI XML. The parameter is valid IATI XML."""
         result = iati.validator.validate_is_iati_xml(iati_dataset, schema_basic)
@@ -496,10 +503,23 @@ class TestIsValidIATIXML(object):
         assert len(result) == 0
 
     def test_xml_check_not_xml(self, not_iati_dataset, schema_basic):
-        """Perform check to see whether a parameter is valid IATI XML. The parameter is not valid IATI XML."""
+        """Perform check to see whether a parameter is valid IATI XML.
+
+        The parameter is not valid IATI XML.
+        """
         result = iati.validator.validate_is_iati_xml(not_iati_dataset, schema_basic)
 
         assert result.contains_errors()
+
+    def test_xml_missing_required_element(self, not_iati_dataset_missing_required_el, schema_basic):
+        """Perform check to see whether a parameter is valid IATI XML.
+
+        The parameter is not valid IATI XML. It is missing a required element.
+        """
+        result = iati.validator.validate_is_iati_xml(not_iati_dataset_missing_required_el, schema_basic)
+
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-iati-xml-missing-required-element')
 
 
 class ValidateCodelistsBase(object):

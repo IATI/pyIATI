@@ -61,6 +61,13 @@ _ERROR_CODES = {
         'info': '{err}',
         'help': 'The XML text declaration specifies how a computer must read the rest of the XML file. Since it tells the computer how to read the XML file, it must occur at the start of an XML document without any content before it.\nIt looks similar to: `<?xml version="1.0" encoding="UTF-8"?>`.\nFor more information about the XML text declaration, see https://www.w3schools.com/xml/xml_syntax.asp and https://www.w3.org/TR/2000/REC-xml-20001006#sec-TextDecl'
     },
+    'err-not-iati-xml-missing-required-element': {
+        'base_exception': ValueError,
+        'category': 'iati-xml',
+        'description': 'A different element was found than was expected.',
+        'info': '{err}',
+        'help': 'There are a number of mandatory elements that an IATI data file must contain. Additionally, these must occur in the required order.\nFor more information about what an XML element is, see https://www.w3schools.com/xml/xml_elements.asp'
+    },
     'err-encoding-invalid': {
         'base_exception': ValueError,
         'category': 'file',
@@ -346,9 +353,10 @@ def _check_is_iati_xml(dataset, schema):
 
     try:
         validator.assertValid(dataset.xml_tree)
-    except etree.DocumentInvalid as err:
-        error = ValidationError('err-not-iati-xml-uncategorised-document-error')
-        error_log.add(error)
+    except etree.DocumentInvalid as doc_invalid:
+        for log_entry in doc_invalid.error_log:
+            error = _parse_lxml_log_entry(log_entry)
+            error_log.add(error)
 
     return error_log
 
@@ -371,8 +379,8 @@ def _check_is_xml(maybe_xml):
         parser = etree.XMLParser()
         _ = etree.fromstring(maybe_xml.strip(), parser)
     except etree.XMLSyntaxError:
-        for err in parser.error_log:
-            error = _parse_xml_syntax_error(err)
+        for log_entry in parser.error_log:
+            error = _parse_lxml_log_entry(log_entry)
             error_log.add(error)
     except (AttributeError, TypeError, ValueError):
         problem_var_type = type(maybe_xml)
@@ -398,11 +406,11 @@ def _correct_codelist_values(dataset, schema):
     return not error_log.contains_errors()
 
 
-def _parse_xml_syntax_error(err):
-    """Parse an etree.XMLSyntaxError and convert it to an IATI ValidationError.
+def _parse_lxml_log_entry(log_entry):
+    """Parse a log entry from an lxml error log and convert it to a IATI ValidationError.
 
     Args:
-        err (etree._LogEntry): A log entry from an `etree.XMLSyntaxError`.
+        log_entry (etree._LogEntry): A log entry from an `etree.XMLSyntaxError` or `etree.DocumentInvalid`.
 
     Returns:
         ValidationError: An IATI ValidationError that contains the information from the log entry.
@@ -412,8 +420,8 @@ def _parse_xml_syntax_error(err):
 
     """
     # configure local variables for the creation of the error
-    line_number = err.line
-    column_number = err.column
+    line_number = log_entry.line
+    column_number = log_entry.column
 
     # undertake the mapping between error name formats
     lxml_to_iati_error_mapping = {
@@ -421,11 +429,12 @@ def _parse_xml_syntax_error(err):
         'ERR_DOCUMENT_END': 'err-not-xml-content-at-end',
         'ERR_INVALID_ENCODING': 'err-encoding-invalid',
         'ERR_UNSUPPORTED_ENCODING': 'err-encoding-unsupported',
-        'ERR_RESERVED_XML_NAME': 'err-not-xml-xml-text-decl-only-at-doc-start'
+        'ERR_RESERVED_XML_NAME': 'err-not-xml-xml-text-decl-only-at-doc-start',
+        'SCHEMAV_ELEMENT_CONTENT': 'err-not-iati-xml-missing-required-element'
     }
 
     try:
-        err_name = lxml_to_iati_error_mapping[err.type_name]
+        err_name = lxml_to_iati_error_mapping[log_entry.type_name]
     except KeyError:
         err_name = 'err-not-xml-uncategorised-xml-syntax-error'
 
