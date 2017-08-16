@@ -213,6 +213,32 @@ def get_test_data_path(name, version=None):
     return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
 
 
+def get_test_data_paths_in_folder(folder_name, version=None):
+    """Determine the paths of all IATI data files in the specified folder under the root test folder.
+
+    Args:
+        name (str): The name of the folder within which to locate data files.
+        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+
+    Returns:
+        list of str: The paths to data files in the specified folders.
+
+    """
+    paths = list()
+    root_folder = os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), folder_name)
+    resource_folder = resource_filename(root_folder)
+
+    for base_folder, _, file_names in os.walk(resource_folder):
+        desired_files = [file_name for file_name in file_names if file_name[-4:] == FILE_DATA_EXTENSION]
+        for file_name in desired_files:
+            paths.append(os.path.join(base_folder, file_name))
+
+    # de-resource the file-names so that they're not duplicated
+    deresourced_paths = [path[path.find(root_folder):] for path in paths]
+
+    return deresourced_paths
+
+
 def get_test_ruleset_path(name, version=None):
     """Determine the path of an IATI test Ruleset file with the given filename.
 

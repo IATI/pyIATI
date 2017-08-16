@@ -241,6 +241,11 @@ class TestValidationAuxiliaryData(object):
 class TestValidationBasicIATI(object):
     """A container for tests relating to very basic validation of IATI data."""
 
+    @pytest.fixture(params=iati.core.resources.get_test_data_paths_in_folder('ssot-activity-xml-pass'))
+    def iati_dataset_from_ssot(self, request):
+        xml_str = iati.core.resources.load_as_string(request.param)
+
+        return iati.core.Dataset(xml_str)
 
     def test_basic_validation_valid(self):
         """Perform a super simple data validation against a valid Dataset."""
@@ -250,6 +255,15 @@ class TestValidationBasicIATI(object):
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema)
         assert iati.validator.is_valid(data, schema)
+
+    def test_basic_validation_should_pass_from_ssot(self, iati_dataset_from_ssot):
+        """Perform check to see whether a parameter is valid IATI XML.
+
+        The parameter is valid IATI XML. It is sourced from the SSOT.
+        """
+        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+
+        assert iati.validator.is_iati_xml(iati_dataset_from_ssot, schema)
 
     def test_basic_validation_invalid(self):
         """Perform a super simple data validation against an invalid Dataset."""
