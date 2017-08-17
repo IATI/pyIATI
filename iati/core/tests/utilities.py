@@ -20,6 +20,18 @@ from lxml import etree
 import iati.core.resources
 
 
+def load_as_string(file_path):
+    """Load a specified test data file as a string.
+
+    Args:
+        file_path (str): The path of the file, relative to the root test data folder. Folders should be separated by a forward-slash (`/`).
+
+    Returns:
+        str (python3) / unicode (python2): The contents of the file at the specified location.
+    """
+    return iati.core.resources.load_as_string(iati.core.resources.get_test_data_path(file_path))
+
+
 DATASET_FOR_ATLEASTONE_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_atleastone'))
 DATASET_FOR_ATLEASTONE_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_atleastone'))
 """An etree containing XML data that is not permitted by `RuleAtLeastOne`."""
@@ -59,81 +71,7 @@ DATASET_FOR_UNIQUE_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.
 SCHEMA_NAME_VALID = 'iati-activities-schema'
 """A string containing a valid Schema name."""
 
-XML_STR_VALID_NOT_IATI = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_not_iati'))
-"""A string containing valid XML that is not valid against the IATI schema."""
-XML_STR_VALID_IATI = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati'))
-"""A string containing valid IATI XML."""
-XML_STR_VALID_IATI_INVALID_CODE = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_invalid_code'))
-"""A string containing valid IATI XML, but an invalid Code valid."""
-XML_STR_INVALID = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('invalid'))
-"""A string that is not valid XML."""
-XML_STR_LEADING_WHITESPACE = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('leading_whitespace_xml'))
-"""A string containing valid XML apart form leading whitepace before an `<?xml` declaration."""
-
-XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('invalid_iati_missing_required_element'))
-"""A string containing invalid IATI XML. It is invalid due to a missing element defined as require in iati-common.xsd"""
-XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT_COMMON = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('invalid_iati_missing_required_element_from_common'))
-"""A string containing invalid IATI XML. It is invalid due to a missing element defined as require in iati-common.xsd"""
-
-XML_STR_VALID_IATI_VALID_CODE_FROM_COMMON = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_valid_code_from_common'))
-"""A string containing valid IATI XML containing an element that is defined in iati-common.xsd - it has an attribute with a value on the appropriate Codelist."""
-XML_STR_VALID_IATI_INVALID_CODE_FROM_COMMON = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_invalid_code_from_common'))
-"""A string containing valid IATI XML containing an element that is defined in iati-common.xsd - it has an attribute with a value that is not on the appropriate Codelist."""
-
-XML_STR_VALID_IATI_VALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_valid_codes_multiple_xpaths_for_codelist'))
-"""A string contains valid IATI XML containing attributes on multiple elements that require values from the same Codelist. Each of the values from the Codelist are correct."""
-XML_STR_VALID_IATI_INVALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST_FIRST = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_invalid_codes_multiple_xpaths_for_codelist_first'))
-"""A string contains valid IATI XML containing attributes on multiple elements that require values from the same Codelist.
-
-The first value that should be from the Codelist is valid, while the second is invalid."""
-XML_STR_VALID_IATI_INVALID_CODES_MULTIPLE_XPATHS_FOR_CODELIST_SECOND = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_invalid_codes_multiple_xpaths_for_codelist_second'))
-"""A string contains valid IATI XML containing attributes on multiple elements that require values from the same Codelist.
-
-The first value that should be from the Codelist is invalid, while the second is valid."""
-
-XML_STR_VALID_IATI_INCOMPLETE_CODELIST_CODE_PRESENT = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_incomplete_codelist_code_present'))
-"""A string containing valid IATI XML with an attribute requiring a value from an incomplete Codelist. The attribute value is on this Codelist."""
-XML_STR_VALID_IATI_INCOMPLETE_CODELIST_CODE_NOT_PRESENT = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_incomplete_codelist_code_not_present'))
-"""A string containing valid IATI XML with an attribute requiring a value from an incomplete Codelist. The attribute value is not on this Codelist."""
-
-XML_STR_VALID_IATI_VOCAB_DEFAULT_EXPLICIT = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_default_explicit'))
-"""A string containing valid IATI XML containing an element that uses vocabularies. Explicitly defines default vocab and uses code from that list."""
-XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_default_implicit'))
-"""A string containing valid IATI XML containing an element that uses vocabularies. Implicitly assumes default vocab and uses code from that list."""
-XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT_INVALID_CODE = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_default_implicit_invalid_code'))
-"""A string containing valid IATI XML containing an element that uses vocabularies. Implicitly assumes default vocab and uses code not in list."""
-XML_STR_VALID_IATI_VOCAB_NON_DEFAULT = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_non_default'))
-"""A string containing valid IATI XML containing an element that uses vocabularies. Explicitly defines non-default vocab and uses code from that list."""
-XML_STR_VALID_IATI_VOCAB_MULTIPLE_SAME_VALID = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_multiple_same_valid'))
-"""A string containing valid IATI XML containing an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is the same. @code values are valid. Percentages add up to 100."""
-XML_STR_VALID_IATI_VOCAB_MULTIPLE_DIFFERENT_VALID = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_multiple_different_valid'))
-"""A string containing valid IATI XML containing an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is different. @code values are valid.Percentages add up to 100."""
-XML_STR_VALID_IATI_VOCAB_MULTIPLE_SAME_INVALID_CODE = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_multiple_same_invalid_code'))
-"""A string containing valid IATI XML containing an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is the same. @code values are not valid. Percentages add up to 100."""
-XML_STR_VALID_IATI_VOCAB_MULTIPLE_DIFFERENT_INVALID_CODE = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_multiple_different_invalid_code'))
-"""A string containing valid IATI XML containing an activity that uses multiple instances of the same element that uses vocabularies. The vocabulary used by each of these elements is different. @code values are not valid. Percentages add up to 100."""
-
-XML_STR_VALID_IATI_VOCAB_USER_DEFINED = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_user_defined'))
-"""A string containing valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. No URI specified."""
-XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_user_defined_with_uri_readable'))
-"""A string containing valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and machine readable. Uses code from this list."""
-XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE_BAD_CODE = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_user_defined_with_uri_readable_bad_code'))
-"""A string containing valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and machine readable. Uses code not in list."""
-XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_UNREADABLE = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_vocab_user_defined_with_uri_unreadable'))
-"""A string containing valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and not machine readable."""
-
-XML_TREE_VALID = etree.fromstring(XML_STR_VALID_NOT_IATI)
-
-def load_as_string(file_path):
-    """Load a specified test data file as a string.
-
-    Args:
-        file_path (str): The path of the file, relative to the root test data folder. Folders should be separated by a forward-slash (`/`).
-
-    Returns:
-        str (python3) / unicode (python2): The contents of the file at the specified location.
-    """
-    return iati.core.resources.load_as_string(iati.core.resources.get_test_data_path(file_path))
+XML_TREE_VALID = etree.fromstring(load_as_string('valid_not_iati'))
 
 
 SCHEMA_ACTIVITY_NAME_VALID = 'iati-activities-schema'
