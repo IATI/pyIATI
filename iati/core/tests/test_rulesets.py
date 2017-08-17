@@ -259,6 +259,7 @@ class RuleSubclassTestBase(object):
 
     def test_is_invalid_for(self, invalid_dataset, rule_is_invalid_for):
         """Check that a given Rule returns the expected result when given a Dataset."""
+        # import pdb; pdb.set_trace()
         assert not rule_is_invalid_for.is_valid_for(invalid_dataset)
 
     @pytest.mark.parametrize("junk_data", iati.core.tests.utilities.find_parameter_by_type([], False))
@@ -339,7 +340,7 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
 
     @pytest.fixture(params=invalidating_cases)
     def invalidating_case(self, request):
-        """Permitted cases for invalidating an XML dataset against RuleAtLeastOne."""
+        """Non-permitted cases for validating an XML dataset against RuleAtLeastOne."""
         return request.param
 
     @pytest.fixture
@@ -366,11 +367,11 @@ class TestRuleDateOrder(RuleSubclassTestBase):
 
     instatiating_cases = [
         {'less': 'element5', 'more': 'element5'},  # both `less` and `more` duplicate xpath
-        {'less': '2017-07-26T13:19:05.493Z', 'more': 'elementx'}, # `less` is a string-formatted date
-        {'less': 'elementx', 'more': '2017-07-26T13:19:05.493Z'},  #`more` is a string-formatted date
+        {'less': '2017-07-26T13:19:05.493Z', 'more': 'elementx'},  # `less` is a string-formatted date
+        {'less': 'elementx', 'more': '2017-07-26T13:19:05.493Z'},  # `more` is a string-formatted date
         {'less': 'NOW', 'more': 'NOW'},  # both `less` and `more` as NOW
-        {'less': '2017-07-26T13:19:05.493Z', 'more': 'elementx/@attribute'}, # `less` is a string-formatted date
-        {'less': 'elementx/@attribute', 'more': '2017-07-26T13:19:05.493Z'},  #`more` is a string-formatted date
+        {'less': '2017-07-26T13:19:05.493Z', 'more': 'elementx/@attribute'},  # `less` is a string-formatted date
+        {'less': 'elementx/@attribute', 'more': '2017-07-26T13:19:05.493Z'},  # `more` is a string-formatted date
         {'less': 'element10/@attribute', 'more': 'element10/@attribute'}
     ]  # both `less` and `more` duplicate xpath
 
@@ -378,18 +379,21 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element1', 'more': 'element2'},  # both `less` and `more` present
         {'less': 'element3', 'more': 'NOW'},  # `more` as NOW
         {'less': 'NOW', 'more': 'element4'},  # `less` as NOW
-        {'less': '', 'more': 'element4'},  # `less` is an empty string
-        {'less': 'element5', 'more': 'element6'},  # `more` is an empty string
-        {'less': 'element7/@attribute', 'more': 'element8/@attribute'},  # both `less` and `more` present
-        {'less': 'element9/@attribute', 'more': 'NOW'},  # `more` as NOW
-        {'less': 'NOW', 'more': 'element10/@attribute'},  # `less` as NOW
-        {'less': '', 'more': 'element11/@attribute'},  # `less` is an empty string
-        {'less': 'element12/@attribute', 'more': ''}  # `more` is an empty string
+        {'less': 'element5', 'more': 'element6'},  # multiple identical `less` values
+        {'less': 'element7', 'more': 'element8'},  # multiple identical `more` values
+        {'less': '//element9', 'more': '//element10'},  # correct order nested elements
+        {'less': 'now', 'more': 'Now'},  # not special case so should be treated as normal XPath
+        {'less': 'element11/@attribute', 'more': 'element12/@attribute'},  # both `less` and `more` present
+        {'less': 'element13/@attribute', 'more': 'NOW'},  # `more` as NOW
+        {'less': 'NOW', 'more': 'element14/@attribute'},  # `less` as NOW
+        {'less': 'element15/@attribute', 'more': 'element16/@attribute'},  # multiple identical `less` values
+        {'less': 'element17/@attribute', 'more': 'element18/@attribute'},  # multiple identical `more` values
+        {'less': '//element19', 'more': '//element20'}  # correct order nested attributes
     ]
 
     all_valid_cases = instatiating_cases + validating_cases
 
-    all_invalid_cases = [
+    uninstantiating_cases = [
         {'less': 'start'},  # missing required attribute - `more`
         {'more': 'end'},  # missing required attribute - `less`
         {'less': '', 'more': ''},  # path case is empty string
@@ -399,6 +403,28 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': ['start']},  # less is a list
         {'more': ['end']}  # more is a list
     ]
+
+    invalidating_cases = [
+        {'less': 'element1', 'more': 'element2'},  # `more` is chronologically before `less`
+        {'less': 'element3', 'more': 'element4'},  # `less` and `more` are chronologically identical
+        {'less': 'NOW', 'more': 'element6'},  # `more` is chronologically before `less` when `less` is NOW
+        {'less': 'element7', 'more': 'NOW'},  # `less` is chronologically after`more` when `more is NOW`
+        {'less': '//element8', 'more': '//element9'},  # `more` is chronologically before `less` where both are nested elements
+        {'less': 'element10', 'more': 'element10'},  # `less` and `more` are the same element
+        {'less': 'element11', 'more': 'element12'},  # 'less' has multiple matching elements that are chronologically after `more`
+        {'less': 'element13', 'more': 'element14'},  # 'more' has multiple matching elements that are chronologically before `less`
+        {'less': 'element15/@attribute', 'more': 'element16/@attribute'},  # `more` is chronologically before `less`
+        {'less': 'element17/@attribute', 'more': 'element18/@attribute'},  # `less` and `more` are chronologically identical
+        {'less': 'NOW', 'more': 'element19/@attribute'},  # `more` is chronologically before `less` when `less` is NOW
+        {'less': 'element20/@attribute', 'more': 'NOW'},  # `less` is chronologically after `more` when `more` is NOW
+        {'less': '//element21/@attribute', 'more': '//element22/@attribute'},  # `more` is chronologically before `less` where both are nested attributes
+        {'less': 'element23/@attribute', 'more': 'element23/@attribute'},  # `less` and `more` are the same attribute
+        {'less': 'element24/@attribute', 'more': 'element25/@attribute'},  # 'less' has multiple matching attributes that are chronologically after `more`
+        {'less': 'element26/@attribute', 'more': 'element27/@attribute'},  # 'more' has multiple matching attributes that are chronologically before `less`
+    ]
+
+    # NOW in wrong case => element not found <-- test this
+    # multiple elements with different values for less or more need to return an error, but should evaluate normally if they are the same value <-- test this
 
     @pytest.fixture
     def rule_type(self):
@@ -410,7 +436,7 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         """Permitted case for this Rule."""
         return request.param
 
-    @pytest.fixture(params=all_invalid_cases)
+    @pytest.fixture(params=uninstantiating_cases)
     def uninstantiating_case(self, request):
         """Non-permitted case for instatiating this Rule."""
         return request.param
@@ -418,6 +444,11 @@ class TestRuleDateOrder(RuleSubclassTestBase):
     @pytest.fixture(params=validating_cases)
     def validating_case(self, request):
         """Permitted cases for validating an XML dataset against RuleDateOrder."""
+        return request.param
+
+    @pytest.fixture(params=invalidating_cases)
+    def invalidating_case(self, request):
+        """Non-permitted cases for validating an XML dataset against RuleDateOrder."""
         return request.param
 
     @pytest.fixture

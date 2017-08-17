@@ -13,6 +13,7 @@ import json
 import re
 import sre_constants
 import jsonschema
+import lxml
 import six
 import iati.core.default
 import iati.core.utilities
@@ -275,7 +276,6 @@ class RuleAtLeastOne(Rule):
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
-            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         """
         context_elements = self._find_context_elements(dataset)
@@ -323,7 +323,6 @@ class RuleDateOrder(Rule):
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
             ValueError: When a date is given that is not in the correct xsd:date format.
-            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         Note:
             `date` restricted to 10 characters in order to exclude possible timezone values.
@@ -333,31 +332,36 @@ class RuleDateOrder(Rule):
             Implement functionality to ignore function call if `less` or `more` do not return dates.
 
         """
-        def extract_dates(context_elements, value):
-            """Return the correct date string format from given value.
+        def get_date(context, path):
+            """Retrieve datetime object from an XPath string.
 
             Args:
-                context_elements (list): A list of elements in the given context for the Rule.
-                value (str): An XPath or special string.
+                context (an xpath): For the context in which further xpath queries are then made.
+                path: (an xpath): The ultimate xpath query to find the desired elements.
 
             Returns:
                 datetime.datetime: A datetime object.
 
+            Raises:
+                ValueError: When a non-permitted number of unique dates are given for a `less` or `more` value.
+
             """
-            for context_element in context_elements:
-                # Special case
-                if value == self.special_case:
-                    return datetime.today()
-                # Normal case
-                try:
-                    return datetime.strptime(context_element.xpath(value)[0].text, '%Y-%m-%d')
-                except AttributeError:
-                    return datetime.strptime(context_element.xpath(value)[0], '%Y-%m-%d')
+            if path == self.special_case:
+                return datetime.today()
+
+            results = context.xpath(path)
+            # Returns a string value whether attribute or element
+            unique_dates = [result if isinstance(result, six.string_types) else result.text for result in results]
+
+            if len(set(unique_dates)) == 1:
+                return datetime.strptime(unique_dates[0], '%Y-%m-%d')
+            raise ValueError
 
         context_elements = self._find_context_elements(dataset)
 
-        early_date = extract_dates(context_elements, self.less)
-        later_date = extract_dates(context_elements, self.more)
+        for context_element in context_elements:
+            early_date = get_date(context_element, self.less)
+            later_date = get_date(context_element, self.more)
 
         return early_date < later_date
 
@@ -382,7 +386,6 @@ class RuleDependent(Rule):
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
-            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         """
         found_paths = 0
@@ -415,7 +418,6 @@ class RuleNoMoreThanOne(Rule):
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
-            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         """
         compliant_paths = set()
@@ -457,7 +459,6 @@ class RuleRegexMatches(Rule):
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
-            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         """
         pattern = re.compile(self.case['regex'])
@@ -498,7 +499,6 @@ class RuleRegexNoMatches(Rule):
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
-            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         """
         pattern = re.compile(self.case['regex'])
@@ -540,7 +540,7 @@ class RuleStartsWith(Rule):
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
-            IndexError: When XPath query result is not iterable.
+            # IndexError: When XPath query result is not iterable.
 
         """
         prefixing_str = dataset.xml_tree.xpath(self.start)[0]
@@ -572,7 +572,6 @@ class RuleSum(Rule):
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
-            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         """
         sum_values = list()
@@ -607,7 +606,6 @@ class RuleUnique(Rule):
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
-            XPathEvalError(lxml.etree.XPathEvalError): When no valid XPath is available.
 
         Todo:
             Consider better methods for specifying which elements in the tree contain non-permitted duplication, such as bucket sort.

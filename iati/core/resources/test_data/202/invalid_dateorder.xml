@@ -1,12 +1,38 @@
 <?xml version="1.0"?>
 
 <root_element>
-  <element1 type="1">
-   <start iso-date="2017-11-01" /><!-- Dates are not in the correct order -->
-   <end iso-date="2017-03-01" />
- </element1>
-  <element2 type="1">
-   <start iso-date="01-12-2007"/><!-- Dates are not in the correct xsd:date format -->
-   <end iso-date="02-11-2005"/>
- </element2>
+  <element1>2017-08-16</element1><!--elements in wrong chronological order-->
+  <element2>2016-08-16</element2>
+  <element3>2017-08-16</element3><!--elements have identical values-->
+  <element4>2017-08-16</element4>
+  <element6>2016-08-16</element6><!--element wrong as chronologically before NOW-->
+  <element7>9999-12-01</element7><!--element wrong as chronologically after NOW-->
+  <nest>
+    <element8>2017-08-16</element8><!--elements in wrong chronological order when elements are nested-->
+    <element9>2016-08-16</element9>
+  </nest>
+  <element10>2017-08-16</element10><!--element is used by `less` and `more`-->
+  <element11>2017-08-16</element11><!--multiple `less` elements that are identical but chronologically after `more`-->
+  <element11>2017-08-16</element11>
+  <element12>2016-08-16</element12>
+  <element13>2017-08-16</element13>
+  <element14>2016-08-16</element14><!--multiple `more` elements that are identical but chronologically after `less`-->
+  <element14>2016-08-16</element14>
+  <element15 attribute="2017-08-16"></element15><!--attributes in wrong chronological order-->
+  <element16 attribute="2016-08-16"></element16>
+  <element17 attribute="2017-08-16"></element17><!--attributes have identical values-->
+  <element18 attribute="2017-08-16"></element18>
+  <element19 attribute="2016-08-16"></element19><!--attribute in wrong chronological order when `less` is NOW-->
+  <element20 attribute="9999-12-01"></element20><!--attribute in wrong chronological order when `more` is NOW-->
+  <nest>
+    <element21 attribute="2017-08-16"></element21><!--attributes in wrong chronological order when attributes are nested-->
+    <element22 attribute="2016-08-16"></element22>
+  </nest>
+  <element23 attribute="2017-08-16"></element23><!--element is used by `less and `more-->
+  <element24 attribute="2017-08-16"></element24><!--multiple 'less' attributes that are chronologically after 'more'-->
+  <element24 attribute="2017-08-16"></element24>
+  <element25 attribute="2016-08-16"></element25>
+  <element26 attribute="2017-08-16"></element26><!--multiple 'more' attributes that are chronologically before 'less'-->
+  <element27 attribute="2016-08-16"></element27>
+  <element27 attribute="2016-08-16"></element27>
 </root_element>
