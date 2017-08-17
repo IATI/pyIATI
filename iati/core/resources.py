@@ -194,7 +194,7 @@ def get_test_data_path(name, version=None):
     """Determine the path of an IATI data file with the given filename.
 
     Args:
-        name (str): The name of the data file to locate. The filename must not contain the '.xml' file extension.
+        name (str): The name of the data file to locate. The name may contain forward slashes (`/`) to indicate a directory. Data files must be `.xml` files.
         version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
 
     Returns:
@@ -210,6 +210,15 @@ def get_test_data_path(name, version=None):
         Test this.
 
     """
+    # ensure the folders are in a OS-independent format
+    if '/' in name:
+        split_name = name.split('/')
+        name = os.path.join(split_name)
+
+    # remove the '.xml' file extension if present
+    if name[-4:] == FILE_DATA_EXTENSION:
+        name = name[:-4]
+
     return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
 
 
