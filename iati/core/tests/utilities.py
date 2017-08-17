@@ -6,7 +6,7 @@ Example:
     To load a file into a string::
 
         name_of_file = 'a-file-name-without-the-extension'
-        CONSTANT_NAME = _load_as_string(name_of_file)
+        CONSTANT_NAME = load_as_string(name_of_file)
 
 Note:
     The current method of managing test data is known to be sub-optimal. Suggestions for better methods that satisfy requirements are appreciated!
@@ -20,7 +20,7 @@ from lxml import etree
 import iati.core.resources
 
 
-def _load_as_string(file_path):
+def load_as_string(file_path):
     """Load a specified test data file as a string.
 
     Args:
@@ -37,42 +37,42 @@ SCHEMA_ACTIVITY_NAME_VALID = 'iati-activities-schema'
 SCHEMA_ORGANISATION_NAME_VALID = 'iati-organisations-schema'
 """A string containing a valid IATI Organisaion Schema name."""
 
-XML_STR_VALID_NOT_IATI = _load_as_string('valid_not_iati')
+XML_STR_VALID_NOT_IATI = load_as_string('valid_not_iati')
 """A string containing valid XML that is not valid against the IATI schema."""
-XML_STR_VALID_IATI = _load_as_string('valid_iati')
+XML_STR_VALID_IATI = load_as_string('valid_iati')
 """A string containing valid IATI XML."""
-XML_STR_VALID_IATI_INVALID_CODE = _load_as_string('valid_iati_invalid_code')
+XML_STR_VALID_IATI_INVALID_CODE = load_as_string('valid_iati_invalid_code')
 """A string containing valid IATI XML, but an invalid Code valid."""
-XML_STR_INVALID = _load_as_string('invalid')
+XML_STR_INVALID = load_as_string('invalid')
 """A string that is not valid XML."""
-XML_STR_LEADING_WHITESPACE = _load_as_string('leading_whitespace_xml')
+XML_STR_LEADING_WHITESPACE = load_as_string('leading_whitespace_xml')
 """A string containing valid XML apart form leading whitepace before an `<?xml` declaration."""
 
-XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT = _load_as_string('invalid_iati_missing_required_element')
+XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT = load_as_string('invalid_iati_missing_required_element')
 """A string containing invalid IATI XML. It is invalid due to a missing element defined as require in iati-common.xsd"""
-XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT_COMMON = _load_as_string('invalid_iati_missing_required_element_from_common')
+XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT_COMMON = load_as_string('invalid_iati_missing_required_element_from_common')
 """A string containing invalid IATI XML. It is invalid due to a missing element defined as require in iati-common.xsd"""
 
-XML_STR_VALID_IATI_VALID_CODE_FROM_COMMON = _load_as_string('valid_iati_valid_code_from_common')
+XML_STR_VALID_IATI_VALID_CODE_FROM_COMMON = load_as_string('valid_iati_valid_code_from_common')
 """A string containing valid IATI XML containing an element that is defined in iati-common.xsd - it has an attribute with a value on the appropriate Codelist."""
-XML_STR_VALID_IATI_INVALID_CODE_FROM_COMMON = _load_as_string('valid_iati_invalid_code_from_common')
+XML_STR_VALID_IATI_INVALID_CODE_FROM_COMMON = load_as_string('valid_iati_invalid_code_from_common')
 """A string containing valid IATI XML containing an element that is defined in iati-common.xsd - it has an attribute with a value that is not on the appropriate Codelist."""
 
-XML_STR_VALID_IATI_VOCAB_DEFAULT_EXPLICIT = _load_as_string('valid_iati_vocab_default_explicit')
+XML_STR_VALID_IATI_VOCAB_DEFAULT_EXPLICIT = load_as_string('valid_iati_vocab_default_explicit')
 """A string containing valid IATI XML containing an element that uses vocabularies. Explicitly defines default vocab and uses code from that list."""
-XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT = _load_as_string('valid_iati_vocab_default_implicit')
+XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT = load_as_string('valid_iati_vocab_default_implicit')
 """A string containing valid IATI XML containing an element that uses vocabularies. Implicitly assumes default vocab and uses code from that list."""
-XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT_INVALID_CODE = _load_as_string('valid_iati_vocab_default_implicit_invalid_code')
+XML_STR_VALID_IATI_VOCAB_DEFAULT_IMPLICIT_INVALID_CODE = load_as_string('valid_iati_vocab_default_implicit_invalid_code')
 """A string containing valid IATI XML containing an element that uses vocabularies. Implicitly assumes default vocab and uses code not in list."""
-XML_STR_VALID_IATI_VOCAB_NON_DEFAULT = _load_as_string('valid_iati_vocab_non_default')
+XML_STR_VALID_IATI_VOCAB_NON_DEFAULT = load_as_string('valid_iati_vocab_non_default')
 """A string containing valid IATI XML containing an element that uses vocabularies. Explicitly defines non-default vocab and uses code from that list."""
-XML_STR_VALID_IATI_VOCAB_USER_DEFINED = _load_as_string('valid_iati_vocab_user_defined')
+XML_STR_VALID_IATI_VOCAB_USER_DEFINED = load_as_string('valid_iati_vocab_user_defined')
 """A string containing valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. No URI specified."""
-XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE = _load_as_string('valid_iati_vocab_user_defined_with_uri_readable')
+XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE = load_as_string('valid_iati_vocab_user_defined_with_uri_readable')
 """A string containing valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and machine readable. Uses code from this list."""
-XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE_BAD_CODE = _load_as_string('valid_iati_vocab_user_defined_with_uri_readable_bad_code')
+XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_READABLE_BAD_CODE = load_as_string('valid_iati_vocab_user_defined_with_uri_readable_bad_code')
 """A string containing valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and machine readable. Uses code not in list."""
-XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_UNREADABLE = _load_as_string('valid_iati_vocab_user_defined_with_uri_unreadable')
+XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_UNREADABLE = load_as_string('valid_iati_vocab_user_defined_with_uri_unreadable')
 """A string containing valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and not machine readable."""
 
 XML_TREE_VALID = etree.fromstring(XML_STR_VALID_NOT_IATI)
