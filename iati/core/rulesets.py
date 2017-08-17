@@ -360,8 +360,11 @@ class RuleDateOrder(Rule):
         context_elements = self._find_context_elements(dataset)
 
         for context_element in context_elements:
-            early_date = get_date(context_element, self.less)
-            later_date = get_date(context_element, self.more)
+            try:
+                early_date = get_date(context_element, self.less)
+                later_date = get_date(context_element, self.more)
+            except MemoryError:
+                continue
 
         return early_date < later_date
 

@@ -424,7 +424,6 @@ class TestRuleDateOrder(RuleSubclassTestBase):
     ]
 
     # NOW in wrong case => element not found <-- test this
-    # multiple elements with different values for less or more need to return an error, but should evaluate normally if they are the same value <-- test this
 
     @pytest.fixture
     def rule_type(self):
@@ -461,10 +460,20 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_VALID
 
-    # def test_incorrect_date_format_raises_error(self, rule_is_valid_for_case):
-    #     """Check that a dataset with dates in an incorrect format raise expected error."""
-    #     with pytest.raises(ValueError):
-    #         rule_is_valid_for_case.is_valid_for(iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT)
+    @pytest.mark.parametrize("case", [
+        {'less': 'element1', 'more': 'element2'},
+        {'less': 'element3', 'more': 'element4'},
+        {'less': 'element5', 'more': 'element6'},
+        {'less': 'element7', 'more': 'element8'},
+        {'less': 'element9', 'more': 'element10'},
+        {'less': 'element11', 'more': 'element12'},
+        {'less': 'element13', 'more': 'element14'},
+        {'less': 'element15', 'more': 'element16'},
+    ])
+    def test_incorrect_date_format_raises_error(self, valid_context, case, rule_constructor):
+        """Check that a dataset with dates in an incorrect format raise expected error."""
+        with pytest.raises(ValueError):
+            rule_is_valid_for_case.is_valid_for(iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT)
 
 
 class TestRuleDependent(RuleSubclassTestBase):
