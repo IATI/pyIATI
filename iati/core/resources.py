@@ -213,7 +213,7 @@ def get_test_data_path(name, version=None):
     # ensure the folders are in a OS-independent format
     if '/' in name:
         split_name = name.split('/')
-        name = os.path.join(split_name)
+        name = os.sep.join(split_name)
 
     # remove the '.xml' file extension if present
     if name[-4:] == FILE_DATA_EXTENSION:

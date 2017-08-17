@@ -542,6 +542,22 @@ class TestIsValidIATIXML(object):
         assert result.contains_errors()
         assert result.contains_error_called('err-not-iati-xml-missing-required-element')
 
+    def test_xml_from_ssot_valid(self, schema_basic):
+        """Perform check to see whether valid XML from the SSOT can be loaded and validated."""
+        data = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('ssot-activity-xml-pass/location/01-generic-location'))
+
+        result = iati.validator.validate_is_iati_xml(data, schema_basic)
+
+        assert len(result) == 0
+
+    def test_xml_from_ssot_invalid(self, schema_basic):
+        """Perform check to see whether invalid XML from the SSOT can be loaded and validated."""
+        data = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('ssot-activity-xml-fail/other-identifier/01-missing-attribute-type'))
+
+        result = iati.validator.validate_is_iati_xml(data, schema_basic)
+
+        assert result.contains_errors()
+
 
 class ValidateCodelistsBase(object):
     """A container for fixtures required for Codelist validation tests."""
