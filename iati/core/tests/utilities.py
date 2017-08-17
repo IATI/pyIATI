@@ -20,6 +20,22 @@ from lxml import etree
 import iati.core.resources
 
 
+def load_as_dataset(file_path):
+    """Load a specified test data file as a Dataset.
+
+    Args:
+        file_path (str): The path of the file, relative to the root test data folder. Folders should be separated by a forward-slash (`/`).
+
+    Returns:
+        dataset: A Dataset containing the contents of the file at the specified location.
+
+    Raises:
+        iati.core.exceptions.ValidationError: If the provided XML does not conform to the IATI standard.
+
+    """
+    return iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path(file_path))
+
+
 def load_as_string(file_path):
     """Load a specified test data file as a string.
 
@@ -28,6 +44,7 @@ def load_as_string(file_path):
 
     Returns:
         str (python3) / unicode (python2): The contents of the file at the specified location.
+
     """
     return iati.core.resources.load_as_string(iati.core.resources.get_test_data_path(file_path))
 

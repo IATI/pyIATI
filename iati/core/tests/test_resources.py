@@ -140,6 +140,15 @@ class TestResources(object):
         assert isinstance(result, bytes)
         assert result == 'This is a string that is not valid XML\n'.encode()
 
+    def test_load_as_dataset(self):
+        """Test that resources.load_as_dataset returns a Dataset object with the expected content."""
+        path_test_data = iati.core.resources.get_test_data_path('valid')
+
+        result = iati.core.resources.load_as_dataset(path_test_data)
+
+        assert isinstance(result, iati.core.Dataset)
+        assert '<?xml version="1.0"?>\n\n<iati-activities version="2.02">' in result.xml_str
+
     def test_load_as_string(self):
         """Test that resources.load_as_string returns a string (python3) or unicode (python2) object with the expected content."""
         path_test_data = iati.core.resources.get_test_data_path('invalid')
