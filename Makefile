@@ -32,3 +32,7 @@ lint: $(IATI_FOLDER)
 
 test: $(IATI_FOLDER)
 	py.test --cov-report term-missing:skip-covered --cov=$(IATI_FOLDER) $(IATI_FOLDER)
+
+
+testp: $(IATI_FOLDER)
+	py.test --cov-report term-missing:skip-covered --cov=$(IATI_FOLDER) -n 2 $(IATI_FOLDER)

@@ -19,12 +19,14 @@ import decimal
 from lxml import etree
 import iati.core.resources
 
-SCHEMA_NAME_VALID = 'iati-activities-schema'
-"""A string containing a valid Schema name."""
+SCHEMA_ACTIVITY_NAME_VALID = 'iati-activities-schema'
+"""A string containing a valid IATI Activity Schema name."""
+SCHEMA_ORGANISATION_NAME_VALID = 'iati-organisations-schema'
+"""A string containing a valid IATI Organisaion Schema name."""
 
-XML_STR_VALID_NOT_IATI = '<parent><child attribute="value" /></parent>'
+XML_STR_VALID_NOT_IATI = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_not_iati'))
 """A string containing valid XML that is not valid against the IATI schema."""
-XML_STR_VALID_IATI = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid'))
+XML_STR_VALID_IATI = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati'))
 """A string containing valid IATI XML."""
 XML_STR_VALID_IATI_INVALID_CODE = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path('valid_iati_invalid_code'))
 """A string containing valid IATI XML, but an invalid Code valid."""
@@ -84,7 +86,7 @@ TYPE_TEST_DATA = {
     'other': [NotImplemented],
     'range': [range(3, 4)],
     'set': [set(range(20)), set(['hello', 23]), frozenset(range(20)), frozenset(['hello', 23])],
-    'str': [SCHEMA_NAME_VALID, XML_STR_VALID_NOT_IATI, XML_STR_INVALID, b'\x80abc', b'\x80abc', '\N{GREEK CAPITAL LETTER DELTA}', '\u0394', '\U00000394'],
+    'str': [b'\x80abc', b'\x80abc', '\N{GREEK CAPITAL LETTER DELTA}', '\u0394', '\U00000394'],
     'tuple': [(), (1, 2)],
     'type': [type(1), type('string')],
     'unicode': [],  # counts as a string, so moved there
@@ -93,22 +95,24 @@ TYPE_TEST_DATA = {
 """Generic test data of various Python builtin types."""
 
 
-def find_parameter_by_type(types, type_as_specified=True):
+def generate_test_types(types, invert_types=False):
     """Find a number of values of the specified type to pass to a test function.
 
     Args:
         types (list of str): The types of parameter that should be looked for.
-        type_as_specified (bool): Whether to look for values as specified or everything else. Default True.
+        invert_types (bool): Whether to invert the list of types being looked for, instead returning everything else. Default False.
 
     Returns:
         list: A list of values to pass to the test function.
 
     """
     valid_keys_as_specified = [key for key in types if key in TYPE_TEST_DATA]
-    if not type_as_specified:
+    if invert_types:
         valid_keys = [key for key in TYPE_TEST_DATA.keys() if key not in valid_keys_as_specified]
     else:
         valid_keys = valid_keys_as_specified
+
+    valid_keys = sorted(valid_keys)
 
     results = []
 

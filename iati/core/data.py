@@ -126,3 +126,85 @@ class Dataset(object):
             msg = "If setting a dataset with the xml_property, an ElementTree should be provided, not a {0}.".format(type(value))
             iati.core.utilities.log_error(msg)
             raise TypeError(msg)
+
+    def _raw_source_at_line(self, line_number):
+        """Return the raw value of the XML source at the specified line.
+
+        Args:
+            line_number (int): A zero-indexed line number.
+
+        Returns:
+            str: The source of the XML at the specified line.
+
+        Raises:
+            TypeError: When `line_number` is not an integer.
+            ValueError: When `line_number` is negative or more than the number of lines in the file.
+
+        """
+        if not isinstance(line_number, int) or isinstance(line_number, bool):
+            raise TypeError
+
+        if line_number < 0:
+            raise ValueError
+
+        try:
+            # this is led with an empty string since the `sourceline` attribute is 1-indexed.
+            split_lines = [''] + self.xml_str.split('\n')
+            return split_lines[line_number]
+        except IndexError:
+            raise ValueError
+
+    def source_at_line(self, line_number):
+        """Return the value of the XML source at the specified line.
+
+        Args:
+            line_number (int): A zero-indexed line number.
+
+        Returns:
+            str: The source of the XML at the specified line. Leading and trailing whitespace is trimmed.
+
+        Raises:
+            TypeError: When `line_number` is not an integer.
+            ValueError: When `line_number` is negative or more than the number of lines in the file.
+
+        Todo:
+            Test with minified XML.
+
+        """
+        return self._raw_source_at_line(line_number).strip()
+
+    def source_around_line(self, line_number, surrounding_lines=1):
+        """Return the value of the XML source at the specified line, plus the specified amount of surrounding context.
+
+        Args:
+            line_number (int): A zero-indexed line number.
+            surrounding_lines (int): The number of lines of context to provide either side of the specified line number. Default 1.
+
+        Returns:
+            str: The source of the XML at the specified line, plus the specified number of lines of surrounding context.
+            Should there be fewer lines of XML than are asked for, the entire Dataset will be returned.
+
+        Raises:
+            TypeError: When `line_number` is not an integer.
+            TypeError: When `surrounding_lines` is not an integer.
+            ValueError: When `line_number` is negative or more than the number of lines in the file.
+            ValueError: When `surrounding_lines` is negative.
+
+        Todo:
+            Test with minified XML.
+
+        """
+        if not isinstance(surrounding_lines, int) or isinstance(surrounding_lines, bool):
+            raise TypeError
+
+        if surrounding_lines < 0:
+            raise ValueError
+
+        lines_arr = []
+        lower_line_number =  max(line_number - surrounding_lines, 1)
+        upper_line_number = min(line_number + surrounding_lines + 1, len(self.xml_str.split('\n')) + 1)
+
+        for line_num in range(lower_line_number, upper_line_number):
+            lines_arr.append(self._raw_source_at_line(line_num))
+
+        return '\n'.join(lines_arr)
