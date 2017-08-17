@@ -6,7 +6,7 @@ Example:
     To load a file into a string::
 
         name_of_file = 'a-file-name-without-the-extension'
-        CONSTANT_NAME = iati.core.resources.load_as_string(iati.core.resources.get_test_data_path(name_of_file))
+        CONSTANT_NAME = load_as_string(name_of_file)
 
 Note:
     The current method of managing test data is known to be sub-optimal. Suggestions for better methods that satisfy requirements are appreciated!
@@ -123,10 +123,29 @@ XML_STR_VALID_IATI_VOCAB_USER_DEFINED_WITH_URI_UNREADABLE = iati.core.resources.
 """A string containing valid IATI XML containing an element that uses vocabularies. Specifies user-defined vocabulary. URI specified and not machine readable."""
 
 XML_TREE_VALID = etree.fromstring(XML_STR_VALID_NOT_IATI)
+
+def load_as_string(file_path):
+    """Load a specified test data file as a string.
+
+    Args:
+        file_path (str): The path of the file, relative to the root test data folder. Folders should be separated by a forward-slash (`/`).
+
+    Returns:
+        str (python3) / unicode (python2): The contents of the file at the specified location.
+    """
+    return iati.core.resources.load_as_string(iati.core.resources.get_test_data_path(file_path))
+
+
+SCHEMA_ACTIVITY_NAME_VALID = 'iati-activities-schema'
+"""A string containing a valid IATI Activity Schema name."""
+SCHEMA_ORGANISATION_NAME_VALID = 'iati-organisations-schema'
+"""A string containing a valid IATI Organisaion Schema name."""
+
+XML_TREE_VALID = etree.fromstring(load_as_string('valid_not_iati'))
 """An etree that is not valid IATI data."""
-XML_TREE_VALID_IATI = etree.fromstring(XML_STR_VALID_IATI)
+XML_TREE_VALID_IATI = etree.fromstring(load_as_string('valid_iati'))
 """A valid IATI etree."""
-XML_TREE_VALID_IATI_INVALID_CODE = etree.fromstring(XML_STR_VALID_IATI_INVALID_CODE)
+XML_TREE_VALID_IATI_INVALID_CODE = etree.fromstring(load_as_string('valid_iati_invalid_code'))
 """A valid IATI etree that has an invalid Code value."""
 
 TYPE_TEST_DATA = {
@@ -146,7 +165,7 @@ TYPE_TEST_DATA = {
     'other': [NotImplemented],
     'range': [range(3, 4)],
     'set': [set(range(20)), set(['hello', 23]), frozenset(range(20)), frozenset(['hello', 23])],
-    'str': [SCHEMA_NAME_VALID, XML_STR_VALID_NOT_IATI, XML_STR_INVALID, b'\x80abc', b'\x80abc', '\N{GREEK CAPITAL LETTER DELTA}', '\u0394', '\U00000394'],
+    'str': [b'\x80abc', b'\x80abc', '\N{GREEK CAPITAL LETTER DELTA}', '\u0394', '\U00000394'],
     'tuple': [(), (1, 2)],
     'type': [type(1), type('string')],
     'unicode': [],  # counts as a string, so moved there
@@ -155,19 +174,19 @@ TYPE_TEST_DATA = {
 """Generic test data of various Python builtin types."""
 
 
-def find_parameter_by_type(types, type_as_specified=True):
+def generate_test_types(types, invert_types=False):
     """Find a number of values of the specified type to pass to a test function.
 
     Args:
         types (list of str): The types of parameter that should be looked for.
-        type_as_specified (bool): Whether to look for values as specified or everything else. Default True.
+        invert_types (bool): Whether to invert the list of types being looked for, instead returning everything else. Default False.
 
     Returns:
         list: A list of values to pass to the test function.
 
     """
     valid_keys_as_specified = [key for key in types if key in TYPE_TEST_DATA]
-    if not type_as_specified:
+    if invert_types:
         valid_keys = [key for key in TYPE_TEST_DATA.keys() if key not in valid_keys_as_specified]
     else:
         valid_keys = valid_keys_as_specified

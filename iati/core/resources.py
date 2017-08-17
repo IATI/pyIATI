@@ -70,7 +70,7 @@ FILE_SCHEMA_EXTENSION = '.xsd'
 """The extension of a file containing a Schema."""
 
 
-def find_all_codelist_paths(version=None):
+def get_all_codelist_paths(version=None):
     """Find the paths for all codelists.
 
     Args:
@@ -92,13 +92,13 @@ def find_all_codelist_paths(version=None):
 
     """
     files = pkg_resources.resource_listdir(PACKAGE, get_path_for_version(PATH_CODELISTS, version))
-    paths = [get_codelist_path(file, version) for file in files]
-    paths_codelists_only = [path for path in paths if path[-4:] == FILE_CODELIST_EXTENSION]
+    files_codelists_only = [file_name for file_name in files if file_name[-4:] == FILE_CODELIST_EXTENSION]
+    paths = [get_codelist_path(file_name, version) for file_name in files_codelists_only]
 
-    return paths_codelists_only
+    return paths
 
 
-def find_all_schema_paths(version=None):
+def get_all_schema_paths(version=None):
     """Find the paths for all schemas.
 
     Args:
@@ -116,10 +116,58 @@ def find_all_schema_paths(version=None):
     Todo:
         Handle versions, including errors.
 
-        Implement for more than a single specified activity schema.
+        Potentially add the IATI codelist schema.
+
+    """
+    return get_all_activity_schema_paths(version) + get_all_organisation_schema_paths(version)
+
+
+def get_all_activity_schema_paths(version=None):
+    """Find the paths for all activity schemas.
+
+    Args:
+        version (str): The version of the Standard to return the activity schemas for. Defaults to None. This means that paths to the latest version of the activity Schemas are returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        list of str: A list of paths to all of the activity Schemas at the specified version of the Standard.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+    Todo:
+        Handle versions, including errors.
+
+        Potentially add the IATI codelist schema.
 
     """
     return [get_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version)]
+
+
+def get_all_organisation_schema_paths(version=None):
+    """Find the paths for all organisation schemas.
+
+    Args:
+        version (str): The version of the Standard to return the organisation schemas for. Defaults to None. This means that paths to the latest version of the activity Schemas are returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        list: A list of paths to all of the organisation Schemas at the specified version of the Standard.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+    Todo:
+        Handle versions, including errors.
+
+        Potentially add the IATI codelist schema.
+
+    """
+    return [get_schema_path(FILE_SCHEMA_ORGANISATION_NAME, version)]
 
 
 def get_codelist_path(codelist_name, version=None):

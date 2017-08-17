@@ -15,7 +15,7 @@ class TestValidationError(object):
         with pytest.raises(TypeError):
             iati.validator.ValidationError()
 
-    @pytest.mark.parametrize("invalid_err_name", iati.core.tests.utilities.find_parameter_by_type([], False))
+    @pytest.mark.parametrize("invalid_err_name", iati.core.tests.utilities.generate_test_types([], True))
     def test_validation_error_init_bad_name_type(self, invalid_err_name):
         """Test that a ValidationError cannot be created with a name that does not exist."""
         with pytest.raises(ValueError):
@@ -140,13 +140,13 @@ class TestValidationErrorLog(object):
         assert error_log_mixed_contents.contains_error_of_type(warning_type)
         assert not error_log_mixed_contents.contains_error_of_type(unused_exception_type)
 
-    @pytest.mark.parametrize("not_ValidationError", iati.core.tests.utilities.find_parameter_by_type([], False))
+    @pytest.mark.parametrize("not_ValidationError", iati.core.tests.utilities.generate_test_types([], True))
     def test_error_log_add_incorrect_type(self, error_log, not_ValidationError):
         """Test that you may only add ValidationErrors to a ValidationErrorLog."""
         with pytest.raises(TypeError):
             error_log.add(not_ValidationError)
 
-    @pytest.mark.parametrize("potential_ValidationError", iati.core.tests.utilities.find_parameter_by_type([], False) + [iati.validator.ValidationError('err-code-not-on-codelist')])
+    @pytest.mark.parametrize("potential_ValidationError", iati.core.tests.utilities.generate_test_types([], True) + [iati.validator.ValidationError('err-code-not-on-codelist')])
     def test_error_log_set_index_incorrect_type(self, error_log_with_warning, potential_ValidationError):
         """Test that you may not add values to an error log via index assignment."""
         with pytest.raises(TypeError):
@@ -194,7 +194,7 @@ class TestValidationErrorLog(object):
 
         assert len(error_log) == 2
 
-    @pytest.mark.parametrize("iterable", iati.core.tests.utilities.find_parameter_by_type(['bytearray', 'iter', 'list', 'mapping', 'memory', 'range', 'set', 'str', 'tuple', 'view']))
+    @pytest.mark.parametrize("iterable", iati.core.tests.utilities.generate_test_types(['bytearray', 'iter', 'list', 'mapping', 'memory', 'range', 'set', 'str', 'tuple', 'view']))
     def test_error_log_extend_from_iterable(self, error_log, iterable):
         """Test extending an error log with a iterable.
 
@@ -204,7 +204,7 @@ class TestValidationErrorLog(object):
 
         assert len(error_log) == 0
 
-    @pytest.mark.parametrize("non_iterable", iati.core.tests.utilities.find_parameter_by_type(['bytearray', 'iter', 'list', 'mapping', 'memory', 'range', 'set', 'str', 'tuple', 'view'], False))
+    @pytest.mark.parametrize("non_iterable", iati.core.tests.utilities.generate_test_types(['bytearray', 'iter', 'list', 'mapping', 'memory', 'range', 'set', 'str', 'tuple', 'view'], True))
     def test_error_log_extend_from_non_iterable(self, error_log, non_iterable):
         """Test extending an error log with a non-iterable."""
         with pytest.raises(TypeError):
@@ -256,7 +256,8 @@ class TestValidationBasicIATI(object):
     @pytest.fixture
     def schema_basic(self):
         """A schema with no Codelists added."""
-        return iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        return iati.core.Schema(schema_path)
 
     def test_basic_validation_valid(self, schema_basic):
         """Perform a super simple data validation against a valid Dataset."""
@@ -324,7 +325,7 @@ class TestValidateIsXML(object):
         """A valid XML string with the text declaration removed."""
         return '\n'.join(xml_str.strip().split('\n')[1:])
 
-    @pytest.fixture(params=iati.core.tests.utilities.find_parameter_by_type(['str'], False) + [iati.core.tests.utilities.XML_STR_INVALID])
+    @pytest.fixture(params=iati.core.tests.utilities.generate_test_types(['str'], True) + [iati.core.tests.utilities.XML_STR_INVALID])
     def not_xml(self, request):
         """A value that is not a valid XML string."""
         return request.param
@@ -395,7 +396,7 @@ class TestValidateIsXML(object):
 
         assert len(result) == 0
 
-    @pytest.mark.parametrize("not_str", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    @pytest.mark.parametrize("not_str", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_xml_check_not_str_detailed_output(self, not_str):
         """Perform check to see whether a parameter is valid XML. The parameter is not valid XML.
 
@@ -493,7 +494,8 @@ class TestIsValidIATIXML(object):
     @pytest.fixture
     def schema_basic(self):
         """A schema with no Codelists added."""
-        return iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        return iati.core.Schema(schema_path)
 
     @pytest.fixture(params=[
          iati.core.tests.utilities.XML_STR_VALID_IATI,
@@ -565,13 +567,9 @@ class ValidateCodelistsBase(object):
 
     @pytest.fixture
     def schema_basic(self):
-        """A schema with no Codelists added.
-
-        Returns:
-            A valid activity schema with no Codelists added.
-
-        """
-        return iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        """A schema with no Codelists added."""
+        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        return iati.core.Schema(schema_path)
 
     @pytest.fixture
     def schema_version(self):
@@ -581,7 +579,8 @@ class ValidateCodelistsBase(object):
             A valid activity schema with the Version Codelist added.
 
         """
-        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema = iati.core.Schema(schema_path)
         codelist = iati.core.default.codelists()['Version']
 
         schema.codelists.add(codelist)
@@ -596,7 +595,8 @@ class ValidateCodelistsBase(object):
             A valid activity schema with the OrganisationType Codelist added.
 
         """
-        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema = iati.core.Schema(schema_path)
         codelist = iati.core.default.codelists()['OrganisationType']
 
         schema.codelists.add(codelist)
@@ -611,7 +611,8 @@ class ValidateCodelistsBase(object):
             A valid activity schema with the OrganisationType Codelist added.
 
         """
-        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema = iati.core.Schema(schema_path)
         codelist = iati.core.default.codelists()['Country']
 
         schema.codelists.add(codelist)
@@ -626,7 +627,8 @@ class ValidateCodelistsBase(object):
             A valid activity schema with the DAC Sector Codelists and appropriate vocabulary added.
 
         """
-        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema = iati.core.Schema(schema_path)
 
         codelist_1 = iati.core.default.codelists()['SectorVocabulary']
         codelist_2 = iati.core.default.codelists()['Sector']
