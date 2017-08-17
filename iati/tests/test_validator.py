@@ -284,7 +284,7 @@ class TestValidationBasicIATI(object):
     def test_basic_validation_should_fail_from_ssot(self, iati_dataset_invalid_from_ssot, schema_basic):
         """Perform check to see whether a parameter is valid IATI XML.
 
-        The parameter is notvalid IATI XML. It is sourced from the SSOT.
+        The parameter is not valid IATI XML. It is sourced from the SSOT.
         """
         assert not iati.validator.is_iati_xml(iati_dataset_invalid_from_ssot, schema_basic)
 
