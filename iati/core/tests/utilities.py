@@ -45,8 +45,6 @@ XML_STR_VALID_IATI_INVALID_CODE = load_as_string('valid_iati_invalid_code')
 """A string containing valid IATI XML, but an invalid Code valid."""
 XML_STR_INVALID = load_as_string('invalid')
 """A string that is not valid XML."""
-XML_STR_LEADING_WHITESPACE = load_as_string('leading_whitespace_xml')
-"""A string containing valid XML apart form leading whitepace before an `<?xml` declaration."""
 
 XML_STR_INVALID_IATI_MISSING_REQUIRED_ELEMENT = load_as_string('invalid_iati_missing_required_element')
 """A string containing invalid IATI XML. It is invalid due to a missing element defined as require in iati-common.xsd"""
