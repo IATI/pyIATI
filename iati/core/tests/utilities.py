@@ -6,7 +6,7 @@ Example:
     To load a file into a string::
 
         name_of_file = 'a-file-name-without-the-extension'
-        CONSTANT_NAME = _load_as_string(name_of_file))
+        CONSTANT_NAME = _load_as_string(name_of_file)
 
 Note:
     The current method of managing test data is known to be sub-optimal. Suggestions for better methods that satisfy requirements are appreciated!
