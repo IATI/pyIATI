@@ -268,7 +268,7 @@ def get_test_data_path(name, version=None):
     if name[-4:] == FILE_DATA_EXTENSION:
         name = name[:-4]
 
-    return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name))
+    return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
 
 
 def get_test_data_paths_in_folder(folder_name, version=None):
@@ -292,7 +292,7 @@ def get_test_data_paths_in_folder(folder_name, version=None):
     resource_folder = resource_filename(root_folder)
 
     for base_folder, _, file_names in os.walk(resource_folder):
-        desired_files = [file_name for file_name in file_names]
+        desired_files = [file_name for file_name in file_names if file_name[-4:] == FILE_DATA_EXTENSION]
         for file_name in desired_files:
             paths.append(os.path.join(base_folder, file_name))
 
@@ -474,6 +474,8 @@ def load_as_string(path):
     Todo:
         Should raise Exceptions when there are problems loading the requested data.
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
+
+        Add test to load a dataset saved in non-UTF-8 formats. This should include `UTF-16LE`, `UTF-16BE` and `windows-1252` since there are published Datasets using these encodings.
 
     """
     loaded_bytes = load_as_bytes(path)
