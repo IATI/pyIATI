@@ -281,6 +281,11 @@ def get_test_data_paths_in_folder(folder_name, version=None):
         list of str: The paths to data files in the specified folders.
 
     """
+    # ensure the folders are in a OS-independent format
+    if '/' in folder_name:
+        split_name = folder_name.split('/')
+        folder_name = os.sep.join(split_name)
+
     paths = list()
     root_folder = os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), folder_name)
     resource_folder = resource_filename(root_folder)

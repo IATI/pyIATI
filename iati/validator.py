@@ -96,6 +96,13 @@ _ERROR_CODES = {
         'info': '{err}',
         'help': 'Some elements are classed as `elements-only`. This means that they may only contain other elements and whitespace (spaces, tabs, etc). Other text is not permitted.\nFor more information about `elements-only` types, see https://www.w3schools.com/xml/schema_complex_elements.asp'
     },
+    'err-not-iati-xml-root-element-undeclared': {
+        'base_exception': ValueError,
+        'category': 'iati-xml',
+        'description': 'The root element in the data is not contained within the Schema.',
+        'info': '{err}',
+        'help': 'The root element within an XML data file is the one that contains all other data. In an IATI dataset, this is generally `iati-activities` or `iati-organisations`.\nNote that this error may be raised if an Activity Dataset is validated against an Organisation Schema or vice versa.'
+    },
     'err-encoding-invalid': {
         'base_exception': ValueError,
         'category': 'file',
@@ -164,6 +171,7 @@ class ValidationError(object):
             pass
         try:
             self.lxml_err_code = calling_locals['err'].type_name
+            self.err = calling_locals['err']
         except KeyError:
             pass
 
@@ -469,6 +477,7 @@ def _parse_lxml_log_entry(log_entry):
         'SCHEMAV_CVC_COMPLEX_TYPE_3_2_2': 'err-not-iati-xml-forbidden-attribute',
         'SCHEMAV_CVC_COMPLEX_TYPE_4': 'err-not-iati-xml-missing-attribute',
         'SCHEMAV_CVC_DATATYPE_VALID_1_2_1': 'err-not-iati-xml-incorrect-datatype',
+        'SCHEMAV_CVC_ELT_1': 'err-not-iati-xml-root-element-undeclared',
         'SCHEMAV_ELEMENT_CONTENT': 'err-not-iati-xml-missing-required-element'
     }
 
