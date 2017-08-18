@@ -61,12 +61,40 @@ _ERROR_CODES = {
         'info': '{err}',
         'help': 'The XML text declaration specifies how a computer must read the rest of the XML file. Since it tells the computer how to read the XML file, it must occur at the start of an XML document without any content before it.\nIt looks similar to: `<?xml version="1.0" encoding="UTF-8"?>`.\nFor more information about the XML text declaration, see https://www.w3schools.com/xml/xml_syntax.asp and https://www.w3.org/TR/2000/REC-xml-20001006#sec-TextDecl'
     },
+    'err-not-iati-xml-forbidden-attribute': {
+        'base_exception': ValueError,
+        'category': 'iati-xml',
+        'description': 'An element has an attribute that is not permitted.',
+        'info': '{err}',
+        'help': 'The IATI Standard specifies the attributes that elements may have. Other attributes are not permitted.\nFor more information about XML attributes, see https://www.w3schools.com/xml/xml_attributes.asp'
+    },
+    'err-not-iati-xml-incorrect-datatype': {
+        'base_exception': ValueError,
+        'category': 'iati-xml',
+        'description': 'A provided value is not in the correct format.',
+        'info': '{err}',
+        'help': 'Certain pieces of information within an IATI dataset must be formatted in a specified way if they are to be correctly interpreted. The expected format is known at the `type`.\nFor more information about XML data types, see http://books.xmlschemata.org/relaxng/relax-CHP-19.html'
+    },
+    'err-not-iati-xml-missing-attribute': {
+        'base_exception': ValueError,
+        'category': 'iati-xml',
+        'description': 'A required attribute is missing.',
+        'info': '{err}',
+        'help': 'The IATI Standard specifies a number of attributes that must be present for the data to be understood.\nFor more information about XML attributes, see https://www.w3schools.com/xml/xml_attributes.asp'
+    },
     'err-not-iati-xml-missing-required-element': {
         'base_exception': ValueError,
         'category': 'iati-xml',
         'description': 'A different element was found than was expected.',
         'info': '{err}',
         'help': 'There are a number of mandatory elements that an IATI data file must contain. Additionally, these must occur in the required order.\nFor more information about what an XML element is, see https://www.w3schools.com/xml/xml_elements.asp'
+    },
+    'err-not-iati-xml-non-whitespace-in-element-only': {
+        'base_exception': ValueError,
+        'category': 'iati-xml',
+        'description': 'An element contains text where it may only contain other elements.',
+        'info': '{err}',
+        'help': 'Some elements are classed as `elements-only`. This means that they may only contain other elements and whitespace (spaces, tabs, etc). Other text is not permitted.\nFor more information about `elements-only` types, see https://www.w3schools.com/xml/schema_complex_elements.asp'
     },
     'err-encoding-invalid': {
         'base_exception': ValueError,
@@ -437,6 +465,10 @@ def _parse_lxml_log_entry(log_entry):
         'ERR_INVALID_ENCODING': 'err-encoding-invalid',
         'ERR_UNSUPPORTED_ENCODING': 'err-encoding-unsupported',
         'ERR_RESERVED_XML_NAME': 'err-not-xml-xml-text-decl-only-at-doc-start',
+        'SCHEMAV_CVC_COMPLEX_TYPE_2_3': 'err-not-iati-xml-non-whitespace-in-element-only',
+        'SCHEMAV_CVC_COMPLEX_TYPE_3_2_2': 'err-not-iati-xml-forbidden-attribute',
+        'SCHEMAV_CVC_COMPLEX_TYPE_4': 'err-not-iati-xml-missing-attribute',
+        'SCHEMAV_CVC_DATATYPE_VALID_1_2_1': 'err-not-iati-xml-incorrect-datatype',
         'SCHEMAV_ELEMENT_CONTENT': 'err-not-iati-xml-missing-required-element'
     }
 
