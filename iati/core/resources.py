@@ -27,6 +27,7 @@ Todo:
 """
 import os
 import pkg_resources
+import chardet
 from lxml import etree
 import iati.core.constants
 
@@ -267,7 +268,7 @@ def get_test_data_path(name, version=None):
     if name[-4:] == FILE_DATA_EXTENSION:
         name = name[:-4]
 
-    return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
+    return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name))
 
 
 def get_test_data_paths_in_folder(folder_name, version=None):
@@ -291,7 +292,7 @@ def get_test_data_paths_in_folder(folder_name, version=None):
     resource_folder = resource_filename(root_folder)
 
     for base_folder, _, file_names in os.walk(resource_folder):
-        desired_files = [file_name for file_name in file_names if file_name[-4:] == FILE_DATA_EXTENSION]
+        desired_files = [file_name for file_name in file_names]
         for file_name in desired_files:
             paths.append(os.path.join(base_folder, file_name))
 
@@ -475,7 +476,18 @@ def load_as_string(path):
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
 
     """
-    return load_as_bytes(path).decode('utf-8')
+    loaded_bytes = load_as_bytes(path)
+
+    try:
+        loaded_str = loaded_bytes.decode('utf-8')
+    except UnicodeDecodeError:
+        # the file was not UTF-8, so perform a (slow) test to detect encoding
+        # only use the first section of the file since this is generally enough and prevents big files taking ages
+        detected_info = chardet.detect(loaded_bytes[:25000])
+        # print(detected_info, detected_info['encoding'], detected_info['confidence'])
+        loaded_str = loaded_bytes.decode(detected_info['encoding'])
+
+    return loaded_str
 
 
 def load_as_tree(path):

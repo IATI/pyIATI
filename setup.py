@@ -9,6 +9,8 @@ setup(
     url='http://iatistandard.org/',
     packages = find_packages(exclude='iati/core/tests'),
     install_requires = [
+        # detecting character encoding of files
+        'chardet==3.0.4',
         # JSON schema parsing validation
         'jsonschema==2.6.0',
         # XML handling library
