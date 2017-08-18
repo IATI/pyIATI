@@ -474,6 +474,7 @@ def _parse_lxml_log_entry(log_entry):
         'ERR_UNSUPPORTED_ENCODING': 'err-encoding-unsupported',
         'ERR_RESERVED_XML_NAME': 'err-not-xml-xml-text-decl-only-at-doc-start',
         'SCHEMAV_CVC_COMPLEX_TYPE_2_3': 'err-not-iati-xml-non-whitespace-in-element-only',
+        'SCHEMAV_CVC_COMPLEX_TYPE_3_2_1': 'err-not-iati-xml-forbidden-attribute',
         'SCHEMAV_CVC_COMPLEX_TYPE_3_2_2': 'err-not-iati-xml-forbidden-attribute',
         'SCHEMAV_CVC_COMPLEX_TYPE_4': 'err-not-iati-xml-missing-attribute',
         'SCHEMAV_CVC_DATATYPE_VALID_1_2_1': 'err-not-iati-xml-incorrect-datatype',
