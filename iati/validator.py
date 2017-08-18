@@ -177,9 +177,9 @@ class ValidationError(object):
         except KeyError:
             pass
         try:
-            self.lxml_err_code = calling_locals['err'].type_name
             self.err = calling_locals['err']
-        except KeyError:
+            self.lxml_err_code = calling_locals['err'].type_name
+        except (AttributeError, KeyError):
             pass
 
 
@@ -437,7 +437,8 @@ def _check_is_xml(maybe_xml):
     # the parser does not cause any errors when given an empty string, so this needs handling separately
     if len(error_log) == 0 and len(maybe_xml.strip()) == 0:
         err_name = 'err-not-xml-empty-document'
-        error = ValidationError(err_name)
+        err = 'A file or string containing no data is not XML.'
+        error = ValidationError(err_name, locals())
         error_log.add(error)
 
     return error_log
