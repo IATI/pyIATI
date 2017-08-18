@@ -134,6 +134,10 @@ class ValidationError(object):
             self.column_number = calling_locals['column_number']
         except KeyError:
             pass
+        try:
+            self.lxml_err_code = calling_locals['err'].type_name
+        except KeyError:
+            pass
 
 
 class ValidationErrorLog(object):
@@ -439,6 +443,7 @@ def _parse_lxml_log_entry(log_entry):
     try:
         err_name = lxml_to_iati_error_mapping[err.type_name]
     except KeyError:
+        # TODO: it may be desired to make there be different uncategorised errors - eg. IATI error vs. XML error
         err_name = 'err-not-xml-uncategorised-xml-syntax-error'
 
     error = ValidationError(err_name, locals())

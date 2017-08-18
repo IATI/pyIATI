@@ -6,8 +6,12 @@
 pyenv/
 pyenv2/
 
+# tool-generated folders
+prof/
+
 # defined files to ignore
 ignore_*
+test.py
 
 ###
 ### Python .gitignore
