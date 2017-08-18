@@ -123,6 +123,7 @@ def activity_schemas(use_cache=False):
 
     Todo:
         Test a cache bypass where data is updated.
+
     """
     output = {}
     for version in iati.core.constants.STANDARD_VERSIONS:
@@ -148,6 +149,7 @@ def organisation_schemas(use_cache=False):
 
     Todo:
         Test a cache bypass where data is updated.
+
     """
     output = {}
     for version in iati.core.constants.STANDARD_VERSIONS:
@@ -197,6 +199,7 @@ def schema(name, version=None):
 
     Raises:
         KeyError: If the input schema name is not found as part of the default IATI Schemas.
+
     """
     if version is None:
         version = iati.core.constants.STANDARD_VERSION_LATEST
