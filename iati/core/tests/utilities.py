@@ -100,7 +100,7 @@ def generate_test_types(types, invert_types=False):
     """
     valid_keys_as_specified = [key for key in types if key in TYPE_TEST_DATA]
     if invert_types:
-        valid_keys = [key for key in TYPE_TEST_DATA.keys() if key not in valid_keys_as_specified]
+        valid_keys = [key for key in TYPE_TEST_DATA if key not in valid_keys_as_specified]
     else:
         valid_keys = valid_keys_as_specified
 
