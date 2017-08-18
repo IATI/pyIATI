@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<iati-activities>
+  <iati-activity>
+    <iati-identifier>12345</iati-identifier>
+    <description>xxx</description>
+    <contact-info type="xxx">
+      <organisation xml:lang="es">XXX</organisation>
+      <person-name xml:lang="en">XXX</person-name>
+      <person-name xml:lang="fr">YYY</person-name>
+      <job-title xml:lang="en">YYY</job-title>
+      <telephone>123-456-789</telephone>
+      <email>XXX@example.org</email>
+      <website>http://www.example.org</website>
+      <mailing-address xml:lang="en">
+        123 Street St.
+        Somewhere, UK
+      </mailing-address>
+    </contact-info>
+  </iati-activity>
+</iati-activities>
