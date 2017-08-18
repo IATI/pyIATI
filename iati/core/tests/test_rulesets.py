@@ -179,9 +179,14 @@ class RuleSubclassTestBase(object):
     """A base class for Rule subclass tests."""
 
     @pytest.fixture
-    def valid_context(self):
-        """Return valid context."""
+    def valid_single_context(self):
+        """Return valid context with a single match."""
         return '//root_element'
+
+    @pytest.fixture
+    def valid_multiple_context(self):
+        """Return a valid context with multiple matches."""
+        return '//nest'
 
     @pytest.fixture
     def invalid_context(self):
@@ -189,19 +194,19 @@ class RuleSubclassTestBase(object):
         return ''
 
     @pytest.fixture
-    def rule_basic_init(self, rule_constructor, instantiating_case, valid_context):
+    def rule_basic_init(self, rule_constructor, instantiating_case, valid_single_context):
         """Rule subclass."""
-        return rule_constructor(valid_context, instantiating_case)
+        return rule_constructor(valid_single_context, instantiating_case)
 
     @pytest.fixture
-    def rule_is_valid_for(self, rule_constructor, validating_case, valid_context):
+    def rule_is_valid_for(self, rule_constructor, validating_case, valid_single_context):
         """Rule subclass for validation."""
-        return rule_constructor(valid_context, validating_case)
+        return rule_constructor(valid_single_context, validating_case)
 
     @pytest.fixture
-    def rule_is_invalid_for(self, rule_constructor, invalidating_case, valid_context):
+    def rule_is_invalid_for(self, rule_constructor, invalidating_case, valid_single_context):
         """Rule with specific cases for checking the `is_valid_for` function."""
-        return rule_constructor(valid_context, invalidating_case)
+        return rule_constructor(valid_single_context, invalidating_case)
 
     @pytest.fixture
     def rule_constructor(self, rule_type):
@@ -278,6 +283,16 @@ class RuleSubclassTestBase(object):
         with pytest.raises(AttributeError):
             rule_basic_init.is_valid_for(iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_atleastone')))
 
+    def test_multiple_valid_context_matches_is_valid_for(self, valid_multiple_context, valid_nest_case, rule_constructor, valid_dataset):
+        """Check Rule returns expected result when checking multiple contexts."""
+        rule = rule_constructor(valid_multiple_context, valid_nest_case)
+        assert rule.is_valid_for(valid_dataset)
+
+    def test_multiple_valid_context_matches_is_invalid_for(self, valid_multiple_context, invalid_nest_case, rule_constructor, invalid_dataset):
+        """Check Rule returns expected result when checking multiple contexts."""
+        rule = rule_constructor(valid_multiple_context, invalid_nest_case)
+        assert not rule.is_valid_for(invalid_dataset)
+
 
 class TestRuleAtLeastOne(RuleSubclassTestBase):
     """A container for tests relating to RuleAtLeastOne."""
@@ -289,12 +304,13 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
 
     all_valid_cases = [
         {'paths': ['element1']},  # single path
+        {'paths': ['element6/@attribute']},
         {'paths': ['element2', 'element3']},  # multiple paths
+        {'paths': ['element7/@attribute', 'element8/@attribute']},
         {'paths': ['element4', 'element4']},  # duplicate paths
-        {'paths': ['element5', 'element5/element6']},  # nested paths
-        {'paths': ['element7/@attribute']},  # single path for attribute
-        {'paths': ['element8/@attribute', 'element9/@attribute']},  # multiple paths for attribute
-        {'paths': ['element10/@attribute', 'element10/@attribute']}
+        {'paths': ['element9/@attribute', 'element9/@attribute']},
+        {'paths': ['//element5']},  # nested path
+        {'paths': ['//element10/@attribute']}
     ]
 
     uninstantiating_cases = [
@@ -302,25 +318,25 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         {'paths': ['']},  # path is an empty string
         {'paths': 'element'},  # non-array `paths`
         {'paths': [3]},  # non-string value in path array
-        {'paths': ['element', 3]},  # mixed string and non-string value in path array
+        {'paths': ['element', 3]},  # mixed string and non-string values in path array
+        {'paths': ['element/@attribute', 3]},
         {},  # empty dictionary
         {'paths': {'element'}},  # dictionary paths
+        {'paths': {'element/@attribute'}},
         {'paths': 'element'},  # non-array `paths`
         {'paths': [3]},  # non-string value in path array
-        {'paths': ['element/@attribute', 3]},  # mixed string and non-string value in path array
-        {},  # empty dictionary
-        {'paths': {'element/@attribute'}}  # dictionary paths
+        {}  # empty dictionary
     ]
 
     invalidating_cases = [
-        {'paths': ['element1']},  # single path, no elements
-        {'paths': ['element2', 'element3', 'element4']},  # nested paths, one element missing
-        {'paths': ['element5', 'element6']},  # multiple paths, one element missing
-        {'paths': ['element7', 'element8']},  # multiple paths, both elements missing
-        {'paths': ['element9/@attribute']},  # single path, no attributes
-        {'paths': ['element10/@attribute', 'element11/@attribute', 'element12/@attribute']},  # nested paths, one attribute missing
-        {'paths': ['element13/@attribute', 'element14/@attribute']},  # multiple paths, one attribute missing
-        {'paths': ['element15/@attribute', 'element16/@attribute']}  # multiple paths, both attributes missing
+        {'paths': ['element1']},  # single path, no matches
+        {'paths': ['element9/@attribute']},
+        {'paths': ['element2', 'element3']},  # nested paths, one expected match missing
+        {'paths': ['element10/@attribute']},
+        {'paths': ['element5', 'element6']},  # multiple paths, one expected match missing
+        {'paths': ['element11/@attribute', 'element12/@attribute']},
+        {'paths': ['element7', 'element8']},  # multiple paths, both expected matches missing
+        {'paths': ['element13/@attribute', 'element14/@attribute']}
     ]
 
     @pytest.fixture(params=all_valid_cases)
@@ -335,13 +351,23 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
 
     @pytest.fixture(params=all_valid_cases)
     def validating_case(self, request):
-        """Permitted cases for validating an XML dataset against RuleAtLeastOne."""
+        """Permitted case for validating an XML dataset against RuleAtLeastOne."""
         return request.param
 
     @pytest.fixture(params=invalidating_cases)
     def invalidating_case(self, request):
-        """Non-permitted cases for validating an XML dataset against RuleAtLeastOne."""
+        """Non-permitted case for validating an XML dataset against RuleAtLeastOne."""
         return request.param
+
+    @pytest.fixture
+    def valid_nest_case(self):
+        """Non-permitted case for validating an XML dataset against RuleAtLeastOne in nested context."""
+        return {'paths': ['element5', 'element10']}
+
+    @pytest.fixture
+    def invalid_nest_case(self):
+        """Non-permitted case for validating an XML dataset against RuleAtLeastOne in nested context."""
+        return {'paths': ['element3', 'element10/@attribute']}
 
     @pytest.fixture
     def valid_dataset(self):
@@ -367,28 +393,35 @@ class TestRuleDateOrder(RuleSubclassTestBase):
 
     instatiating_cases = [
         {'less': 'element5', 'more': 'element5'},  # both `less` and `more` duplicate xpath
+        {'less': 'element10/@attribute', 'more': 'element10/@attribute'},
         {'less': '2017-07-26T13:19:05.493Z', 'more': 'elementx'},  # `less` is a string-formatted date
+        {'less': '2017-07-26T13:19:05.493Z', 'more': 'elementx/@attribute'},
         {'less': 'elementx', 'more': '2017-07-26T13:19:05.493Z'},  # `more` is a string-formatted date
-        {'less': 'NOW', 'more': 'NOW'},  # both `less` and `more` as NOW
-        {'less': '2017-07-26T13:19:05.493Z', 'more': 'elementx/@attribute'},  # `less` is a string-formatted date
-        {'less': 'elementx/@attribute', 'more': '2017-07-26T13:19:05.493Z'},  # `more` is a string-formatted date
-        {'less': 'element10/@attribute', 'more': 'element10/@attribute'}
-    ]  # both `less` and `more` duplicate xpath
+        {'less': 'elementx/@attribute', 'more': '2017-07-26T13:19:05.493Z'},
+        {'less': 'NOW', 'more': 'NOW'}  # both `less` and `more` as NOW
+    ]
 
     validating_cases = [
-        {'less': 'element1', 'more': 'element2'},  # both `less` and `more` present
-        {'less': 'element3', 'more': 'NOW'},  # `more` as NOW
-        {'less': 'NOW', 'more': 'element4'},  # `less` as NOW
+        {'less': 'element1', 'more': 'element2'},  # correct date order
+        {'less': 'element11/@attribute', 'more': 'element12/@attribute'},
+        {'less': 'element3', 'more': 'NOW'},  # `more` is NOW
+        {'less': 'element13/@attribute', 'more': 'NOW'},
+        {'less': 'NOW', 'more': 'element4'},  # `less` is NOW
+        {'less': 'NOW', 'more': 'element14/@attribute'},
         {'less': 'element5', 'more': 'element6'},  # multiple identical `less` values
+        {'less': 'element15/@attribute', 'more': 'element16/@attribute'},
         {'less': 'element7', 'more': 'element8'},  # multiple identical `more` values
-        {'less': '//element9', 'more': '//element10'},  # correct order nested elements
-        {'less': 'now', 'more': 'Now'},  # not special case so should be treated as normal XPath
-        {'less': 'element11/@attribute', 'more': 'element12/@attribute'},  # both `less` and `more` present
-        {'less': 'element13/@attribute', 'more': 'NOW'},  # `more` as NOW
-        {'less': 'NOW', 'more': 'element14/@attribute'},  # `less` as NOW
-        {'less': 'element15/@attribute', 'more': 'element16/@attribute'},  # multiple identical `less` values
-        {'less': 'element17/@attribute', 'more': 'element18/@attribute'},  # multiple identical `more` values
-        {'less': '//element19', 'more': '//element20'}  # correct order nested attributes
+        {'less': 'element17/@attribute', 'more': 'element18/@attribute'},
+        {'less': '//element9', 'more': '//element10'},  # nested data
+        {'less': '//element19/@attribute', 'more': '//element20/@attribute'},
+        {'less': 'element21', 'more': 'element22'},  # positive timezone value
+        {'less': 'element29/@attribute', 'more': 'element30/@attribute'},
+        {'less': 'element23', 'more': 'element24'},  # negative timezone value
+        {'less': 'element31/@attribute', 'more': 'element32/@attribute'},
+        {'less': 'element25', 'more': 'element26'},  # timezone not on the hour
+        {'less': 'element33/@attribute', 'more': 'element34/@attribute'},
+        {'less': 'element27', 'more': 'element28'},  # UTC timezone
+        {'less': 'element35/@attribute', 'more': 'element36/@attribute'}
     ]
 
     all_valid_cases = instatiating_cases + validating_cases
@@ -405,22 +438,22 @@ class TestRuleDateOrder(RuleSubclassTestBase):
     ]
 
     invalidating_cases = [
-        {'less': 'element1', 'more': 'element2'},  # `more` is chronologically before `less`
-        {'less': 'element3', 'more': 'element4'},  # `less` and `more` are chronologically identical
-        {'less': 'NOW', 'more': 'element6'},  # `more` is chronologically before `less` when `less` is NOW
-        {'less': 'element7', 'more': 'NOW'},  # `less` is chronologically after`more` when `more is NOW`
-        {'less': '//element8', 'more': '//element9'},  # `more` is chronologically before `less` where both are nested elements
-        {'less': 'element10', 'more': 'element10'},  # `less` and `more` are the same element
-        {'less': 'element11', 'more': 'element12'},  # 'less' has multiple matching elements that are chronologically after `more`
-        {'less': 'element13', 'more': 'element14'},  # 'more' has multiple matching elements that are chronologically before `less`
-        {'less': 'element15/@attribute', 'more': 'element16/@attribute'},  # `more` is chronologically before `less`
-        {'less': 'element17/@attribute', 'more': 'element18/@attribute'},  # `less` and `more` are chronologically identical
-        {'less': 'NOW', 'more': 'element19/@attribute'},  # `more` is chronologically before `less` when `less` is NOW
-        {'less': 'element20/@attribute', 'more': 'NOW'},  # `less` is chronologically after `more` when `more` is NOW
-        {'less': '//element21/@attribute', 'more': '//element22/@attribute'},  # `more` is chronologically before `less` where both are nested attributes
-        {'less': 'element23/@attribute', 'more': 'element23/@attribute'},  # `less` and `more` are the same attribute
-        {'less': 'element24/@attribute', 'more': 'element25/@attribute'},  # 'less' has multiple matching attributes that are chronologically after `more`
-        {'less': 'element26/@attribute', 'more': 'element27/@attribute'},  # 'more' has multiple matching attributes that are chronologically before `less`
+        {'less': 'element1', 'more': 'element2'},  # dates not in chronological order
+        {'less': 'element14/@attribute', 'more': 'element15/@attribute'},
+        {'less': 'element3', 'more': 'element4'},  # dates have identical values
+        {'less': 'element16/@attribute', 'more': 'element17/@attribute'},
+        {'less': 'NOW', 'more': 'element5'},  # `more` is chronologically before NOW
+        {'less': 'NOW', 'more': 'element18/@attribute'},
+        {'less': 'element6', 'more': 'NOW'},  # `less` is chronologically after NOW
+        {'less': 'element19/@attribute', 'more': 'NOW'},
+        {'less': '//element7', 'more': '//element8'},  # nested dates not in chronological order
+        {'less': '//element20/@attribute', 'more': '//element21/@attribute'},
+        {'less': 'element9', 'more': 'element9'},  # `less` and `more` reference the same date
+        {'less': 'element22/@attribute', 'more': 'element22/@attribute'},
+        {'less': 'element10', 'more': 'element11'},  # multiple identical `less` dates that are chronologically after `more`
+        {'less': 'element23/@attribute', 'more': 'element24/@attribute'},
+        {'less': 'element12', 'more': 'element13'},  # multiple identical `more` dates that are chronologically before `less`
+        {'less': 'element25/@attribute', 'more': 'element26/@attribute'}
     ]
 
     # NOW in wrong case => element not found <-- test this
@@ -450,6 +483,22 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         """Non-permitted cases for validating an XML dataset against RuleDateOrder."""
         return request.param
 
+    @pytest.fixture(params=[
+        {'less': '//element9', 'more': '//element10'},
+        {'less': '//element19/@attribute', 'more': '//element20/@attribute'}
+    ])
+    def valid_nest_case(self, request):
+        """Non-permitted case for validating an XML dataset against RuleDateOrder in nested context."""
+        return request.param
+
+    @pytest.fixture(params=[
+        {'less': '//element7', 'more': '//element8'},
+        {'less': '//element20/@attribute', 'more': '//element21/@attribute'}
+    ])
+    def invalid_nest_case(self, request):
+        """Non-permitted case for validating an XML dataset against RuleDateOrder in nested context."""
+        return request.param
+
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for instatiating this Rule."""
@@ -461,19 +510,32 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         return iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_VALID
 
     @pytest.mark.parametrize("case", [
-        {'less': 'element1', 'more': 'element2'},
-        {'less': 'element3', 'more': 'element4'},
-        {'less': 'element5', 'more': 'element6'},
-        {'less': 'element7', 'more': 'element8'},
-        {'less': 'element9', 'more': 'element10'},
-        {'less': 'element11', 'more': 'element12'},
-        {'less': 'element13', 'more': 'element14'},
-        {'less': 'element15', 'more': 'element16'},
+        {'less': 'element1', 'more': 'element2'},  # Euro-date format
+        {'less': 'element17/@attribute', 'more': 'element18/@attribute'},
+        {'less': 'element3', 'more': 'element4'},  # USA-date format
+        {'less': 'element19/@attribute', 'more': 'element20/@attribute'},
+        {'less': 'element5', 'more': 'element6'},  # month is given as text
+        {'less': 'element21/@attribute', 'more': 'element22/@attribute'},
+        {'less': 'element7', 'more': 'element8'},  # year given in shortened format
+        {'less': 'element23/@attribute', 'more': 'element24/@attribute'},
+        {'less': 'element9', 'more': 'element10'},  # leading characters included
+        {'less': 'element25/@attribute', 'more': 'element26/@attribute'},
+        {'less': 'element11', 'more': 'element12'},  # non-permitted trailing characters
+        {'less': 'element27/@attribute', 'more': 'element28/@attribute'},
+        {'less': 'element13', 'more': 'element14'},  # leading whitespace
+        {'less': 'element29/@attribute', 'more': 'element30/@attribute'},
+        {'less': 'element15', 'more': 'element16'},  # trailing whitespace
+        {'less': 'element31/@attribute', 'more': 'element32/@attribute'},
+        {'less': 'element33', 'more': 'element34'},  # timezone not zero-padded
+        {'less': 'element35/@attribute', 'more': 'element36/@attribute'},
+        {'less': 'element37', 'more': 'element38'},  # non-permitted leading timezone character
+        {'less': 'element39/@attribute', 'more': 'element40/@attribute'}
     ])
-    def test_incorrect_date_format_raises_error(self, valid_context, case, rule_constructor):
+    def test_incorrect_date_format_raises_error(self, valid_single_context, case, rule_constructor):
         """Check that a dataset with dates in an incorrect format raise expected error."""
+        rule = rule_constructor(valid_single_context, case)
         with pytest.raises(ValueError):
-            rule_is_valid_for_case.is_valid_for(iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT)
+            rule.is_valid_for(iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT)
 
 
 class TestRuleDependent(RuleSubclassTestBase):

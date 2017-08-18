@@ -343,7 +343,12 @@ class RuleDateOrder(Rule):
                 datetime.datetime: A datetime object.
 
             Raises:
-                ValueError: When a non-permitted number of unique dates are given for a `less` or `more` value.
+                ValueError:
+                    When a non-permitted number of unique dates are given for a `less` or `more` value.
+                    When non-permitted trailing characters are found after the core date string characters.
+
+            Note:
+                Though technically permitted, any dates with a leading '-' character are almost certainly incorrect and are therefore treated as data errors.
 
             """
             if path == self.special_case:
@@ -351,22 +356,23 @@ class RuleDateOrder(Rule):
 
             results = context.xpath(path)
             # Returns a string value whether attribute or element
-            unique_dates = [result if isinstance(result, six.string_types) else result.text for result in results]
-
-            if len(set(unique_dates)) == 1:
-                return datetime.strptime(unique_dates[0], '%Y-%m-%d')
+            dates = [result if isinstance(result, six.string_types) else result.text for result in results]
+            # Checks that anything after the YYYY-MM-DD string is a permitted timezone character
+            pattern = re.compile(r'([+-]([01][0-9]|2[0-3]):([0-5][0-9])|Z)?')
+            if (len(set(dates)) == 1) and pattern.fullmatch(dates[0][10:]):
+                return datetime.strptime(dates[0][:10], '%Y-%m-%d')
             raise ValueError
 
         context_elements = self._find_context_elements(dataset)
 
         for context_element in context_elements:
-            try:
-                early_date = get_date(context_element, self.less)
-                later_date = get_date(context_element, self.more)
-            except MemoryError:
-                continue
+            early_date = get_date(context_element, self.less)
+            later_date = get_date(context_element, self.more)
 
-        return early_date < later_date
+            if early_date >= later_date:
+                return False
+
+        return True
 
 
 class RuleDependent(Rule):
