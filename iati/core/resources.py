@@ -112,7 +112,7 @@ def get_all_schema_paths(version=None):
         Potentially add the IATI codelist schema.
 
     """
-    return get_all_activity_schema_paths(version) + get_all_organisation_schema_paths(version)
+    return get_all_activity_schema_paths(version) + get_all_org_schema_paths(version)
 
 
 def get_all_activity_schema_paths(version=None):
@@ -139,7 +139,7 @@ def get_all_activity_schema_paths(version=None):
     return [get_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version)]
 
 
-def get_all_organisation_schema_paths(version=None):
+def get_all_org_schema_paths(version=None):
     """Find the paths for all organisation schemas.
 
     Args:

@@ -3,14 +3,14 @@
 Todo:
     Implement tests for strict checking once validation work is underway.
 """
-from future.standard_library import install_aliases
-install_aliases()
-
 import math
+from future.standard_library import install_aliases
 from lxml import etree
 import pytest
 import iati.core.data
 import iati.core.tests.utilities
+
+install_aliases()
 
 
 class TestDatasets(object):
@@ -24,7 +24,7 @@ class TestDatasets(object):
     def test_dataset_no_params(self):
         """Test Dataset creation with no parameters."""
         with pytest.raises(TypeError) as excinfo:
-            iati.core.Dataset()
+            iati.core.Dataset()  # pylint: disable=E1120
 
         assert ('__init__() missing 1 required positional argument' in str(excinfo.value)) or ('__init__() takes exactly 2 arguments' in str(excinfo.value))
 
@@ -220,14 +220,13 @@ class TestDatasets(object):
         xml_encoded = xml.encode(encoding_used)  # Encode the whole string in line with the specified encoding
 
         with pytest.raises(ValueError) as excinfo:
-            dataset = iati.core.data.Dataset(xml_encoded)
+            _ = iati.core.data.Dataset(xml_encoded)
 
         assert str(excinfo.value) == 'The string provided to create a Dataset from is not valid XML.'
 
 
 class TestDatasetSourceFinding(object):
     """A container for tests relating to finding source context within a Dataset."""
-
 
     @pytest.fixture(params=[
         iati.core.tests.utilities.load_as_string('valid_not_iati'),
@@ -297,7 +296,7 @@ class TestDatasetSourceFinding(object):
         Uses the default number of surrounding context lines.
         """
         for line_num in range(2, num_lines_xml):
-            desired_source = '\n'.join(split_xml_str[line_num-1:line_num+2])
+            desired_source = '\n'.join(split_xml_str[line_num - 1:line_num + 2])
             actual_source = data.source_around_line(line_num)
 
             assert actual_source == desired_source
@@ -309,9 +308,9 @@ class TestDatasetSourceFinding(object):
         Line numbers are valid.
         Uses a custom number of surrounding context lines.
         """
-        for context_lines in range(1, math.ceil(num_lines_xml/2)):
-            for line_num in range(context_lines, num_lines_xml-context_lines):
-                desired_source = '\n'.join(split_xml_str[max(line_num-context_lines, 1):line_num+context_lines+1])
+        for context_lines in range(1, math.ceil(num_lines_xml / 2)):
+            for line_num in range(context_lines, num_lines_xml - context_lines):
+                desired_source = '\n'.join(split_xml_str[max(line_num - context_lines, 1):line_num + context_lines + 1])
                 actual_source = data.source_around_line(line_num, context_lines)
 
                 assert actual_source == desired_source
@@ -346,7 +345,7 @@ class TestDatasetSourceFinding(object):
         Line numbers are valid.
         Uses the default number of surrounding context lines.
         """
-        assert data.source_around_line(num_lines_xml-1) == '\n'.join(split_xml_str[-2:])
+        assert data.source_around_line(num_lines_xml - 1) == '\n'.join(split_xml_str[-2:])
 
     def test_dataset_xml_str_source_around_line_late_line_custom_context(self, data, split_xml_str, num_lines_xml):
         """Test obtaining source around a particular line.
@@ -355,10 +354,10 @@ class TestDatasetSourceFinding(object):
         Line numbers are valid.
         Uses the default number of surrounding context lines.
         """
-        for context_lines in range(1, math.ceil(num_lines_xml/2)):
+        for context_lines in range(1, math.ceil(num_lines_xml / 2)):
             for line_num in range(0, context_lines):
                 desired_source = '\n'.join(split_xml_str[-(line_num + context_lines + 1):])
-                actual_source = data.source_around_line(num_lines_xml-line_num-1, context_lines)
+                actual_source = data.source_around_line(num_lines_xml - line_num - 1, context_lines)
 
                 assert actual_source == desired_source
 

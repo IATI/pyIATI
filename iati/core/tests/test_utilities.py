@@ -157,7 +157,7 @@ class TestUtilities(object):
         assert tree.tag == 'parent'
         assert len(tree.getchildren()) == 1
         assert tree.getchildren()[0].tag == 'child'
-        assert len(tree.getchildren()[0].getchildren()) == 0
+        assert not tree.getchildren()[0].getchildren()
 
     def test_convert_xml_to_tree_invalid_str(self):
         """Check that an invalid string raises an error when an attempt is made to convert it to an etree."""
