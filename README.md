@@ -2,7 +2,7 @@
 
 The iati.core Python module.
 
-[![Build Status](https://travis-ci.org/IATI/iati.core.svg?branch=master)](https://travis-ci.com/IATI/iati.core)
+[![Build Status](https://travis-ci.org/IATI/iati.core.svg?branch=master)](https://travis-ci.com/IATI/iati.core) [![Requirements Status](https://requires.io/github/IATI/iati.core/requirements.svg?branch=master)](https://requires.io/github/IATI/iati.core/requirements/?branch=master)
 
 Varying between: [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges) and [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges) (see docstrings)
 
@@ -56,14 +56,16 @@ Once installed, the library provides functionality to represent IATI Schemas, Co
 
 ### Loading an XSD Schema
 
-The `.xsd` schema file should be stored in the folder: `iati.core/iati/core/resources/schemas/202/`
+A number of default IATI `.xsd` schema files are included as part of the library. They are stored in the folder: `iati.core/iati/core/resources/schemas/202/`
 
-The following example loads the included IATI v2.02 schema at:  `iati.core/iati/core/resources/schemas/202/iati-activities-schema.xsd`.
+The following example loads the default IATI v2.02 `iati-activities-schema.xsd` schema:
 
 ```
-import iati.core.schemas
-schema = iati.core.schemas.Schema(name='iati-activities-schema')
+import iati.core.default
+schema = iati.core.default.schema('iati-activities-schema')
 ```
+
+Helper functions will be written in due course to return all xpaths within a schema, as well as documentation for each element.
 
 ### Loading codelists
 
@@ -103,7 +105,7 @@ with open('path/to/iati-activites.xml', 'r') as xml_file_object:
 import requests
 dataset_as_string = requests.get('http://XML_FILE_URL_HERE').text
 
-dataset = iati.core.data.Dataset(dataset_as_string)
+dataset = iati.core.Dataset(dataset_as_string)
 ```
 
 #### Accessing data

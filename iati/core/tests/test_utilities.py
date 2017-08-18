@@ -7,12 +7,15 @@ import iati.core.utilities
 
 
 class TestUtilities(object):
-    """A container for tests relating to utilities"""
+    """A container for tests relating to utilities."""
 
     @pytest.fixture
     def schema_base_tree(self):
         """Return schema_base_tree."""
-        return iati.core.schemas.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)._schema_base_tree
+        activity_schema_path = iati.core.resources.get_schema_path(
+            iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID
+        )
+        return iati.core.ActivitySchema(activity_schema_path)._schema_base_tree
 
     def test_add_namespace_schema_new(self, schema_base_tree):
         """Check that an additional namespace can be added to a Schema.
@@ -21,6 +24,7 @@ class TestUtilities(object):
             Deal with required changes to iati.core.constants.NSMAP.
 
             Add a similar test for Datasets.
+
         """
         initial_nsmap = schema_base_tree.getroot().nsmap
         ns_name = 'xi'
@@ -39,6 +43,7 @@ class TestUtilities(object):
 
         Todo:
             Add a similar test for Datasets.
+
         """
         initial_nsmap = schema_base_tree.getroot().nsmap
         ns_name = 'xsd'
@@ -58,36 +63,34 @@ class TestUtilities(object):
 
         Todo:
             Add a similar test for Datasets.
+
         """
         ns_name = 'xsd'
         ns_uri = 'http://www.w3.org/2001/XMLSchema-different'
 
-        try:
-            _ = iati.core.utilities.add_namespace(schema_base_tree, ns_name, ns_uri)
-        except ValueError:
-            assert True
-        else:  # pragma: no cover
-            assert False
+        with pytest.raises(ValueError) as excinfo:
+            iati.core.utilities.add_namespace(schema_base_tree, ns_name, ns_uri)
 
-    @pytest.mark.parametrize("not_a_tree", iati.core.tests.utilities.find_parameter_by_type([], False))
+        assert 'There is already a namespace called' in str(excinfo.value)
+
+    @pytest.mark.parametrize("not_a_tree", iati.core.tests.utilities.generate_test_types([], True))
     def test_add_namespace_no_schema(self, not_a_tree):
         """Check that attempting to add a namespace to something that isn't a Schema raises an error."""
         ns_name = 'xsd'
         ns_uri = 'http://www.w3.org/2001/XMLSchema'
 
-        try:
-            _ = iati.core.utilities.add_namespace(not_a_tree, ns_name, ns_uri)
-        except TypeError:
-            assert True
-        else:  # pragma: no cover
-            assert False
+        with pytest.raises(TypeError) as excinfo:
+            iati.core.utilities.add_namespace(not_a_tree, ns_name, ns_uri)
 
-    @pytest.mark.parametrize("ns_name", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+        assert 'The `tree` parameter must be of type `etree._ElementTree` - it was of type' in str(excinfo.value)
+
+    @pytest.mark.parametrize("ns_name", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_add_namespace_nsname_non_str(self, ns_name):
         """Check that attempting to add a namespace with a name that is not a string acts correctly.
 
         Todo:
             Determine whether to attempt cast to string or raise an error.
+
         """
         pass
 
@@ -98,17 +101,16 @@ class TestUtilities(object):
         Todo:
             Add more tests - for syntax, see:
                 https://www.w3.org/TR/REC-xml-names/#NT-NSAttName
+
         """
         ns_uri = 'http://www.w3.org/2001/XMLSchema'
 
-        try:
-            _ = iati.core.utilities.add_namespace(schema_base_tree, ns_name, ns_uri)
-        except ValueError:
-            assert True
-        else:  # pragma: no cover
-            assert False
+        with pytest.raises(ValueError) as excinfo:
+            iati.core.utilities.add_namespace(schema_base_tree, ns_name, ns_uri)
 
-    @pytest.mark.parametrize("ns_uri", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+        assert 'The `new_ns_name` parameter must be a non-empty string.' in str(excinfo.value)
+
+    @pytest.mark.parametrize("ns_uri", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_add_namespace_nsuri_non_str(self, ns_uri):
         """Check that attempting to add a namespace uri that is not a string acts correctly.
 
@@ -129,12 +131,10 @@ class TestUtilities(object):
         """
         ns_name = 'testname'
 
-        try:
-            _ = iati.core.utilities.add_namespace(schema_base_tree, ns_name, ns_uri)
-        except ValueError:
-            assert True
-        else:  # pragma: no cover
-            assert False
+        with pytest.raises(ValueError) as excinfo:
+            iati.core.utilities.add_namespace(schema_base_tree, ns_name, ns_uri)
+
+        assert 'The `new_ns_uri` parameter must be a valid URI.' in str(excinfo.value)
 
     def test_convert_tree_to_schema(self):
         """Check that an etree can be converted to a schema."""
@@ -157,29 +157,24 @@ class TestUtilities(object):
         assert tree.tag == 'parent'
         assert len(tree.getchildren()) == 1
         assert tree.getchildren()[0].tag == 'child'
-        assert len(tree.getchildren()[0].getchildren()) == 0
+        assert not tree.getchildren()[0].getchildren()
 
     def test_convert_xml_to_tree_invalid_str(self):
         """Check that an invalid string raises an error when an attempt is made to convert it to an etree."""
         not_xml = "this is not XML"
 
-        try:
-            _ = iati.core.utilities.convert_xml_to_tree(not_xml)
-        except etree.XMLSyntaxError:
-            assert True
-        else:  # pragma: no cover
-            assert False
+        with pytest.raises(etree.XMLSyntaxError) as excinfo:
+            iati.core.utilities.convert_xml_to_tree(not_xml)
 
-    @pytest.mark.parametrize("not_xml", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+        assert excinfo.typename == 'XMLSyntaxError'
+
+    @pytest.mark.parametrize("not_xml", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_convert_xml_to_tree_not_str(self, not_xml):
-        """Check that an invalid string raises an error when an attempt is made to convert it to an etree.
-        """
-        try:
-            _ = iati.core.utilities.convert_xml_to_tree(not_xml)
-        except ValueError:
-            assert True
-        else:  # pragma: no cover
-            assert False
+        """Check that an invalid string raises an error when an attempt is made to convert it to an etree."""
+        with pytest.raises(ValueError) as excinfo:
+            iati.core.utilities.convert_xml_to_tree(not_xml)
+
+        assert 'To parse XML into a tree, the XML must be a string, not a' in str(excinfo.value)
 
     def test_log(self):
         """TODO: Implement testing for logging."""

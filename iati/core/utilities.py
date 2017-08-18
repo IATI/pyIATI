@@ -1,10 +1,7 @@
 """A module containing utility functions."""
 import logging
 import os
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
+from io import StringIO
 from lxml import etree
 import iati.core.constants
 
@@ -18,7 +15,7 @@ def add_namespace(tree, new_ns_name, new_ns_uri):
         new_ns_uri (str): The URI for the new namespace. Must be non-empty and valid against https://www.ietf.org/rfc/rfc2396.txt
 
     Returns:
-        iati.core.schemas.Schema: The provided Schema, modified to include the specified namespace.
+        iati.core.Schema: The provided Schema, modified to include the specified namespace.
 
     Raises:
         TypeError: If an attempt is made to add a namespace to something other than a Schema.
@@ -42,12 +39,12 @@ def add_namespace(tree, new_ns_name, new_ns_uri):
         msg = "The `tree` parameter must be of type `etree._ElementTree` - it was of type {0}".format(type(tree))
         iati.core.utilities.log_error(msg)
         raise TypeError(msg)
-    if not isinstance(new_ns_name, str) or len(new_ns_name) == 0:
+    if not isinstance(new_ns_name, str) or not new_ns_name:
         msg = "The `new_ns_name` parameter must be a non-empty string."
         iati.core.utilities.log_error(msg)
         raise ValueError(msg)
-    if not isinstance(new_ns_uri, str) or len(new_ns_uri) == 0:
-        msg = "The `new_ns_name` parameter must be a valid URI."
+    if not isinstance(new_ns_uri, str) or not new_ns_uri:
+        msg = "The `new_ns_uri` parameter must be a valid URI."
         iati.core.utilities.log_error(msg)
         raise ValueError(msg)
 
@@ -86,12 +83,13 @@ def convert_tree_to_schema(tree):
     Warning:
         Should raise exceptions when there are errors during execution.
 
-        Needs to better distinguish between an `etree.XMLSchema` and an `iati.core.schemas.Schema`.
+        Needs to better distinguish between an `etree.XMLSchema`, an `iati.core.Schema`, an `iati.core.ActivitySchema` and an `iati.core.OrganisationSchema`.
 
         Does not fully hide the lxml internal workings.
 
     Todo:
         Surround schema conversion with error handling.
+
     """
     return etree.XMLSchema(tree)
 
@@ -111,6 +109,7 @@ def convert_xml_to_tree(xml):
     Raises:
         ValueError: The XML provided was something other than a string.
         lxml.etree.XMLSyntaxError: There was an error with the syntax of the provided XML.
+
     """
     try:
         tree = etree.fromstring(xml)
@@ -142,6 +141,7 @@ def log(lvl, msg, *args, **kwargs):
         Logging should not fill up logfiles at lightspeed unless this is specifically desired.
 
         Outputs should be more easily parsable.
+
     """
     logging.basicConfig(
         filename=os.path.join(iati.core.constants.LOG_FILE_NAME),
@@ -162,6 +162,7 @@ def log_error(msg, *args, **kwargs):
 
     Warning:
         Potentially too tightly coupled to the Python `logging` module.
+
     """
     log(logging.ERROR, msg, *args, **kwargs)
 
@@ -178,6 +179,7 @@ def log_exception(msg, *args, **kwargs):
 
     Warning:
         Potentially too tightly coupled to the Python `logging` module.
+
     """
     log(logging.ERROR, msg, exc_info=True, *args, **kwargs)
 
@@ -192,5 +194,6 @@ def log_warning(msg, *args, **kwargs):
 
     Warning:
         Potentially too tightly coupled to the Python `logging` module.
+
     """
     log(logging.WARN, msg, *args, **kwargs)

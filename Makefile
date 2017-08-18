@@ -27,8 +27,12 @@ lint: $(IATI_FOLDER)
 	echo $(LINE_SEP)
 	-flake8 $(IATI_FOLDER)
 	echo $(LINE_SEP)
-	pydocstyle $(IATI_FOLDER)
+	- pydocstyle $(IATI_FOLDER)
 
 
 test: $(IATI_FOLDER)
 	py.test --cov-report term-missing:skip-covered --cov=$(IATI_FOLDER) $(IATI_FOLDER)
+
+
+testp: $(IATI_FOLDER)
+	py.test --cov-report term-missing:skip-covered --cov=$(IATI_FOLDER) -n 2 $(IATI_FOLDER)
