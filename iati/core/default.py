@@ -76,7 +76,8 @@ def codelists(version=None, use_cache=False):
         dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.core.Codelist() instances.
 
     Warning:
-        Setting `use_cache` to `True` is dangerous since it does not return a deep copy of the Codelists. This means that modification of a returned Codelist will modify the Codelist everywhere. A `deepcopy()` should be performed on any returned value before it is modified.
+        Setting `use_cache` to `True` is dangerous since it does not return a deep copy of the Codelists. This means that modification of a returned Codelist will modify the Codelist everywhere.
+        A `deepcopy()` should be performed on any returned value before it is modified.
 
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
