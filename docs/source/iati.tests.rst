@@ -4,10 +4,10 @@ iati.tests package
 Submodules
 ----------
 
-iati.tests.test_validate module
--------------------------------
+iati.tests.test_validator module
+--------------------------------
 
-.. automodule:: iati.tests.test_validate
+.. automodule:: iati.tests.test_validator
     :members:
     :undoc-members:
     :show-inheritance:

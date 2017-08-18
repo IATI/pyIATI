@@ -27,6 +27,7 @@ Todo:
 """
 import os
 import pkg_resources
+import chardet
 from lxml import etree
 import iati.core.constants
 
@@ -70,7 +71,7 @@ FILE_SCHEMA_EXTENSION = '.xsd'
 """The extension of a file containing a Schema."""
 
 
-def find_all_codelist_paths(version=None):
+def get_all_codelist_paths(version=None):
     """Find the paths for all codelists.
 
     Args:
@@ -92,13 +93,13 @@ def find_all_codelist_paths(version=None):
 
     """
     files = pkg_resources.resource_listdir(PACKAGE, get_path_for_version(PATH_CODELISTS, version))
-    paths = [get_codelist_path(file, version) for file in files]
-    paths_codelists_only = [path for path in paths if path[-4:] == FILE_CODELIST_EXTENSION]
+    files_codelists_only = [file_name for file_name in files if file_name[-4:] == FILE_CODELIST_EXTENSION]
+    paths = [get_codelist_path(file_name, version) for file_name in files_codelists_only]
 
-    return paths_codelists_only
+    return paths
 
 
-def find_all_schema_paths(version=None):
+def get_all_schema_paths(version=None):
     """Find the paths for all schemas.
 
     Args:
@@ -116,10 +117,58 @@ def find_all_schema_paths(version=None):
     Todo:
         Handle versions, including errors.
 
-        Implement for more than a single specified activity schema.
+        Potentially add the IATI codelist schema.
+
+    """
+    return get_all_activity_schema_paths(version) + get_all_organisation_schema_paths(version)
+
+
+def get_all_activity_schema_paths(version=None):
+    """Find the paths for all activity schemas.
+
+    Args:
+        version (str): The version of the Standard to return the activity schemas for. Defaults to None. This means that paths to the latest version of the activity Schemas are returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        list of str: A list of paths to all of the activity Schemas at the specified version of the Standard.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+    Todo:
+        Handle versions, including errors.
+
+        Potentially add the IATI codelist schema.
 
     """
     return [get_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version)]
+
+
+def get_all_organisation_schema_paths(version=None):
+    """Find the paths for all organisation schemas.
+
+    Args:
+        version (str): The version of the Standard to return the organisation schemas for. Defaults to None. This means that paths to the latest version of the activity Schemas are returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        list: A list of paths to all of the organisation Schemas at the specified version of the Standard.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+    Todo:
+        Handle versions, including errors.
+
+        Potentially add the IATI codelist schema.
+
+    """
+    return [get_schema_path(FILE_SCHEMA_ORGANISATION_NAME, version)]
 
 
 def get_codelist_path(codelist_name, version=None):
@@ -194,7 +243,7 @@ def get_test_data_path(name, version=None):
     """Determine the path of an IATI data file with the given filename.
 
     Args:
-        name (str): The name of the data file to locate. The filename must not contain the '.xml' file extension.
+        name (str): The name of the data file to locate. The name may contain forward slashes (`/`) to indicate a directory. Data files must be `.xml` files.
         version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
 
     Returns:
@@ -210,7 +259,47 @@ def get_test_data_path(name, version=None):
         Test this.
 
     """
+    # ensure the folders are in a OS-independent format
+    if '/' in name:
+        split_name = name.split('/')
+        name = os.sep.join(split_name)
+
+    # remove the '.xml' file extension if present
+    if name[-4:] == FILE_DATA_EXTENSION:
+        name = name[:-4]
+
     return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
+
+
+def get_test_data_paths_in_folder(folder_name, version=None):
+    """Determine the paths of all IATI data files in the specified folder under the root test folder.
+
+    Args:
+        name (str): The name of the folder within which to locate data files.
+        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+
+    Returns:
+        list of str: The paths to data files in the specified folders.
+
+    """
+    # ensure the folders are in a OS-independent format
+    if '/' in folder_name:
+        split_name = folder_name.split('/')
+        folder_name = os.sep.join(split_name)
+
+    paths = list()
+    root_folder = os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), folder_name)
+    resource_folder = resource_filename(root_folder)
+
+    for base_folder, _, file_names in os.walk(resource_folder):
+        desired_files = [file_name for file_name in file_names if file_name[-4:] == FILE_DATA_EXTENSION]
+        for file_name in desired_files:
+            paths.append(os.path.join(base_folder, file_name))
+
+    # de-resource the file-names so that they're not duplicated
+    deresourced_paths = [path[path.find(root_folder):] for path in paths]
+
+    return deresourced_paths
 
 
 def get_test_ruleset_path(name, version=None):
@@ -334,24 +423,6 @@ def get_path_for_version(path, version=None):
     """
     return os.path.join(get_folder_path_for_version(version), path)
 
-def load_as_dataset(path):
-    """Load a resource at the specified path into a dataset.
-
-    Args:
-        path (str): The path to the file that is to be read in.
-
-    Returns:
-        dataset: A Dataset object with the contents of the file at the specified location.
-
-    Warning:
-        Should raise Exceptions when there are problems loading the requested data.
-
-    Todo:
-        Add error handling for when the specified file does not exist.
-
-    """
-    dataset_str = load_as_string(path)
-    return iati.core.Dataset(dataset_str)
 
 def load_as_bytes(path):
     """Load a resource at the specified path into a bytes object.
@@ -371,6 +442,26 @@ def load_as_bytes(path):
     return pkg_resources.resource_string(PACKAGE, path)
 
 
+def load_as_dataset(path):
+    """Load a resource at the specified path into a dataset.
+
+    Args:
+        path (str): The path to the file that is to be read in.
+
+    Returns:
+        dataset: A Dataset object with the contents of the file at the specified location.
+
+    Warning:
+        Should raise Exceptions when there are problems loading the requested data.
+
+    Todo:
+        Add error handling for when the specified file does not exist.
+
+    """
+    dataset_str = load_as_string(path)
+    return iati.core.Dataset(dataset_str)
+
+
 def load_as_string(path):
     """Load a resource at the specified path into a string.
 
@@ -384,8 +475,21 @@ def load_as_string(path):
         Should raise Exceptions when there are problems loading the requested data.
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
 
+        Add test to load a dataset saved in non-UTF-8 formats. This should include `UTF-16LE`, `UTF-16BE` and `windows-1252` since there are published Datasets using these encodings.
+
     """
-    return load_as_bytes(path).decode('utf-8')
+    loaded_bytes = load_as_bytes(path)
+
+    try:
+        loaded_str = loaded_bytes.decode('utf-8')
+    except UnicodeDecodeError:
+        # the file was not UTF-8, so perform a (slow) test to detect encoding
+        # only use the first section of the file since this is generally enough and prevents big files taking ages
+        detected_info = chardet.detect(loaded_bytes[:25000])
+        # print(detected_info, detected_info['encoding'], detected_info['confidence'])
+        loaded_str = loaded_bytes.decode(detected_info['encoding'])
+
+    return loaded_str
 
 
 def load_as_tree(path):
