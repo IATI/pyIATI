@@ -268,7 +268,7 @@ def get_test_data_path(name, version=None):
     if name[-4:] == FILE_DATA_EXTENSION:
         name = name[:-4]
 
-    return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
+    return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name))
 
 
 def get_test_data_paths_in_folder(folder_name, version=None):
@@ -292,7 +292,7 @@ def get_test_data_paths_in_folder(folder_name, version=None):
     resource_folder = resource_filename(root_folder)
 
     for base_folder, _, file_names in os.walk(resource_folder):
-        desired_files = [file_name for file_name in file_names if file_name[-4:] == FILE_DATA_EXTENSION]
+        desired_files = [file_name for file_name in file_names]
         for file_name in desired_files:
             paths.append(os.path.join(base_folder, file_name))
 

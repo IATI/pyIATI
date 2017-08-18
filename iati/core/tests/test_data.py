@@ -28,6 +28,11 @@ class TestDatasets(object):
 
         assert ('__init__() missing 1 required positional argument' in str(excinfo.value)) or ('__init__() takes exactly 2 arguments' in str(excinfo.value))
 
+    def test_dataset_empty_string(self):
+        """Test Dataset creation with a valid XML string that is not IATI data."""
+        with pytest.raises(ValueError):
+            data = iati.core.Dataset('')
+
     def test_dataset_valid_xml_string(self):
         """Test Dataset creation with a valid XML string that is not IATI data."""
         data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_not_iati'))
