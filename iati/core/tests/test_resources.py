@@ -75,7 +75,7 @@ class TestResources(object):
 
         assert len(activity_paths) == 1
 
-    def test_get_all_organisation_schema_paths(self):
+    def test_get_all_org_schema_paths(self):
         """Check that all organisation schema paths are found.
 
         Todo:
@@ -84,7 +84,7 @@ class TestResources(object):
             Handle all paths to schemas being found correctly.
 
         """
-        organisation_paths = iati.core.resources.get_all_organisation_schema_paths()
+        organisation_paths = iati.core.resources.get_all_org_schema_paths()
 
         assert len(organisation_paths) == 1
 
@@ -104,7 +104,7 @@ class TestResources(object):
     @pytest.mark.parametrize('get_schema_path_function', [
         iati.core.resources.get_all_schema_paths,
         iati.core.resources.get_all_activity_schema_paths,
-        iati.core.resources.get_all_organisation_schema_paths
+        iati.core.resources.get_all_org_schema_paths
     ])
     def test_find_schema_paths_file_extension(self, get_schema_path_function):
         """Check that the correct file extension is present within file paths returned by get_all_*schema_paths functions."""

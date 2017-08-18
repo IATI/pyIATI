@@ -154,7 +154,7 @@ def organisation_schemas(use_cache=False):
     """
     output = {}
     for version in iati.core.constants.STANDARD_VERSIONS:
-        organisation_schema_paths = iati.core.resources.get_all_organisation_schema_paths(version)
+        organisation_schema_paths = iati.core.resources.get_all_org_schema_paths(version)
         if ('iati-organisations-schema' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
             if version not in _SCHEMAS.keys():
                 _SCHEMAS[version] = {}

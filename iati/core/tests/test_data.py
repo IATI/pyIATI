@@ -24,7 +24,7 @@ class TestDatasets(object):
     def test_dataset_no_params(self):
         """Test Dataset creation with no parameters."""
         with pytest.raises(TypeError) as excinfo:
-            iati.core.Dataset()
+            iati.core.Dataset()  # pylint: disable=E1120
 
         assert ('__init__() missing 1 required positional argument' in str(excinfo.value)) or ('__init__() takes exactly 2 arguments' in str(excinfo.value))
 
@@ -220,7 +220,7 @@ class TestDatasets(object):
         xml_encoded = xml.encode(encoding_used)  # Encode the whole string in line with the specified encoding
 
         with pytest.raises(ValueError) as excinfo:
-            dataset = iati.core.data.Dataset(xml_encoded)
+            _ = iati.core.data.Dataset(xml_encoded)
 
         assert str(excinfo.value) == 'The string provided to create a Dataset from is not valid XML.'
 
