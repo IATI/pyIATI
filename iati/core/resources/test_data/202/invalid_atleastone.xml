@@ -2,17 +2,16 @@
 
 <root_element>
   <!-- no expected elements or attributes -->
-  <element2><!--Only one nested element exists-->
-    <element3></element3><!--element4 missing in nest-->
-  </element2>
+  <nest><!--Only one nested element exists-->
+    <element2></element2><!--element3 missing in nest-->
+  </nest>
   <element5></element5><!--element6 missing-->
   <element9></element9><!--missing expected attribute-->
-  <element10 attribute="">
-    <element11 attribute=""></element11>
-    <element12></element12><!--missing expected attribute in nest-->
-  </element10>
-  <element13 attribute=""></element13>
+  <nest>
+    <element10></element10><!--missing expected attribute in nest-->
+  </nest>
+  <element11 attribute=""></element11>
+  <element12></element12><!--missing expected attribute-->
+  <element13></element13><!--missing expected attribute-->
   <element14></element14><!--missing expected attribute-->
-  <element15></element15><!--missing expected attribute-->
-  <element16></element16><!--missing expected attribute-->
 </root_element>

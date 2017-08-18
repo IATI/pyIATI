@@ -5,11 +5,14 @@
   <element2></element2><!--multiple elements-->
   <element3></element3><!--multiple elements-->
   <element4></element4><!--duplicate element path-->
-  <element5>
-    <element6></element6><!--nested elements-->
-  </element5>
-  <element7 attribute=""></element7><!--single attribute-->
-  <element8 attribute=""></element8><!--multiple attributes-->
-  <element9 attribute=""></element9><!--multiple attrubutes-->
-  <element10 attribute=""></element10><!--duplicate attrubute path-->
+  <nest>
+    <element5></element5><!--nested elements-->
+  </nest>
+  <element6 attribute=""></element6><!--single attribute-->
+  <element7 attribute=""></element7><!--multiple attributes-->
+  <element8 attribute=""></element8><!--multiple attrubutes-->
+  <element9 attribute=""></element9><!--duplicate attrubute path-->
+  <nest>
+    <element10 attribute=""></element10><!--nested attribute-->
+  </nest>
 </root_element>
