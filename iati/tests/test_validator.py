@@ -238,26 +238,162 @@ class TestValidationAuxiliaryData(object):
                 assert isinstance(err_code[attr_name], attr_type)
 
 
-class TestValidationBasicIATI(object):
-    """A container for tests relating to very basic validation of IATI data."""
-
-    @pytest.fixture(params=iati.core.resources.get_test_data_paths_in_folder('ssot-activity-xml-pass'))
-    def iati_dataset_valid_from_ssot(self, request):
-        xml_str = iati.core.resources.load_as_string(request.param)
-
-        return iati.core.Dataset(xml_str)
-
-    @pytest.fixture(params=iati.core.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail'))
-    def iati_dataset_invalid_from_ssot(self, request):
-        xml_str = iati.core.resources.load_as_string(request.param)
-
-        return iati.core.Dataset(xml_str)
+class ValidationTestBase(object):
+    """A container for fixtures and other functionality useful among multiple groups of Validation Test."""
 
     @pytest.fixture
     def schema_basic(self):
         """A schema with no Codelists added."""
         schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
         return iati.core.Schema(schema_path)
+
+    @pytest.fixture(params=[
+        iati.core.tests.utilities.load_as_string('valid_not_iati'),
+        iati.core.tests.utilities.load_as_string('valid_iati'),
+        iati.core.tests.utilities.load_as_string('valid_iati_invalid_code'),
+        iati.core.tests.utilities.load_as_string('leading_whitespace_xml')
+    ])
+    def xml_str(self, request):
+        """A valid XML string."""
+        return request.param
+
+    @pytest.fixture
+    def xml_str_no_text_decl(self, xml_str):
+        """A valid XML string with the text declaration removed."""
+        return '\n'.join(xml_str.strip().split('\n')[1:])
+
+    @pytest.fixture(params=iati.core.tests.utilities.generate_test_types([], True) + [iati.core.tests.utilities.load_as_string('invalid')])
+    def not_xml(self, request):
+        """A value that is not a valid XML string."""
+        return request.param
+
+    @pytest.fixture(params=['This is a string that is not XML.'])
+    def str_not_xml(self, request):
+        """A string that is not XML.
+
+        Note:
+            Does not use the utility function due to problems with Python 2.7.
+        """
+        return request.param
+
+    @pytest.fixture
+    def empty_str(self):
+        """An empty string."""
+        return ''
+
+    @pytest.fixture(params=[
+         iati.core.tests.utilities.load_as_string('valid_iati'),
+         iati.core.tests.utilities.load_as_string('valid_iati_invalid_code')
+    ])
+    def iati_dataset(self, request):
+        """A Dataset that is valid against the IATI Schema."""
+        return iati.core.Dataset(request.param)
+
+    @pytest.fixture(params=[
+         iati.core.tests.utilities.load_as_string('valid_not_iati')
+    ])
+    def not_iati_dataset(self, request):
+        """A Dataset that is not valid against the IATI Schema."""
+        return iati.core.Dataset(request.param)
+
+    @pytest.fixture(params=[
+        iati.core.tests.utilities.load_as_string('invalid_iati_missing_required_element'),
+        iati.core.tests.utilities.load_as_string('invalid_iati_missing_required_element_from_common')
+    ])
+    def not_iati_dataset_missing_required_el(self, request):
+        """A Dataset that is not valid against the IATI Schema because it is missing a required element."""
+        return iati.core.Dataset(request.param)
+
+    @pytest.fixture(params=iati.core.resources.get_test_data_paths_in_folder('ssot-activity-xml-pass'))
+    def iati_dataset_valid_from_ssot(self, request):
+        """A `should-pass` Dataset from the SSOT."""
+        xml_str = iati.core.resources.load_as_string(request.param)
+
+        return iati.core.Dataset(xml_str)
+
+    @pytest.fixture(params=iati.core.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail'))
+    def iati_dataset_invalid_from_ssot(self, request):
+        """A `should-fail` Dataset from the SSOT."""
+        xml_str = iati.core.resources.load_as_string(request.param)
+
+        return iati.core.Dataset(xml_str)
+
+
+class ValidateCodelistsBase(ValidationTestBase):
+    """A container for fixtures required for Codelist validation tests."""
+
+    @pytest.fixture
+    def schema_version(self):
+        """A schema with the Version Codelist added.
+
+        Returns:
+            A valid activity schema with the Version Codelist added.
+
+        """
+        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema = iati.core.Schema(schema_path)
+        codelist = iati.core.default.codelists()['Version']
+
+        schema.codelists.add(codelist)
+
+        return schema
+
+    @pytest.fixture
+    def schema_org_type(self):
+        """A schema with the OrganisationType Codelist added.
+
+        Returns:
+            A valid activity schema with the OrganisationType Codelist added.
+
+        """
+        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema = iati.core.Schema(schema_path)
+        codelist = iati.core.default.codelists()['OrganisationType']
+
+        schema.codelists.add(codelist)
+
+        return schema
+
+    @pytest.fixture
+    def schema_incomplete_codelist(self):
+        """A schema with an incomplete Codelist added.
+
+        Returns:
+            A valid activity schema with the OrganisationType Codelist added.
+
+        """
+        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema = iati.core.Schema(schema_path)
+        codelist = iati.core.default.codelists()['Country']
+
+        schema.codelists.add(codelist)
+
+        return schema
+
+    @pytest.fixture
+    def schema_sectors(self):
+        """A schema with the DAC Sector Codelists and appropriate vocabulary added.
+
+        Returns:
+            A valid activity schema with the DAC Sector Codelists and appropriate vocabulary added.
+
+        """
+        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema = iati.core.Schema(schema_path)
+
+        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.core.default.codelists()['Sector']
+        codelist_3 = iati.core.default.codelists()['SectorCategory']
+
+        schema.codelists.add(codelist_1)
+        schema.codelists.add(codelist_2)
+        schema.codelists.add(codelist_3)
+
+        return schema
+
+
+class TestValidationTruthyIATI(ValidationTestBase):
+    """A container for tests relating to truthy validation of IATI data."""
 
     def test_basic_validation_valid(self, schema_basic):
         """Perform a super simple data validation against a valid Dataset."""
@@ -306,39 +442,9 @@ class TestValidationBasicIATI(object):
         assert not iati.validator.is_valid(data, schema_basic)
 
 
-class TestValidateIsXML(object):
+class TestValidateIsXML(ValidationTestBase):
     """A container for tests checking whether a value is valid XML."""
 
-
-    @pytest.fixture(params=[
-        iati.core.tests.utilities.load_as_string('valid_not_iati'),
-        iati.core.tests.utilities.load_as_string('valid_iati'),
-        iati.core.tests.utilities.load_as_string('valid_iati_invalid_code'),
-        iati.core.tests.utilities.load_as_string('leading_whitespace_xml')
-    ])
-    def xml_str(self, request):
-        """A valid XML string."""
-        return request.param
-
-    @pytest.fixture
-    def xml_str_no_text_decl(self, xml_str):
-        """A valid XML string with the text declaration removed."""
-        return '\n'.join(xml_str.strip().split('\n')[1:])
-
-    @pytest.fixture(params=iati.core.tests.utilities.generate_test_types(['str'], True) + [iati.core.tests.utilities.load_as_string('invalid')])
-    def not_xml(self, request):
-        """A value that is not a valid XML string."""
-        return request.param
-
-    @pytest.fixture
-    def empty_str(self):
-        """An empty string."""
-        return ''
-
-    @pytest.fixture
-    def str_not_xml(self):
-        """A string that is not XML."""
-        return 'This is not XML.'
 
     def test_xml_check_valid_xml(self, xml_str):
         """Perform check to see whether a parameter is valid XML. The parameter is valid XML."""
@@ -497,36 +603,9 @@ class TestValidateIsXML(object):
         assert result.contains_error_called('err-not-xml-content-at-end')
 
 
-class TestIsValidIATIXML(object):
+class TestIsValidIATIXML(ValidationTestBase):
     """A container for tests checking whether a value is valid IATI XML."""
 
-    @pytest.fixture
-    def schema_basic(self):
-        """A schema with no Codelists added."""
-        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        return iati.core.Schema(schema_path)
-
-    @pytest.fixture(params=[
-         iati.core.tests.utilities.load_as_string('valid_iati'),
-         iati.core.tests.utilities.load_as_string('valid_iati_invalid_code')
-    ])
-    def iati_dataset(self, request):
-        """A valid IATI XML string."""
-        return iati.core.Dataset(request.param)
-
-    @pytest.fixture(params=[
-         iati.core.tests.utilities.load_as_string('valid_not_iati')
-    ])
-    def not_iati_dataset(self, request):
-        """A valid XML string that is not valid IATI XML."""
-        return iati.core.Dataset(request.param)
-
-    @pytest.fixture(params=[
-        iati.core.tests.utilities.load_as_string('invalid_iati_missing_required_element'),
-        iati.core.tests.utilities.load_as_string('invalid_iati_missing_required_element_from_common')
-    ])
-    def not_iati_dataset_missing_required_el(self, request):
-        return iati.core.Dataset(request.param)
 
     def test_iati_xml_check_valid_xml(self, iati_dataset, schema_basic):
         """Perform check to see whether a parameter is valid IATI XML. The parameter is valid IATI XML."""
@@ -568,86 +647,6 @@ class TestIsValidIATIXML(object):
         result = iati.validator.validate_is_iati_xml(data, schema_basic)
 
         assert result.contains_errors()
-
-
-class ValidateCodelistsBase(object):
-    """A container for fixtures required for Codelist validation tests."""
-
-
-    @pytest.fixture
-    def schema_basic(self):
-        """A schema with no Codelists added."""
-        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        return iati.core.Schema(schema_path)
-
-    @pytest.fixture
-    def schema_version(self):
-        """A schema with the Version Codelist added.
-
-        Returns:
-            A valid activity schema with the Version Codelist added.
-
-        """
-        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        schema = iati.core.Schema(schema_path)
-        codelist = iati.core.default.codelists()['Version']
-
-        schema.codelists.add(codelist)
-
-        return schema
-
-    @pytest.fixture
-    def schema_org_type(self):
-        """A schema with the OrganisationType Codelist added.
-
-        Returns:
-            A valid activity schema with the OrganisationType Codelist added.
-
-        """
-        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        schema = iati.core.Schema(schema_path)
-        codelist = iati.core.default.codelists()['OrganisationType']
-
-        schema.codelists.add(codelist)
-
-        return schema
-
-    @pytest.fixture
-    def schema_incomplete_codelist(self):
-        """A schema with an incomplete Codelist added.
-
-        Returns:
-            A valid activity schema with the OrganisationType Codelist added.
-
-        """
-        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        schema = iati.core.Schema(schema_path)
-        codelist = iati.core.default.codelists()['Country']
-
-        schema.codelists.add(codelist)
-
-        return schema
-
-    @pytest.fixture
-    def schema_sectors(self):
-        """A schema with the DAC Sector Codelists and appropriate vocabulary added.
-
-        Returns:
-            A valid activity schema with the DAC Sector Codelists and appropriate vocabulary added.
-
-        """
-        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        schema = iati.core.Schema(schema_path)
-
-        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
-        codelist_2 = iati.core.default.codelists()['Sector']
-        codelist_3 = iati.core.default.codelists()['SectorCategory']
-
-        schema.codelists.add(codelist_1)
-        schema.codelists.add(codelist_2)
-        schema.codelists.add(codelist_3)
-
-        return schema
 
 
 class TestValidationCodelist(ValidateCodelistsBase):
