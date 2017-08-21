@@ -79,7 +79,8 @@ def codelists(version=None, use_cache=False):
         dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.core.Codelist() instances.
 
     Warning:
-        Setting `use_cache` to `True` is dangerous since it does not return a deep copy of the Codelists. This means that modification of a returned Codelist will modify the Codelist everywhere. A `deepcopy()` should be performed on any returned value before it is modified.
+        Setting `use_cache` to `True` is dangerous since it does not return a deep copy of the Codelists. This means that modification of a returned Codelist will modify the Codelist everywhere.
+        A `deepcopy()` should be performed on any returned value before it is modified.
 
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
@@ -193,6 +194,7 @@ def activity_schemas(use_cache=False):
 
     Todo:
         Test a cache bypass where data is updated.
+
     """
     output = {}
     for version in iati.core.constants.STANDARD_VERSIONS:
@@ -218,10 +220,11 @@ def organisation_schemas(use_cache=False):
 
     Todo:
         Test a cache bypass where data is updated.
+
     """
     output = {}
     for version in iati.core.constants.STANDARD_VERSIONS:
-        organisation_schema_paths = iati.core.resources.get_all_organisation_schema_paths(version)
+        organisation_schema_paths = iati.core.resources.get_all_org_schema_paths(version)
         if ('iati-organisations-schema' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
             if version not in _SCHEMAS.keys():
                 _SCHEMAS[version] = {}
@@ -267,6 +270,7 @@ def schema(name, version=None):
 
     Raises:
         KeyError: If the input schema name is not found as part of the default IATI Schemas.
+
     """
     if version is None:
         version = iati.core.constants.STANDARD_VERSION_LATEST

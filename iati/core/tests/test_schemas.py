@@ -41,9 +41,9 @@ class TestSchemas(object):
     def test_schema_define_from_xsd(self, schema_initialised):
         """Check that a Schema can be generated from an XSD definition."""
         assert isinstance(schema_initialised.codelists, set)
-        assert len(schema_initialised.codelists) == 0
+        assert not schema_initialised.codelists
         assert isinstance(schema_initialised.rulesets, set)
-        assert len(schema_initialised.rulesets) == 0
+        assert not schema_initialised.rulesets
 
     @pytest.mark.parametrize("schema_type, expected_local_element", [
         ('iati-activities-schema', 'iati-activities'),
