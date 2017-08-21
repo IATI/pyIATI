@@ -21,10 +21,10 @@ _ERROR_CODES = {
     },
     'err-not-iati-xml-uncategorised-document-error': {
         'base_exception': Exception,
-         'category': 'xml',
-         'description': 'An uncategorised error occurred when checking whether a Dataset contains valid IATI data.',
-         'info': '{err}',
-         'help': 'There are many different ways in which a file may not be valid IATI XML. The most common of these have had specific error messages created. This is not currently one of them.\nShould it be identified that this error occurs frequently, a specific error message will be created.'
+        'category': 'xml',
+        'description': 'An uncategorised error occurred when checking whether a Dataset contains valid IATI data.',
+        'info': '{err}',
+        'help': 'There are many different ways in which a file may not be valid IATI XML. The most common of these have had specific error messages created. This is not currently one of them.\nShould it be identified that this error occurs frequently, a specific error message will be created.'
      },
     'err-not-xml-not-string': {
         'base_exception': TypeError,
@@ -116,6 +116,13 @@ _ERROR_CODES = {
         'description': 'The encoding of the XML file is not supported by a tool used by IATI.',
         'info': '{err}',
         'help': 'The encoding of a file specifies how a computer should interpret the 1s and 0s that it is made up of. For more information about encoding, see https://www.w3.org/International/questions/qa-what-is-encoding'
+    },
+    'err-lxml-internal-error': {
+        'base_exception': Exception,
+        'category': 'tool-lxml',
+        'description': 'An internal error occurred in a tool used to parse XML.',
+        'info': '{err}',
+        'help': 'This error may occur in an unspecified number of situations. Sorry this help message cannot be more helpful.'
     }
 }
 
@@ -170,9 +177,9 @@ class ValidationError(object):
         except KeyError:
             pass
         try:
-            self.lxml_err_code = calling_locals['err'].type_name
             self.err = calling_locals['err']
-        except KeyError:
+            self.lxml_err_code = calling_locals['err'].type_name
+        except (AttributeError, KeyError):
             pass
 
 
@@ -427,6 +434,13 @@ def _check_is_xml(maybe_xml):
         error = ValidationError('err-not-xml-not-string', locals())
         error_log.add(error)
 
+    # the parser does not cause any errors when given an empty string, so this needs handling separately
+    if len(error_log) == 0 and len(maybe_xml.strip()) == 0:
+        err_name = 'err-not-xml-empty-document'
+        err = 'A file or string containing no data is not XML.'
+        error = ValidationError(err_name, locals())
+        error_log.add(error)
+
     return error_log
 
 
@@ -470,6 +484,7 @@ def _parse_lxml_log_entry(log_entry):
     lxml_to_iati_error_mapping = {
         'ERR_DOCUMENT_EMPTY': 'err-not-xml-empty-document',
         'ERR_DOCUMENT_END': 'err-not-xml-content-at-end',
+        'ERR_INTERNAL_ERROR': 'err-lxml-internal-error',
         'ERR_INVALID_ENCODING': 'err-encoding-invalid',
         'ERR_UNSUPPORTED_ENCODING': 'err-encoding-unsupported',
         'ERR_RESERVED_XML_NAME': 'err-not-xml-xml-text-decl-only-at-doc-start',

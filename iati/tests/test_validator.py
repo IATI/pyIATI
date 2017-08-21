@@ -331,6 +331,11 @@ class TestValidateIsXML(object):
         return request.param
 
     @pytest.fixture
+    def empty_str(self):
+        """An empty string."""
+        return ''
+
+    @pytest.fixture
     def str_not_xml(self):
         """A string that is not XML."""
         return 'This is not XML.'
@@ -338,6 +343,10 @@ class TestValidateIsXML(object):
     def test_xml_check_valid_xml(self, xml_str):
         """Perform check to see whether a parameter is valid XML. The parameter is valid XML."""
         assert iati.validator.is_xml(xml_str)
+
+    def test_xml_check_empty_string(self, empty_str):
+        """Perform check to ensure an empty string is not valid XML."""
+        assert not iati.validator.is_xml(empty_str)
 
     def test_xml_check_not_xml(self, not_xml):
         """Perform check to see whether a parameter is valid XML. The parameter is not valid XML."""
