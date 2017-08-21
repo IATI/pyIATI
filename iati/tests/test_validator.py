@@ -241,18 +241,6 @@ class TestValidationAuxiliaryData(object):
 class ValidationTestBase(object):
     """A container for fixtures and other functionality useful among multiple groups of Validation Test."""
 
-    @pytest.fixture(params=iati.core.resources.get_test_data_paths_in_folder('ssot-activity-xml-pass'))
-    def iati_dataset_valid_from_ssot(self, request):
-        xml_str = iati.core.resources.load_as_string(request.param)
-
-        return iati.core.Dataset(xml_str)
-
-    @pytest.fixture(params=iati.core.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail'))
-    def iati_dataset_invalid_from_ssot(self, request):
-        xml_str = iati.core.resources.load_as_string(request.param)
-
-        return iati.core.Dataset(xml_str)
-
     @pytest.fixture
     def schema_basic(self):
         """A schema with no Codelists added."""
@@ -274,34 +262,34 @@ class ValidationTestBase(object):
         """A valid XML string with the text declaration removed."""
         return '\n'.join(xml_str.strip().split('\n')[1:])
 
-    @pytest.fixture(params=iati.core.tests.utilities.generate_test_types(['str'], True) + [iati.core.tests.utilities.load_as_string('invalid')])
+    @pytest.fixture(params=iati.core.tests.utilities.generate_test_types([], True) + [iati.core.tests.utilities.load_as_string('invalid')])
     def not_xml(self, request):
         """A value that is not a valid XML string."""
         return request.param
+
+    @pytest.fixture(params=iati.core.tests.utilities.generate_test_types(['str']))
+    def str_not_xml(self, request):
+        """A string that is not XML."""
+        return str(request.param)
 
     @pytest.fixture
     def empty_str(self):
         """An empty string."""
         return ''
 
-    @pytest.fixture
-    def str_not_xml(self):
-        """A string that is not XML."""
-        return 'This is not XML.'
-
     @pytest.fixture(params=[
          iati.core.tests.utilities.load_as_string('valid_iati'),
          iati.core.tests.utilities.load_as_string('valid_iati_invalid_code')
     ])
     def iati_dataset(self, request):
-        """A valid IATI XML string."""
+        """A Dataset that is valid against the IATI Schema."""
         return iati.core.Dataset(request.param)
 
     @pytest.fixture(params=[
          iati.core.tests.utilities.load_as_string('valid_not_iati')
     ])
     def not_iati_dataset(self, request):
-        """A valid XML string that is not valid IATI XML."""
+        """A Dataset that is not valid against the IATI Schema."""
         return iati.core.Dataset(request.param)
 
     @pytest.fixture(params=[
@@ -309,7 +297,22 @@ class ValidationTestBase(object):
         iati.core.tests.utilities.load_as_string('invalid_iati_missing_required_element_from_common')
     ])
     def not_iati_dataset_missing_required_el(self, request):
+        """A Dataset that is not valid against the IATI Schema because it is missing a required element."""
         return iati.core.Dataset(request.param)
+
+    @pytest.fixture(params=iati.core.resources.get_test_data_paths_in_folder('ssot-activity-xml-pass'))
+    def iati_dataset_valid_from_ssot(self, request):
+        """A `should-pass` Dataset from the SSOT."""
+        xml_str = iati.core.resources.load_as_string(request.param)
+
+        return iati.core.Dataset(xml_str)
+
+    @pytest.fixture(params=iati.core.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail'))
+    def iati_dataset_invalid_from_ssot(self, request):
+        """A `should-fail` Dataset from the SSOT."""
+        xml_str = iati.core.resources.load_as_string(request.param)
+
+        return iati.core.Dataset(xml_str)
 
 
 class ValidateCodelistsBase(ValidationTestBase):
