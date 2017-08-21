@@ -12,8 +12,8 @@ Subpackages
 Submodules
 ----------
 
-iati.validator module
----------------------
+iati\.validator module
+----------------------
 
 .. automodule:: iati.validator
     :members:
