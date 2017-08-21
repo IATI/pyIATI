@@ -345,6 +345,7 @@ class RuleDateOrder(Rule):
             Raises:
                 ValueError:
                     When a non-permitted number of unique dates are given for a `less` or `more` value.
+                    When datetime cannot convert a string of non-permitted characters.
                     When non-permitted trailing characters are found after the core date string characters.
 
             Note:
