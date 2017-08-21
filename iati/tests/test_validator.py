@@ -388,8 +388,8 @@ class ValidateCodelistsBase(ValidationTestBase):
         return schema
 
 
-class TestValidationBasicIATI(ValidationTestBase):
-    """A container for tests relating to very basic validation of IATI data."""
+class TestValidationTruthyIATI(ValidationTestBase):
+    """A container for tests relating to truthy validation of IATI data."""
 
     def test_basic_validation_valid(self, schema_basic):
         """Perform a super simple data validation against a valid Dataset."""
