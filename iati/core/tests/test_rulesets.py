@@ -286,6 +286,7 @@ class RuleSubclassTestBase(object):
     def test_multiple_valid_context_matches_is_valid_for(self, valid_multiple_context, valid_nest_case, rule_constructor, valid_dataset):
         """Check Rule returns expected result when checking multiple contexts."""
         rule = rule_constructor(valid_multiple_context, valid_nest_case)
+        # import pdb; pdb.set_trace()
         assert rule.is_valid_for(valid_dataset)
 
     def test_multiple_valid_context_matches_is_invalid_for(self, valid_multiple_context, invalid_nest_case, rule_constructor, invalid_dataset):
@@ -331,7 +332,7 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
     invalidating_cases = [
         {'paths': ['element1']},  # single path, no matches
         {'paths': ['element9/@attribute']},
-        {'paths': ['element2', 'element3']},  # nested paths, one expected match missing
+        {'paths': ['element2']},  # nested paths,expected match missing
         {'paths': ['element10/@attribute']},
         {'paths': ['element7', 'element8']},  # multiple paths, both expected matches missing
         {'paths': ['element13/@attribute', 'element14/@attribute']}

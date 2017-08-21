@@ -3,7 +3,7 @@
 <root_element>
   <!-- no expected elements or attributes -->
   <nest><!--Only one nested element exists-->
-    <element2></element2><!--element3 missing in nest-->
+    <!--element2 missing in nest-->
   </nest>
   <element9></element9><!--missing expected attribute-->
   <nest>
