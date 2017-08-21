@@ -267,10 +267,14 @@ class ValidationTestBase(object):
         """A value that is not a valid XML string."""
         return request.param
 
-    @pytest.fixture(params=iati.core.tests.utilities.generate_test_types(['str']))
+    @pytest.fixture(params=['This is a string that is not XML.'])
     def str_not_xml(self, request):
-        """A string that is not XML."""
-        return str(request.param)
+        """A string that is not XML.
+
+        Note:
+            Does not use the utility function due to problems with Python 2.7.
+        """
+        return request.param
 
     @pytest.fixture
     def empty_str(self):
