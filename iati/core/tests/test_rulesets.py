@@ -333,8 +333,6 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         {'paths': ['element9/@attribute']},
         {'paths': ['element2', 'element3']},  # nested paths, one expected match missing
         {'paths': ['element10/@attribute']},
-        {'paths': ['element5', 'element6']},  # multiple paths, one expected match missing
-        {'paths': ['element11/@attribute', 'element12/@attribute']},
         {'paths': ['element7', 'element8']},  # multiple paths, both expected matches missing
         {'paths': ['element13/@attribute', 'element14/@attribute']}
     ]
@@ -543,9 +541,11 @@ class TestRuleDependent(RuleSubclassTestBase):
 
     all_valid_cases = [
         {'paths': ['element1']},  # single path
+        {'paths': ['element6/@attribute']},
         {'paths': ['element2', 'element3']},  # multiple paths
+        {'paths': ['element7/@attribute', 'element8/@attribute']},
         {'paths': ['element4', 'element4']},  # duplicate paths
-        {'paths': ['element5', 'element6']}  # for nested paths
+        {'paths': ['element9/@attribute', 'element9/@attribute']}
     ]
 
     all_invalid_cases = [
@@ -556,6 +556,11 @@ class TestRuleDependent(RuleSubclassTestBase):
         {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
         {},  # empty dictionary
         {'paths': {'path_1'}}  # path value is dictionary instead of list
+    ]
+
+    invalidating_cases = [
+        {'paths': ['element1', 'element2', 'element3']},
+        {'paths': ['element4/@attribute', 'element5/@attribute', 'element6/@attribute']}
     ]
 
     @pytest.fixture
@@ -577,6 +582,21 @@ class TestRuleDependent(RuleSubclassTestBase):
     def validating_case(self, request):
         """Permitted cases for validating an XML dataset against RuleDependent."""
         return request.param
+
+    @pytest.fixture(params=invalidating_cases)
+    def invalidating_case(self, request):
+        """Non-permitted cases for validating an XML dataset against RuleDependent."""
+        return request.param
+
+    @pytest.fixture
+    def valid_nest_case(self):
+        """Non-permitted case for validating an XML dataset against RuleDependent in nested context."""
+        return {'paths': ['//element5', '//element10/@attribute']}
+
+    @pytest.fixture
+    def invalid_nest_case(self):
+        """Non-permitted case for validating an XML dataset against RuleDependent in nested context."""
+        return {'paths': ['//element7', '//element8', '//element9/@attribute', '//element10/@attribute']}
 
     @pytest.fixture
     def invalid_dataset(self):

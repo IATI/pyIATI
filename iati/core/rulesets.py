@@ -280,16 +280,13 @@ class RuleAtLeastOne(Rule):
         """
         context_elements = self._find_context_elements(dataset)
 
-        path_queries = set()
-        found_paths = set()
+        for context_element in context_elements:
+            for path in self.paths:
+                if context_element.xpath(path):
+                    return True
 
-        for path in self.paths:
-            path_queries.add(path)
-            for context_element in context_elements:
-                if context_element.xpath(path) != list():
-                    found_paths.add(path)
+        return False
 
-        return len(found_paths) == len(path_queries)
 
 
 class RuleDateOrder(Rule):
@@ -398,12 +395,14 @@ class RuleDependent(Rule):
             AttributeError: When an argument is given that does not have the required attributes.
 
         """
+        context_elements = self._find_context_elements(dataset)
         found_paths = 0
 
-        for path in self.paths:
-            result = dataset.xml_tree.xpath(path)
-            if result != list():
-                found_paths += 1
+        for context_element in context_elements:
+            for path in self.paths:
+                result = context_element.xpath(path)
+                if result != list():
+                    found_paths += 1
 
         return not found_paths or found_paths == len(self.paths)
 
