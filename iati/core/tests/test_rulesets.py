@@ -24,14 +24,14 @@ class TestRuleset(object):
         assert isinstance(ruleset.rules, set)
         assert ruleset.rules == set()
 
-    @pytest.mark.parametrize("not_a_ruleset", iati.core.tests.utilities.find_parameter_by_type(['str', 'bytearray'], False))
+    @pytest.mark.parametrize("not_a_ruleset", iati.core.tests.utilities.generate_test_types(['str', 'bytearray'], True))
     def test_ruleset_init_ruleset_str_not_str(self, not_a_ruleset):
         """Check that a Ruleset cannot be created when given at least one Rule in a non-string format."""
         with pytest.raises(TypeError):
             iati.core.Ruleset(not_a_ruleset)
 
     @pytest.mark.skip(reason="Bytearrays cause multiple types of errors. This is confusing. Probs due to the stupid null byte at the start of one of the sample bytearrays. Grr! Argh!")
-    @pytest.mark.parametrize("byte_array", iati.core.tests.utilities.find_parameter_by_type(['bytearray']))
+    @pytest.mark.parametrize("byte_array", iati.core.tests.utilities.generate_test_types(['bytearray']))
     def test_ruleset_init_ruleset_str_bytearray(self, byte_array):
         """Check that a Ruleset cannot be created when given at least one Rule in a bytearray format."""
         with pytest.raises(ValueError):
@@ -152,7 +152,7 @@ class TestRuleSubclasses(object):
             rule_constructor()
 
     @pytest.mark.parametrize("rule_constructor", rule_constructors)
-    @pytest.mark.parametrize("xpath_base", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    @pytest.mark.parametrize("xpath_base", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_rule_init_invalid_xpath_base(self, rule_constructor, xpath_base):
         """Check that a Rule cannot be created when xpath_base is not a string.
 
@@ -165,7 +165,7 @@ class TestRuleSubclasses(object):
             rule_constructor(xpath_base, case)
 
     @pytest.mark.parametrize("rule_constructor", rule_constructors)
-    @pytest.mark.parametrize("case", iati.core.tests.utilities.find_parameter_by_type(['mapping'], False))
+    @pytest.mark.parametrize("case", iati.core.tests.utilities.generate_test_types(['mapping'], True))
     def test_rule_init_invalid_case(self, rule_constructor, case):
         """Check that a Rule cannot be created when case is not a dictionary."""
         xpath_base = 'an xpath'

@@ -55,12 +55,38 @@ class TestResources(object):
             Add other tests relating to specific versions of the Standard.
 
         """
-        paths = iati.core.resources.find_all_codelist_paths()
+        paths = iati.core.resources.get_all_codelist_paths()
 
         assert len(paths) == 62
         for path in paths:
             assert path[-4:] == iati.core.resources.FILE_CODELIST_EXTENSION
             assert iati.core.resources.PATH_CODELISTS in path
+
+    def test_get_all_activity_schema_paths(self):
+        """Check that all activity schema paths are found.
+
+        Todo:
+            Add other tests relating to specific versions of the Standard.
+
+            Handle all paths to schemas being found correctly.
+
+        """
+        activity_paths = iati.core.resources.get_all_activity_schema_paths()
+
+        assert len(activity_paths) == 1
+
+    def test_get_all_org_schema_paths(self):
+        """Check that all organisation schema paths are found.
+
+        Todo:
+            Add other tests relating to specific versions of the Standard.
+
+            Handle all paths to schemas being found correctly.
+
+        """
+        organisation_paths = iati.core.resources.get_all_org_schema_paths()
+
+        assert len(organisation_paths) == 1
 
     def test_find_schema_paths(self):
         """Check that all schema paths are being found.
@@ -71,11 +97,27 @@ class TestResources(object):
             Handle all paths to schemas being found correctly.
 
         """
-        paths = iati.core.resources.find_all_schema_paths()
+        paths = iati.core.resources.get_all_schema_paths()
 
-        assert len(paths) == 1
+        assert len(paths) == 2
+
+    @pytest.mark.parametrize('get_schema_path_function', [
+        iati.core.resources.get_all_schema_paths,
+        iati.core.resources.get_all_activity_schema_paths,
+        iati.core.resources.get_all_org_schema_paths
+    ])
+    def test_find_schema_paths_file_extension(self, get_schema_path_function):
+        """Check that the correct file extension is present within file paths returned by get_all_*schema_paths functions."""
+        paths = get_schema_path_function()
+
         for path in paths:
             assert path[-4:] == iati.core.resources.FILE_SCHEMA_EXTENSION
+
+    def test_get_test_data_paths_in_folder(self):
+        """Check that test data is being found in specified subfolders."""
+        paths = iati.core.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail')
+
+        assert len(paths) == 237
 
     @pytest.mark.parametrize('codelist', [
         'Name',
@@ -97,6 +139,15 @@ class TestResources(object):
 
         assert isinstance(result, bytes)
         assert result == 'This is a string that is not valid XML\n'.encode()
+
+    def test_load_as_dataset(self):
+        """Test that resources.load_as_dataset returns a Dataset object with the expected content."""
+        path_test_data = iati.core.resources.get_test_data_path('valid')
+
+        result = iati.core.resources.load_as_dataset(path_test_data)
+
+        assert isinstance(result, iati.core.Dataset)
+        assert '<?xml version="1.0"?>\n\n<iati-activities version="2.02">' in result.xml_str
 
     def test_load_as_string(self):
         """Test that resources.load_as_string returns a string (python3) or unicode (python2) object with the expected content."""

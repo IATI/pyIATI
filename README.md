@@ -56,14 +56,16 @@ Once installed, the library provides functionality to represent IATI Schemas, Co
 
 ### Loading an XSD Schema
 
-The `.xsd` schema file should be stored in the folder: `iati.core/iati/core/resources/schemas/202/`
+A number of default IATI `.xsd` schema files are included as part of the library. They are stored in the folder: `iati.core/iati/core/resources/schemas/202/`
 
-The following example loads the included IATI v2.02 schema at:  `iati.core/iati/core/resources/schemas/202/iati-activities-schema.xsd`.
+The following example loads the default IATI v2.02 `iati-activities-schema.xsd` schema:
 
 ```
-import iati.core.schemas
-schema = iati.core.Schema(name='iati-activities-schema')
+import iati.core.default
+schema = iati.core.default.schema('iati-activities-schema')
 ```
+
+Helper functions will be written in due course to return all xpaths within a schema, as well as documentation for each element.
 
 ### Loading codelists
 

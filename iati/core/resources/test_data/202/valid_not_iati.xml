@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<parent>
+  <child attribute="value"/>
+  <another-child>
+    <!-- comment -->
+    <sub-child/>
+    <!-- comment with blank line below -->
+
+  </another-child>
+</parent>

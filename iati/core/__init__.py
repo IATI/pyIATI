@@ -1,5 +1,5 @@
 """A package containing core IATI functionality."""
-from .codelists import Code, Codelist
-from .data import Dataset
-from .rulesets import Rule, Ruleset
-from .schemas import Schema
+from .codelists import Code, Codelist  # noqa: F401
+from .data import Dataset  # noqa: F401
+from .rulesets import Rule, Ruleset  # noqa: F401
+from .schemas import ActivitySchema, OrganisationSchema, Schema  # noqa: F401
