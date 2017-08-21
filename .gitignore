@@ -13,7 +13,6 @@ IATI-Data-Snapshot/
 # defined files to ignore
 ignore_*
 test.py
-bad.txt
 
 ###
 ### Python .gitignore
