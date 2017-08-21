@@ -122,7 +122,7 @@ _ERROR_CODES = {
         'category': 'tool-lxml',
         'description': 'An internal error occurred in a tool used to parse XML.',
         'info': '{err}',
-        'help': 'This error may occur in a number of situations.'
+        'help': 'This error may occur in an unspecified number of situations. Sorry this help message cannot be more helpful.'
     }
 }
 
