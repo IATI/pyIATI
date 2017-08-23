@@ -324,7 +324,6 @@ class RuleDateOrder(Rule):
             `date` restricted to 10 characters in order to exclude possible timezone values.
 
         Todo:
-            Account for multiple elements in context.
             Implement functionality to ignore function call if `less` or `more` do not return dates.
 
         """
@@ -356,18 +355,19 @@ class RuleDateOrder(Rule):
             dates = [result if isinstance(result, six.string_types) else result.text for result in results]
             # Checks that anything after the YYYY-MM-DD string is a permitted timezone character
             pattern = re.compile(r'([+-]([01][0-9]|2[0-3]):([0-5][0-9])|Z)?')
-            # try:
             if (len(set(dates)) == 1) and pattern.fullmatch(dates[0][10:]):
                 return datetime.strptime(dates[0][:10], '%Y-%m-%d')
             raise ValueError
-            # except ValueError:
-            #     import pdb; pdb.set_trace()
 
         context_elements = self._find_context_elements(dataset)
 
         for context_element in context_elements:
             early_date = get_date(context_element, self.less)
             later_date = get_date(context_element, self.more)
+
+            # to be implemented later:
+            # if early_date or later_date is None:
+            #     continue
 
             if early_date >= later_date:
                 return False
@@ -437,16 +437,19 @@ class RuleNoMoreThanOne(Rule):
             AttributeError: When an argument is given that does not have the required attributes.
 
         """
-        # context_elements = self._find_context_elements(dataset)
-        #
-        # for context_element in context_elements:
-        compliant_paths = set()
+        context_elements = self._find_context_elements(dataset)
+        paths = set(self.paths)
+        compliant_paths = list()
+        no_of_paths = 0
 
-        for path in self.paths:
-            if len(dataset.xml_tree.xpath(path)) <= 1:
-                compliant_paths.add(path)
+        for context_element in context_elements:
+            no_of_paths += len(paths)
+            for path in paths:
+                results = context_element.xpath(path)
+                if len(results) <= 1:
+                    compliant_paths.append(path)
 
-        return len(compliant_paths) == len(self.paths)
+        return len(compliant_paths) == no_of_paths
 
 
 class RuleRegexMatches(Rule):
