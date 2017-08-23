@@ -57,7 +57,7 @@ class TestDefault(object):
         schemas = iati.core.default.activity_schemas()
 
         assert isinstance(schemas, dict)
-        assert len(schemas) == 1
+        assert len(schemas) == len(iati.core.constants.STANDARD_VERSIONS)
         for _, schema in schemas.items():
             assert isinstance(schema, iati.core.ActivitySchema)
 
@@ -70,7 +70,7 @@ class TestDefault(object):
         schemas = iati.core.default.organisation_schemas()
 
         assert isinstance(schemas, dict)
-        assert len(schemas) == 1
+        assert len(schemas) == len(iati.core.constants.STANDARD_VERSIONS)
         for _, schema in schemas.items():
             assert isinstance(schema, iati.core.OrganisationSchema)
 
