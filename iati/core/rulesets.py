@@ -255,6 +255,17 @@ class Rule(object):
         """
         return dataset.xml_tree.xpath(self.context)
 
+    def _extract_text_from_element_or_attribute(self, xpath_results):
+        """Return a list of strings regardless of whether XPath result is an attribute or an element.
+
+        Args:
+            xpath_results (list): Raw XPath query results.
+
+        Returns: A list of strings.
+
+        """
+        return [result if isinstance(result, six.string_types) else result.text for result in xpath_results]
+
 
 class RuleAtLeastOne(Rule):
     """Representation of a Rule that checks that there is at least one Element matching a given XPath."""
@@ -351,9 +362,7 @@ class RuleDateOrder(Rule):
                 return datetime.today()
 
             results = context.xpath(path)
-            # Extract to base class
-            # Returns a string value whether attribute or element
-            dates = [result if isinstance(result, six.string_types) else result.text for result in results]
+            dates = self._extract_text_from_element_or_attribute(results)
             # Checks that anything after the YYYY-MM-DD string is a permitted timezone character
             pattern = re.compile(r'([+-]([01][0-9]|2[0-3]):([0-5][0-9])|Z)?')
             if (len(set(dates)) == 1) and pattern.fullmatch(dates[0][10:]):
@@ -491,8 +500,7 @@ class RuleRegexMatches(Rule):
         for context_element in context_elements:
             for path in self.paths:
                 results = context_element.xpath(path)
-                # extract to base class
-                strings_to_check = [result if isinstance(result, six.string_types) else result.text for result in results]
+                strings_to_check = self._extract_text_from_element_or_attribute(results)
                 for string_to_check in strings_to_check:
                     if not pattern.match(string_to_check):
                         return False
