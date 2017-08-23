@@ -356,9 +356,12 @@ class RuleDateOrder(Rule):
             dates = [result if isinstance(result, six.string_types) else result.text for result in results]
             # Checks that anything after the YYYY-MM-DD string is a permitted timezone character
             pattern = re.compile(r'([+-]([01][0-9]|2[0-3]):([0-5][0-9])|Z)?')
+            # try:
             if (len(set(dates)) == 1) and pattern.fullmatch(dates[0][10:]):
                 return datetime.strptime(dates[0][:10], '%Y-%m-%d')
             raise ValueError
+            # except ValueError:
+            #     import pdb; pdb.set_trace()
 
         context_elements = self._find_context_elements(dataset)
 
@@ -434,6 +437,9 @@ class RuleNoMoreThanOne(Rule):
             AttributeError: When an argument is given that does not have the required attributes.
 
         """
+        # context_elements = self._find_context_elements(dataset)
+        #
+        # for context_element in context_elements:
         compliant_paths = set()
 
         for path in self.paths:

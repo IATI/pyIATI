@@ -420,7 +420,9 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element25', 'more': 'element26'},  # timezone not on the hour
         {'less': 'element33/@attribute', 'more': 'element34/@attribute'},
         {'less': 'element27', 'more': 'element28'},  # UTC timezone
-        {'less': 'element35/@attribute', 'more': 'element36/@attribute'}
+        {'less': 'element35/@attribute', 'more': 'element36/@attribute'},
+        {'less': 'nOw', 'more': 'noW'},  # not special case, should treat as regular path value
+        {'less': 'now/@attribute', 'more': 'Now/@attribute'}
     ]
 
     all_valid_cases = instatiating_cases + validating_cases
@@ -454,8 +456,6 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element12', 'more': 'element13'},  # multiple identical `more` dates that are chronologically before `less`
         {'less': 'element25/@attribute', 'more': 'element26/@attribute'}
     ]
-
-    # NOW in wrong case => element not found <-- test this
 
     @pytest.fixture
     def rule_type(self):
