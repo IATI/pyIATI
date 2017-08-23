@@ -1,7 +1,14 @@
 <?xml version="1.0"?>
 
 <root_element>
-  <element1><!-- Does not contain all dependencies for transactions -->
-    <element2></element2>
-  </element1>
+  <element1></element1><!--dependent element missing-->
+  <element3></element3>
+  <element4 attribute=""></element4><!--dependent attribute missing-->
+  <element6 attribute=""></element6>
+  <nest>
+    <element7></element7>
+  </nest>
+  <nest>
+    <element9 attribute=""></element9>
+  </nest>
 </root_element>

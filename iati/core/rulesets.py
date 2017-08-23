@@ -288,7 +288,6 @@ class RuleAtLeastOne(Rule):
         return False
 
 
-
 class RuleDateOrder(Rule):
     """Representation of a Rule that checks that the date value of `more` is the most recent value in comparison to the date value of `less`."""
 
@@ -394,17 +393,23 @@ class RuleDependent(Rule):
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
 
+        Todo:
+            Determine if it's reasonable to assume the user should give a specific xpath format, or whether the context-path structure dictates automatic conversion to relative paths.
+
         """
         context_elements = self._find_context_elements(dataset)
-        found_paths = 0
+        found_in_dataset = list()
+        no_of_paths = 0
 
         for context_element in context_elements:
+            no_of_paths += len(self.paths)
             for path in self.paths:
-                result = context_element.xpath(path)
-                if result != list():
-                    found_paths += 1
+                results = context_element.xpath(path)
+                for result in results:
+                    if result != list():
+                        found_in_dataset.append(result)
 
-        return not found_paths or found_paths == len(self.paths)
+        return not found_in_dataset or len(found_in_dataset) == no_of_paths
 
 
 class RuleNoMoreThanOne(Rule):

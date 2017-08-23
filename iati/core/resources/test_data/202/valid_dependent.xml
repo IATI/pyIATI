@@ -1,10 +1,24 @@
 <?xml version="1.0"?>
 
 <root_element>
-  <transaction><!-- Contains correct dependency -->
-    <provider-org></provider-org>
-  </transaction>
-  <location>
-    <point></point>
-  </location>
+  <element1></element1><!--single element given-->
+  <element2></element2><!--two elements given-->
+  <element3></element3>
+  <element4></element4><!--paths refer to same element-->
+  <nest>
+    <element5></element5><!--paths refers to nested elements and attributes-->
+    <element6></element6>
+    <element11 attribute=""></element11><!--paths refers to nested elements and attributes-->
+    <element12 attribute=""></element12>
+  </nest>
+  <element7 attribute=""></element7><!--single attribute given-->
+  <element8 attribute=""></element8><!--two attributes given-->
+  <element9 attribute=""></element9>
+  <element10 attribute=""></element10><!--paths refer to same attribute-->
+  <nest>
+    <element5></element5><!--paths refers to nested elements and attributes-->
+    <element6></element6>
+    <element11 attribute=""></element11><!--paths refers to nested elements and attributes-->
+    <element12 attribute=""></element12>
+  </nest>
 </root_element>
