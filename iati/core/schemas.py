@@ -572,8 +572,11 @@ class Schema(object):
 
         """
         parent_xpath = self.get_parent_xpath_for_xpath(xpath)
-        sibling_xpaths = self.get_xpaths_for_child_types(parent_xpath)
-        sibling_xpaths.remove(xpath)  # Remove the input XPath from child types
+        if parent_xpath is None:
+            sibling_xpaths = []  # parent_xpath will be None where we are looking for the parent of the root element.
+        else:
+            sibling_xpaths = self.get_xpaths_for_child_types(parent_xpath)
+            sibling_xpaths.remove(xpath)  # Remove the input XPath from child types
 
         element = self._xsd_lookup[xpath]
         if same_type and self.is_xsd_element_attribute(element):

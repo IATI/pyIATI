@@ -574,10 +574,20 @@ class TestSchemas(object):
         ('iati-organisations-schema', 'iati-organisations/iati-organisation/recipient-region-budget/recipient-region', False, 5, 'iati-organisations/iati-organisation/recipient-region-budget/@status')
     ])
     def test_get_xpaths_for_sibling_types(self, schema, xpath, same_type, expected_num_siblings, expected_sibling_xpath):
-        """Test that an expected number of siblings are found for given input XPath"""
+        """Test that an expected number of siblings are found for given input XPath."""
         schema = iati.core.default.schema(schema)
 
         result = schema.get_xpaths_for_sibling_types(xpath, same_type)
 
+        assert isinstance(result, list)
         assert len(result) == expected_num_siblings
         assert expected_sibling_xpath in result
+
+    def test_get_xpaths_for_sibling_types_root_element(self, schemas_initialised):
+        """Test that no siblings are found for the root element of a Schema."""
+        root_element_xpath = schemas_initialised.root_element_name
+
+        result = schemas_initialised.get_xpaths_for_sibling_types(root_element_xpath)
+
+        assert result == []
+
