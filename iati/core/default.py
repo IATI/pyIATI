@@ -179,8 +179,6 @@ def schemas(use_cache=False):
 
         Test a cache bypass where data is updated.
 
-        Needs to handle multiple versions of the Schemas. This will probably involve passing in a version as a param, which should tidy up the function too.
-
     """
     activity_schemas(use_cache)
     organisation_schemas(use_cache)
