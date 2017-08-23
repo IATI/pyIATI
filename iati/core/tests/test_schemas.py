@@ -591,3 +591,40 @@ class TestSchemas(object):
 
         assert result == []
 
+    def test_get_documentation_for_xpath_structure(self, schemas_initialised):
+        """Test that an expected structure is returned when calling iati.core.schemas.get_documentation_for_xpath."""
+        result = schemas_initialised.get_documentation_for_xpath(schemas_initialised.root_element_name)
+
+        assert isinstance(result, dict)
+        assert len(result) == 6
+        assert 'documentation' in result.keys()
+        assert 'input_type' in result.keys()
+        assert 'occurances' in result.keys()
+        assert 'parent_xpath' in result.keys()
+        assert 'sibling_xpaths' in result.keys()
+        assert 'child_xpaths' in result.keys()
+
+    def test_get_documentation_for_xpath_content(self):
+        """Test that an expected content is returned when calling iati.core.schemas.get_documentation_for_xpath on a known XPath."""
+        schema = iati.core.default.schema('iati-activities-schema')
+        xpath = 'iati-activities/iati-activity/title/narrative'
+
+        result = schema.get_documentation_for_xpath(xpath)
+
+        assert result == {
+            'child_xpaths': ['iati-activities/iati-activity/title/narrative/@xml:lang'],
+            'documentation': 'The free text name or description of the item being described. This can be repeated in multiple languages.',
+            'input_type': 'element',
+            'occurances': {'max_occurs': 'unbounded', 'min_occurs': 1},
+            'parent_xpath': 'iati-activities/iati-activity/title',
+            'sibling_xpaths': []
+        }
+
+    def test_get_documentation_for_xpath_raises_exception(self, schemas_initialised):
+        """Test that iati.core.schemas.get_documentation_for_xpath raises an exception when passing an invalid XPath."""
+        xpath = 'not-a-valid-xpath'
+
+        with pytest.raises(ValueError) as execinfo:
+            schemas_initialised.get_documentation_for_xpath(xpath)
+
+        assert str(execinfo.value) == 'The input xpath ({0}) is not valid for this schema.'.format(xpath)

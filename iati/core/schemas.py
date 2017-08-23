@@ -622,41 +622,35 @@ class Schema(object):
         """
         raise NotImplementedError
 
-    def get_full_documentation_for_xsd_element(self, element):
-        """Returns a dictionary containing documentation information for the given element.
-
-        Warning:
-            It is likely that the input param will change from `element` to `xpath`.
-
-            The name of this method may change, depending on work on the components of this.
-
-        Todo:
-            Add tests.
-
-            Implement functionality.
-
-        """
-        raise NotImplementedError
-
     def get_documentation_for_xpath(self, xpath):
-        """Returns a dictionary containing documentation for the given XPath.
+        """Returns a dictionary containing full documentation for the given XPath.
 
-        Warning:
-            The name of this method may change, depending on work on the components of this.
+        Args:
+            xpath (str): An XPath representing an XSD element or attribute to return documentation for.
+
+        Returns:
+            dict: Containing documentation on for the input XPath.
+
+        Raises:
+            ValueError: If the input XPath is not found within this Schema.
 
         Todo:
-            Add tests.
-
-            Implement functionality.
+            Add more robust tests.
 
         """
-        # This will be the main user API. Will involve something like:
-        # try:
-        #     element = self._xsd_lookup[xpath]
-        # except IndexError:
-        #     raise Exception
-        # return self.get_full_documentation_for_xsd_element(element)
-        raise NotImplementedError
+        try:
+            element = self._xsd_lookup[xpath]
+        except KeyError:
+            raise ValueError('The input xpath ({0}) is not valid for this schema.'.format(xpath))
+
+        return {
+            'documentation': self.get_xsd_documentation_string(element),
+            'input_type': self.get_xsd_input_type_for_element(element),
+            'occurances': self.get_occurances_for_xpath(xpath),
+            'parent_xpath': self.get_parent_xpath_for_xpath(xpath),
+            'sibling_xpaths': self.get_xpaths_for_sibling_types(xpath),
+            'child_xpaths': self.get_xpaths_for_child_types(xpath)
+        }
 
     def is_this_an_xsd_element(self, element):
         """Raise error if not an XML schema element.
