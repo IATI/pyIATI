@@ -351,6 +351,7 @@ class RuleDateOrder(Rule):
                 return datetime.today()
 
             results = context.xpath(path)
+            # Extract to base class
             # Returns a string value whether attribute or element
             dates = [result if isinstance(result, six.string_types) else result.text for result in results]
             # Checks that anything after the YYYY-MM-DD string is a permitted timezone character
@@ -484,12 +485,19 @@ class RuleRegexMatches(Rule):
             AttributeError: When an argument is given that does not have the required attributes.
 
         """
-        pattern = re.compile(self.case['regex'])
+        context_elements = self._find_context_elements(dataset)
+        pattern = re.compile(self.regex)
 
-        for path in self.paths:
-            results = dataset.xml_tree.xpath(path)
-            for result in results:
-                return bool(pattern.match(result.text))
+        for context_element in context_elements:
+            for path in self.paths:
+                results = context_element.xpath(path)
+                # extract to base class
+                strings_to_check = [result if isinstance(result, six.string_types) else result.text for result in results]
+                for string_to_check in strings_to_check:
+                    if not pattern.match(string_to_check):
+                        return False
+
+        return True
 
 
 class RuleRegexNoMatches(Rule):

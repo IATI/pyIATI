@@ -1,5 +1,18 @@
 <?xml version="1.0"?>
 
 <root_element>
-  <iati-identifier>/&amp;|?</iati-identifier><!-- iati-identifier does not match regex -->
+  <element1>apple</element1><!--single path, no regex match-->
+  <element2>apple</element2><!--multiple paths, no regex match-->
+  <element3>apple</element3>
+  <element4>apple</element4><!--duplicate paths, no regex match-->
+  <element5 attribute="apple"></element5><!--single path, no regex match-->
+  <element6 attribute="apple"></element6><!--multiple paths, no regex match-->
+  <element7 attribute="apple"></element7>
+  <element8 attribute="apple"></element8><!--duplicate paths, no regex match-->
+  <nest>
+    <element9>apple</element9><!--nested element, no regex match-->
+  </nest>
+  <nest>
+    <element10 attribute="apple"></element10><!--nested attribute, no regex match-->
+  </nest>
 </root_element>
