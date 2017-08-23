@@ -540,12 +540,18 @@ class RuleRegexNoMatches(Rule):
             AttributeError: When an argument is given that does not have the required attributes.
 
         """
-        pattern = re.compile(self.case['regex'])
+        context_elements = self._find_context_elements(dataset)
+        pattern = re.compile(self.regex)
 
-        for path in self.paths:
-            results = dataset.xml_tree.xpath(path)
-            for result in results:
-                return not bool(pattern.match(result.text))
+        for context_element in context_elements:
+            for path in self.paths:
+                results = context_element.xpath(path)
+                strings_to_check = self._extract_text_from_element_or_attribute(results)
+                for string_to_check in strings_to_check:
+                    if pattern.match(string_to_check):
+                        return False
+
+        return True
 
 
 class RuleStartsWith(Rule):

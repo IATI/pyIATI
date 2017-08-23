@@ -782,22 +782,16 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
 class TestRuleRegexNoMatches(RuleSubclassTestBase):
     """A container for tests relating to RuleRegexNoMatches."""
 
-    @pytest.fixture
-    def rule_type(self):
-        """Type of Rule."""
-        return 'regex_no_matches'
+    all_valid_cases = [
+        {'regex': r'\btest\b', 'paths': ['element1']},  # single path with regex
+        {'regex': r'\btest\b', 'paths': ['element5/@attribute']},
+        {'regex': r'\btest\b', 'paths': ['element2', 'element3']},  # multiple paths with regex
+        {'regex': r'\btest\b', 'paths': ['element6/@attribute', 'element7/@attribute']},
+        {'regex': r'\btest\b', 'paths': ['element4', 'element4']},  # duplicate paths with regex
+        {'regex': r'\btest\b', 'paths': ['element8/@attribute', 'element8/@attribute']}
+    ]
 
-    @pytest.fixture(params=[
-        {'regex': 'some regex', 'paths': ['path_1']},  # single path with regex
-        {'regex': 'some regex', 'paths': ['path_1', 'path_2']},  # multiple paths with regex
-        {'regex': 'some regex', 'paths': ['path_1', 'path_1']},  # duplicate paths with regex
-        {'regex': '', 'paths': ['path_1']}  # single path with regex
-    ])
-    def instantiating_case(self, request):
-        """Permitted case for instatiating this Rule."""
-        return request.param
-
-    @pytest.fixture(params=[
+    uninstantiating_cases = [
         {'regex': 'some regex', 'paths': []},  # empty path array
         {'regex': 'some regex', 'paths': 'path_1'},  # non-array `paths`
         {'regex': 'some regex', 'paths': [3]},  # non-string value in path array
@@ -809,13 +803,51 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         {},  # empty dictionary
         {'regex': 'some regex', 'paths': {'path_1'}},  # dictionary paths
         {'regex': ['some regex'], 'paths': 'path_1'}  # list regex
-    ])
+    ]
+
+    invalidating_cases = [
+        {'regex': r'\btest\b', 'paths': ['element1']},  # single path with regex
+        {'regex': r'\btest\b', 'paths': ['element5/@attribute']},
+        {'regex': r'\btest\b', 'paths': ['element2', 'element3']},  # multiple paths with regex
+        {'regex': r'\btest\b', 'paths': ['element6/@attribute', 'element7/@attribute']},
+        {'regex': r'\btest\b', 'paths': ['element4', 'element4']},  # duplicate paths with regex
+        {'regex': r'\btest\b', 'paths': ['element8/@attribute', 'element8/@attribute']}
+    ]
+
+    @pytest.fixture
+    def rule_type(self):
+        """Type of Rule."""
+        return 'regex_no_matches'
+
+    @pytest.fixture(params=all_valid_cases)
+    def instantiating_case(self, request):
+        """Permitted case for instatiating this Rule."""
+        return request.param
+
+    @pytest.fixture(params=uninstantiating_cases)
     def uninstantiating_case(self, request):
         """Non-permitted case for instatiating this Rule."""
         return request.param
 
+    @pytest.fixture(params=all_valid_cases)
     def validating_case(self, request):
         """Permitted cases for validating an XML dataset against RuleRegexNoMatches."""
+        return request.param
+
+    @pytest.fixture(params=invalidating_cases)
+    def invalidating_case(self, request):
+        """Non-permitted cases for validating an XML dataset against RuleRegexNoMatches."""
+        return request.param
+
+    @pytest.fixture
+    def valid_nest_case(self):
+        """Permitted case for validating an XML dataset against RuleRegexMatches in nested context."""
+        return {'regex': r'\btest\b', 'paths': ['.//element9', './/element10/@attribute']}
+
+    @pytest.fixture
+    def invalid_nest_case(self):
+        """Non-permitted case for validating an XML dataset against RuleRegexMatches in nested context."""
+        return {'regex': r'\btest\b', 'paths': ['.//element9', './/element10/@attribute']}
 
     @pytest.fixture
     def invalid_dataset(self):
@@ -826,18 +858,6 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_REGEXNOMATCHES_RULE_VALID
-
-    @pytest.fixture(params=[
-        {'regex': r'[^\/\\&\\|\\?]+', 'paths': ['iati-identifier']}
-    ])
-    def case_for_is_valid_for(self, request):
-        """Case to check the `is_valid_for` function of RuleRegexNoMatches."""
-        return request.param
-
-    @pytest.fixture
-    def empty_path_case(self):
-        """Empty path string for RuleRegexNoMatches."""
-        return {'regex': r'[^\/\\&\\|\\?]+', 'paths': ['']}
 
 
 class TestRuleStartsWith(RuleSubclassTestBase):
