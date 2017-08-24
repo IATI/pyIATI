@@ -733,6 +733,8 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         {'regex': r'\btest\b', 'paths': ['element8/@attribute', 'element8/@attribute']}
     ]
 
+    nest_case = [{'regex': r'\btest\b', 'paths': ['./element9', './element10/@attribute']}]
+
     @pytest.fixture
     def rule_type(self):
         """Type of Rule."""
@@ -758,15 +760,15 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         """Non-permitted cases for validating an XML dataset against RuleRegexMatches."""
         return request.param
 
-    @pytest.fixture
-    def valid_nest_case(self):
+    @pytest.fixture(params=nest_case)
+    def valid_nest_case(self, request):
         """Permitted case for validating an XML dataset against RuleRegexMatches in nested context."""
-        return {'regex': r'\btest\b', 'paths': ['./element9', './element10/@attribute']}
+        return request.param
 
-    @pytest.fixture
-    def invalid_nest_case(self):
+    @pytest.fixture(params=nest_case)
+    def invalid_nest_case(self, request):
         """Non-permitted case for validating an XML dataset against RuleRegexMatches in nested context."""
-        return {'regex': r'\btest\b', 'paths': ['./element9', './element10/@attribute']}
+        return request.param
 
     @pytest.fixture
     def invalid_dataset(self):
@@ -814,6 +816,8 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         {'regex': r'\btest\b', 'paths': ['element8/@attribute', 'element8/@attribute']}
     ]
 
+    nest_case = [{'regex': r'\btest\b', 'paths': ['./element9', './element10/@attribute']}]
+
     @pytest.fixture
     def rule_type(self):
         """Type of Rule."""
@@ -839,15 +843,15 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         """Non-permitted cases for validating an XML dataset against RuleRegexNoMatches."""
         return request.param
 
-    @pytest.fixture
-    def valid_nest_case(self):
-        """Permitted case for validating an XML dataset against RuleRegexMatches in nested context."""
-        return {'regex': r'\btest\b', 'paths': ['./element9', './element10/@attribute']}
+    @pytest.fixture(params=nest_case)
+    def valid_nest_case(self, request):
+        """Permitted case for validating an XML dataset against RuleRegexNoMatches in nested context."""
+        return request.param
 
-    @pytest.fixture
-    def invalid_nest_case(self):
-        """Non-permitted case for validating an XML dataset against RuleRegexMatches in nested context."""
-        return {'regex': r'\btest\b', 'paths': ['./element9', './element10/@attribute']}
+    @pytest.fixture(params=nest_case)
+    def invalid_nest_case(self, request):
+        """Non-permitted case for validating an XML dataset against RuleRegexNoMatches in nested context."""
+        return request.param
 
     @pytest.fixture
     def invalid_dataset(self):
@@ -863,22 +867,16 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
 class TestRuleStartsWith(RuleSubclassTestBase):
     """A container for tests relating to RuleStartsWith."""
 
-    @pytest.fixture
-    def rule_type(self):
-        """Type of Rule."""
-        return 'startswith'
+    all_valid_cases = [
+        {'start': 'prefix', 'paths': ['element1']},  # single path with valid prefix string
+        {'start': 'prefix', 'paths': ['element5/@attribute']},
+        {'start': 'prefix', 'paths': ['element2', 'element3']},  # multiple paths with valid prefix string
+        {'start': 'prefix', 'paths': ['element6/@attribute', 'element7/@attribute']},
+        {'start': 'prefix', 'paths': ['element4', 'element4']},  # duplicate paths with valid prefix string
+        {'start': 'prefix', 'paths': ['element8/@attribute', 'element8/@attribute']}
+    ]
 
-    @pytest.fixture(params=[
-        {'start': 'prefix-xpath', 'paths': ['path_1']},  # single path with prefix
-        {'start': 'prefix-xpath', 'paths': ['path_1', 'path_2']},  # multiple paths with prefix
-        {'start': 'prefix-xpath', 'paths': ['path_1', 'path_1']},  # duplicate paths with prefix
-        {'start': '', 'paths': ['path_1']}  # single path with prefix
-    ])
-    def instantiating_case(self, request):
-        """Permitted case for instatiating this Rule."""
-        return request.param
-
-    @pytest.fixture(params=[
+    uninstantiating_cases = [
         {'start': 'prefix-xpath', 'paths': []},  # empty path array
         {'start': 'prefix-xpath', 'paths': 'path_1'},  # non-array `paths`
         {'start': 'prefix-xpath', 'paths': [3]},  # non-string value in path array
@@ -888,14 +886,56 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         {'paths': ['path_1', 'path_2']},  # missing required attribute - `start`
         {},  # empty dictionary
         {'start': 'prefix-xpath', 'paths': {'path_1'}},  # dictionary paths
-        {'start': ['prefix-xpath'], 'paths': ['path_1']}  # list start
-    ])
+        {'start': ['prefix-xpath'], 'paths': ['path_1']},  # list start
+        {'start': '', 'paths': ['path_1']},  # start is an empty string
+        {'start': 'prefix_path', 'paths': ['']}  # paths is an empty string
+    ]
+
+    invalidating_cases = [
+        {'start': 'prefix', 'paths': ['element1']},  # single path with valid prefix string
+        {'start': 'prefix', 'paths': ['element5/@attribute']},
+        {'start': 'prefix', 'paths': ['element2', 'element3']},  # multiple paths with valid prefix string
+        {'start': 'prefix', 'paths': ['element6/@attribute', 'element7/@attribute']},
+        {'start': 'prefix', 'paths': ['element4', 'element4']},  # duplicate paths with valid prefix string
+        {'start': 'prefix', 'paths': ['element8/@attribute', 'element8/@attribute']}
+    ]
+
+    nest_case = [{'start': 'prefix', 'paths': ['element9', 'element10/@attribute']}]
+
+    @pytest.fixture
+    def rule_type(self):
+        """Type of Rule."""
+        return 'startswith'
+
+    @pytest.fixture(params=all_valid_cases)
+    def instantiating_case(self, request):
+        """Permitted case for instatiating this Rule."""
+        return request.param
+
+    @pytest.fixture(params=uninstantiating_cases)
     def uninstantiating_case(self, request):
         """Non-permitted case for instatiating this Rule."""
         return request.param
 
+    @pytest.fixture(params=all_valid_cases)
     def validating_case(self, request):
         """Permitted cases for validating an XML dataset against RuleStartsWith."""
+        return request.param
+
+    @pytest.fixture(params=invalidating_cases)
+    def invalidating_case(self, request):
+        """Non-permitted cases for validating an XML dataset against RuleStartsWith."""
+        return request.param
+
+    # @pytest.fixture(params=nest_case)
+    # def valid_nest_case(self, request):
+    #     """Permitted case for validating an XML dataset against RuleStartsWith in nested context."""
+    #     return request.param
+    #
+    # @pytest.fixture(params=nest_case)
+    # def invalid_nest_case(self, request):
+    #     """Non-permitted case for validating an XML dataset against RuleStartsWith in nested context."""
+    #     return request.param
 
     @pytest.fixture
     def invalid_dataset(self):
@@ -906,18 +946,6 @@ class TestRuleStartsWith(RuleSubclassTestBase):
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_STARTSWITH_RULE_VALID
-
-    @pytest.fixture(params=[
-        {'start': 'reporting-org/@ref', 'paths': ['iati-identifier']}
-    ])
-    def case_for_is_valid_for(self, request):
-        """Case to check the `is_valid_for` function of RuleStartsWith."""
-        return request.param
-
-    @pytest.fixture
-    def empty_path_case(self):
-        """Empty path string for RuleStartsWith."""
-        return {'start': 'reporting-org/@ref', 'paths': ['']}
 
     def test_rule_paths_start(self, rule_basic_init):
         """Check that the `start` value has been combined with the `context`."""
