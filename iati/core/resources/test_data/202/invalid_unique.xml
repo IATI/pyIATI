@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-
+<!--element and attribute text is not unique-->
 <root_element>
   <element1>b</element1><!--multiple paths-->
   <element2>b</element2>
