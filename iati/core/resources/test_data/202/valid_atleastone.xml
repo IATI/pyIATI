@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-
+<!--required elements present at least once-->
 <root_element>
   <element1></element1><!--single element-->
   <element2></element2><!--multiple elements-->

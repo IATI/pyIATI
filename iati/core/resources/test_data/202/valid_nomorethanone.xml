@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-
+<!--Specified elements present no more than once-->
 <root_element>
   <element1></element1><!--single path-->
   <element2></element2><!--multiple paths-->

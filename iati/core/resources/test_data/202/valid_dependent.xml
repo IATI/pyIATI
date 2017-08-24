@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-
+<!--required dependent elements and attributes present-->
 <root_element>
   <element1></element1><!--single element given-->
   <element2></element2><!--two elements given-->

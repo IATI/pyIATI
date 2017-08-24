@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-
+<!--non-permitted duplication of elements-->
 <root_element>
   <element1></element1><!--single path, multiple elements-->
   <element1></element1>
