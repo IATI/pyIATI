@@ -761,12 +761,12 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
     @pytest.fixture
     def valid_nest_case(self):
         """Permitted case for validating an XML dataset against RuleRegexMatches in nested context."""
-        return {'regex': r'\btest\b', 'paths': ['.//element9', './/element10/@attribute']}
+        return {'regex': r'\btest\b', 'paths': ['./element9', './element10/@attribute']}
 
     @pytest.fixture
     def invalid_nest_case(self):
         """Non-permitted case for validating an XML dataset against RuleRegexMatches in nested context."""
-        return {'regex': r'\btest\b', 'paths': ['.//element9', './/element10/@attribute']}
+        return {'regex': r'\btest\b', 'paths': ['./element9', './element10/@attribute']}
 
     @pytest.fixture
     def invalid_dataset(self):
@@ -842,12 +842,12 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
     @pytest.fixture
     def valid_nest_case(self):
         """Permitted case for validating an XML dataset against RuleRegexMatches in nested context."""
-        return {'regex': r'\btest\b', 'paths': ['.//element9', './/element10/@attribute']}
+        return {'regex': r'\btest\b', 'paths': ['./element9', './element10/@attribute']}
 
     @pytest.fixture
     def invalid_nest_case(self):
         """Non-permitted case for validating an XML dataset against RuleRegexMatches in nested context."""
-        return {'regex': r'\btest\b', 'paths': ['.//element9', './/element10/@attribute']}
+        return {'regex': r'\btest\b', 'paths': ['./element9', './element10/@attribute']}
 
     @pytest.fixture
     def invalid_dataset(self):
