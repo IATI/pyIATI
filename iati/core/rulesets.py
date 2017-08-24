@@ -585,16 +585,19 @@ class RuleStartsWith(Rule):
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
-            # IndexError: When XPath query result is not iterable.
 
         """
-        prefixing_str = dataset.xml_tree.xpath(self.start)[0]
+        context_elements = self._find_context_elements(dataset)
 
-        for path in self.paths:
-            results = dataset.xml_tree.xpath(path)
-            for result in results:
-                element_string = result.text
-                return element_string.startswith(prefixing_str)
+        for context_element in context_elements:
+            for path in self.paths:
+                results = context_element.xpath(path)
+                strings_to_check = self._extract_text_from_element_or_attribute(results)
+                for string_to_check in strings_to_check:
+                    if not string_to_check.startswith(self.start):
+                        return False
+
+        return True
 
 
 class RuleSum(Rule):

@@ -927,15 +927,15 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         """Non-permitted cases for validating an XML dataset against RuleStartsWith."""
         return request.param
 
-    # @pytest.fixture(params=nest_case)
-    # def valid_nest_case(self, request):
-    #     """Permitted case for validating an XML dataset against RuleStartsWith in nested context."""
-    #     return request.param
-    #
-    # @pytest.fixture(params=nest_case)
-    # def invalid_nest_case(self, request):
-    #     """Non-permitted case for validating an XML dataset against RuleStartsWith in nested context."""
-    #     return request.param
+    @pytest.fixture(params=nest_case)
+    def valid_nest_case(self, request):
+        """Permitted case for validating an XML dataset against RuleStartsWith in nested context."""
+        return request.param
+
+    @pytest.fixture(params=nest_case)
+    def invalid_nest_case(self, request):
+        """Non-permitted case for validating an XML dataset against RuleStartsWith in nested context."""
+        return request.param
 
     @pytest.fixture
     def invalid_dataset(self):
@@ -946,10 +946,6 @@ class TestRuleStartsWith(RuleSubclassTestBase):
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_STARTSWITH_RULE_VALID
-
-    def test_rule_paths_start(self, rule_basic_init):
-        """Check that the `start` value has been combined with the `context`."""
-        assert rule_basic_init.start.startswith(rule_basic_init.context)
 
 
 class TestRuleSum(RuleSubclassTestBase):
