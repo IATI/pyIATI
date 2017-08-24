@@ -949,30 +949,38 @@ class TestRuleStartsWith(RuleSubclassTestBase):
 
 
 class TestRuleSum(RuleSubclassTestBase):
-    """A container for tests relating to RuleSum."""
+    """A container for tests relating to RuleSum.
 
-    @pytest.fixture
-    def rule_type(self):
-        """Type of Rule."""
-        return 'sum'
+    Todo:
+        **Determine if assumption that double counting of elements should be not permitted when duplicate paths specified, but should when multiple elements exist is correct.
 
-    @pytest.fixture(params=[
-        {'paths': ['path_1'], 'sum': 3},  # single path with sum
-        {'paths': ['path_1', 'path_2'], 'sum': 3},  # multiple paths with sum
-        {'paths': ['path_1', 'path_1'], 'sum': 3},  # duplicate paths with sum
-        {'paths': ['path_1'], 'sum': -1000},  # negative sum
-        {'paths': ['path_1'], 'sum': 101},  # sum greater than standard percentage limit
-        {'paths': ['path_1'], 'sum': 15.5},  # decimal sum
-        {'paths': ['path_1'], 'sum': 0},  # zero sum
-        {'paths': ['path_1'], 'sum': 10**100},  # big sum
-        {'paths': ['path_1'], 'sum': -10**100},  # tiny sum
-        {'paths': ['path_1'], 'sum': 2.99792458e6}  # exponential sum
-    ])
-    def instantiating_case(self, request):
-        """Permitted case for instatiating this Rule."""
-        return request.param
+    """
 
-    @pytest.fixture(params=[
+    all_valid_cases = [
+        {'paths': ['element1'], 'sum': 3},  # single path with sum
+        {'paths': ['element19/@attribute'], 'sum': 3},
+        {'paths': ['element2', 'element3'], 'sum': 3},  # multiple paths with sum
+        {'paths': ['element20/@attribute', 'element21/@attribute'], 'sum': 3},
+        {'paths': ['element4', 'element4'], 'sum': 3},  # duplicate paths with sum **
+        {'paths': ['element22/@attribute', 'element22/@attribute'], 'sum': 3},  # **
+        {'paths': ['element5', 'element6'], 'sum': -1000},  # negative sum
+        {'paths': ['element23/@attribute', 'element24/@attribute'], 'sum': -1000},
+        {'paths': ['element7', 'element8'], 'sum': 101},  # sum greater than standard percentage limit
+        {'paths': ['element25/@attribute', 'element26/@attribute'], 'sum': 101},
+        {'paths': ['element9', 'element10'], 'sum': 15.5},  # decimal sum
+        {'paths': ['element27/@attribute', 'element28/@attribute'], 'sum': 15.5},
+        {'paths': ['element11', 'element12'], 'sum': 0},  # zero sum
+        {'paths': ['element29/@attribute', 'element30/@attribute'], 'sum': 0},
+        {'paths': ['element13', 'element14'], 'sum': float(10**100)},  # big sum
+        {'paths': ['element31/@attribute', 'element32/@attribute'], 'sum': float(10**100)},
+        {'paths': ['element15', 'element16'], 'sum': float(-10**100)},  # tiny sum
+        {'paths': ['element33/@attribute', 'element34/@attribute'], 'sum': float(-10**100)},
+        {'paths': ['element17', 'element18'], 'sum': 2.99792458e6},  # exponential sum
+        {'paths': ['element35/@attribute', 'element36/@attribute'], 'sum': 2.99792458e6},
+        {'paths': ['element37'], 'sum': 50}  # duplicate elements in data **
+    ]
+
+    uninstantiating_cases = [
         {'paths': [], 'sum': 3},  # empty path array
         {'paths': 'path_1', 'sum': 3},  # non-array `paths`
         {'paths': [3], 'sum': 3},  # non-string value in path array
@@ -982,14 +990,74 @@ class TestRuleSum(RuleSubclassTestBase):
         {},  # empty dictionary
         {'paths': ['path_1'], 'sum': '3'},  # sum is a string representation of a number
         {'sum': 100, 'paths': {'path_1'}},  # dictionary paths
-        {'sum': [100], 'paths': 'path_1'}  # list sum
-    ])
+        {'sum': [100], 'paths': 'path_1'},  # list sum
+        {'paths': [''], 'sum': 100},  # empty paths string
+        {'paths': ['path_1'], 'sum': ''}  # sum is empty string
+    ]
+
+    invalidating_cases = [
+        {'paths': ['element1'], 'sum': 3},  # single path with sum
+        {'paths': ['element19/@attribute'], 'sum': 3},
+        {'paths': ['element2', 'element3'], 'sum': 3},  # multiple paths with sum
+        {'paths': ['element20/@attribute', 'element21/@attribute'], 'sum': 3},
+        {'paths': ['element4', 'element4'], 'sum': 3},  # duplicate paths with sum **
+        {'paths': ['element22/@attribute', 'element22/@attribute'], 'sum': 3},  # **
+        {'paths': ['element5', 'element6'], 'sum': -1000},  # negative sum
+        {'paths': ['element23/@attribute', 'element24/@attribute'], 'sum': -1000},
+        {'paths': ['element7', 'element8'], 'sum': 101},  # sum greater than standard percentage limit
+        {'paths': ['element25/@attribute', 'element26/@attribute'], 'sum': 101},
+        {'paths': ['element9', 'element10'], 'sum': 15.5},  # decimal sum
+        {'paths': ['element27/@attribute', 'element28/@attribute'], 'sum': 15.5},
+        {'paths': ['element11', 'element12'], 'sum': 0},  # zero sum
+        {'paths': ['element29/@attribute', 'element30/@attribute'], 'sum': 0},
+        {'paths': ['element13', 'element14'], 'sum': float(10**100)},  # big sum
+        {'paths': ['element31/@attribute', 'element32/@attribute'], 'sum': float(10**100)},
+        {'paths': ['element15', 'element16'], 'sum': float(-10**100)},  # tiny sum
+        {'paths': ['element33/@attribute', 'element34/@attribute'], 'sum': float(-10**100)},
+        {'paths': ['element17', 'element18'], 'sum': 2.99792458e6},  # exponential sum
+        {'paths': ['element35/@attribute', 'element36/@attribute'], 'sum': 2.99792458e6},
+        {'paths': ['element37'], 'sum': 50}  # duplicate elements in data **
+    ]
+
+    nest_cases = [
+        {'paths': ['//element38', '//element39'], 'sum': 3},
+        {'paths': ['//element40/@attribute', '//element41/@attribute'], 'sum': 3}
+    ]
+
+    @pytest.fixture
+    def rule_type(self):
+        """Type of Rule."""
+        return 'sum'
+
+    @pytest.fixture(params=all_valid_cases)
+    def instantiating_case(self, request):
+        """Permitted case for instatiating this Rule."""
+        return request.param
+
+    @pytest.fixture(params=uninstantiating_cases)
     def uninstantiating_case(self, request):
         """Non-permitted case for instatiating this Rule."""
         return request.param
 
+    @pytest.fixture(params=all_valid_cases)
     def validating_case(self, request):
         """Permitted cases for validating an XML dataset against RuleSum."""
+        return request.param
+
+    @pytest.fixture(params=invalidating_cases)
+    def invalidating_case(self, request):
+        """Non-permitted cases for validating an XML dataset against RuleSum."""
+        return request.param
+
+    @pytest.fixture(params=nest_cases)
+    def valid_nest_case(self, request):
+        """Permitted case for validating an XML dataset against RuleSum in nested context."""
+        return request.param
+
+    @pytest.fixture(params=nest_cases)
+    def invalid_nest_case(self, request):
+        """Non-permitted case for validating an XML dataset against RuleSum in nested context."""
+        return request.param
 
     @pytest.fixture
     def invalid_dataset(self):
@@ -1000,18 +1068,6 @@ class TestRuleSum(RuleSubclassTestBase):
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_SUM_RULE_VALID
-
-    @pytest.fixture(params=[
-        {'paths': ['recipient-country/@percentage', 'recipient-region/@percentage'], 'sum': 100}
-    ])
-    def case_for_is_valid_for(self, request):
-        """Case to check the `is_valid_for` function of RuleSum."""
-        return request.param
-
-    @pytest.fixture
-    def empty_path_case(self):
-        """Empty path string for RuleSum."""
-        return {'paths': [''], 'sum': 100}
 
 
 class TestRuleUnique(RuleSubclassTestBase):

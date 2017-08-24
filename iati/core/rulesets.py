@@ -622,16 +622,19 @@ class RuleSum(Rule):
             AttributeError: When an argument is given that does not have the required attributes.
 
         """
-        sum_values = list()
+        context_elements = self._find_context_elements(dataset)
 
-        for path in self.paths:
-            results = dataset.xml_tree.xpath(path)
-            for result in results:
-                sum_values.append(float(result))
+        for context_element in context_elements:
+            values_in_context = list()
+            for path in set(self.paths):
+                results = context_element.xpath(path)
+                values_to_sum = self._extract_text_from_element_or_attribute(results)
+                for value in values_to_sum:
+                    values_in_context.append(float(value))
+            if sum(values_in_context) != self.sum:
+                return False
 
-        total = sum(sum_values)
-
-        return total == self.sum  # pylint: disable=no-member
+        return True
 
 
 class RuleUnique(Rule):
