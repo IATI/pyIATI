@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-
+<!--all element and attribute text matches the specified regex-->
 <root_element>
   <element1>test</element1><!--single path, matching regex-->
   <element2>test</element2><!--multiple paths, matching regex-->

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-
+<!--all element and attribute text does not match the specified regex-->
 <root_element>
   <element1>kittens</element1><!--single path, no regex match-->
   <element2>kittens</element2><!--multiple paths, no regex match-->
