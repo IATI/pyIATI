@@ -1,8 +1,19 @@
 <?xml version="1.0"?>
 
 <root_element>
-  <iati-identifier>This is not a unique identifier</iati-identifier><!-- elements are replicated -->
-  <iati-identifier>This is not a unique identifier</iati-identifier>
-  <other_unique_element></other_unique_element>
-  <other_unique_element></other_unique_element>
+  <element1>b</element1><!--multiple paths-->
+  <element2>b</element2>
+  <element3 attribute="d"></element3><!--multiple paths-->
+  <element4 attribute="d"></element4>
+  <nest>
+    <element5>e</element5><!--nested element-->
+    <element6>e</element6>
+  </nest>
+  <nest>
+    <element7 attribute="f"></element7><!--nested attribute-->
+    <element8 attribute="f"></element8>
+  </nest>
+  <element9>g</element9><!--identical elements with identical text values-->
+  <element9>g</element9>
+  <element9>g</element9>
 </root_element>

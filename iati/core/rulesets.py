@@ -662,13 +662,19 @@ class RuleUnique(Rule):
             Consider better methods for specifying which elements in the tree contain non-permitted duplication, such as bucket sort.
 
         """
+        context_elements = self._find_context_elements(dataset)
         original = list()
         unique = set()
 
-        for path in self.paths:
-            results = dataset.xml_tree.xpath(path)
-            for result in results:
-                original.append(result.text)
-                unique.add(result.text)
+        for context_element in context_elements:
+            for path in set(self.paths):
+                results = context_element.xpath(path)
+                strings_to_check = self._extract_text_from_element_or_attribute(results)
+                for string_to_check in strings_to_check:
+                    original.append(string_to_check)
+                    unique.add(string_to_check)
 
-        return len(original) == len(unique)
+        if len(original) != len(unique):
+            return False
+
+        return True

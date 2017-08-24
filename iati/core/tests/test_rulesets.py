@@ -952,7 +952,7 @@ class TestRuleSum(RuleSubclassTestBase):
     """A container for tests relating to RuleSum.
 
     Todo:
-        **Determine if assumption that double counting of elements should be not permitted when duplicate paths specified, but should when multiple elements exist is correct.
+        **Determine if assumption that double counting of elements should be not permitted when duplicate paths specified, but should when multiple elements exist, is correct.
 
     """
 
@@ -1073,34 +1073,71 @@ class TestRuleSum(RuleSubclassTestBase):
 class TestRuleUnique(RuleSubclassTestBase):
     """A container for tests relating to RuleUnique."""
 
-    @pytest.fixture
-    def rule_type(self):
-        """Type of Rule."""
-        return 'unique'
+    all_valid_cases = [
+        {'paths': ['element1']},  # single path
+        {'paths': ['element5/@attribute']},
+        {'paths': ['element2', 'element3']},  # multiple paths
+        {'paths': ['element6/@attribute', 'element7/@attribute']},
+        {'paths': ['element4', 'element4']},  # duplicate paths
+        {'paths': ['element8/@attribute', 'element8/@attribute']},
+        {'paths': ['element13']}  # duplicate elements exist for path
+    ]
 
-    @pytest.fixture(params=[
-        {'paths': ['path_1']},  # single path
-        {'paths': ['path_1', 'path_2']},  # multiple paths
-        {'paths': ['path_1', 'path_1']}  # duplicate paths
-    ])
-    def instantiating_case(self, request):
-        """Permitted case for instatiating this Rule."""
-        return request.param
-
-    @pytest.fixture(params=[
+    uninstantiating_cases = [
         {'paths': []},  # empty path array
         {'paths': 'path_1'},  # non-array `paths`
         {'paths': [3]},  # non-string value in path array
         {'paths': ['path_1', 3]},  # mixed string and non-string value in path array
         {},  # empty dictionary
         {'paths': {'path_1'}}
-    ])
+    ]
+
+    invalidating_cases = [
+        {'paths': ['element1', 'element2']},  # multiple paths
+        {'paths': ['element3/@attribute', 'element4/@attribute']},
+        {'paths': ['element9']}  # duplicate elements exist for path
+    ]
+
+    @pytest.fixture
+    def rule_type(self):
+        """Type of Rule."""
+        return 'unique'
+
+    @pytest.fixture(params=all_valid_cases)
+    def instantiating_case(self, request):
+        """Permitted case for instatiating this Rule."""
+        return request.param
+
+    @pytest.fixture(params=uninstantiating_cases)
     def uninstantiating_case(self, request):
         """Non-permitted case for instatiating this Rule."""
         return request.param
 
+    @pytest.fixture(params=all_valid_cases)
     def validating_case(self, request):
         """Permitted cases for validating an XML dataset against RuleUnique."""
+        return request.param
+
+    @pytest.fixture(params=invalidating_cases)
+    def invalidating_case(self, request):
+        """Non-permitted cases for validating an XML dataset against RuleUnique."""
+        return request.param
+
+    @pytest.fixture(params=[
+        {'paths': ['element9', 'element10']},
+        {'paths': ['element11/@attribute', 'element12/@attribute']}
+    ])
+    def valid_nest_case(self, request):
+        """Permitted case for validating an XML dataset against RuleUnique in nested context."""
+        return request.param
+
+    @pytest.fixture(params=[
+        {'paths': ['element5', 'element6']},
+        {'paths': ['element7/@attribute', 'element8/@attribute']}
+    ])
+    def invalid_nest_case(self, request):
+        """Non-permitted case for validating an XML dataset against RuleUnique in nested context."""
+        return request.param
 
     @pytest.fixture
     def invalid_dataset(self):
@@ -1111,16 +1148,3 @@ class TestRuleUnique(RuleSubclassTestBase):
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_UNIQUE_RULE_VALID
-
-    @pytest.fixture(params=[
-        {'paths': ['iati-identifier']},
-        {'paths': ['iati-identifier', 'other_unique_element']}
-    ])
-    def case_for_is_valid_for(self, request):
-        """Case to check the `is_valid_for` function of RuleUnique."""
-        return request.param
-
-    @pytest.fixture
-    def empty_path_case(self):
-        """Empty path string for RuleUnique."""
-        return {'paths': ['']}
