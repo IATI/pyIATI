@@ -1,18 +1,20 @@
 <?xml version="1.0"?>
 <!--all element and attribute text matches the specified regex-->
 <root_element>
-  <element1>test</element1><!--single path, matching regex-->
-  <element2>test</element2><!--multiple paths, matching regex-->
+  <element1>test</element1><!--single path-->
+  <element2>test</element2><!--multiple paths-->
   <element3>test</element3>
-  <element4>test</element4><!--duplicate paths, matching regex-->
-  <element5 attribute="test"></element5><!--single path, matching regex-->
-  <element6 attribute="test"></element6><!--multiple paths, matching regex-->
+  <element4>test</element4><!--duplicate paths-->
+  <element5 attribute="test"></element5><!--single path-->
+  <element6 attribute="test"></element6><!--multiple paths-->
   <element7 attribute="test"></element7>
-  <element8 attribute="test"></element8><!--duplicate paths, matching regex-->
+  <element8 attribute="test"></element8><!--duplicate paths-->
   <nest>
-    <element9>test</element9><!--nested element, matching regex-->
+    <element9>test</element9><!--nested element-->
   </nest>
   <nest>
-    <element10 attribute="test"></element10><!--nested attribute, matching regex-->
+    <element10 attribute="test"></element10><!--nested attribute-->
   </nest>
+  <element11>test</element11><!--duplicate element-->
+  <element11>test</element11>
 </root_element>

@@ -342,8 +342,8 @@ class RuleDateOrder(Rule):
             """Retrieve datetime object from an XPath string.
 
             Args:
-                context (an xpath): For the context in which further xpath queries are then made.
-                path: (an xpath): The ultimate xpath query to find the desired elements.
+                context (an XPath): For the context in which further XPath queries are then made.
+                path: (an XPath): The ultimate XPath query to find the desired elements.
 
             Returns:
                 datetime.datetime: A datetime object.
@@ -410,19 +410,34 @@ class RuleDependent(Rule):
             Determine if it's reasonable to assume the user should give a specific xpath format, or whether the context-path structure dictates automatic conversion to relative paths.
 
         """
+        def add_query_result(result):
+            """Add appropriate result to `found_in_dataset` whether attribute or element.
+
+            Args:
+                result (XPath element or attribute string): An XPath return value.
+
+            Todo:
+                Maybe refactor to return tag instead and extract to Rule base class.
+
+            """
+            try:
+                if result.is_attribute:
+                    found_in_dataset.add(result.getparent().tag)
+            except AttributeError:
+                found_in_dataset.add(result.tag)
+
         context_elements = self._find_context_elements(dataset)
-        found_in_dataset = list()
-        no_of_paths = 0
+        paths = set(self.paths)
+        found_in_dataset = set()
 
         for context_element in context_elements:
-            no_of_paths += len(self.paths)
-            for path in self.paths:
+            for path in paths:
                 results = context_element.xpath(path)
                 for result in results:
                     if result != list():
-                        found_in_dataset.append(result)
+                        add_query_result(result)
 
-        return not found_in_dataset or len(found_in_dataset) == no_of_paths
+        return not found_in_dataset or len(found_in_dataset) == len(paths)
 
 
 class RuleNoMoreThanOne(Rule):

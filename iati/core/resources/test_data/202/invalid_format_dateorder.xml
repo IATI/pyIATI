@@ -41,4 +41,8 @@
   <element38>2017-08-18:01:00</element38>
   <element39 attribute="2016-08-18:01:00"></element39><!--non-permitted preceeding character for timezone-->
   <element40 attribute="2017-08-18:01:00"></element40>
+  <element41>2016-08-25</element41><!--duplicate elements without duplicate values-->
+  <element41>2017-08-24</element41>
+  <element42>2016-08-25</element42>
+  <element42>2017-08-23</element42>
 </root_element>

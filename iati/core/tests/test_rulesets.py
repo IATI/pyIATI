@@ -311,8 +311,7 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         {'paths': ['element7/@attribute', 'element8/@attribute']},
         {'paths': ['element4', 'element4']},  # duplicate paths
         {'paths': ['element9/@attribute', 'element9/@attribute']},
-        {'paths': ['//element5']},  # nested path
-        {'paths': ['//element10/@attribute']}
+        {'paths': ['element11']}  # multiple identitcal elements
     ]
 
     uninstantiating_cases = [
@@ -333,8 +332,6 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
     invalidating_cases = [
         {'paths': ['element1']},  # single path, no matches
         {'paths': ['element9/@attribute']},
-        {'paths': ['element2']},  # nested paths,expected match missing
-        {'paths': ['element10/@attribute']},
         {'paths': ['element7', 'element8']},  # multiple paths, both expected matches missing
         {'paths': ['element13/@attribute', 'element14/@attribute']}
     ]
@@ -367,7 +364,7 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_nest_case(self):
         """Non-permitted case for validating an XML dataset against RuleAtLeastOne in nested context."""
-        return {'paths': ['element3', 'element10/@attribute']}
+        return {'paths': ['element2', 'element10/@attribute']}
 
     @pytest.fixture
     def valid_dataset(self):
@@ -392,12 +389,12 @@ class TestRuleDateOrder(RuleSubclassTestBase):
     """
 
     instatiating_cases = [
-        {'less': 'element5', 'more': 'element5'},  # both `less` and `more` duplicate xpath
-        {'less': 'element10/@attribute', 'more': 'element10/@attribute'},
-        {'less': '2017-07-26T13:19:05.493Z', 'more': 'elementx'},  # `less` is a string-formatted date
-        {'less': '2017-07-26T13:19:05.493Z', 'more': 'elementx/@attribute'},
-        {'less': 'elementx', 'more': '2017-07-26T13:19:05.493Z'},  # `more` is a string-formatted date
-        {'less': 'elementx/@attribute', 'more': '2017-07-26T13:19:05.493Z'},
+        {'less': 'element', 'more': 'element'},  # both `less` and `more` duplicate xpath
+        {'less': 'element/@attribute', 'more': 'element/@attribute'},
+        {'less': '2017-07-26T13:19:05.493Z', 'more': 'element'},  # `less` is a string-formatted date
+        {'less': '2017-07-26T13:19:05.493Z', 'more': 'element/@attribute'},
+        {'less': 'element', 'more': '2017-07-26T13:19:05.493Z'},  # `more` is a string-formatted date
+        {'less': 'element/@attribute', 'more': '2017-07-26T13:19:05.493Z'},
         {'less': 'NOW', 'more': 'NOW'}  # both `less` and `more` as NOW
     ]
 
@@ -423,7 +420,8 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element27', 'more': 'element28'},  # UTC timezone
         {'less': 'element35/@attribute', 'more': 'element36/@attribute'},
         {'less': 'nOw', 'more': 'noW'},  # not special case, should treat as regular path value
-        {'less': 'now/@attribute', 'more': 'Now/@attribute'}
+        {'less': 'now/@attribute', 'more': 'Now/@attribute'},
+        {'less': 'element37', 'more': 'element38'}  # multiple identical elements
     ]
 
     all_valid_cases = instatiating_cases + validating_cases
@@ -455,7 +453,8 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element10', 'more': 'element11'},  # multiple identical `less` dates that are chronologically after `more`
         {'less': 'element23/@attribute', 'more': 'element24/@attribute'},
         {'less': 'element12', 'more': 'element13'},  # multiple identical `more` dates that are chronologically before `less`
-        {'less': 'element25/@attribute', 'more': 'element26/@attribute'}
+        {'less': 'element25/@attribute', 'more': 'element26/@attribute'},
+        {'less': 'element27', 'more': 'element28'}  # multiple identical elements in incorrect order
     ]
 
     @pytest.fixture
@@ -529,7 +528,8 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element33', 'more': 'element34'},  # timezone not zero-padded
         {'less': 'element35/@attribute', 'more': 'element36/@attribute'},
         {'less': 'element37', 'more': 'element38'},  # non-permitted leading timezone character
-        {'less': 'element39/@attribute', 'more': 'element40/@attribute'}
+        {'less': 'element39/@attribute', 'more': 'element40/@attribute'},
+        {'less': 'element41', 'more': 'element42'}  # multiple identical elements but non-duplicated values
     ])
     def test_incorrect_date_format_raises_error(self, valid_single_context, case, rule_constructor):
         """Check that a dataset with dates in an incorrect format raise expected error."""
@@ -547,7 +547,8 @@ class TestRuleDependent(RuleSubclassTestBase):
         {'paths': ['element2', 'element3']},  # multiple paths
         {'paths': ['element8/@attribute', 'element9/@attribute']},
         {'paths': ['element4', 'element4']},  # duplicate paths
-        {'paths': ['element10/@attribute', 'element10/@attribute']}
+        {'paths': ['element10/@attribute', 'element10/@attribute']},
+        {'paths': ['element13', 'element14']}  # duplicate elements
     ]
 
     uninstantiating_cases = [
@@ -561,8 +562,9 @@ class TestRuleDependent(RuleSubclassTestBase):
     ]
 
     invalidating_cases = [
-        {'paths': ['element1', 'element2', 'element3']},
-        {'paths': ['element4/@attribute', 'element5/@attribute', 'element6/@attribute']}
+        {'paths': ['element1', 'element2', 'element3']},  # dependent element missing
+        {'paths': ['element4/@attribute', 'element5/@attribute', 'element6/@attribute']},  # dependent attribute missing
+        {'paths': ['element10', 'element11']}  # dependent element of duplicate element missing
     ]
 
     @pytest.fixture
@@ -705,8 +707,8 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         {'regex': r'\btest\b', 'paths': ['element2', 'element3']},  # multiple paths with regex
         {'regex': r'\btest\b', 'paths': ['element6/@attribute', 'element7/@attribute']},
         {'regex': r'\btest\b', 'paths': ['element4', 'element4']},  # duplicate paths with regex
-        {'regex': r'\btest\b', 'paths': ['element8/@attribute', 'element8/@attribute']}
-        # {'regex': '', 'paths': ['path_1']}  # single path with regex # should blank regex be allowed?
+        {'regex': r'\btest\b', 'paths': ['element8/@attribute', 'element8/@attribute']},
+        {'regex': r'\btest\b', 'paths': ['element11']}  # duplicate element
     ]
 
     uninstantiating_cases = [
@@ -730,7 +732,8 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         {'regex': r'\btest\b', 'paths': ['element2', 'element3']},  # multiple paths with regex
         {'regex': r'\btest\b', 'paths': ['element6/@attribute', 'element7/@attribute']},
         {'regex': r'\btest\b', 'paths': ['element4', 'element4']},  # duplicate paths with regex
-        {'regex': r'\btest\b', 'paths': ['element8/@attribute', 'element8/@attribute']}
+        {'regex': r'\btest\b', 'paths': ['element8/@attribute', 'element8/@attribute']},
+        {'regex': r'\btest\b', 'paths': ['element11']}  # duplicate element
     ]
 
     nest_case = [{'regex': r'\btest\b', 'paths': ['./element9', './element10/@attribute']}]
@@ -790,11 +793,13 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         {'regex': r'\btest\b', 'paths': ['element2', 'element3']},  # multiple paths with regex
         {'regex': r'\btest\b', 'paths': ['element6/@attribute', 'element7/@attribute']},
         {'regex': r'\btest\b', 'paths': ['element4', 'element4']},  # duplicate paths with regex
-        {'regex': r'\btest\b', 'paths': ['element8/@attribute', 'element8/@attribute']}
+        {'regex': r'\btest\b', 'paths': ['element8/@attribute', 'element8/@attribute']},
+        {'regex': r'\btest\b', 'paths': ['element11']}  # duplicate element
     ]
 
     uninstantiating_cases = [
         {'regex': 'some regex', 'paths': []},  # empty path array
+        {'regex': r'some regex', 'paths': ['']},  # paths is an empty string
         {'regex': 'some regex', 'paths': 'path_1'},  # non-array `paths`
         {'regex': 'some regex', 'paths': [3]},  # non-string value in path array
         {'regex': 'some regex', 'paths': ['path_1', 3]},  # mixed string and non-string value in path array
@@ -813,7 +818,8 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         {'regex': r'\btest\b', 'paths': ['element2', 'element3']},  # multiple paths with regex
         {'regex': r'\btest\b', 'paths': ['element6/@attribute', 'element7/@attribute']},
         {'regex': r'\btest\b', 'paths': ['element4', 'element4']},  # duplicate paths with regex
-        {'regex': r'\btest\b', 'paths': ['element8/@attribute', 'element8/@attribute']}
+        {'regex': r'\btest\b', 'paths': ['element8/@attribute', 'element8/@attribute']},
+        {'regex': r'\btest\b', 'paths': ['element11']}  # duplicate element
     ]
 
     nest_case = [{'regex': r'\btest\b', 'paths': ['./element9', './element10/@attribute']}]
@@ -873,7 +879,8 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         {'start': 'prefix', 'paths': ['element2', 'element3']},  # multiple paths with valid prefix string
         {'start': 'prefix', 'paths': ['element6/@attribute', 'element7/@attribute']},
         {'start': 'prefix', 'paths': ['element4', 'element4']},  # duplicate paths with valid prefix string
-        {'start': 'prefix', 'paths': ['element8/@attribute', 'element8/@attribute']}
+        {'start': 'prefix', 'paths': ['element8/@attribute', 'element8/@attribute']},
+        {'start': 'prefix', 'paths': ['element11']}  # duplicate element
     ]
 
     uninstantiating_cases = [
@@ -897,7 +904,8 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         {'start': 'prefix', 'paths': ['element2', 'element3']},  # multiple paths with valid prefix string
         {'start': 'prefix', 'paths': ['element6/@attribute', 'element7/@attribute']},
         {'start': 'prefix', 'paths': ['element4', 'element4']},  # duplicate paths with valid prefix string
-        {'start': 'prefix', 'paths': ['element8/@attribute', 'element8/@attribute']}
+        {'start': 'prefix', 'paths': ['element8/@attribute', 'element8/@attribute']},
+        {'start': 'prefix', 'paths': ['element11']}  # duplicate element
     ]
 
     nest_case = [{'start': 'prefix', 'paths': ['element9', 'element10/@attribute']}]

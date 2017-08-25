@@ -35,4 +35,8 @@
   <element25 attribute="2017-08-16"></element25><!--multiple 'more' attributes that are chronologically before 'less'-->
   <element26 attribute="2016-08-16"></element26>
   <element26 attribute="2016-08-16"></element26>
+  <element27>2017-08-25</element27><!--duplicate elements in incorrect order-->
+  <element27>2017-08-25</element27>
+  <element28>2016-08-25</element28>
+  <element28>2016-08-25</element28>
 </root_element>

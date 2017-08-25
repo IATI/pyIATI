@@ -15,4 +15,6 @@
   <nest>
     <element10 attribute="prefix1234"></element10><!--nested path-->
   </nest>
+  <element11>prefix1234</element11><!--duplicate element-->
+  <element11>prefix1234</element11>
 </root_element>

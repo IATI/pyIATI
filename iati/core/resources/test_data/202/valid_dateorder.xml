@@ -49,4 +49,8 @@
   <element36 attribute="2017-08-17Z"></element36>
   <now attribute="2016-08-16"></now>
   <Now attribute="2017-08-16"></Now>
+  <element37>2016-08-25</element37><!--multiple identical elements in correct order with duplicated values-->
+  <element37>2016-08-25</element37>
+  <element38>2017-08-25</element38>
+  <element38>2017-08-25</element38>
 </root_element>

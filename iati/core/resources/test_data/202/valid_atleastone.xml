@@ -15,4 +15,6 @@
   <nest>
     <element10 attribute=""></element10><!--nested attribute-->
   </nest>
+  <element11></element11>
+  <element11></element11>
 </root_element>

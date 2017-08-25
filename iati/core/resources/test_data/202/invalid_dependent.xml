@@ -11,4 +11,6 @@
   <nest>
     <element9 attribute=""></element9>
   </nest>
+  <element11></element11><!--multiple identical elements, missing dependent element-->
+  <element11></element11>
 </root_element>
