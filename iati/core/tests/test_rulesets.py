@@ -243,6 +243,10 @@ class RuleSubclassTestBase(object):
 
         Note:
             Excludes rules with no `paths` attribute.
+
+        Todo:
+            Is this test still needed?
+
         """
         if 'paths' in dir(rule_basic_init):
             for path in rule_basic_init.normalized_paths:
