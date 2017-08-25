@@ -239,8 +239,11 @@ class RuleSubclassTestBase(object):
         assert rule_basic_init.name == rule_type
 
     def test_rule_paths(self, rule_basic_init):
-        """Check that a Rule subclass has the expected paths."""
-        # Exclude rules with no `paths` attribute.
+        """Check that a Rule subclass has the expected paths.
+
+        Note:
+            Excludes rules with no `paths` attribute.
+        """
         if 'paths' in dir(rule_basic_init):
             for path in rule_basic_init.normalized_paths:
                 assert path.startswith(rule_basic_init.context)
@@ -260,7 +263,10 @@ class RuleSubclassTestBase(object):
     def test_is_valid_for(self, valid_dataset, rule_is_valid_for):
         """Check that a given Rule returns the expected result when given Dataset."""
         # import pdb; pdb.set_trace()
+        # try:
         assert rule_is_valid_for.is_valid_for(valid_dataset)
+        # except TypeError:
+        #     import pdb; pdb.set_trace()
 
     def test_is_invalid_for(self, invalid_dataset, rule_is_invalid_for):
         """Check that a given Rule returns the expected result when given a Dataset."""
@@ -421,7 +427,11 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element35/@attribute', 'more': 'element36/@attribute'},
         {'less': 'nOw', 'more': 'noW'},  # not special case, should treat as regular path value
         {'less': 'now/@attribute', 'more': 'Now/@attribute'},
-        {'less': 'element37', 'more': 'element38'}  # multiple identical elements
+        {'less': 'element37', 'more': 'element38'},  # multiple identical elements
+        {'less': 'element39', 'more': 'element40'},  # `less` date missing
+        {'less': 'element43', 'more': 'element44'},
+        {'less': 'element41', 'more': 'element42'},  # `more` date missing
+        {'less': 'element45', 'more': 'element46'}
     ]
 
     all_valid_cases = instatiating_cases + validating_cases

@@ -357,12 +357,17 @@ class RuleDateOrder(Rule):
             Note:
                 Though technically permitted, any dates with a leading '-' character are almost certainly incorrect and are therefore treated as data errors.
 
+            Todo:
+                Consider breaking this function down further so it follows SRP.
+
             """
             if path == self.special_case:
                 return datetime.today()
 
             results = context.xpath(path)
             dates = self._extract_text_from_element_or_attribute(results)
+            if not dates[0]:
+                return
             # Checks that anything after the YYYY-MM-DD string is a permitted timezone character
             pattern = re.compile(r'([+-]([01][0-9]|2[0-3]):([0-5][0-9])|Z)?')
             if (len(set(dates)) == 1) and pattern.fullmatch(dates[0][10:]):
@@ -375,12 +380,11 @@ class RuleDateOrder(Rule):
             early_date = get_date(context_element, self.less)
             later_date = get_date(context_element, self.more)
 
-            # to be implemented later:
-            # if early_date or later_date is None:
-            #     continue
-
-            if early_date >= later_date:
-                return False
+            try:
+                if early_date >= later_date:
+                    return False
+            except TypeError:
+                continue
 
         return True
 

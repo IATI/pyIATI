@@ -53,4 +53,12 @@
   <element37>2016-08-25</element37>
   <element38>2017-08-25</element38>
   <element38>2017-08-25</element38>
+  <element39></element39><!--less date missing-->
+  <element40>2017-08-25</element40>
+  <element41>2016-08-25</element41><!--more date missing-->
+  <element42></element42>
+  <element43 attribute=""></element43><!--less date missing-->
+  <element44 attribute="2017-08-25"></element44>
+  <element45 attribute="2016-08-25"></element45><!--more date missing-->
+  <element46 attribute=""></element46>
 </root_element>
