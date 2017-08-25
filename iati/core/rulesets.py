@@ -384,7 +384,7 @@ class RuleDateOrder(Rule):
                 if early_date >= later_date:
                     return False
             except TypeError:
-                continue
+                return None
 
         return True
 

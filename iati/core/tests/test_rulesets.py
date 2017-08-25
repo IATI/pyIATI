@@ -262,15 +262,10 @@ class RuleSubclassTestBase(object):
 
     def test_is_valid_for(self, valid_dataset, rule_is_valid_for):
         """Check that a given Rule returns the expected result when given Dataset."""
-        # import pdb; pdb.set_trace()
-        # try:
         assert rule_is_valid_for.is_valid_for(valid_dataset)
-        # except TypeError:
-        #     import pdb; pdb.set_trace()
 
     def test_is_invalid_for(self, invalid_dataset, rule_is_invalid_for):
         """Check that a given Rule returns the expected result when given a Dataset."""
-        # import pdb; pdb.set_trace()
         assert not rule_is_invalid_for.is_valid_for(invalid_dataset)
 
     @pytest.mark.parametrize("junk_data", iati.core.tests.utilities.find_parameter_by_type([], False))
@@ -292,13 +287,11 @@ class RuleSubclassTestBase(object):
     def test_multiple_valid_context_matches_is_valid_for(self, valid_multiple_context, valid_nest_case, rule_constructor, valid_dataset):
         """Check Rule returns expected result when checking multiple contexts."""
         rule = rule_constructor(valid_multiple_context, valid_nest_case)
-        # import pdb; pdb.set_trace()
         assert rule.is_valid_for(valid_dataset)
 
     def test_multiple_valid_context_matches_is_invalid_for(self, valid_multiple_context, invalid_nest_case, rule_constructor, invalid_dataset):
         """Check Rule returns expected result when checking multiple contexts."""
         rule = rule_constructor(valid_multiple_context, invalid_nest_case)
-        # import pdb; pdb.set_trace()
         assert not rule.is_valid_for(invalid_dataset)
 
 
@@ -427,11 +420,7 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element35/@attribute', 'more': 'element36/@attribute'},
         {'less': 'nOw', 'more': 'noW'},  # not special case, should treat as regular path value
         {'less': 'now/@attribute', 'more': 'Now/@attribute'},
-        {'less': 'element37', 'more': 'element38'},  # multiple identical elements
-        {'less': 'element39', 'more': 'element40'},  # `less` date missing
-        {'less': 'element43', 'more': 'element44'},
-        {'less': 'element41', 'more': 'element42'},  # `more` date missing
-        {'less': 'element45', 'more': 'element46'}
+        {'less': 'element37', 'more': 'element38'}  # multiple identical elements
     ]
 
     all_valid_cases = instatiating_cases + validating_cases
@@ -546,6 +535,17 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         rule = rule_constructor(valid_single_context, case)
         with pytest.raises(ValueError):
             rule.is_valid_for(iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT)
+
+    @pytest.mark.parametrize("case", [
+        {'less': 'element39', 'more': 'element40'},  # `less` date missing
+        {'less': 'element43', 'more': 'element44'},
+        {'less': 'element41', 'more': 'element42'},  # `more` date missing
+        {'less': 'element45', 'more': 'element46'}
+    ])
+    def test_is_valid_for_returns_None(self, valid_single_context, case, rule_constructor, valid_dataset):
+        """Check that None is returned when expected date not found."""
+        rule = rule_constructor(valid_single_context, case)
+        assert rule.is_valid_for(valid_dataset) is None
 
 
 class TestRuleDependent(RuleSubclassTestBase):
