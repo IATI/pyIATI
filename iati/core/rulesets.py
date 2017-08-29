@@ -110,7 +110,6 @@ class Rule(object):
 
     Todo:
         Determine whether this should be an Abstract Base Class.
-        Standardise normalized paths.
 
     """
 
@@ -339,9 +338,6 @@ class RuleDateOrder(Rule):
         Note:
             `date` restricted to 10 characters in order to exclude possible timezone values.
 
-        Todo:
-            Implement functionality to ignore function call if `less` or `more` do not return dates.
-
         """
         def get_date(context, path):
             """Retrieve datetime object from an XPath string.
@@ -493,8 +489,7 @@ class RuleRegexMatches(Rule):
         """Initialise a `regex_matches` Rule.
 
         Raises:
-            ValueError:
-                When the case does not contain a valid regex.
+            ValueError: When the case does not contain valid regex.
 
         """
         self.name = 'regex_matches'
@@ -542,7 +537,7 @@ class RuleRegexNoMatches(Rule):
         """Initialise a `regex_no_matches` Rule.
 
         Raises:
-            ValueError: When the case does not contain a valid regex.
+            ValueError: When the case does not contain valid regex.
 
         """
         self.name = 'regex_no_matches'
@@ -585,9 +580,6 @@ class RuleRegexNoMatches(Rule):
 
 class RuleStartsWith(Rule):
     """Representation of a Rule that checks that the start of each `path` text value matches the `start` text value.
-
-    Todo:
-        Test with multiple start strings (should error).
 
     """
 
