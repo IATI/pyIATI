@@ -737,7 +737,8 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         {'regex': 3, 'paths': ['path_1']},  # provided regex not a string
         {},  # empty dictionary
         {'regex': r'some regex', 'paths': {'path_1'}},  # dictionary paths
-        {'regex': [r'some regex'], 'paths': 'path_1'}  # list regex
+        {'regex': [r'some regex'], 'paths': 'path_1'},  # list regex
+        {'regex': r'', 'paths': ['path_1']}  # regex is an empty string
     ]
 
     invalidating_cases = [
@@ -823,7 +824,8 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         {'regex': 3, 'paths': ['path_1']},  # provided regex not a string
         {},  # empty dictionary
         {'regex': 'some regex', 'paths': {'path_1'}},  # dictionary paths
-        {'regex': ['some regex'], 'paths': 'path_1'}  # list regex
+        {'regex': ['some regex'], 'paths': 'path_1'},  # list regex
+        {'regex': '', 'paths': ['element12']}  # regex is an empty string
     ]
 
     invalidating_cases = [
