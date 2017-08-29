@@ -9,21 +9,21 @@ import iati.core.resources
 class TestResources(object):
     """A container for tests relating to resources."""
 
-    @pytest.fixture(params=[None] + iati.core.constants.STANDARD_VERSIONS)
+    @pytest.fixture(params=['no_arguments', None] + iati.core.constants.STANDARD_VERSIONS)
     def standard_version_optional(self, request):
         """Return a list that can be used as variable positional parameters (i.e. `*standard_version_optional`) to test.
         This can then be used in tests which have an optional parameter for the year.
 
         Returns:
-            list: An empty list, or a list containing a string which corresponds to a version of the Standard.
+            list: Either i) an empty list, ii) a list containing None, or iii) a string which corresponds to a version of the Standard.
 
         """
-        version = request.param
+        arg = request.param
 
-        if version is None:
+        if arg == 'no_arguments':
             return []
         else:
-            return [version]
+            return [arg]
 
 
     @pytest.mark.parametrize('version, expected_version_foldername', [
