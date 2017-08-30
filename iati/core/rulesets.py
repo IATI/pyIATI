@@ -411,8 +411,8 @@ class RuleDateOrder(Rule):
             if not dates[0]:
                 return
             # Checks that anything after the YYYY-MM-DD string is a permitted timezone character
-            pattern = re.compile(r'([+-]([01][0-9]|2[0-3]):([0-5][0-9])|Z)?')
-            if (len(set(dates)) == 1) and pattern.fullmatch(dates[0][10:]):
+            pattern = re.compile(r'^([+-]([01][0-9]|2[0-3]):([0-5][0-9])|Z)?$')
+            if (len(set(dates)) == 1) and pattern.match(dates[0][10:]):
                 return datetime.strptime(dates[0][:10], '%Y-%m-%d')
             raise ValueError
 
@@ -425,9 +425,14 @@ class RuleDateOrder(Rule):
             later_date = get_date(context_element, self.more)
 
             try:
+                # python2 allows `bool`s to be compared to `None` without raising a TypeError, while python3 does not
+                if early_date is None or later_date is None:
+                    return None
+
                 if early_date >= later_date:
                     return False
             except TypeError:
+                # a TypeError is raised in python3 if either of the dates is None
                 return None
 
         return True
