@@ -25,7 +25,7 @@ class TestValidationError(object):
         """Test that a ValidationError can be created when provided a valid name."""
         err_name = 'err-code-not-on-codelist'
         err = iati.validator.ValidationError(err_name)
-        err_detail = iati.validator._ERROR_CODES[err_name]
+        err_detail = iati.validator.get_error_codes()[err_name]
 
         assert isinstance(err, iati.validator.ValidationError)
         assert err.name == err_name
@@ -47,7 +47,7 @@ class TestValidationErrorLog(object):
     @pytest.fixture
     def err_type(self, err_name):
         """The type of an error."""
-        return iati.validator._ERROR_CODES[err_name]['base_exception']
+        return iati.validator.get_error_codes()[err_name]['base_exception']
 
     @pytest.fixture
     def error(self, err_name):
@@ -62,7 +62,7 @@ class TestValidationErrorLog(object):
     @pytest.fixture
     def warning_type(self, warning_name):
         """The type of an error."""
-        return iati.validator._ERROR_CODES[warning_name]['base_exception']
+        return iati.validator.get_error_codes()[warning_name]['base_exception']
 
     @pytest.fixture
     def unused_exception_type(self):
@@ -219,7 +219,7 @@ class TestValidationAuxiliaryData(object):
 
     def test_error_code_names(self):
         """Check that the names of error codes are all in the correct format."""
-        for err_code_name in iati.validator._ERROR_CODES.keys():
+        for err_code_name in iati.validator.get_error_codes().keys():
             assert err_code_name.split('-')[0] in ['err', 'warn']
 
     def test_error_code_attributes(self):
@@ -231,11 +231,14 @@ class TestValidationAuxiliaryData(object):
             ('info', str),
             ('help', str)
         ]
-        for err_code_name, err_code in iati.validator._ERROR_CODES.items():
+        for err_code_name, err_code in iati.validator.get_error_codes().items():
             code_attrs = err_code.keys()
             for (attr_name, attr_type) in expected_attributes:
                 assert attr_name in code_attrs
                 assert isinstance(err_code[attr_name], attr_type)
+
+    # def test_loading_err_codes(self):
+    #     assert iati.validator.get_error_codes.startswith('Hello')
 
 
 class ValidationTestBase(object):
