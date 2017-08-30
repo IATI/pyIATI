@@ -860,7 +860,8 @@ class TestValidateRulesets(object):
         Returns:
             A valid activity schema with the Version Codelist added.
         """
-        schema = iati.core.Schema(name=iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
+        schema = iati.core.Schema(schema_path)
         ruleset = iati.core.default.ruleset()
 
         schema.rulesets.add(ruleset)
@@ -871,18 +872,18 @@ class TestValidateRulesets(object):
         """Perform data validation against valid IATI XML that has valid Codelist values."""
         data = iati.core.tests.utilities.load_as_dataset('valid_iati')
 
-        assert iati.validate.is_xml(data.xml_str)
-        assert iati.validate.is_iati_xml(data, schema_ruleset)
-        assert iati.validate.is_valid(data, schema_ruleset)
+        assert iati.validator.is_xml(data.xml_str)
+        assert iati.validator.is_iati_xml(data, schema_ruleset)
+        assert iati.validator.is_valid(data, schema_ruleset)
 
     @pytest.mark.skip(reason='Validation of various types of Rule is being implemented separately')
     def test_basic_validation_ruleset_invalid(self, schema_ruleset):
         """Perform data validation against valid IATI XML that does not conform to the default Ruleset."""
         data = iati.core.tests.utilities.load_as_dataset('valid_iati_breaks_rule')
 
-        assert iati.validate.is_xml(data.xml_str)
-        assert iati.validate.is_iati_xml(data, schema_ruleset)
-        assert not iati.validate.is_valid(data, schema_ruleset)
+        assert iati.validator.is_xml(data.xml_str)
+        assert iati.validator.is_iati_xml(data, schema_ruleset)
+        assert not iati.validator.is_valid(data, schema_ruleset)
 
 
 class TestValidatorFullValidation(ValidateCodelistsBase):
