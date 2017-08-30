@@ -298,6 +298,9 @@ class Rule(object):
             bool: Returns `False` when condition not met.
             None: Returns `None` when condition met.
 
+        Warning:
+            Current implementation may be vulnerable to XPath injection vulnerabilities. Need to assess the possibility of risk and potential counter-measures/avoidance strategies if needed.
+
         """
         try:
             if context_element.xpath(self.condition):
