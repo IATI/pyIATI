@@ -45,6 +45,18 @@ class TestSchemas(object):
         assert isinstance(schema_initialised.rulesets, set)
         assert not schema_initialised.rulesets
 
+    @pytest.mark.parametrize("schema_name", [
+        iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID,
+        iati.core.tests.utilities.SCHEMA_ORGANISATION_NAME_VALID
+    ])
+    @pytest.mark.parametrize('version', iati.core.constants.STANDARD_VERSIONS)
+    def test_schema_get_version(self, schema_name, version):
+        """Check that the correct version number is returned by the base classes of iati.core.schemas.schema._get_version()."""
+        schema = iati.core.default.schema(schema_name, version)
+        result = schema._get_version()
+
+        assert result == version
+
     @pytest.mark.parametrize("schema_type, expected_local_element", [
         ('iati-activities-schema', 'iati-activities'),
         ('iati-organisations-schema', 'iati-organisations')
@@ -119,7 +131,7 @@ class TestSchemas(object):
         (iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID, 'iati-activities'),
         (iati.core.tests.utilities.SCHEMA_ORGANISATION_NAME_VALID, 'iati-organisations')
     ])
-    def test_schema_flattened_includes(self, schema_name, expected_local_element):
+    def test_schema_flattened_includes(self, standard_version_optional, schema_name, expected_local_element):
         """Check that includes are flattened correctly.
 
         In a full flatten of included elements as `<xi:include href="NAME.xsd" parse="xml" />`, there may be nested `schema` elements and other situations that are not permitted.
@@ -136,7 +148,7 @@ class TestSchemas(object):
             Test that this works with subclasses of iati.core.schemas.Schema: iati.core.ActivitySchema and iati.core.OrganisationSchema
 
         """
-        schema_path = iati.core.resources.get_schema_path(schema_name)
+        schema_path = iati.core.resources.get_schema_path(schema_name, *standard_version_optional)
         schema = iati.core.schemas.Schema(schema_path)
         local_element = expected_local_element
         included_element = 'reporting-org'
