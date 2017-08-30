@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<iati-activities>
+  <iati-activity>
+    <iati-identifier>12345</iati-identifier>
+    <description>xxx</description>
+    <!-- @ref is required -->
+    <related-activity type="xxx"/>
+  </iati-activity>
+</iati-activities>

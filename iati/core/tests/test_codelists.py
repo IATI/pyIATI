@@ -30,7 +30,7 @@ class TestCodelists(object):
     def test_codelist_default_attributes(self):
         """Check a Codelist's default attributes are correct."""
         with pytest.raises(TypeError) as excinfo:
-            iati.core.Codelist()
+            iati.core.Codelist()  # pylint: disable=E1120
 
         assert ('__init__() missing 1 required positional argument' in str(excinfo.value)) or ('__init__() takes at least 2 arguments' in str(excinfo.value))
 
@@ -76,6 +76,24 @@ class TestCodelists(object):
         for code in codelist.codes:
             assert code.name in code_names
             assert code.value in code_values
+
+    def test_codelist_complete(self):
+        """Check that a Codelist can be generated from an XML codelist definition."""
+        codelist_name = 'BudgetType'
+        path = iati.core.resources.get_codelist_path(codelist_name)
+        xml_str = iati.core.resources.load_as_string(path)
+        codelist = iati.core.Codelist(codelist_name, xml=xml_str)
+
+        assert codelist.complete == True
+
+    def test_codelist_incomplete(self):
+        """Check that a Codelist can be generated from an XML codelist definition."""
+        codelist_name = 'Country'
+        path = iati.core.resources.get_codelist_path(codelist_name)
+        xml_str = iati.core.resources.load_as_string(path)
+        codelist = iati.core.Codelist(codelist_name, xml=xml_str)
+
+        assert codelist.complete == False
 
     def test_codelist_type_xsd(self, name_to_set):
         """Check that a Codelist can turn itself into a type to use for validation."""
