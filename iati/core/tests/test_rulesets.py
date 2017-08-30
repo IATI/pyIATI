@@ -1,4 +1,5 @@
 """A module containing tests for the library representation of Rulesets."""
+from copy import deepcopy
 import pytest
 import iati.core.default
 import iati.core.rulesets
@@ -189,9 +190,18 @@ class RuleSubclassTestBase(object):
         return '//nest'
 
     @pytest.fixture
-    def invalid_context(self):
-        """Empty_context."""
-        return ''
+    def valid_condition_case(self, validating_case):
+        """Return a case with optional condition attribute."""
+        condition_validating_case = deepcopy(validating_case)
+        condition_validating_case['condition'] = 'count(condition)>0'
+        return condition_validating_case
+
+    @pytest.fixture
+    def invalid_condition_case(self, invalidating_case):
+        """Return a case with optional condition attribute."""
+        condition_invalidating_case = deepcopy(invalidating_case)
+        condition_invalidating_case['condition'] = 'count(condition)>0'
+        return condition_invalidating_case
 
     @pytest.fixture
     def rule_basic_init(self, rule_constructor, instantiating_case, valid_single_context):
@@ -218,39 +228,44 @@ class RuleSubclassTestBase(object):
         """
         return iati.core.rulesets.constructor_for_rule_type(rule_type)
 
+    @pytest.fixture
+    def valid_condition_rule(self, rule_constructor, valid_single_context, valid_condition_case):
+        """Return a Rule with a `condition` case."""
+        return rule_constructor(valid_single_context, valid_condition_case)
+
+    @pytest.fixture
+    def invalid_condition_rule(self, rule_constructor, valid_single_context, invalid_condition_case):
+        """Return a Rule with a `condition` case."""
+        return rule_constructor(valid_single_context, invalid_condition_case)
+
     def test_rule_init_valid_parameter_types(self, rule_basic_init):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
         assert isinstance(rule_basic_init, iati.core.Rule)
 
-    def test_rule_init_raises_error_on_empty_context(self, rule_constructor, invalid_context, instantiating_case):
+    def test_rule_init_raises_error_on_empty_context(self, rule_constructor, instantiating_case):
         """Check that a Rule cannot be instantiated when the `context` is an empty string."""
+        invalid_context = ''
         with pytest.raises(ValueError):
             rule_constructor(invalid_context, instantiating_case)
 
-    def test_rule_attributes_from_case(self, rule_basic_init):
+    def test_required_rule_attributes_from_case(self, rule_basic_init):
         """Check that a Rule subclass has case attributes set."""
-        required_attributes = rule_basic_init._required_case_attributes(rule_basic_init._ruleset_schema_section())
+        required_attributes = rule_basic_init._case_attributes(rule_basic_init._ruleset_schema_section())
         for attrib in required_attributes:
             # Ensure that the attribute exists - if not, an AttributeError will be raised
             getattr(rule_basic_init, attrib)
 
+    def test_optional_rule_attributes_from_case(self, rule_constructor, valid_single_context, valid_condition_case):
+        """Check that a Rule subclass has case attributes set."""
+        rule = rule_constructor(valid_single_context, valid_condition_case)
+        optional_attributes = rule._case_attributes(rule._ruleset_schema_section(), False)
+        for attrib in optional_attributes:
+            # Ensure that the attribute exists - if not, an AttributeError will be raised
+            getattr(rule, attrib)
+
     def test_rule_name(self, rule_basic_init, rule_type):
         """Check that a Rule subclass has the expected name."""
         assert rule_basic_init.name == rule_type
-
-    def test_rule_paths(self, rule_basic_init):
-        """Check that a Rule subclass has the expected paths.
-
-        Note:
-            Excludes rules with no `paths` attribute.
-
-        Todo:
-            Is this test still needed?
-
-        """
-        if 'paths' in dir(rule_basic_init):
-            for path in rule_basic_init.normalized_paths:
-                assert path.startswith(rule_basic_init.context)
 
     @pytest.mark.parametrize("context", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_rule_init_invalid_context(self, rule_constructor, context, instantiating_case):
@@ -297,6 +312,19 @@ class RuleSubclassTestBase(object):
         """Check Rule returns expected result when checking multiple contexts."""
         rule = rule_constructor(valid_multiple_context, invalid_nest_case)
         assert not rule.is_valid_for(invalid_dataset)
+
+    def test_condition_case_is_True(self, valid_condition_rule, valid_dataset):
+        """Check that if a condition is `True`, the rule returns None."""
+        assert valid_condition_rule.is_valid_for(valid_dataset) is None
+
+    def test_condition_case_is_False(self, invalid_condition_rule, invalid_dataset):
+        """Check that if a condition is `False`, the rule validates normally.
+
+        Note:
+            Using an invalid dataset so expecting Rules to evaluate to `False`.
+
+        """
+        assert not invalid_condition_rule.is_valid_for(invalid_dataset)
 
 
 class TestRuleAtLeastOne(RuleSubclassTestBase):

@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--given values sum to specified amount-->
 <root_element>
+  <condition></condition><!--condition case-->
   <element1>3</element1><!--single path-->
   <element2>1</element2><!--multiple paths-->
   <element3>2</element3>

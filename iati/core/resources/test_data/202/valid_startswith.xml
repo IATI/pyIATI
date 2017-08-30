@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--all elements and attributes contain the specified prefixing string-->
 <root_element>
+  <condition></condition><!--condition case-->
   <element1>prefix1234</element1><!--single path-->
   <element2>prefix1234</element2><!--multiple paths-->
   <element3>prefix1234</element3>

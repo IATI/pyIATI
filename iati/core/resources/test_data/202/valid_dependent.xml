@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--required dependent elements and attributes present-->
 <root_element>
+  <condition></condition><!--condition case-->
   <element1></element1><!--single element given-->
   <element2></element2><!--two elements given-->
   <element3></element3>

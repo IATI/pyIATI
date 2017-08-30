@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--dates in correct order and correctly formatted-->
 <root_element>
+  <condition></condition><!--condition case-->
   <element1>2016-08-16</element1><!--first element is in the correct date order-->
   <element2>2017-08-16</element2>
   <element3>2016-08-16</element3><!--more is NOW-->

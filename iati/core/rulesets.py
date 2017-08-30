@@ -204,21 +204,30 @@ class Rule(object):
             Set non-required properties such as a `condition`.
 
         """
-        required_attributes = self._required_case_attributes(self._ruleset_schema_section())
+        required_attributes = self._case_attributes(self._ruleset_schema_section())
         for attrib in required_attributes:
             setattr(self, attrib, case[attrib])
 
-    def _required_case_attributes(self, partial_schema):
+        optional_attributes = self._case_attributes(self._ruleset_schema_section(), False)
+        for attrib in optional_attributes:
+            try:
+                setattr(self, attrib, case[attrib])
+            except KeyError:
+                pass
+
+    def _case_attributes(self, partial_schema, required=True):
         """Determine the attributes that must be present given the Schema for the Rule type.
 
         Args:
             partial_schema (dict): The partial JSONSchema to extract attribute names from.
 
         Returns:
-            list of str: The names of required attributes.
+            list of str: The names of required or optional attributes.
 
         """
-        return [key for key in partial_schema['properties'].keys() if key != 'condition']
+        if required:
+            return [key for key in partial_schema['properties'].keys() if key != 'condition']
+        return [key for key in partial_schema['properties'].keys() if key == 'condition']
 
     def _ruleset_schema_section(self):
         """Locate the section of the Ruleset Schema relevant for the Rule.
@@ -235,7 +244,7 @@ class Rule(object):
         ruleset_schema = iati.core.default.ruleset_schema()
         partial_schema = ruleset_schema['patternProperties']['.+']['properties'][self.name]['properties']['cases']['items']  # pylint: disable=E1101
         # make all attributes other than 'condition' in the partial schema required
-        partial_schema['required'] = self._required_case_attributes(partial_schema)
+        partial_schema['required'] = self._case_attributes(partial_schema)
         # ensure that the 'paths' array is not empty
         if 'paths' in partial_schema['properties'].keys():
             partial_schema['properties']['paths']['minItems'] = 1
@@ -270,6 +279,25 @@ class Rule(object):
         results = [result if isinstance(result, six.string_types) else result.text for result in xpath_results]
         return ['' if result is None else result for result in results]
 
+    def _evaluate_condition(self, context_element, dataset):
+        """Check for condtions of a given case.
+
+        Args:
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against a Rule.
+
+        Returns:
+            bool: Returns `False` when condition not met.
+            None: Returns `None` when condition met.
+
+        """
+        try:
+            if context_element.xpath(self.condition):
+                return True
+        except AttributeError:
+            return False
+
+        return False
+
 
 class RuleAtLeastOne(Rule):
     """Representation of a Rule that checks that there is at least one Element matching a given XPath."""
@@ -296,6 +324,8 @@ class RuleAtLeastOne(Rule):
         context_elements = self._find_context_elements(dataset)
 
         for context_element in context_elements:
+            if self._evaluate_condition(context_element, dataset):
+                return None
             for path in self.paths:
                 if context_element.xpath(path):
                     return True
@@ -378,6 +408,8 @@ class RuleDateOrder(Rule):
         context_elements = self._find_context_elements(dataset)
 
         for context_element in context_elements:
+            if self._evaluate_condition(context_element, dataset):
+                return None
             early_date = get_date(context_element, self.less)
             later_date = get_date(context_element, self.more)
 
@@ -436,6 +468,8 @@ class RuleDependent(Rule):
         found_in_dataset = set()
 
         for context_element in context_elements:
+            if self._evaluate_condition(context_element, dataset):
+                return None
             for path in paths:
                 results = context_element.xpath(path)
                 for result in results:
@@ -473,6 +507,8 @@ class RuleNoMoreThanOne(Rule):
         no_of_paths = 0
 
         for context_element in context_elements:
+            if self._evaluate_condition(context_element, dataset):
+                return None
             no_of_paths += len(paths)
             for path in paths:
                 results = context_element.xpath(path)
@@ -520,6 +556,8 @@ class RuleRegexMatches(Rule):
         pattern = re.compile(self.regex)
 
         for context_element in context_elements:
+            if self._evaluate_condition(context_element, dataset):
+                return None
             for path in self.paths:
                 results = context_element.xpath(path)
                 strings_to_check = self._extract_text_from_element_or_attribute(results)
@@ -568,6 +606,8 @@ class RuleRegexNoMatches(Rule):
         pattern = re.compile(self.regex)
 
         for context_element in context_elements:
+            if self._evaluate_condition(context_element, dataset):
+                return None
             for path in self.paths:
                 results = context_element.xpath(path)
                 strings_to_check = self._extract_text_from_element_or_attribute(results)
@@ -579,9 +619,7 @@ class RuleRegexNoMatches(Rule):
 
 
 class RuleStartsWith(Rule):
-    """Representation of a Rule that checks that the start of each `path` text value matches the `start` text value.
-
-    """
+    """Representation of a Rule that checks that the start of each `path` text value matches the `start` text value."""
 
     def __init__(self, context, case):
         """Initialise a `startswith` Rule."""
@@ -611,6 +649,8 @@ class RuleStartsWith(Rule):
         context_elements = self._find_context_elements(dataset)
 
         for context_element in context_elements:
+            if self._evaluate_condition(context_element, dataset):
+                return None
             for path in self.paths:
                 results = context_element.xpath(path)
                 strings_to_check = self._extract_text_from_element_or_attribute(results)
@@ -646,6 +686,8 @@ class RuleSum(Rule):
         context_elements = self._find_context_elements(dataset)
 
         for context_element in context_elements:
+            if self._evaluate_condition(context_element, dataset):
+                return None
             values_in_context = list()
             for path in set(self.paths):
                 results = context_element.xpath(path)
@@ -688,6 +730,8 @@ class RuleUnique(Rule):
         unique = set()
 
         for context_element in context_elements:
+            if self._evaluate_condition(context_element, dataset):
+                return None
             for path in set(self.paths):
                 results = context_element.xpath(path)
                 strings_to_check = self._extract_text_from_element_or_attribute(results)
