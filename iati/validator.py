@@ -434,6 +434,7 @@ def get_error_codes():
 
     # convert name of exception into reference to the relevant class
     for _, err in err_codes_dict.items():
+        # python2/3 have exceptions in different modules, though six and future do not appear to have a standard workaround for this
         try:
             err['base_exception'] = getattr(sys.modules['builtins'], err['base_exception'])
         except KeyError:
