@@ -15,25 +15,25 @@ class TestSchemas(object):
         iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID,
         iati.core.tests.utilities.SCHEMA_ORGANISATION_NAME_VALID
     ])
-    def schema_initialised(self, request):
+    def schema_initialised(self, request, standard_version_optional):
         """Create and return a single ActivitySchema or OrganisaionSchema object.
         For use where both ActivitySchema and OrganisaionSchema must produce the same result.
 
         Returns:
-            iati.core.ActivitySchema / iati.core.OrganisaionSchema: An activity and organisaion that has been initialised based on the default IATI Activity and Organisaion schemas.
+            iati.core.ActivitySchema / iati.core.OrganisationSchema: An activity and organisaion that has been initialised based on the default IATI Activity and Organisaion schemas.
 
         """
         schema_name = request.param
 
-        return iati.core.default.schema(schema_name)
+        return iati.core.default.schema(schema_name, *standard_version_optional)
 
     @pytest.mark.parametrize("schema_type, expected_root_element_name", [
         ('iati-activities-schema', 'iati-activities'),
         ('iati-organisations-schema', 'iati-organisations')
     ])
-    def test_schema_default_attributes(self, schema_type, expected_root_element_name):
+    def test_schema_default_attributes(self, standard_version_optional, schema_type, expected_root_element_name):
         """Check a Schema's default attributes are correct."""
-        schema = iati.core.default.schema(schema_type)
+        schema = iati.core.default.schema(schema_type, *standard_version_optional)
 
         assert schema.ROOT_ELEMENT_NAME == expected_root_element_name
         assert expected_root_element_name in schema._source_path
@@ -49,17 +49,19 @@ class TestSchemas(object):
         ('iati-activities-schema', 'iati-activities'),
         ('iati-organisations-schema', 'iati-organisations')
     ])
-    def test_schema_unmodified_includes(self, schema_type, expected_local_element):
+    def test_schema_unmodified_includes(self, standard_version_optional, schema_type, expected_local_element):
         """Check that local elements can be accessed, but imported elements within unmodified Schema includes cannot be accessed.
 
         lxml does not contain functionality to access elements within imports defined along the lines of:
         `<xsd:include schemaLocation="NAME.xsd" />`
 
         Todo:
+            Use schema_initialised fixture, instead of using `@pytest.mark.parametrize`. This will also test for different versions of the schemas.
+
             Simplify asserts.
 
         """
-        schema = iati.core.default.schema(schema_type)
+        schema = iati.core.default.schema(schema_type, *standard_version_optional)
         local_element = expected_local_element
         included_element = 'reporting-org'
 
@@ -75,7 +77,7 @@ class TestSchemas(object):
         ('iati-activities-schema', 'iati-activities'),
         ('iati-organisations-schema', 'iati-organisations')
     ])
-    def test_schema_modified_includes(self, schema_type, expected_local_element):
+    def test_schema_modified_includes(self, standard_version_optional, schema_type, expected_local_element):
         """Check that elements within unflattened modified Schema includes cannot be accessed.
 
         lxml contains functionality to access elements within imports defined along the lines of:
@@ -83,12 +85,14 @@ class TestSchemas(object):
         when there is a namespace defined against the root schema element as `xmlns:xi="http://www.w3.org/2001/XInclude"`
 
         Todo:
+            Use schema_initialised fixture, instead of using `@pytest.mark.parametrize`. This will also test for different versions of the schemas.
+
             Simplify asserts.
 
             Consider consolidating variables shared between multiple tests.
 
         """
-        schema = iati.core.default.schema(schema_type)
+        schema = iati.core.default.schema(schema_type, *standard_version_optional)
         local_element = expected_local_element
         included_element = 'reporting-org'
 
@@ -123,6 +127,8 @@ class TestSchemas(object):
         This checks that the flattened xsd is valid and that included elements can be accessed.
 
         Todo:
+            Use schema_initialised fixture, instead of using `@pytest.mark.parametrize`. This will also test for different versions of the schemas.
+
             Simplify asserts.
 
             Assert that the flattened XML is a valid Schema.
@@ -158,7 +164,11 @@ class TestSchemas(object):
         assert len(schema_initialised.codelists) == 1
 
     def test_schema_codelists_add_twice(self, schema_initialised):
-        """Check that it is not possible to add the same Codelist to a Schema multiple times."""
+        """Check that it is not possible to add the same Codelist to a Schema multiple times.
+
+        Todo:
+            Consider if this test should test against a versioned Codelist.
+        """
         codelist_name = "a test Codelist name"
         codelist = iati.core.Codelist(codelist_name)
 
@@ -168,7 +178,11 @@ class TestSchemas(object):
         assert len(schema_initialised.codelists) == 1
 
     def test_schema_codelists_add_duplicate(self, schema_initialised):
-        """Check that it is not possible to add multiple functionally identical Codelists to a Schema."""
+        """Check that it is not possible to add multiple functionally identical Codelists to a Schema.
+
+        Todo:
+            Consider if this test should test against a versioned Codelist.
+        """
         codelist_name = "a test Codelist name"
         codelist = iati.core.Codelist(codelist_name)
         codelist2 = iati.core.Codelist(codelist_name)
@@ -179,7 +193,11 @@ class TestSchemas(object):
         assert len(schema_initialised.codelists) == 1
 
     def test_schema_rulesets_add(self, schema_initialised):
-        """Check that it is possible to add Rulesets to the Schema."""
+        """Check that it is possible to add Rulesets to the Schema.
+
+        Todo:
+            Consider if this test should test against a versioned Ruleset.
+        """
         ruleset = iati.core.Ruleset()
 
         schema_initialised.rulesets.add(ruleset)
@@ -188,10 +206,18 @@ class TestSchemas(object):
 
     @pytest.mark.skip(reason='Not implemented')
     def test_schema_rulesets_add_twice(self, schema_initialised):
-        """Check that it is not possible to add the sameRulesets to a Schema multiple times."""
+        """Check that it is not possible to add the sameRulesets to a Schema multiple times.
+
+        Todo:
+            Consider if this test should test against a versioned Ruleset.
+        """
         raise NotImplementedError
 
     @pytest.mark.skip(reason='Not implemented')
     def test_schema_rulesets_add_duplicate(self, schema_initialised):
-        """Check that it is not possible to add multiple functionally identical Rulesets to a Schema."""
+        """Check that it is not possible to add multiple functionally identical Rulesets to a Schema.
+
+        Todo:
+            Consider if this test should test against a versioned Ruleset.
+        """
         raise NotImplementedError
