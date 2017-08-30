@@ -237,9 +237,6 @@ class TestValidationAuxiliaryData(object):
                 assert attr_name in code_attrs
                 assert isinstance(err_code[attr_name], attr_type)
 
-    # def test_loading_err_codes(self):
-    #     assert iati.validator.get_error_codes.startswith('Hello')
-
 
 class ValidationTestBase(object):
     """A container for fixtures and other functionality useful among multiple groups of Validation Test."""
