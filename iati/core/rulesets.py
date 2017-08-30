@@ -161,6 +161,7 @@ class Rule(object):
 
         Todo:
             Add some logging.
+            Re-evaluate this.
 
         """
         if path == '':
@@ -174,6 +175,14 @@ class Rule(object):
 
         """
         self.normalized_paths = [self._normalize_xpath(path) for path in self.paths]
+        self._normalize_condition()
+
+    def _normalize_condition(self):
+        """Normalize `condition` xpaths."""
+        try:
+            self.normalized_paths.append(self._normalize_xpath(self.condition))
+        except AttributeError:
+            pass
 
     def _valid_rule_configuration(self, case):
         """Check that a configuration being passed into a Rule is valid for the given type of Rule.
@@ -351,6 +360,8 @@ class RuleDateOrder(Rule):
 
         if self.more is not self.special_case:
             self.normalized_paths.append(self._normalize_xpath(self.more))
+
+        self._normalize_condition()
 
     def is_valid_for(self, dataset):
         """Assert that the date value of `less` is older than the date value of `more`.

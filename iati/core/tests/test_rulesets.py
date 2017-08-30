@@ -189,18 +189,24 @@ class RuleSubclassTestBase(object):
         """Return a valid context with multiple matches."""
         return '//nest'
 
-    @pytest.fixture
-    def valid_condition_case(self, validating_case):
+    @pytest.fixture(params=[
+        'count(condition)>0',
+        'condition'
+    ])
+    def valid_condition_case(self, validating_case, request):
         """Return a case with optional condition attribute."""
         condition_validating_case = deepcopy(validating_case)
-        condition_validating_case['condition'] = 'count(condition)>0'
+        condition_validating_case['condition'] = request.param
         return condition_validating_case
 
-    @pytest.fixture
-    def invalid_condition_case(self, invalidating_case):
+    @pytest.fixture(params=[
+        'count(condition)>0',
+        'condition'
+    ])
+    def invalid_condition_case(self, invalidating_case, request):
         """Return a case with optional condition attribute."""
         condition_invalidating_case = deepcopy(invalidating_case)
-        condition_invalidating_case['condition'] = 'count(condition)>0'
+        condition_invalidating_case['condition'] = request.param
         return condition_invalidating_case
 
     @pytest.fixture
@@ -326,11 +332,14 @@ class RuleSubclassTestBase(object):
         """
         assert not invalid_condition_rule.is_valid_for(invalid_dataset)
 
-    @pytest.mark.parametrize("case", [''] + iati.core.tests.utilities.find_parameter_by_type([], False))
-    def test_uninstantiating_condition_case(self, rule_constructor, valid_single_context, case):
-        """Check that a non=permitted condition case will not instantiate."""
-        with pytest.raises(ValueError):
-            rule_constructor(valid_single_context, case)
+    @pytest.mark.parametrize("junk_condition", [''] + iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    def test_uninstantiating_condition_case(self, rule_constructor, valid_single_context, validating_case, junk_condition):
+        """Check that a non-permitted condition case will not instantiate."""
+        junk_condition_case = deepcopy(validating_case)
+        junk_condition_case['condition'] = junk_condition
+        with pytest.raises(Exception):
+            rule_constructor(valid_single_context, junk_condition_case)
+
 
 class TestRuleAtLeastOne(RuleSubclassTestBase):
     """A container for tests relating to RuleAtLeastOne."""
