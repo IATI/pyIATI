@@ -248,7 +248,7 @@ class RuleSubclassTestBase(object):
         with pytest.raises(ValueError):
             rule_constructor(invalid_context, instantiating_case)
 
-    def test_required_rule_attributes_from_case(self, rule_basic_init):
+    def test_rule_attributes_from_case(self, rule_basic_init):
         """Check that a Rule subclass has case attributes set."""
         required_attributes = rule_basic_init._case_attributes(rule_basic_init._ruleset_schema_section())
         for attrib in required_attributes:
@@ -326,6 +326,11 @@ class RuleSubclassTestBase(object):
         """
         assert not invalid_condition_rule.is_valid_for(invalid_dataset)
 
+    @pytest.mark.parametrize("case", [''] + iati.core.tests.utilities.find_parameter_by_type([], False))
+    def test_uninstantiating_condition_case(self, rule_constructor, valid_single_context, case):
+        """Return an uninstantiating condition case."""
+        with pytest.raises(ValueError):
+            rule_constructor(valid_single_context, case)
 
 class TestRuleAtLeastOne(RuleSubclassTestBase):
     """A container for tests relating to RuleAtLeastOne."""
