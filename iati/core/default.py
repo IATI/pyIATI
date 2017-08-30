@@ -154,10 +154,12 @@ def ruleset(version=None):
     path = iati.core.resources.get_ruleset_path(name, version)
     ruleset_str = iati.core.resources.load_as_string(path)
 
-    return iati.core.rulesets.Ruleset(ruleset_str)
+    return iati.core.Ruleset(ruleset_str)
+
 
 
 def ruleset_schema(version=None):
+    """Return the specified Ruleset schema."""
     name = 'ruleset_schema'
 
     path = iati.core.resources.get_ruleset_path(name, version)

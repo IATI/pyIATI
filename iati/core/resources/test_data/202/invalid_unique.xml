@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--element and attribute text is not unique-->
+<root_element>
+  <element1>a</element1><!--multiple paths-->
+  <element2>a</element2>
+  <element3 attribute="b"></element3><!--multiple paths-->
+  <element4 attribute="b"></element4>
+  <nest>
+    <element5>c</element5><!--nested element-->
+    <element6>c</element6>
+  </nest>
+  <nest>
+    <element7 attribute="d"></element7><!--nested attribute-->
+    <element8 attribute="d"></element8>
+  </nest>
+  <element9>e</element9><!--identical elements with identical text values-->
+  <element9>e</element9>
+  <element9>e</element9>
+</root_element>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--required dependent elements or attributes missing-->
+<root_element>
+  <element1></element1><!--dependent element missing-->
+  <element3></element3>
+  <element4 attribute=""></element4><!--dependent attribute missing-->
+  <element6 attribute=""></element6>
+  <nest>
+    <element7></element7>
+  </nest>
+  <nest>
+    <element9 attribute=""></element9>
+  </nest>
+  <element11></element11><!--multiple identical elements, missing dependent element-->
+  <element11></element11>
+</root_element>

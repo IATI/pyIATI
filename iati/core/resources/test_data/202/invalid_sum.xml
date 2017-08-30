@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!--no values sum to specified value-->
+<root_element>
+  <element1>1</element1><!--single path-->
+  <element2>1</element2><!--multiple paths-->
+  <element3>1</element3>
+  <element4>1</element4><!--duplicate paths-->
+  <element5>-100</element5><!--negative value-->
+  <element6>-500</element6>
+  <element7>60</element7><!--sum greater than standard percentage value-->
+  <element8>51</element8>
+  <element9>20</element9><!--sum to decimal value-->
+  <element10>5.5</element10>
+  <element11>10</element11><!--sum zero value-->
+  <element12>0</element12>
+  <element13>1</element13><!--big value-->
+  <element14>5e+99</element14>
+  <element15>-1</element15><!--tiny value-->
+  <element16>-5e+99</element16>
+  <element17>1</element17><!--exponential value-->
+  <element18>1498962.29</element18>
+  <element19 attribute="1"></element19><!--single path-->
+  <element20 attribute="1"></element20><!--multiple paths-->
+  <element21 attribute="1"></element21>
+  <element22 attribute="1"></element22><!--duplicate paths-->
+  <element23 attribute="-100"></element23><!--negative value-->
+  <element24 attribute="-500"></element24>
+  <element25 attribute="60"></element25><!--sum greater than standard percentage value-->
+  <element26 attribute="51"></element26>
+  <element27 attribute="20"></element27><!--sum to decimal value-->
+  <element28 attribute="5.5"></element28>
+  <element29 attribute="10"></element29><!--sum zero value-->
+  <element30 attribute="0"></element30>
+  <element31 attribute="1"></element31><!--big value-->
+  <element32 attribute="5e+99"></element32>
+  <element33 attribute="-1"></element33><!--tiny value-->
+  <element34 attribute="-5e+99"></element34>
+  <element35 attribute="1"></element35><!--exponential value-->
+  <element36 attribute="1498962.29"></element36>
+  <element37>9</element37><!--duplicate elements with different values-->
+  <element37>10</element37>
+  <element37>8</element37>
+  <element37>10</element37>
+  <element37>5</element37>
+  <nest>
+    <element38>1</element38><!--nested elements-->
+    <element39>1</element39>
+  </nest>
+  <nest>
+    <element40 attribute="1"></element40><!--nested attributes-->
+    <element41 attribute="1"></element41>
+  </nest>
+</root_element>
