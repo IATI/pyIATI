@@ -288,7 +288,7 @@ class Rule(object):
         results = [result if isinstance(result, six.string_types) else result.text for result in xpath_results]
         return ['' if result is None else result for result in results]
 
-    def _evaluate_condition(self, context_element, dataset):
+    def _evaluate_condition(self, context_element):
         """Check for condtions of a given case.
 
         Args:
