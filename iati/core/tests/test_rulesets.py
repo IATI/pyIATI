@@ -328,7 +328,7 @@ class RuleSubclassTestBase(object):
 
     @pytest.mark.parametrize("case", [''] + iati.core.tests.utilities.find_parameter_by_type([], False))
     def test_uninstantiating_condition_case(self, rule_constructor, valid_single_context, case):
-        """Return an uninstantiating condition case."""
+        """Check that a non=permitted condition case will not instantiate."""
         with pytest.raises(ValueError):
             rule_constructor(valid_single_context, case)
 
