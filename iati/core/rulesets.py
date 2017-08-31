@@ -581,7 +581,7 @@ class RuleRegexMatches(Rule):
                 results = context_element.xpath(path)
                 strings_to_check = self._extract_text_from_element_or_attribute(results)
                 for string_to_check in strings_to_check:
-                    if not pattern.match(string_to_check):
+                    if not pattern.search(string_to_check):
                         return False
 
         return True
@@ -631,7 +631,7 @@ class RuleRegexNoMatches(Rule):
                 results = context_element.xpath(path)
                 strings_to_check = self._extract_text_from_element_or_attribute(results)
                 for string_to_check in strings_to_check:
-                    if pattern.match(string_to_check):
+                    if pattern.search(string_to_check):
                         return False
 
         return True
