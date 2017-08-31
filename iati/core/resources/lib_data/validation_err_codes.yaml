@@ -4,7 +4,7 @@
 #
 #   - name-of-the-error-or-warning:
 #       base_exception: The name of a Python exception that the error code represents. Should be valid for both Python 2 and Python 3. https://docs.python.org/2/library/exceptions.html#exception-hierarchy
-#       category: The high level category that the error falls into - see below for commonly used categories.
+#       category: The high level category that the error falls into.
 #       description: |-
 #           A short general description of the error that has occurred.
 #       help: |-
@@ -15,9 +15,16 @@
 #       info: |-
 #           Specific information about the error that has occurred.
 #
-# The `description`, `help` and `info` will be formatted with local variables from the calling scope. As such, variable names may be used as placeholders for string formatting.
+# Currently used values for the category are:
 #
-# High level categories:
+# * codelist
+# * file
+# * iati-xml
+# * tool-lxml
+# * xml
+#
+# The `description`, `help` and `info` will be formatted with local variables from the calling scope. As such, variable names may be used as placeholders for string formatting. Some commonly used variables are:
+#
 # * Instances of `iati.core.Code` will be called `code`
 # * Instances of `iati.core.Codelist` will be called `codelist`
 # * Any errors passed from lxml will be called `err`.
