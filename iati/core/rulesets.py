@@ -474,6 +474,13 @@ class RuleDependent(Rule):
 
         super(RuleDependent, self).__init__(context, case)
 
+    def __str__(self):
+        """A string stating what TestRuleDependent is checking."""
+        if len(self.paths) == 1:
+            return 'Within each {self.context}, either `{self.paths[0]}` exists or it does not. As such, this Rule is always True.'.format(**locals())
+        else:
+            return 'Within each {self.context}, either none of `{0}` must exist, or they must all exist.'.format('` or `'.join(self.paths), **locals())
+
     def is_valid_for(self, dataset):
         """Assert that either all given `paths` or none of the given `paths` exist in a Dataset.
 
