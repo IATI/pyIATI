@@ -1,4 +1,10 @@
-"""A module containing tests for the library representation of Rulesets."""
+"""A module containing tests for the library representation of Rulesets.
+
+Todo:
+    Remove references to `case`.
+
+"""
+from copy import deepcopy
 import pytest
 import iati.core.default
 import iati.core.rulesets
@@ -201,24 +207,39 @@ class RuleSubclassTestBase(object):
         """Return a valid context with multiple matches."""
         return '//nest'
 
-    @pytest.fixture
-    def invalid_context(self):
-        """Empty_context."""
-        return ''
+    @pytest.fixture(params=[
+        'count(condition)>0',
+        'condition'
+    ])
+    def valid_condition_case(self, validating_case, request):
+        """Return a case with optional condition attribute."""
+        condition_validating_case = deepcopy(validating_case)
+        condition_validating_case['condition'] = request.param
+        return condition_validating_case
+
+    @pytest.fixture(params=[
+        'count(condition)>0',
+        'condition'
+    ])
+    def invalid_condition_case(self, invalidating_case, request):
+        """Return a case with optional condition attribute."""
+        condition_invalidating_case = deepcopy(invalidating_case)
+        condition_invalidating_case['condition'] = request.param
+        return condition_invalidating_case
 
     @pytest.fixture
-    def rule_basic_init(self, rule_constructor, instantiating_case, valid_single_context):
-        """Rule subclass."""
+    def rule_instantiating(self, rule_constructor, instantiating_case, valid_single_context):
+        """Rule subclass that instantiates but is not used for validation testing."""
         return rule_constructor(valid_single_context, instantiating_case)
 
     @pytest.fixture
-    def rule_is_valid_for(self, rule_constructor, validating_case, valid_single_context):
-        """Rule subclass for validation."""
+    def rule_valid(self, rule_constructor, validating_case, valid_single_context):
+        """Rule for checking the `is_valid_for` function against a relevant valid Dataset."""
         return rule_constructor(valid_single_context, validating_case)
 
     @pytest.fixture
-    def rule_is_invalid_for(self, rule_constructor, invalidating_case, valid_single_context):
-        """Rule with specific cases for checking the `is_valid_for` function."""
+    def rule_invalid(self, rule_constructor, invalidating_case, valid_single_context):
+        """Rule for checking the `is_valid_for` function against a relevant invalid Dataset."""
         return rule_constructor(valid_single_context, invalidating_case)
 
     @pytest.fixture
@@ -231,39 +252,52 @@ class RuleSubclassTestBase(object):
         """
         return iati.core.rulesets.constructor_for_rule_type(rule_type)
 
-    def test_rule_init_valid_parameter_types(self, rule_basic_init):
-        """Check that Rule subclasses can be instantiated with valid parameter types."""
-        assert isinstance(rule_basic_init, iati.core.Rule)
+    @pytest.fixture
+    def valid_condition_rule(self, rule_constructor, valid_single_context, valid_condition_case):
+        """Return a Rule with a `condition`."""
+        return rule_constructor(valid_single_context, valid_condition_case)
 
-    def test_rule_init_raises_error_on_empty_context(self, rule_constructor, invalid_context, instantiating_case):
+    @pytest.fixture
+    def invalid_condition_rule(self, rule_constructor, valid_single_context, invalid_condition_case):
+        """Return a Rule with a `condition`."""
+        return rule_constructor(valid_single_context, invalid_condition_case)
+
+    def test_rule_init_valid_parameter_types(self, rule_instantiating):
+        """Check that Rule subclasses can be instantiated with valid parameter types."""
+        assert isinstance(rule_instantiating, iati.core.Rule)
+
+    def test_rule_init_raises_error_on_empty_context(self, rule_constructor, instantiating_case):
         """Check that a Rule cannot be instantiated when the `context` is an empty string."""
+        invalid_context = ''
         with pytest.raises(ValueError):
             rule_constructor(invalid_context, instantiating_case)
 
-    def test_rule_attributes_from_case(self, rule_basic_init):
-        """Check that a Rule subclass has case attributes set."""
-        required_attributes = rule_basic_init._required_case_attributes(rule_basic_init._ruleset_schema_section())
+    def test_rule_attributes_from_case(self, rule_instantiating):
+        """Check that a Rule subclass has mandatory case attributes set."""
+        required_attributes = rule_instantiating._case_attributes(rule_instantiating._ruleset_schema_section())
         for attrib in required_attributes:
             # Ensure that the attribute exists - if not, an AttributeError will be raised
-            getattr(rule_basic_init, attrib)
+            getattr(rule_instantiating, attrib)
 
-    def test_rule_name(self, rule_basic_init, rule_type):
+    def test_optional_rule_attributes_from_case(self, rule_constructor, valid_single_context, valid_condition_case):
+        """Check that a Rule subclass has optional case attributes set."""
+        rule = rule_constructor(valid_single_context, valid_condition_case)
+        optional_attributes = rule._case_attributes(rule._ruleset_schema_section(), False)
+        for attrib in optional_attributes:
+            # Ensure that the attribute exists - if not, an AttributeError will be raised
+            getattr(rule, attrib)
+
+    def test_rule_name(self, rule_instantiating, rule_type):
         """Check that a Rule subclass has the expected name."""
-        assert rule_basic_init.name == rule_type
+        assert rule_instantiating.name == rule_type
 
-    def test_rule_paths(self, rule_basic_init):
-        """Check that a Rule subclass has the expected paths.
-
-        Note:
-            Excludes rules with no `paths` attribute.
-
-        Todo:
-            Is this test still needed?
-
-        """
-        if 'paths' in dir(rule_basic_init):
-            for path in rule_basic_init.normalized_paths:
-                assert path.startswith(rule_basic_init.context)
+    def test_rule_string_output_general(self, rule_instantiating):
+        """Check that the string format of the Rule has been customised and variables formatted."""
+        assert 'iati.core.rulesets' not in str(rule_instantiating)
+        assert ' object at ' not in str(rule_instantiating)
+        assert 'self' not in str(rule_instantiating)
+        assert '{0}' not in str(rule_instantiating)
+        assert 'This is a Rule' not in str(rule_instantiating)
 
     @pytest.mark.parametrize("context", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_rule_init_invalid_context(self, rule_constructor, context, instantiating_case):
@@ -277,21 +311,21 @@ class RuleSubclassTestBase(object):
         with pytest.raises(ValueError):
             rule_constructor(context, uninstantiating_case)
 
-    def test_is_valid_for(self, valid_dataset, rule_is_valid_for):
+    def test_is_valid_for(self, valid_dataset, rule_valid):
         """Check that a given Rule returns the expected result when given Dataset."""
-        assert rule_is_valid_for.is_valid_for(valid_dataset)
+        assert rule_valid.is_valid_for(valid_dataset)
 
-    def test_is_invalid_for(self, invalid_dataset, rule_is_invalid_for):
+    def test_is_invalid_for(self, invalid_dataset, rule_invalid):
         """Check that a given Rule returns the expected result when given a Dataset."""
-        assert not rule_is_invalid_for.is_valid_for(invalid_dataset)
+        assert not rule_invalid.is_valid_for(invalid_dataset)
 
     @pytest.mark.parametrize("junk_data", iati.core.tests.utilities.generate_test_types([], True))
-    def test_is_valid_for_raises_error_on_non_permitted_argument(self, rule_basic_init, junk_data):
+    def test_is_valid_for_raises_error_on_non_permitted_argument(self, rule_instantiating, junk_data):
         """Check that a given Rule returns expected error when passed an argument that is not a Dataset."""
         with pytest.raises(AttributeError):
-            rule_basic_init.is_valid_for(junk_data)
+            rule_instantiating.is_valid_for(junk_data)
 
-    def test_is_valid_for_raises_error_when_passed_an_etree(self, rule_basic_init):
+    def test_is_valid_for_raises_error_when_passed_an_etree(self, rule_instantiating):
         """Check that an error is raised if an etree is given as an argument instead of a Dataset.
 
         Todo:
@@ -299,7 +333,7 @@ class RuleSubclassTestBase(object):
 
         """
         with pytest.raises(AttributeError):
-            rule_basic_init.is_valid_for(iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_atleastone')))
+            rule_instantiating.is_valid_for(iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_atleastone')))
 
     def test_multiple_valid_context_matches_is_valid_for(self, valid_multiple_context, valid_nest_case, rule_constructor, valid_dataset):
         """Check Rule returns expected result when checking multiple contexts."""
@@ -310,6 +344,27 @@ class RuleSubclassTestBase(object):
         """Check Rule returns expected result when checking multiple contexts."""
         rule = rule_constructor(valid_multiple_context, invalid_nest_case)
         assert not rule.is_valid_for(invalid_dataset)
+
+    def test_condition_case_is_True(self, valid_condition_rule, valid_dataset):
+        """Check that if a condition is `True`, the rule returns None which is considered equivalent to skipping."""
+        assert valid_condition_rule.is_valid_for(valid_dataset) is None
+
+    def test_condition_case_is_False(self, invalid_condition_rule, invalid_dataset):
+        """Check that if a condition is `False`, the rule validates normally.
+
+        Note:
+            Using an invalid dataset so expecting Rules to evaluate to `False`.
+
+        """
+        assert not invalid_condition_rule.is_valid_for(invalid_dataset)
+
+    @pytest.mark.parametrize("junk_condition", [''] + iati.core.tests.utilities.generate_test_types(['str'], True))
+    def test_uninstantiating_condition_case(self, rule_constructor, valid_single_context, validating_case, junk_condition):
+        """Check that a non-permitted condition case will not instantiate."""
+        junk_condition_case = deepcopy(validating_case)
+        junk_condition_case['condition'] = junk_condition
+        with pytest.raises(ValueError):
+            rule_constructor(valid_single_context, junk_condition_case)
 
 
 class TestRuleAtLeastOne(RuleSubclassTestBase):
@@ -391,6 +446,10 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_ATLEASTONE_RULE_INVALID
+
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'must be present' in str(rule_instantiating)
 
 
 class TestRuleDateOrder(RuleSubclassTestBase):
@@ -564,6 +623,10 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         rule = rule_constructor(valid_single_context, case)
         assert rule.is_valid_for(valid_dataset) is None
 
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert any(needle in str(rule_instantiating) for needle in ['must be chronologically', 'in the future', 'in the past'])
+
 
 class TestRuleDependent(RuleSubclassTestBase):
     """A container for tests relating to RuleDependent."""
@@ -645,6 +708,10 @@ class TestRuleDependent(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_DEPENDENT_RULE_VALID
 
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert any(needle in str(rule_instantiating) for needle in ['must all exist', 'always True'])
+
 
 class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     """A container for tests relating to RuleNoMoreThanOne."""
@@ -723,6 +790,10 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_NOMORETHANONE_RULE_VALID
+
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert any(needle in str(rule_instantiating) for needle in ['zero or one', 'no more than one'])
 
 
 class TestRuleRegexMatches(RuleSubclassTestBase):
@@ -811,6 +882,10 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_REGEXMATCHES_RULE_VALID
 
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'must match the regular expression' in str(rule_instantiating)
+
 
 class TestRuleRegexNoMatches(RuleSubclassTestBase):
     """A container for tests relating to RuleRegexNoMatches."""
@@ -898,6 +973,9 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_REGEXNOMATCHES_RULE_VALID
 
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'must not match the regular expression' in str(rule_instantiating)
 
 class TestRuleStartsWith(RuleSubclassTestBase):
     """A container for tests relating to RuleStartsWith."""
@@ -984,6 +1062,10 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_STARTSWITH_RULE_VALID
 
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'must start with' in str(rule_instantiating)
+
 
 class TestRuleSum(RuleSubclassTestBase):
     """A container for tests relating to RuleSum.
@@ -1014,7 +1096,9 @@ class TestRuleSum(RuleSubclassTestBase):
         {'paths': ['element33/@attribute', 'element34/@attribute'], 'sum': float(-10**100)},
         {'paths': ['element17', 'element18'], 'sum': 2.99792458e6},  # exponential sum
         {'paths': ['element35/@attribute', 'element36/@attribute'], 'sum': 2.99792458e6},
-        {'paths': ['element37'], 'sum': 50}  # duplicate elements in data **
+        {'paths': ['element37'], 'sum': 50},  # duplicate elements in data **
+        {'paths': ['element42', 'element43'], 'sum': 0.1},  # sum to value that cannot be represented using standard binary representation
+        {'paths': ['element44/@attribute', 'element45/@attribute'], 'sum': 0.1}
     ]
 
     uninstantiating_cases = [
@@ -1106,6 +1190,10 @@ class TestRuleSum(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_SUM_RULE_VALID
 
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'sum of values' in str(rule_instantiating)
+
 
 class TestRuleUnique(RuleSubclassTestBase):
     """A container for tests relating to RuleUnique."""
@@ -1185,3 +1273,7 @@ class TestRuleUnique(RuleSubclassTestBase):
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_UNIQUE_RULE_VALID
+
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'must be unique' in str(rule_instantiating)

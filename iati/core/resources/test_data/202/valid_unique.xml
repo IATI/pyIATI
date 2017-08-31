@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--element and attribute text is unique-->
 <root_element>
+  <condition></condition><!--condition case-->
   <element1>a</element1><!--single path-->
   <element2>b</element2><!--multiple paths-->
   <element3>c</element3>
