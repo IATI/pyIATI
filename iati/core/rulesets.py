@@ -538,6 +538,13 @@ class RuleNoMoreThanOne(Rule):
 
         super(RuleNoMoreThanOne, self).__init__(context, case)
 
+    def __str__(self):
+        """A string stating what RuleNoMoreThanOne is checking."""
+        if len(self.paths) == 1:
+            return '`{self.paths[0]}` must occur zero or one times within each {self.context}.'.format(**locals())
+        else:
+            return 'There must be no more than one element or attribute matched at `{0}` within each {self.context}.'.format('` or `'.join(self.paths), **locals())
+
     def is_valid_for(self, dataset):
         """Check dataset has no more than one instance of a given case for an Element.
 

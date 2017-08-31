@@ -772,6 +772,10 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_NOMORETHANONE_RULE_VALID
 
+    def test_rule_string_output_specific(self, rule_basic_init):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert any(needle in str(rule_basic_init) for needle in ['zero or one', 'no more than one'])
+
 
 class TestRuleRegexMatches(RuleSubclassTestBase):
     """A container for tests relating to RuleRegexMatches."""
