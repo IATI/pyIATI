@@ -698,6 +698,13 @@ class RuleStartsWith(Rule):
 
         super(RuleStartsWith, self).__init__(context, case)
 
+    def __str__(self):
+        """A string stating what RuleStartsWith is checking."""
+        if len(self.paths) == 1:
+            return 'Each `{self.paths[0]}` within each {self.context} must start with the value present at `{self.start}`.'.format(**locals())
+        else:
+            return 'Each instance of `{0}` within each {self.context} must start with the value present at `{self.start}`.'.format('` and `'.join(self.paths), **locals())
+
     def _normalize_xpaths(self):
         """Normalize xpaths by combining them with `context`."""
         super(RuleStartsWith, self)._normalize_xpaths()
