@@ -757,8 +757,9 @@ class RuleUnique(Rule):
                 for string_to_check in strings_to_check:
                     original.append(string_to_check)
                     unique.add(string_to_check)
-
-        if len(original) != len(unique):
-            return False
+            if len(original) != len(unique):
+                return False
+            original.clear()
+            unique.clear()
 
         return True
