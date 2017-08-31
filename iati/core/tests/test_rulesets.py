@@ -294,9 +294,9 @@ class RuleSubclassTestBase(object):
         """Check that a given Rule returns the expected result when given Dataset."""
         assert rule_valid.is_valid_for(valid_dataset)
 
-    def test_is_invalid_for(self, invalid_dataset, rule_is_invalid_for):
+    def test_is_invalid_for(self, invalid_dataset, rule_invalid):
         """Check that a given Rule returns the expected result when given a Dataset."""
-        assert not rule_is_invalid_for.is_valid_for(invalid_dataset)
+        assert not rule_invalid.is_valid_for(invalid_dataset)
 
     @pytest.mark.parametrize("junk_data", iati.core.tests.utilities.find_parameter_by_type([], False))
     def test_is_valid_for_raises_error_on_non_permitted_argument(self, rule_instantiating, junk_data):
