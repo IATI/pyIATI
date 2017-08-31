@@ -75,9 +75,6 @@ def get_all_codelist_paths(version=None):
     Returns:
         list: A list of paths to all of the Codelists at the specified version of the Standard.
 
-    Warning:
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
-
     Todo:
         Further exploration needs to be undertaken in how to handle pre-1.04 versions of the Standard.
 
