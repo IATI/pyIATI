@@ -299,7 +299,11 @@ class Rule(object):
             None: Returns `None` when condition met.
 
         Warning:
-            Current implementation may be vulnerable to XPath injection vulnerabilities. Need to assess the possibility of risk and potential counter-measures/avoidance strategies if needed.
+            Current implementation may be vulnerable to XPath injection vulnerabilities.
+
+        Todo:
+            Need to assess the possibility of risk and potential counter-measures/avoidance strategies if needed.
+            Need to decide whether the implementation of this in Rules should `return None` or `continue`.
 
         """
         try:
@@ -328,6 +332,8 @@ class RuleAtLeastOne(Rule):
 
         Returns:
             bool: Return `True` when the case is found in the Dataset.
+                  Return `False` when the case is not found in the Dataset.
+                  Return `None` when a condition is met to skip validation.
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
