@@ -89,17 +89,22 @@ def codelists(version=None, use_cache=False):
         Add a function to return a single Codelist by name.
 
     """
-    paths = iati.core.resources.get_all_codelist_paths()
+    if version is None:
+        version = iati.core.constants.STANDARD_VERSION_LATEST
+
+    paths = iati.core.resources.get_all_codelist_paths(version)
 
     for path in paths:
         _, filename = os.path.split(path)
         name = filename[:-len(iati.core.resources.FILE_CODELIST_EXTENSION)]  # Get the name of the codelist, without the '.xml' file extension
-        if (name not in _CODELISTS.keys()) or not use_cache:
+        codelists_by_version = _CODELISTS.get(version, {})
+        if (name not in codelists_by_version.keys()) or not use_cache:
             xml_str = iati.core.resources.load_as_string(path)
             codelist_found = iati.core.Codelist(name, xml=xml_str)
-            _CODELISTS[name] = codelist_found
+            codelists_by_version[name] = codelist_found
+            _CODELISTS[version] = codelists_by_version
 
-    return _CODELISTS
+    return _CODELISTS[version]
 
 
 _SCHEMAS = {}

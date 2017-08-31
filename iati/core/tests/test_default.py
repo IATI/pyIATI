@@ -9,16 +9,14 @@ import iati.core.schemas
 class TestDefault(object):
     """A container for tests relating to Default data."""
 
-    def test_default_codelist_valid(self):
+    def test_default_codelist_valid(self, standard_version_optional):
         """Check that a named default Codelist may be located.
 
         Todo:
-            Handle multiple versions.
-
             Check internal values beyond the codelists being the correct type.
         """
         name = 'Country'
-        codelist = iati.core.default.codelist(name)
+        codelist = iati.core.default.codelist(name, *standard_version_optional)
 
         assert isinstance(codelist, iati.core.Codelist)
         assert codelist.name == name
@@ -26,27 +24,36 @@ class TestDefault(object):
             assert isinstance(code, iati.core.Code)
 
     @pytest.mark.parametrize("name", iati.core.tests.utilities.generate_test_types(['str'], True))
-    def test_default_codelist_invalid(self, name):
+    def test_default_codelist_invalid(self, name, standard_version_optional):
         """Check that trying to find a default Codelist with an invalid name raises an error."""
         with pytest.raises(ValueError) as excinfo:
-            iati.core.default.codelist(name)
+            iati.core.default.codelist(name, *standard_version_optional)
 
         assert 'There is no default Codelist in version' in str(excinfo.value)
 
-    def test_default_codelists(self):
-        """Check that the default Codelists are correct.
+    def test_default_codelists_type(self, standard_version_optional):
+        """Check that the default Codelists are of the correct type.
 
         Todo:
-            Handle multiple versions.
-
             Check internal values beyond the codelists being the correct type.
         """
-        codelists = iati.core.default.codelists()
+        codelists = iati.core.default.codelists(*standard_version_optional)
 
         assert isinstance(codelists, dict)
-        assert len(codelists) == 62
         for _, codelist in codelists.items():
             assert isinstance(codelist, iati.core.Codelist)
+
+    @pytest.mark.parametrize('version, expected_length', [
+        ('2.02', 62),  # There are 38 embedded codelists at v2.02, plus 24 non-embedded codelists (which are valid for any version)
+        ('2.01', 61),  # There are 37 embedded codelists at v2.01, plus 24 non-embedded codelists (which are valid for any version)
+        ('1.05', 59),  # There are 35 embedded codelists at v1.05, plus 24 non-embedded codelists (which are valid for any version)
+        ('1.04', 59)  # There are 35 embedded codelists at v1.04, plus 24 non-embedded codelists (which are valid for any version)
+    ])
+    def test_default_codelists_length(self, version, expected_length):
+        """Check that the default Codelists for each version contain the expected number of Codelists."""
+        codelists = iati.core.default.codelists(version)
+
+        assert len(codelists) == expected_length
 
     def test_default_activity_schemas(self):
         """Check that the default ActivitySchemas are correct.
