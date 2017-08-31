@@ -345,6 +345,15 @@ class RuleSubclassTestBase(object):
         with pytest.raises(ValueError):
             rule_constructor(valid_single_context, junk_condition_case)
 
+    def test_subclass_test_required_data_lists(self):
+        """Check that Rule subclass test classes define the required test data lists."""
+        assert len(self.all_valid_cases)
+        assert len(self.instantiating_cases)
+        assert len(self.uninstantiating_cases)
+        assert len(self.invalidating_cases)
+        assert len(self.validating_cases)
+        assert len(self.nest_cases)
+
 
 class TestRuleAtLeastOne(RuleSubclassTestBase):
     """A container for tests relating to RuleAtLeastOne."""
