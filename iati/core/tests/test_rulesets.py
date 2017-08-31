@@ -274,9 +274,11 @@ class RuleSubclassTestBase(object):
         assert rule_basic_init.name == rule_type
 
     def test_rule_string_output_general(self, rule_basic_init):
-        """Check that the string format of the Rule has been customised."""
+        """Check that the string format of the Rule has been customised and variables formatted."""
         assert 'iati.core.rulesets' not in str(rule_basic_init)
         assert ' object at ' not in str(rule_basic_init)
+        assert 'self' not in str(rule_basic_init)
+        assert '{0}' not in str(rule_basic_init)
 
     @pytest.mark.parametrize("context", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_rule_init_invalid_context(self, rule_constructor, context, instantiating_case):
@@ -429,7 +431,6 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
     def test_rule_string_output_specific(self, rule_basic_init):
         """Check that the string format of the Rule contains some relevant information."""
         assert 'must be present' in str(rule_basic_init)
-        assert 'self' not in str(rule_basic_init)
 
 
 class TestRuleDateOrder(RuleSubclassTestBase):
@@ -602,6 +603,10 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         """Check that None is returned when expected date not found."""
         rule = rule_constructor(valid_single_context, case)
         assert rule.is_valid_for(valid_dataset) is None
+
+    def test_rule_string_output_specific(self, rule_basic_init):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert any(needle in str(rule_basic_init) for needle in ['must be chronologically', 'in the future', 'in the past'])
 
 
 class TestRuleDependent(RuleSubclassTestBase):

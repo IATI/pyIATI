@@ -133,7 +133,7 @@ class Rule(object):
 
     def __str__(self):
         """A string stating what the Rule is checking."""
-        return 'hello'
+        return 'This is a Rule.'
 
     def _valid_context(self, context):
         """Check that a valid `context` is given for a Rule.
@@ -365,6 +365,19 @@ class RuleDateOrder(Rule):
         self.special_case = 'NOW'  # Was a constant sort of
 
         super(RuleDateOrder, self).__init__(context, case)
+
+    def __str__(self):
+        """A string stating what RuleDateOrder is checking."""
+        if self.less == self.special_case and self.more == self.special_case:
+            unformatted_str = '`{self.less}` must be chronologically before `{self.more}`. Try working that one out.'
+        elif self.less == self.special_case:
+            unformatted_str = '`{self.more}` must be in the future within each `{self.context}`.'
+        elif self.more == self.special_case:
+            unformatted_str = '`{self.more}` must be in the past within each `{self.context}`.'
+        else:
+            unformatted_str = '`{self.less}` must be chronologically before `{self.more}` within each `{self.context}`.'
+
+        return unformatted_str.format(**locals())
 
     def _normalize_xpaths(self):
         """Normalize xpaths by combining them with `context`."""
