@@ -715,7 +715,8 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
         {'paths': ['element10/@attribute', 'element10/@attribute']},
         {'paths': ['element5', 'element6']},  # one path valid, another invalid
         {'paths': ['element11/@attribute', 'element12/@attribute']},
-        {'paths': ['element15', 'element16']}  # multiple paths, one of each
+        {'paths': ['element15', 'element16']},  # multiple paths, one of each
+        {'paths': ['element17/@attribute', 'element18/@attribute']}  # multiple paths, one of each
     ]
 
     @pytest.fixture

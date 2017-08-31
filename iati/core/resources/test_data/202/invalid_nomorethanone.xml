@@ -33,4 +33,6 @@
   </nest>
   <element15></element15><!--multiple paths, single elements-->
   <element16></element16>
+  <element17 attribute=""></element17><!--multiple paths, single attributes-->
+  <element18 attribute=""></element18>
 </root_element>
