@@ -7,11 +7,11 @@
   <element6 attribute=""></element6>
   <nest>
     <element7></element7>
-    <element15></element15><!--one of the required paths exists in each context-->
+    <element15></element15><!--one of the required elements exists in each context-->
   </nest>
   <nest>
     <element9 attribute=""></element9>
-    <element16></element16><!--one of the required paths exists in each context-->
+    <element16></element16><!--one of the required elements exists in each context-->
   </nest>
   <element11></element11><!--multiple identical elements, missing dependent element-->
   <element11></element11>
