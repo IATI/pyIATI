@@ -492,6 +492,7 @@ class RuleDependent(Rule):
             for path in paths:
                 results = context_element.xpath(path)
                 for result in results:
+                    # result will be an empty list when no elements or attribute text is found
                     if result != list():
                         add_query_result(result)
 
