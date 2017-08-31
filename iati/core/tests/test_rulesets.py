@@ -273,7 +273,7 @@ class RuleSubclassTestBase(object):
         """Check that a Rule subclass has the expected name."""
         assert rule_basic_init.name == rule_type
 
-    def test_rule_string_output(self, rule_basic_init):
+    def test_rule_string_output_general(self, rule_basic_init):
         """Check that the string format of the Rule has been customised."""
         assert 'iati.core.rulesets' not in str(rule_basic_init)
         assert ' object at ' not in str(rule_basic_init)
@@ -425,6 +425,11 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_ATLEASTONE_RULE_INVALID
+
+    def test_rule_string_output_specific(self, rule_basic_init):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'must be present' in str(rule_basic_init)
+        assert 'self' not in str(rule_basic_init)
 
 
 class TestRuleDateOrder(RuleSubclassTestBase):

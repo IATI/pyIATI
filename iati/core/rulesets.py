@@ -132,6 +132,7 @@ class Rule(object):
         self._normalize_xpaths()
 
     def __str__(self):
+        """A string stating what the Rule is checking."""
         return 'hello'
 
     def _valid_context(self, context):
@@ -322,6 +323,13 @@ class RuleAtLeastOne(Rule):
         self.name = 'atleast_one'
 
         super(RuleAtLeastOne, self).__init__(context, case)
+
+    def __str__(self):
+        """A string stating what RuleAtLeastOne is checking."""
+        if len(self.paths) == 1:
+            return '`{self.paths[0]}` must be present within each `{self.context}`.'.format(**locals())
+        else:
+            return 'At least one of `{0}` must be present within each `{self.context}`.'.format('` or `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
         """Check Dataset has at least one instance of a given case for an Element.
