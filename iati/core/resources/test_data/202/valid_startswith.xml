@@ -3,19 +3,19 @@
 <root_element>
   <condition></condition><!--condition case-->
   <element1>prefix1234</element1><!--single path-->
-  <element2>prefix1234</element2><!--multiple paths-->
-  <element3>prefix1234</element3>
-  <element4>prefix1234</element4><!--duplicate paths-->
-  <element5 attribute="prefix1234"></element5><!--single path-->
-  <element6 attribute="prefix1234"></element6><!--multiple paths-->
-  <element7 attribute="prefix1234"></element7>
-  <element8 attribute="prefix1234"></element8><!--duplicate paths-->
+  <element2>prefix5678</element2><!--multiple paths-->
+  <element3>prefixpuppies</element3>
+  <element4>prefixkittens</element4><!--duplicate paths-->
+  <element5 attribute="prefixbunnies"></element5><!--single path-->
+  <element6 attribute="prefixapples"></element6><!--multiple paths-->
+  <element7 attribute="prefixfrogs"></element7>
+  <element8 attribute="prefixflowers"></element8><!--duplicate paths-->
   <nest>
-    <element9>prefix1234</element9><!--nested path-->
+    <element9>prefixtoads</element9><!--nested path-->
   </nest>
   <nest>
-    <element10 attribute="prefix1234"></element10><!--nested path-->
+    <element10 attribute="prefixbeardeddragonsarecool"></element10><!--nested path-->
   </nest>
-  <element11>prefix1234</element11><!--duplicate element-->
-  <element11>prefix1234</element11>
+  <element11>prefix0123</element11><!--duplicate element-->
+  <element11>prefix4567</element11>
 </root_element>
