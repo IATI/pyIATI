@@ -774,7 +774,7 @@ class RuleUnique(Rule):
                     unique.add(string_to_check)
             if len(original) != len(unique):
                 return False
-            original.clear()
+            original = list()  # Python 2 does not have a `list.clear()` function
             unique.clear()
 
         return True
