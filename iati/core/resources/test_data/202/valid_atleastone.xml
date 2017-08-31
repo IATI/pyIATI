@@ -11,8 +11,8 @@
   </nest>
   <element6 attribute=""></element6><!--single attribute-->
   <element7 attribute=""></element7><!--multiple attributes-->
-  <element8 attribute=""></element8><!--multiple attrubutes-->
-  <element9 attribute=""></element9><!--duplicate attrubute path-->
+  <element8 attribute=""></element8><!--multiple attributes-->
+  <element9 attribute=""></element9><!--duplicate attribute path-->
   <nest>
     <element10 attribute=""></element10><!--nested attribute-->
   </nest>

@@ -579,7 +579,11 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element35/@attribute', 'more': 'element36/@attribute'},
         {'less': 'element37', 'more': 'element38'},  # non-permitted leading timezone character
         {'less': 'element39/@attribute', 'more': 'element40/@attribute'},
-        {'less': 'element41', 'more': 'element42'}  # multiple identical elements but non-duplicated values
+        {'less': 'element41', 'more': 'element42'},  # multiple identical elements but non-duplicated values
+        {'less': 'element43', 'more': 'element44'},  # UNIX timestamp format
+        {'less': 'element45/@attribute', 'more': 'element46/@attribute'},
+        {'less': 'element47', 'more': 'element48'},  # All text date format
+        {'less': 'element49/@attribute', 'more': 'element50/@attribute'}
     ])
     def test_incorrect_date_format_raises_error(self, valid_single_context, case, rule_constructor):
         """Check that a dataset with dates in an incorrect format raise expected error."""
