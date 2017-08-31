@@ -131,6 +131,9 @@ class Rule(object):
         self._set_case_attributes(case)
         self._normalize_xpaths()
 
+    def __str__(self):
+        return 'hello'
+
     def _valid_context(self, context):
         """Check that a valid `context` is given for a Rule.
 

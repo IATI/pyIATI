@@ -273,6 +273,11 @@ class RuleSubclassTestBase(object):
         """Check that a Rule subclass has the expected name."""
         assert rule_basic_init.name == rule_type
 
+    def test_rule_string_output(self, rule_basic_init):
+        """Check that the string format of the Rule has been customised."""
+        assert 'iati.core.rulesets' not in str(rule_basic_init)
+        assert ' object at ' not in str(rule_basic_init)
+
     @pytest.mark.parametrize("context", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_rule_init_invalid_context(self, rule_constructor, context, instantiating_case):
         """Check that a Rule subclass cannot be created when context is not a string."""
