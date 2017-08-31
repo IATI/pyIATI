@@ -760,21 +760,24 @@ class RuleUnique(Rule):
 
         """
         context_elements = self._find_context_elements(dataset)
-        original = list()
-        unique = set()
+
+        unique_paths = set(self.paths)
 
         for context_element in context_elements:
             if self._condition_met_for(context_element):
                 return None
-            for path in set(self.paths):
+
+            all_content = list()
+            unique_content = set()
+
+            for path in unique_paths:
                 results = context_element.xpath(path)
                 strings_to_check = self._extract_text_from_element_or_attribute(results)
                 for string_to_check in strings_to_check:
-                    original.append(string_to_check)
-                    unique.add(string_to_check)
-            if len(original) != len(unique):
+                    all_content.append(string_to_check)
+                    unique_content.add(string_to_check)
+
+            if len(all_content) != len(unique_content):
                 return False
-            original = list()  # Python 2 does not have a `list.clear()` function
-            unique.clear()
 
         return True
