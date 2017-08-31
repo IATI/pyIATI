@@ -9,7 +9,7 @@ import iati.core.schemas
 class TestDefault(object):
     """A container for tests relating to Default data."""
 
-    def test_default_codelist_valid(self, standard_version_optional):
+    def test_default_codelist_valid_at_all_versions(self, standard_version_optional):
         """Check that a named default Codelist may be located.
 
         Todo:
@@ -23,8 +23,31 @@ class TestDefault(object):
         for code in codelist.codes:
             assert isinstance(code, iati.core.Code)
 
+    @pytest.mark.parametrize("version, codelist_name, expected_type", [
+        ('1.04', 'AidTypeFlag', iati.core.Codelist),
+        ('1.05', 'AidTypeFlag', iati.core.Codelist),
+        ('2.01', 'AidTypeFlag', ValueError),
+        ('2.02', 'AidTypeFlag', ValueError),
+        ('1.04', 'BudgetStatus', ValueError),
+        ('1.05', 'BudgetStatus', ValueError),
+        ('2.01', 'BudgetStatus', ValueError),
+        ('2.02', 'BudgetStatus', iati.core.Codelist)
+    ])
+    def test_default_codelist_valid_only_at_some_versions(self, codelist_name, version, expected_type):
+        """Check that a codelist that is valid at some version/s is not valid in other versions.
+        For example:
+            AidTypeFlag was an embedded codelists in v1.04 and v1.05, but is not valid at any version after this.
+            For example, BudgetStatus was added as an embedded codelist in v2.02, so is not valid prior to this.
+        """
+        try:
+            result = iati.core.default.codelist(codelist_name, version)
+        except ValueError as excinfo:
+            result = excinfo
+
+        assert isinstance(result, expected_type)
+
     @pytest.mark.parametrize("name", iati.core.tests.utilities.generate_test_types(['str'], True))
-    def test_default_codelist_invalid(self, name, standard_version_optional):
+    def test_default_codelist_invalid_at_all_versions(self, name, standard_version_optional):
         """Check that trying to find a default Codelist with an invalid name raises an error."""
         with pytest.raises(ValueError) as excinfo:
             iati.core.default.codelist(name, *standard_version_optional)
