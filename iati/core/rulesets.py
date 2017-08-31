@@ -170,6 +170,13 @@ class Rule(object):
             raise ValueError
         return '/'.join([self.context, path])
 
+    def _normalize_condition(self):
+        """Normalize `condition` xpaths."""
+        try:
+            self.normalized_paths.append(self._normalize_xpath(self.condition))
+        except AttributeError:
+            pass
+
     def _normalize_xpaths(self):
         """Normalize xpaths by combining them with `context`.
 
@@ -179,13 +186,6 @@ class Rule(object):
         """
         self.normalized_paths = [self._normalize_xpath(path) for path in self.paths]
         self._normalize_condition()
-
-    def _normalize_condition(self):
-        """Normalize `condition` xpaths."""
-        try:
-            self.normalized_paths.append(self._normalize_xpath(self.condition))
-        except AttributeError:
-            pass
 
     def _valid_rule_configuration(self, case):
         """Check that a configuration being passed into a Rule is valid for the given type of Rule.

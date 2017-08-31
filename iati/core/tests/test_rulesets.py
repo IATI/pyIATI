@@ -337,7 +337,7 @@ class RuleSubclassTestBase(object):
         """Check that a non-permitted condition case will not instantiate."""
         junk_condition_case = deepcopy(validating_case)
         junk_condition_case['condition'] = junk_condition
-        with pytest.raises(Exception):
+        with pytest.raises(ValueError):
             rule_constructor(valid_single_context, junk_condition_case)
 
 
