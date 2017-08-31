@@ -215,7 +215,7 @@ class RuleSubclassTestBase(object):
         return condition_invalidating_case
 
     @pytest.fixture
-    def rule_initiating(self, rule_constructor, instantiating_case, valid_single_context):
+    def rule_instantiating(self, rule_constructor, instantiating_case, valid_single_context):
         """Rule subclass that instantiates but is not used for validation testing."""
         return rule_constructor(valid_single_context, instantiating_case)
 

@@ -18,8 +18,8 @@
   <element14>5e+99</element14>
   <element15>-5e+99</element15><!--tiny value-->
   <element16>-5e+99</element16>
-  <element17>1498962.29</element17><!--exponential value-->
-  <element18>1498962.29</element18>
+  <element17>1.49896229e6</element17><!--exponential value-->
+  <element18>1.49896229e6</element18>
   <element19 attribute="3"></element19><!--single path-->
   <element20 attribute="1"></element20><!--multiple paths-->
   <element21 attribute="2"></element21>
@@ -36,8 +36,8 @@
   <element32 attribute="5e+99"></element32>
   <element33 attribute="-5e+99"></element33><!--tiny value-->
   <element34 attribute="-5e+99"></element34>
-  <element35 attribute="1498962.29"></element35><!--exponential value-->
-  <element36 attribute="1498962.29"></element36>
+  <element35 attribute="1.49896229e6"></element35><!--exponential value-->
+  <element36 attribute="1.49896229e6"></element36>
   <element37>10</element37><!--duplicate elements-->
   <element37>10</element37>
   <element37>10</element37>
