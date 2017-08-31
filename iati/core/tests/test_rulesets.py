@@ -863,6 +863,10 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_REGEXMATCHES_RULE_VALID
 
+    def test_rule_string_output_specific(self, rule_basic_init):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'must match the regular expression' in str(rule_basic_init)
+
 
 class TestRuleRegexNoMatches(RuleSubclassTestBase):
     """A container for tests relating to RuleRegexNoMatches."""
@@ -950,6 +954,9 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_REGEXNOMATCHES_RULE_VALID
 
+    def test_rule_string_output_specific(self, rule_basic_init):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'must not match the regular expression' in str(rule_basic_init)
 
 class TestRuleStartsWith(RuleSubclassTestBase):
     """A container for tests relating to RuleStartsWith."""

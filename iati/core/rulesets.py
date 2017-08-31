@@ -596,6 +596,13 @@ class RuleRegexMatches(Rule):
         if self.regex == '':
             raise ValueError
 
+    def __str__(self):
+        """A string stating what RuleRegexMatches is checking."""
+        if len(self.paths) == 1:
+            return 'Each `{self.paths[0]}` within each {self.context} must match the regular expression `{self.regex}`.'.format(**locals())
+        else:
+            return 'Each instance of `{0}` within each {self.context} must match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
+
     def is_valid_for(self, dataset):
         """Assert that the text of the given `paths` matches the `regex` value.
 
@@ -645,6 +652,13 @@ class RuleRegexNoMatches(Rule):
             raise ValueError
         if self.regex == '':
             raise ValueError
+
+    def __str__(self):
+        """A string stating what RuleRegexNoMatches is checking."""
+        if len(self.paths) == 1:
+            return 'Each `{self.paths[0]}` within each {self.context} must not match the regular expression `{self.regex}`.'.format(**locals())
+        else:
+            return 'Each instance of `{0}` within each {self.context} must not match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
         """Assert that no text of the given `paths` matches the `regex` value.
