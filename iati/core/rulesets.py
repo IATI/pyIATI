@@ -542,10 +542,14 @@ class RuleNoMoreThanOne(Rule):
             if self._condition_met_for(context_element):
                 return None
 
+            found_elements = 0
+
             for path in unique_paths:
                 results = context_element.xpath(path)
-                if len(results) > 1:
-                    return False
+                found_elements += len(results)
+
+            if found_elements > 1:
+                return False
 
         return True
 
