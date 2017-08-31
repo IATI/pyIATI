@@ -1,130 +1,10 @@
 """A module containing validation functionality."""
 
+import sys
 from lxml import etree
+import yaml
 import iati.core.default
-
-
-_ERROR_CODES = {
-    'err-code-not-on-codelist': {
-        'base_exception': ValueError,
-        'category': 'codelist',
-        'description': 'An attribute that requires a Code from a particular complete Codelist contained a value not on the Codelist.',
-        'info': '{code} is not a valid Code on the {codelist.name} Codelist.',
-        'help': 'The `{attr_name}` attribute must contain a value on the `{codelist.name}` Codelist.\nSee http://iatistandard.org/202/codelists/{codelist.name} for permitted values.'
-    },
-    'warn-code-not-on-codelist': {
-        'base_exception': Warning,
-        'category': 'codelist',
-        'description': 'An attribute that should contain a Code from a particular incomplete Codelist contained a value not on the Codelist.',
-        'info': '{code} is not a Code on the {codelist.name} Codelist. ',
-        'help': 'The `{attr_name}` attribute should contain a value on the `{codelist.name}` Codelist. Note that values not on the Codelist may be valid in particular circumstances.\nSee http://iatistandard.org/202/codelists/{codelist.name} for values on the Codelist.'
-    },
-    'err-not-iati-xml-uncategorised-document-error': {
-        'base_exception': Exception,
-        'category': 'xml',
-        'description': 'An uncategorised error occurred when checking whether a Dataset contains valid IATI data.',
-        'info': '{err}',
-        'help': 'There are many different ways in which a file may not be valid IATI XML. The most common of these have had specific error messages created. This is not currently one of them.\nShould it be identified that this error occurs frequently, a specific error message will be created.'
-     },
-    'err-not-xml-not-string': {
-        'base_exception': TypeError,
-        'category': 'xml',
-        'description': 'A variable that is not a string cannot be XML.',
-        'info': 'The value provided is a `{problem_var_type}` rather than a `str`.',
-        'help': 'A string is a series of characters (letters, numbers, punctuation, etc). For more information about what these are, see https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str'
-    },
-    'err-not-xml-uncategorised-xml-syntax-error': {
-        'base_exception': Exception,
-        'category': 'xml',
-        'description': 'An uncategorised syntax error occurred when parsing the XML.',
-        'info': '{err}',
-        'help': 'There are many different ways in which a file may not be valid XML. The most common of these have had specific error messages created. This is not currently one of them.\nShould it be identified that this error occurs frequently, a specific error message will be created.\nFor an introduction to XML see https://www.w3schools.com/Xml/'
-    },
-    'err-not-xml-content-at-end': {
-        'base_exception': ValueError,
-        'category': 'xml',
-        'description': 'An XML file must contain no information after the XML has finished.',
-        'info': '{err}',
-        'help': 'An XML document contains a number of elements that are started and ended using tags. The XML is deemed finished once the number of start tags and the number of end tags is the same.\nThe contents of the data after this point does not matter - it may be valid XML on its own, or may have no meaning.\nShould it be required that additional information be in the document, XML comments may be used. For information about comments in XML, see https://www.w3schools.com/xml/xml_syntax.asp'
-    },
-    'err-not-xml-empty-document': {
-        'base_exception': ValueError,
-        'category': 'xml',
-        'description': 'An XML file must start with the XML start tag. The XML start tag is `<`.',
-        'info': '{err}',
-        'help': 'An XML document must contain only valid XML.\nShould it be required that additional information be in the document, XML comments may be used. Comments may not, however, be right at the very start of the document. For information about comments in XML, see https://www.w3schools.com/xml/xml_syntax.asp'
-    },
-    'err-not-xml-xml-text-decl-only-at-doc-start': {
-        'base_exception': ValueError,
-        'category': 'xml',
-        'description': 'The XML text declaration must occur at the start of the document.',
-        'info': '{err}',
-        'help': 'The XML text declaration specifies how a computer must read the rest of the XML file. Since it tells the computer how to read the XML file, it must occur at the start of an XML document without any content before it.\nIt looks similar to: `<?xml version="1.0" encoding="UTF-8"?>`.\nFor more information about the XML text declaration, see https://www.w3schools.com/xml/xml_syntax.asp and https://www.w3.org/TR/2000/REC-xml-20001006#sec-TextDecl'
-    },
-    'err-not-iati-xml-forbidden-attribute': {
-        'base_exception': ValueError,
-        'category': 'iati-xml',
-        'description': 'An element has an attribute that is not permitted.',
-        'info': '{err}',
-        'help': 'The IATI Standard specifies the attributes that elements may have. Other attributes are not permitted.\nFor more information about XML attributes, see https://www.w3schools.com/xml/xml_attributes.asp'
-    },
-    'err-not-iati-xml-incorrect-datatype': {
-        'base_exception': ValueError,
-        'category': 'iati-xml',
-        'description': 'A provided value is not in the correct format.',
-        'info': '{err}',
-        'help': 'Certain pieces of information within an IATI dataset must be formatted in a specified way if they are to be correctly interpreted. The expected format is known at the `type`.\nFor more information about XML data types, see http://books.xmlschemata.org/relaxng/relax-CHP-19.html'
-    },
-    'err-not-iati-xml-missing-attribute': {
-        'base_exception': ValueError,
-        'category': 'iati-xml',
-        'description': 'A required attribute is missing.',
-        'info': '{err}',
-        'help': 'The IATI Standard specifies a number of attributes that must be present for the data to be understood.\nFor more information about XML attributes, see https://www.w3schools.com/xml/xml_attributes.asp'
-    },
-    'err-not-iati-xml-missing-required-element': {
-        'base_exception': ValueError,
-        'category': 'iati-xml',
-        'description': 'A different element was found than was expected.',
-        'info': '{err}',
-        'help': 'There are a number of mandatory elements that an IATI data file must contain. Additionally, these must occur in the required order.\nFor more information about what an XML element is, see https://www.w3schools.com/xml/xml_elements.asp'
-    },
-    'err-not-iati-xml-non-whitespace-in-element-only': {
-        'base_exception': ValueError,
-        'category': 'iati-xml',
-        'description': 'An element contains text where it may only contain other elements.',
-        'info': '{err}',
-        'help': 'Some elements are classed as `elements-only`. This means that they may only contain other elements and whitespace (spaces, tabs, etc). Other text is not permitted.\nFor more information about `elements-only` types, see https://www.w3schools.com/xml/schema_complex_elements.asp'
-    },
-    'err-not-iati-xml-root-element-undeclared': {
-        'base_exception': ValueError,
-        'category': 'iati-xml',
-        'description': 'The root element in the data is not contained within the Schema.',
-        'info': '{err}',
-        'help': 'The root element within an XML data file is the one that contains all other data. In an IATI dataset, this is generally `iati-activities` or `iati-organisations`.\nNote that this error may be raised if an Activity Dataset is validated against an Organisation Schema or vice versa.'
-    },
-    'err-encoding-invalid': {
-        'base_exception': ValueError,
-        'category': 'file',
-        'description': 'The encoding specified within the XML text declaration is different from the actual encoding of the XML file.',
-        'info': '{err}',
-        'help': 'The encoding of a file specifies how a computer should interpret the 1s and 0s that it is made up of. For more information about encoding, see https://www.w3.org/International/questions/qa-what-is-encoding\nThe XML text declaration looks similar to: `<?xml version="1.0" encoding="UTF-8"?>`. For more information about the XML text declaration, see https://www.w3schools.com/xml/xml_syntax.asp and https://www.w3.org/TR/2000/REC-xml-20001006#sec-TextDecl'
-    },
-    'err-encoding-unsupported': {
-        'base_exception': ValueError,
-        'category': 'file',
-        'description': 'The encoding of the XML file is not supported by a tool used by IATI.',
-        'info': '{err}',
-        'help': 'The encoding of a file specifies how a computer should interpret the 1s and 0s that it is made up of. For more information about encoding, see https://www.w3.org/International/questions/qa-what-is-encoding'
-    },
-    'err-lxml-internal-error': {
-        'base_exception': Exception,
-        'category': 'tool-lxml',
-        'description': 'An internal error occurred in a tool used to parse XML.',
-        'info': '{err}',
-        'help': 'This error may occur in an unspecified number of situations. Sorry this help message cannot be more helpful.'
-    }
-}
+import iati.core.resources
 
 
 class ValidationError(object):
@@ -145,7 +25,7 @@ class ValidationError(object):
 
         """
         try:
-            err_detail = _ERROR_CODES[err_name]
+            err_detail = get_error_codes()[err_name]
         except (KeyError, TypeError):
             raise ValueError('{err_name} is not a known type of ValidationError.'.format(**locals()))
 
@@ -531,6 +411,36 @@ def full_validation(dataset, schema):
     error_log.extend(_check_codelist_values(dataset, schema))
 
     return error_log
+
+
+def get_error_codes():
+    """Return a dictionary of the possible error codes and their information.
+
+    Returns:
+        dict: A dictionary of error codes.
+
+    Raises:
+        KeyError: When a specified base_exception is not a valid type of exception.
+
+    Todo:
+        Raise the correct error for incorrect base_exception values.
+        Raise an error when there is a problem with non-base_exception-related errors.
+
+    """
+    err_codes_str = iati.core.resources.load_as_string(iati.core.resources.get_lib_data_path('validation_err_codes.yaml'))
+    err_codes_list_of_dict = yaml.safe_load(err_codes_str)
+    # yaml parses the values into a list of dicts, so they need combining into one
+    err_codes_dict = { k: v for code in err_codes_list_of_dict for k, v in code.items() }
+
+    # convert name of exception into reference to the relevant class
+    for _, err in err_codes_dict.items():
+        # python2/3 have exceptions in different modules, though six and future do not appear to have a standard workaround for this
+        try:
+            err['base_exception'] = getattr(sys.modules['builtins'], err['base_exception'])
+        except KeyError:
+            err['base_exception'] = getattr(sys.modules['exceptions'], err['base_exception'])
+
+    return err_codes_dict
 
 
 def is_iati_xml(dataset, schema):
