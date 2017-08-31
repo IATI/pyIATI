@@ -284,6 +284,7 @@ class RuleSubclassTestBase(object):
         assert ' object at ' not in str(rule_instantiating)
         assert 'self' not in str(rule_instantiating)
         assert '{0}' not in str(rule_instantiating)
+        assert 'This is a Rule' not in str(rule_instantiating)
 
     @pytest.mark.parametrize("context", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_rule_init_invalid_context(self, rule_constructor, context, instantiating_case):
