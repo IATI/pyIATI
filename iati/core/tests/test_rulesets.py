@@ -1048,7 +1048,9 @@ class TestRuleSum(RuleSubclassTestBase):
         {'paths': ['element33/@attribute', 'element34/@attribute'], 'sum': float(-10**100)},
         {'paths': ['element17', 'element18'], 'sum': 2.99792458e6},  # exponential sum
         {'paths': ['element35/@attribute', 'element36/@attribute'], 'sum': 2.99792458e6},
-        {'paths': ['element37'], 'sum': 50}  # duplicate elements in data **
+        {'paths': ['element37'], 'sum': 50},  # duplicate elements in data **
+        {'paths': ['element42', 'element43'], 'sum': 0.1},  # sum to value that cannot be represented using standard binary representation
+        {'paths': ['element44/@attribute', 'element45/@attribute'], 'sum': 0.1}
     ]
 
     uninstantiating_cases = [

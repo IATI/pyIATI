@@ -51,4 +51,8 @@
     <element40 attribute="1"></element40><!--nested attributes-->
     <element41 attribute="2"></element41>
   </nest>
+  <element42>0</element42><!--sum to value that cannot be represented using standard binary representation-->
+  <element43>0.1</element43>
+  <element44 attribute="0"></element44><!--sum to value that cannot be represented using standard binary representation-->
+  <element45 attribute="0.1"></element45>
 </root_element>
