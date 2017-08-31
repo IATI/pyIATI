@@ -1169,6 +1169,10 @@ class TestRuleSum(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_SUM_RULE_VALID
 
+    def test_rule_string_output_specific(self, rule_basic_init):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'sum of values' in str(rule_basic_init)
+
 
 class TestRuleUnique(RuleSubclassTestBase):
     """A container for tests relating to RuleUnique."""

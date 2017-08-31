@@ -748,6 +748,10 @@ class RuleSum(Rule):
 
         super(RuleSum, self).__init__(context, case)
 
+    def __str__(self):
+        """A string stating what RuleStartsWith is checking."""
+        return 'Within each `{self.context}`, the sum of values matched at `{0}` must be `{self.sum}`.'.format('` and `'.join(self.paths), **locals())
+
     def is_valid_for(self, dataset):
         """Assert that the total of the values given in `paths` match the given `sum` value.
 
