@@ -477,9 +477,9 @@ class RuleDependent(Rule):
     def __str__(self):
         """A string stating what TestRuleDependent is checking."""
         if len(self.paths) == 1:
-            return 'Within each {self.context}, either `{self.paths[0]}` exists or it does not. As such, this Rule is always True.'.format(**locals())
+            return 'Within each `{self.context}`, either `{self.paths[0]}` exists or it does not. As such, this Rule is always True.'.format(**locals())
         else:
-            return 'Within each {self.context}, either none of `{0}` must exist, or they must all exist.'.format('` or `'.join(self.paths), **locals())
+            return 'Within each `{self.context}`, either none of `{0}` must exist, or they must all exist.'.format('` or `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
         """Assert that either all given `paths` or none of the given `paths` exist in a Dataset.
@@ -541,9 +541,9 @@ class RuleNoMoreThanOne(Rule):
     def __str__(self):
         """A string stating what RuleNoMoreThanOne is checking."""
         if len(self.paths) == 1:
-            return '`{self.paths[0]}` must occur zero or one times within each {self.context}.'.format(**locals())
+            return '`{self.paths[0]}` must occur zero or one times within each `{self.context}`.'.format(**locals())
         else:
-            return 'There must be no more than one element or attribute matched at `{0}` within each {self.context}.'.format('` or `'.join(self.paths), **locals())
+            return 'There must be no more than one element or attribute matched at `{0}` within each `{self.context}`.'.format('` or `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
         """Check dataset has no more than one instance of a given case for an Element.
@@ -599,9 +599,9 @@ class RuleRegexMatches(Rule):
     def __str__(self):
         """A string stating what RuleRegexMatches is checking."""
         if len(self.paths) == 1:
-            return 'Each `{self.paths[0]}` within each {self.context} must match the regular expression `{self.regex}`.'.format(**locals())
+            return 'Each `{self.paths[0]}` within each `{self.context}` must match the regular expression `{self.regex}`.'.format(**locals())
         else:
-            return 'Each instance of `{0}` within each {self.context} must match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
+            return 'Each instance of `{0}` within each `{self.context}` must match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
         """Assert that the text of the given `paths` matches the `regex` value.
@@ -656,9 +656,9 @@ class RuleRegexNoMatches(Rule):
     def __str__(self):
         """A string stating what RuleRegexNoMatches is checking."""
         if len(self.paths) == 1:
-            return 'Each `{self.paths[0]}` within each {self.context} must not match the regular expression `{self.regex}`.'.format(**locals())
+            return 'Each `{self.paths[0]}` within each `{self.context}` must not match the regular expression `{self.regex}`.'.format(**locals())
         else:
-            return 'Each instance of `{0}` within each {self.context} must not match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
+            return 'Each instance of `{0}` within each `{self.context}` must not match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
         """Assert that no text of the given `paths` matches the `regex` value.
@@ -701,9 +701,9 @@ class RuleStartsWith(Rule):
     def __str__(self):
         """A string stating what RuleStartsWith is checking."""
         if len(self.paths) == 1:
-            return 'Each `{self.paths[0]}` within each {self.context} must start with the value present at `{self.start}`.'.format(**locals())
+            return 'Each `{self.paths[0]}` within each `{self.context}` must start with the value present at `{self.start}`.'.format(**locals())
         else:
-            return 'Each instance of `{0}` within each {self.context} must start with the value present at `{self.start}`.'.format('` and `'.join(self.paths), **locals())
+            return 'Each instance of `{0}` within each `{self.context}` must start with the value present at `{self.start}`.'.format('` and `'.join(self.paths), **locals())
 
     def _normalize_xpaths(self):
         """Normalize xpaths by combining them with `context`."""
