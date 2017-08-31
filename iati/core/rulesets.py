@@ -583,6 +583,7 @@ class RuleRegexMatches(Rule):
                 for string_to_check in strings_to_check:
                     if not pattern.search(string_to_check):
                         return False
+                    continue
 
         return True
 
@@ -633,6 +634,7 @@ class RuleRegexNoMatches(Rule):
                 for string_to_check in strings_to_check:
                     if pattern.search(string_to_check):
                         return False
+                    continue
 
         return True
 
