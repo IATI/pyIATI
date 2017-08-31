@@ -6,14 +6,16 @@ Note:
 Todo:
     Review for edge cases.
     Consider how we should handle lxml errors.
+    Remove references to `case`.
 
 """
 from datetime import datetime
 import json
 import re
 import sre_constants
+from decimal import Decimal
 import jsonschema
-import lxml
+# import lxml
 import six
 import iati.core.default
 import iati.core.utilities
@@ -727,8 +729,8 @@ class RuleSum(Rule):
                 results = context_element.xpath(path)
                 values_to_sum = self._extract_text_from_element_or_attribute(results)
                 for value in values_to_sum:
-                    values_in_context.append(float(value))
-            if sum(values_in_context) != self.sum:
+                    values_in_context.append(Decimal(value))
+            if sum(values_in_context) != Decimal(str(self.sum)):
                 return False
 
         return True
