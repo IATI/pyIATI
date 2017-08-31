@@ -2,6 +2,17 @@
 import pytest
 import iati.core.constants
 
+
+@pytest.fixture(params=[
+    ('2.02', 62),  # There are 38 embedded codelists at v2.02, plus 24 non-embedded codelists (which are valid for any version)
+    ('2.01', 61),  # There are 37 embedded codelists at v2.01, plus 24 non-embedded codelists (which are valid for any version)
+    ('1.05', 59),  # There are 35 embedded codelists at v1.05, plus 24 non-embedded codelists (which are valid for any version)
+    ('1.04', 59)  # There are 35 embedded codelists at v1.04, plus 24 non-embedded codelists (which are valid for any version)
+])
+def codelist_lengths_by_version(request):
+    return request.param
+
+
 @pytest.fixture(params=['no_arguments', None] + iati.core.constants.STANDARD_VERSIONS)
 def standard_version_optional(request):
     """Return a list that can be used as variable positional parameters (i.e. `*standard_version_optional`) to test.

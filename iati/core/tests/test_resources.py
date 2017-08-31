@@ -41,29 +41,19 @@ class TestResources(object):
         path = iati.core.resources.get_folder_path_for_version(*standard_version_optional)
         assert path_component in path
 
-    def test_codelist_flow_type(self):
-        """Check that the FlowType codelist is loaded as a string and contains content.
-
-        Todo:
-            Test passing all version numbers to get_codelist_path
-
-        """
-        path = iati.core.resources.get_codelist_path('FlowType')
+    def test_codelist_flow_type(self, standard_version_optional):
+        """Check that the FlowType codelist is loaded as a string and contains content."""
+        path = iati.core.resources.get_codelist_path('FlowType', *standard_version_optional)
 
         content = iati.core.resources.load_as_string(path)
 
         assert len(content) > 3200
 
-    def test_find_codelist_paths(self):
-        """Check that all codelist paths are being found.
+    def test_find_codelist_paths(self, codelist_lengths_by_version):
+        """Check that all codelist paths are being found."""
+        paths = iati.core.resources.get_all_codelist_paths(codelist_lengths_by_version[0])
 
-        Todo:
-            Add other tests relating to specific versions of the Standard.
-
-        """
-        paths = iati.core.resources.get_all_codelist_paths()
-
-        assert len(paths) == 62
+        assert len(paths) == codelist_lengths_by_version[1]
         for path in paths:
             assert path[-4:] == iati.core.resources.FILE_CODELIST_EXTENSION
             assert iati.core.resources.PATH_CODELISTS in path

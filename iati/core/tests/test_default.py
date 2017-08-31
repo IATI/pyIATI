@@ -43,17 +43,11 @@ class TestDefault(object):
         for _, codelist in codelists.items():
             assert isinstance(codelist, iati.core.Codelist)
 
-    @pytest.mark.parametrize('version, expected_length', [
-        ('2.02', 62),  # There are 38 embedded codelists at v2.02, plus 24 non-embedded codelists (which are valid for any version)
-        ('2.01', 61),  # There are 37 embedded codelists at v2.01, plus 24 non-embedded codelists (which are valid for any version)
-        ('1.05', 59),  # There are 35 embedded codelists at v1.05, plus 24 non-embedded codelists (which are valid for any version)
-        ('1.04', 59)  # There are 35 embedded codelists at v1.04, plus 24 non-embedded codelists (which are valid for any version)
-    ])
-    def test_default_codelists_length(self, version, expected_length):
+    def test_default_codelists_length(self, codelist_lengths_by_version):
         """Check that the default Codelists for each version contain the expected number of Codelists."""
-        codelists = iati.core.default.codelists(version)
+        codelists = iati.core.default.codelists(codelist_lengths_by_version[0])
 
-        assert len(codelists) == expected_length
+        assert len(codelists) == codelist_lengths_by_version[1]
 
     def test_default_activity_schemas(self):
         """Check that the default ActivitySchemas are correct.
