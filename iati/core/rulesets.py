@@ -480,37 +480,23 @@ class RuleDependent(Rule):
             Determine if it's reasonable to assume the user should give a specific xpath format, or whether the context-path structure dictates automatic conversion to relative paths.
 
         """
-        def add_query_result(result):
-            """Add appropriate result to `found_in_dataset` whether attribute or element.
-
-            Args:
-                result (XPath element or attribute string): An XPath return value.
-
-            Todo:
-                Maybe refactor to return tag instead and extract to Rule base class.
-
-            """
-            try:
-                if result.is_attribute:
-                    found_in_dataset.add(result.getparent().tag)
-            except AttributeError:
-                found_in_dataset.add(result.tag)
-
         context_elements = self._find_context_elements(dataset)
-        paths = set(self.paths)
-        found_in_dataset = set()
+        unique_paths = set(self.paths)
 
         for context_element in context_elements:
             if self._condition_met_for(context_element):
                 return None
-            for path in paths:
-                results = context_element.xpath(path)
-                for result in results:
-                    # result will be an empty list when no elements or attribute text is found
-                    if result != list():
-                        add_query_result(result)
 
-        return not found_in_dataset or len(found_in_dataset) == len(paths)
+            found_paths = 0
+            for path in unique_paths:
+                results = context_element.xpath(path)
+                if len(results):
+                    found_paths += 1
+
+            if not found_paths in [0, len(unique_paths)]:
+                return False
+
+        return True
 
 
 class RuleNoMoreThanOne(Rule):
