@@ -1252,3 +1252,7 @@ class TestRuleUnique(RuleSubclassTestBase):
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_UNIQUE_RULE_VALID
+
+    def test_rule_string_output_specific(self, rule_basic_init):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'must be unique' in str(rule_basic_init)

@@ -749,7 +749,7 @@ class RuleSum(Rule):
         super(RuleSum, self).__init__(context, case)
 
     def __str__(self):
-        """A string stating what RuleStartsWith is checking."""
+        """A string stating what RuleSum is checking."""
         return 'Within each `{self.context}`, the sum of values matched at `{0}` must be `{self.sum}`.'.format('` and `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
@@ -790,6 +790,10 @@ class RuleUnique(Rule):
         self.name = 'unique'
 
         super(RuleUnique, self).__init__(context, case)
+
+    def __str__(self):
+        """A string stating what RuleUnique is checking."""
+        return 'Within each `{self.context}`, the text contained within each of the elements and attributes matched by `{0}` must be unique.'.format('` and `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
         """Assert that the given `paths` are not found in the dataset.xml_tree more than once.
