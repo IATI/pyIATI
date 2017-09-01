@@ -501,13 +501,13 @@ class RuleDependent(Rule):
                 found_in_dataset.add(result.tag)
 
         context_elements = self._find_context_elements(dataset)
-        paths = set(self.paths)
+        unique_paths = set(self.paths)
         found_in_dataset = set()
 
         for context_element in context_elements:
             if self._condition_met_for(context_element):
                 return None
-            for path in paths:
+            for path in unique_paths:
                 results = context_element.xpath(path)
                 for result in results:
                     # result will be an empty list when no elements or attribute text is found
