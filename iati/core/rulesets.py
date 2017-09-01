@@ -543,15 +543,15 @@ class RuleNoMoreThanOne(Rule):
 
         """
         context_elements = self._find_context_elements(dataset)
-        paths = set(self.paths)
+        unique_paths = set(self.paths)
         compliant_paths = list()
         no_of_paths = 0
 
         for context_element in context_elements:
             if self._condition_met_for(context_element):
                 return None
-            no_of_paths += len(paths)
-            for path in paths:
+            no_of_paths += len(unique_paths)
+            for path in unique_paths:
                 results = context_element.xpath(path)
                 if len(results) <= 1:
                     compliant_paths.append(path)
@@ -725,12 +725,12 @@ class RuleSum(Rule):
 
         """
         context_elements = self._find_context_elements(dataset)
-
+        unique_paths = set(self.paths)
         for context_element in context_elements:
             if self._condition_met_for(context_element):
                 return None
             values_in_context = list()
-            for path in set(self.paths):
+            for path in unique_paths:
                 values_to_sum = self._extract_text_from_element_or_attribute(context_element, path)
                 for value in values_to_sum:
                     values_in_context.append(Decimal(value))
