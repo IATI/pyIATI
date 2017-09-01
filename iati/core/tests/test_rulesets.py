@@ -679,6 +679,7 @@ class TestRuleDependent(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {'paths': ['./element5', './element6']},
         {'paths': ['./element11/@attribute', './element12/@attribute']}
+
     ])
     def valid_nest_case(self, request):
         """Permitted case for validating an XML dataset against RuleDependent in nested context."""
@@ -686,7 +687,8 @@ class TestRuleDependent(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'paths': ['./element7', './element8']},
-        {'paths': ['./element9/@attribute', './element10/@attribute']}
+        {'paths': ['./element9/@attribute', './element10/@attribute']},
+        {'paths': ['./element15', './element16']}
     ])
     def invalid_nest_case(self, request):
         """Non-permitted case for validating an XML dataset against RuleDependent in nested context."""
