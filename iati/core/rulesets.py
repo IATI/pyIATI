@@ -278,11 +278,12 @@ class Rule(object):
         """
         return dataset.xml_tree.xpath(self.context)
 
-    def _extract_text_from_element_or_attribute(self, xpath_results):
+    def _extract_text_from_element_or_attribute(self, context, path):
         """Return a list of strings regardless of whether XPath result is an attribute or an element.
 
         Args:
-            xpath_results (list): Raw XPath query results.
+            context (Element): An xml Element.
+            path (str): An XPath query string.
 
         Returns:
             list of str: Text values from XPath query results.
@@ -291,6 +292,7 @@ class Rule(object):
             `Element.text` will return `None` if it contains no text. This is bad. As such, this is converted to an empty string to prevent TypeErrors.
 
         """
+        xpath_results = context.xpath(path)
         results = [result if isinstance(result, six.string_types) else result.text for result in xpath_results]
         return ['' if result is None else result for result in results]
 
@@ -426,8 +428,7 @@ class RuleDateOrder(Rule):
             if path == self.special_case:
                 return datetime.today()
 
-            results = context.xpath(path)
-            dates = self._extract_text_from_element_or_attribute(results)
+            dates = self._extract_text_from_element_or_attribute(context, path)
             if not dates[0]:
                 return
             # Checks that anything after the YYYY-MM-DD string is a permitted timezone character
@@ -599,8 +600,7 @@ class RuleRegexMatches(Rule):
             if self._condition_met_for(context_element):
                 return None
             for path in self.paths:
-                results = context_element.xpath(path)
-                strings_to_check = self._extract_text_from_element_or_attribute(results)
+                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
                 for string_to_check in strings_to_check:
                     if not pattern.search(string_to_check):
                         return False
@@ -650,8 +650,7 @@ class RuleRegexNoMatches(Rule):
             if self._condition_met_for(context_element):
                 return None
             for path in self.paths:
-                results = context_element.xpath(path)
-                strings_to_check = self._extract_text_from_element_or_attribute(results)
+                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
                 for string_to_check in strings_to_check:
                     if pattern.search(string_to_check):
                         return False
@@ -693,11 +692,9 @@ class RuleStartsWith(Rule):
         for context_element in context_elements:
             if self._condition_met_for(context_element):
                 return None
-            results = context_element.xpath(self.start)
-            prefix = self._extract_text_from_element_or_attribute(results)[0]
+            prefix = self._extract_text_from_element_or_attribute(context_element, self.start)[0]
             for path in self.paths:
-                results = context_element.xpath(path)
-                strings_to_check = self._extract_text_from_element_or_attribute(results)
+                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
                 for string_to_check in strings_to_check:
                     if not string_to_check.startswith(prefix):
                         return False
@@ -734,8 +731,7 @@ class RuleSum(Rule):
                 return None
             values_in_context = list()
             for path in set(self.paths):
-                results = context_element.xpath(path)
-                values_to_sum = self._extract_text_from_element_or_attribute(results)
+                values_to_sum = self._extract_text_from_element_or_attribute(context_element, path)
                 for value in values_to_sum:
                     values_in_context.append(Decimal(value))
             if sum(values_in_context) != Decimal(str(self.sum)):
@@ -781,8 +777,7 @@ class RuleUnique(Rule):
             unique_content = set()
 
             for path in unique_paths:
-                results = context_element.xpath(path)
-                strings_to_check = self._extract_text_from_element_or_attribute(results)
+                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
                 for string_to_check in strings_to_check:
                     all_content.append(string_to_check)
                     unique_content.add(string_to_check)
