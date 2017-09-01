@@ -288,6 +288,14 @@ class RuleSubclassTestBase(object):
         """Check that a Rule subclass has the expected name."""
         assert rule_instantiating.name == rule_type
 
+    def test_rule_string_output_general(self, rule_instantiating):
+        """Check that the string format of the Rule has been customised and variables formatted."""
+        assert 'iati.core.rulesets' not in str(rule_instantiating)
+        assert ' object at ' not in str(rule_instantiating)
+        assert 'self' not in str(rule_instantiating)
+        assert '{0}' not in str(rule_instantiating)
+        assert 'This is a Rule' not in str(rule_instantiating)
+
     @pytest.mark.parametrize("context", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
     def test_rule_init_invalid_context(self, rule_constructor, context, instantiating_case):
         """Check that a Rule subclass cannot be created when context is not a string."""
@@ -444,6 +452,10 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_ATLEASTONE_RULE_INVALID
+
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'must be present' in str(rule_instantiating)
 
 
 class TestRuleDateOrder(RuleSubclassTestBase):
@@ -621,6 +633,10 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         rule = rule_constructor(valid_single_context, case)
         assert rule.is_valid_for(valid_dataset) is None
 
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert any(needle in str(rule_instantiating) for needle in ['must be chronologically', 'in the future', 'in the past'])
+
 
 class TestRuleDependent(RuleSubclassTestBase):
     """A container for tests relating to RuleDependent."""
@@ -704,6 +720,10 @@ class TestRuleDependent(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_DEPENDENT_RULE_VALID
 
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert any(needle in str(rule_instantiating) for needle in ['must all exist', 'always True'])
+
 
 class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     """A container for tests relating to RuleNoMoreThanOne."""
@@ -784,6 +804,10 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_NOMORETHANONE_RULE_VALID
+
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert any(needle in str(rule_instantiating) for needle in ['zero or one', 'no more than one'])
 
 
 class TestRuleRegexMatches(RuleSubclassTestBase):
@@ -872,6 +896,10 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_REGEXMATCHES_RULE_VALID
 
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'must match the regular expression' in str(rule_instantiating)
+
 
 class TestRuleRegexNoMatches(RuleSubclassTestBase):
     """A container for tests relating to RuleRegexNoMatches."""
@@ -959,6 +987,9 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_REGEXNOMATCHES_RULE_VALID
 
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'must not match the regular expression' in str(rule_instantiating)
 
 class TestRuleStartsWith(RuleSubclassTestBase):
     """A container for tests relating to RuleStartsWith."""
@@ -1044,6 +1075,10 @@ class TestRuleStartsWith(RuleSubclassTestBase):
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_STARTSWITH_RULE_VALID
+
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'must start with' in str(rule_instantiating)
 
 
 class TestRuleSum(RuleSubclassTestBase):
@@ -1169,6 +1204,10 @@ class TestRuleSum(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_SUM_RULE_VALID
 
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'sum of values' in str(rule_instantiating)
+
 
 class TestRuleUnique(RuleSubclassTestBase):
     """A container for tests relating to RuleUnique."""
@@ -1248,3 +1287,7 @@ class TestRuleUnique(RuleSubclassTestBase):
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.DATASET_FOR_UNIQUE_RULE_VALID
+
+    def test_rule_string_output_specific(self, rule_instantiating):
+        """Check that the string format of the Rule contains some relevant information."""
+        assert 'must be unique' in str(rule_instantiating)

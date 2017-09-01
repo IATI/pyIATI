@@ -133,6 +133,10 @@ class Rule(object):
         self._set_case_attributes(case)
         self._normalize_xpaths()
 
+    def __str__(self):
+        """A string stating what the Rule is checking."""
+        return 'This is a Rule.'
+
     def _validated_context(self, context):
         """Check that a valid `context` is given for a Rule.
 
@@ -334,6 +338,13 @@ class RuleAtLeastOne(Rule):
 
         super(RuleAtLeastOne, self).__init__(context, case)
 
+    def __str__(self):
+        """A string stating what RuleAtLeastOne is checking."""
+        if len(self.paths) == 1:
+            return '`{self.paths[0]}` must be present within each `{self.context}`.'.format(**locals())
+        else:
+            return 'At least one of `{0}` must be present within each `{self.context}`.'.format('` or `'.join(self.paths), **locals())
+
     def is_valid_for(self, dataset):
         """Check Dataset has at least one instance of a given case for an Element.
 
@@ -373,6 +384,19 @@ class RuleDateOrder(Rule):
         self.special_case = 'NOW'  # Was a constant sort of
 
         super(RuleDateOrder, self).__init__(context, case)
+
+    def __str__(self):
+        """A string stating what RuleDateOrder is checking."""
+        if self.less == self.special_case and self.more == self.special_case:
+            unformatted_str = '`{self.less}` must be chronologically before `{self.more}`. Try working that one out.'
+        elif self.less == self.special_case:
+            unformatted_str = '`{self.more}` must be in the future within each `{self.context}`.'
+        elif self.more == self.special_case:
+            unformatted_str = '`{self.more}` must be in the past within each `{self.context}`.'
+        else:
+            unformatted_str = '`{self.less}` must be chronologically before `{self.more}` within each `{self.context}`.'
+
+        return unformatted_str.format(**locals())
 
     def _normalize_xpaths(self):
         """Normalize xpaths by combining them with `context`."""
@@ -468,6 +492,13 @@ class RuleDependent(Rule):
 
         super(RuleDependent, self).__init__(context, case)
 
+    def __str__(self):
+        """A string stating what TestRuleDependent is checking."""
+        if len(self.paths) == 1:
+            return 'Within each `{self.context}`, either `{self.paths[0]}` exists or it does not. As such, this Rule is always True.'.format(**locals())
+        else:
+            return 'Within each `{self.context}`, either none of `{0}` must exist, or they must all exist.'.format('` or `'.join(self.paths), **locals())
+
     def is_valid_for(self, dataset):
         """Assert that either all given `paths` or none of the given `paths` exist in a Dataset.
 
@@ -511,6 +542,13 @@ class RuleNoMoreThanOne(Rule):
         self.name = 'no_more_than_one'
 
         super(RuleNoMoreThanOne, self).__init__(context, case)
+
+    def __str__(self):
+        """A string stating what RuleNoMoreThanOne is checking."""
+        if len(self.paths) == 1:
+            return '`{self.paths[0]}` must occur zero or one times within each `{self.context}`.'.format(**locals())
+        else:
+            return 'There must be no more than one element or attribute matched at `{0}` within each `{self.context}`.'.format('` or `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
         """Check dataset has no more than one instance of a given case for an Element.
@@ -568,6 +606,13 @@ class RuleRegexMatches(Rule):
         if self.regex == '':
             raise ValueError
 
+    def __str__(self):
+        """A string stating what RuleRegexMatches is checking."""
+        if len(self.paths) == 1:
+            return 'Each `{self.paths[0]}` within each `{self.context}` must match the regular expression `{self.regex}`.'.format(**locals())
+        else:
+            return 'Each instance of `{0}` within each `{self.context}` must match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
+
     def is_valid_for(self, dataset):
         """Assert that the text of the given `paths` matches the `regex` value.
 
@@ -618,6 +663,13 @@ class RuleRegexNoMatches(Rule):
         if self.regex == '':
             raise ValueError
 
+    def __str__(self):
+        """A string stating what RuleRegexNoMatches is checking."""
+        if len(self.paths) == 1:
+            return 'Each `{self.paths[0]}` within each `{self.context}` must not match the regular expression `{self.regex}`.'.format(**locals())
+        else:
+            return 'Each instance of `{0}` within each `{self.context}` must not match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
+
     def is_valid_for(self, dataset):
         """Assert that no text of the given `paths` matches the `regex` value.
 
@@ -655,6 +707,13 @@ class RuleStartsWith(Rule):
         self.name = 'startswith'
 
         super(RuleStartsWith, self).__init__(context, case)
+
+    def __str__(self):
+        """A string stating what RuleStartsWith is checking."""
+        if len(self.paths) == 1:
+            return 'Each `{self.paths[0]}` within each `{self.context}` must start with the value present at `{self.start}`.'.format(**locals())
+        else:
+            return 'Each instance of `{0}` within each `{self.context}` must start with the value present at `{self.start}`.'.format('` and `'.join(self.paths), **locals())
 
     def _normalize_xpaths(self):
         """Normalize xpaths by combining them with `context`."""
@@ -699,6 +758,10 @@ class RuleSum(Rule):
 
         super(RuleSum, self).__init__(context, case)
 
+    def __str__(self):
+        """A string stating what RuleSum is checking."""
+        return 'Within each `{self.context}`, the sum of values matched at `{0}` must be `{self.sum}`.'.format('` and `'.join(self.paths), **locals())
+
     def is_valid_for(self, dataset):
         """Assert that the total of the values given in `paths` match the given `sum` value.
 
@@ -736,6 +799,10 @@ class RuleUnique(Rule):
         self.name = 'unique'
 
         super(RuleUnique, self).__init__(context, case)
+
+    def __str__(self):
+        """A string stating what RuleUnique is checking."""
+        return 'Within each `{self.context}`, the text contained within each of the elements and attributes matched by `{0}` must be unique.'.format('` and `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
         """Assert that the given `paths` are not found in the dataset.xml_tree more than once.
