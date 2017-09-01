@@ -205,8 +205,8 @@ class RuleSubclassTestBase(object):
         return condition_validating_case
 
     @pytest.fixture(params=[
-        'count(condition)>0',
-        'condition'
+        'count(notcondition)>0',
+        'notcondition'
     ])
     def invalid_condition_case(self, invalidating_case, request):
         """Return a case with optional condition attribute."""
@@ -324,26 +324,39 @@ class RuleSubclassTestBase(object):
         rule = rule_constructor(valid_multiple_context, invalid_nest_case)
         assert not rule.is_valid_for(invalid_dataset)
 
-    def test_condition_case_is_True(self, valid_condition_rule, valid_dataset):
-        """Check that if a condition is `True`, the rule returns None which is considered equivalent to skipping."""
-        assert valid_condition_rule.is_valid_for(valid_dataset) is None
-
-    def test_condition_case_is_False(self, invalid_condition_rule, invalid_dataset):
-        """Check that if a condition is `False`, the rule validates normally.
-
-        Note:
-            Using an invalid dataset so expecting Rules to evaluate to `False`.
-
-        """
-        assert not invalid_condition_rule.is_valid_for(invalid_dataset)
-
-    @pytest.mark.parametrize("junk_condition", [''] + iati.core.tests.utilities.find_parameter_by_type(['str'], False))
-    def test_uninstantiating_condition_case(self, rule_constructor, valid_single_context, validating_case, junk_condition):
-        """Check that a non-permitted condition case will not instantiate."""
-        junk_condition_case = deepcopy(validating_case)
-        junk_condition_case['condition'] = junk_condition
-        with pytest.raises(ValueError):
-            rule_constructor(valid_single_context, junk_condition_case)
+    # def test_condition_case_is_True_for_valid_dataset(self, valid_condition_rule, valid_dataset):
+    #     """Check that if a condition is `True`, the rule returns None which is considered equivalent to skipping."""
+    #     assert valid_condition_rule.is_valid_for(valid_dataset) is None
+    #
+    # def test_condition_case_is_True_for_invalid_dataset(self, valid_condition_rule, invalid_dataset):
+    #     """Check that if a condition is `True`, the rule returns None which is considered equivalent to skipping."""
+    #     assert valid_condition_rule.is_valid_for(invalid_dataset) is None
+    #
+    # def test_condition_case_is_False_for_valid_dataset(self, valid_condition_rule, valid_dataset):
+    #     """Check that if a condition is `False`, the rule validates normally.
+    #
+    #     Note:
+    #         Using an invalid dataset so expecting Rules to evaluate to `False`.
+    #
+    #     """
+    #     assert valid_condition_rule.is_valid_for(valid_dataset)
+    #
+    # def test_condition_case_is_False_for_invalid_dataset(self, invalid_condition_rule, invalid_dataset):
+    #     """Check that if a condition is `False`, the rule validates normally.
+    #
+    #     Note:
+    #         Using an invalid dataset so expecting Rules to evaluate to `False`.
+    #
+    #     """
+    #     assert not invalid_condition_rule.is_valid_for(invalid_dataset)
+    #
+    # @pytest.mark.parametrize("junk_condition", [''] + iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    # def test_uninstantiating_condition_case(self, rule_constructor, valid_single_context, validating_case, junk_condition):
+    #     """Check that a non-permitted condition case will not instantiate."""
+    #     junk_condition_case = deepcopy(validating_case)
+    #     junk_condition_case['condition'] = junk_condition
+    #     with pytest.raises(ValueError):
+    #         rule_constructor(valid_single_context, junk_condition_case)
 
 
 class TestRuleAtLeastOne(RuleSubclassTestBase):
@@ -975,7 +988,7 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         {'start': 'prefix', 'paths': ['element11']}  # duplicate element
     ]
 
-    nest_case = [{'start': 'prefix', 'paths': ['element9', 'element10/@attribute']}]
+    nest_case = [{'start': '//prefix', 'paths': ['element9', 'element10/@attribute']}]
 
     @pytest.fixture
     def rule_type(self):

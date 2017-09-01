@@ -346,6 +346,9 @@ class RuleAtLeastOne(Rule):
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
 
+        Todo:
+            Check test data.
+
         """
         context_elements = self._find_context_elements(dataset)
 
@@ -534,6 +537,9 @@ class RuleNoMoreThanOne(Rule):
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
 
+        Todo:
+            Check test data.
+
         """
         context_elements = self._find_context_elements(dataset)
         paths = set(self.paths)
@@ -681,17 +687,22 @@ class RuleStartsWith(Rule):
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
 
+        Todo:
+            Refactor to properly implement this rule according to the spec.
+
         """
         context_elements = self._find_context_elements(dataset)
 
         for context_element in context_elements:
             if self._condition_met_for(context_element):
                 return None
+            results = context_element.xpath(self.start)
+            prefix = self._extract_text_from_element_or_attribute(results)[0]
             for path in self.paths:
                 results = context_element.xpath(path)
                 strings_to_check = self._extract_text_from_element_or_attribute(results)
                 for string_to_check in strings_to_check:
-                    if not string_to_check.startswith(self.start):
+                    if not string_to_check.startswith(prefix):
                         return False
 
         return True
