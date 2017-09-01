@@ -20,7 +20,7 @@ class TestResources(object):
         '1.00',
         '1',
         1,
-        1.01,  # A verion must be specified as a string
+        1.01,  # A version must be specified as a string
         'string'
     ])
     def test_get_folder_name_for_version_invalid_version(self, version):
@@ -97,6 +97,15 @@ class TestResources(object):
 
         assert isinstance(result, bytes)
         assert result == 'This is a string that is not valid XML\n'.encode()
+
+    def test_load_as_dataset(self):
+        """Test that resources.load_as_dataset returns a Dataset object with the expected content."""
+        path_test_data = iati.core.resources.get_test_data_path('valid')
+
+        result = iati.core.resources.load_as_dataset(path_test_data)
+
+        assert isinstance(result, iati.core.Dataset)
+        assert '<?xml version="1.0"?>\n\n<iati-activities version="2.02">' in result.xml_str
 
     def test_load_as_string(self):
         """Test that resources.load_as_string returns a string (python3) or unicode (python2) object with the expected content."""

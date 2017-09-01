@@ -1,17 +1,22 @@
-"""A module containg a core representation of IATI Rulesets.
+"""A module containing a core representation of IATI Rulesets.
 
 Note:
     Rulesets are under-implemented since it is expected that their implementation will be similar to that of Codelists, which is currently unstable. Once Codelist stability has been increased, Rulesets may be fully-implemented.
 
 Todo:
-    Account for edge cases and improve documentation.
+    Review for edge cases.
+    Consider how we should handle lxml errors.
+    Remove references to `case`.
 
 """
-import re
-import time
+from datetime import datetime
 import json
+import re
 import sre_constants
+from decimal import Decimal
 import jsonschema
+# import lxml
+import six
 import iati.core.default
 import iati.core.utilities
 
@@ -19,21 +24,17 @@ import iati.core.utilities
 _VALID_RULE_TYPES = ["atleast_one", "dependent", "sum", "date_order", "no_more_than_one", "regex_matches", "regex_no_matches", "startswith", "unique"]
 
 
-def locate_constructor_for_rule_type(rule_type):
-    """Locate the constructor for specific rule types.
+def constructor_for_rule_type(rule_type):
+    """Locate the constructor for specific Rule types.
 
     Args:
         rule_type (str): The name of the type of Rule to identify the class for.
 
     Returns:
-        Rule implementation: A constructor for a class that inherits from Rule.
+        type: A constructor for a class that inherits from Rule.
 
     Raises:
         KeyError: When a non-permitted `rule_type` is provided.
-
-    Todo:
-        Determine scope of this function, and how much testing is therefore required.
-        This is only external to Ruleset to help with testing. Changing code to make testing easier is smelly.
 
     """
     possible_rule_types = {
@@ -66,36 +67,42 @@ class Ruleset(object):
             ruleset_str (str): A string that represents a Ruleset.
 
         Raises:
-            TypeError: When a ruleset_str is not a string.
-            ValueError: When ruleset_str does not validate against the ruleset schema.
-
-        Todo:
-            Raises a UnicodeDecodeError or json.JSONDecodeError if passed a dodgey bytearray in all Python versions except 3.6.
+            TypeError: When a `ruleset_str` is not a string.
+            ValueError: When a `ruleset_str` does not validate against the Ruleset Schema or cannot be correctly decoded.
 
         """
-        self.ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
+        try:
+            self.ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
+        except TypeError:
+            raise ValueError
         self.validate_ruleset()
         self.rules = set()
-        self.set_rules()
+        self._set_rules()
 
     def validate_ruleset(self):
-        """Validate a Ruleset against the Ruleset Schema."""
+        """Validate a Ruleset against the Ruleset Schema.
+
+        Raises:
+            ValueError: When `ruleset_str` does not validate against the Ruleset Schema.
+
+        """
         try:
             jsonschema.validate(self.ruleset, iati.core.default.ruleset_schema())
         except jsonschema.ValidationError:
             raise ValueError
 
-    def set_rules(self):
-        """Set the Rules of the Ruleset."""
-        try:
-            for xpath_base, rule in self.ruleset.items():
-                for rule_type, cases in rule.items():
-                    for case in cases['cases']:
-                        constructor = locate_constructor_for_rule_type(rule_type)
-                        new_rule = constructor(xpath_base, case)
-                        self.rules.add(new_rule)
-        except ValueError:
-            raise
+    def _set_rules(self):
+        """Set the Rules of the Ruleset.
+
+        Extract each case of each Rule from the Ruleset and add to initialised `rules` set.
+
+        """
+        for context, rule in self.ruleset.items():
+            for rule_type, cases in rule.items():
+                for case in cases['cases']:
+                    constructor = constructor_for_rule_type(rule_type)
+                    new_rule = constructor(context, case)
+                    self.rules.add(new_rule)
 
 
 class Rule(object):
@@ -108,11 +115,11 @@ class Rule(object):
 
     """
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise a Rule.
 
         Args:
-            xpath_base (str): The base of the XPath that the Rule will act upon.
+            context (str): The base of the XPath that the Rule will act upon.
             case (dict): Specific configuration for this instance of the Rule.
 
         Raises:
@@ -121,56 +128,87 @@ class Rule(object):
 
         """
         self.case = case
-        self.xpath_base = xpath_base
+        self.context = self._validated_context(context)
         self._valid_rule_configuration(case)
         self._set_case_attributes(case)
         self._normalize_xpaths()
 
-    def _normalize_xpath(self, path):
-        """Normalize a single xpath by combining it with `xpath_base`.
+    def __str__(self):
+        """A string stating what the Rule is checking."""
+        return 'This is a Rule.'
 
-        Error:
-            Raises an attribute error if self.xpath_base
-            isn't set.
+    def _validated_context(self, context):
+        """Check that a valid `context` is given for a Rule.
+
+        Args:
+            context (str): The XPath expression that selects XML elements that the Rule acts against.
+
+        Returns:
+            str: A valid XPath.
+
+        Raises:
+            TypeError: When an argument is given that is not a string.
+            ValueError: When `context` is an empty string.
+
+        """
+        if isinstance(context, six.string_types):
+            if context != '':
+                return context
+            raise ValueError
+        raise TypeError
+
+    def _normalize_xpath(self, path):
+        """Normalize a single XPath by combining it with `context`.
+
+        Args:
+            path (str): An XPath.
+
+        Raises:
+            AttributeError: When the `context` isn't set.
+            ValueError: When `path` is an empty string.
 
         Todo:
             Add some logging.
+            Re-evaluate this.
 
         """
         if path == '':
-            return self.xpath_base
-        return self.xpath_base + '/' + path
+            raise ValueError
+        return '/'.join([self.context, path])
+
+    def _normalize_condition(self):
+        """Normalize `condition` xpaths."""
+        try:
+            self.normalized_paths.append(self._normalize_xpath(self.condition))
+        except AttributeError:
+            pass
 
     def _normalize_xpaths(self):
-        """Normalize xpaths by combining them with `xpath_base`.
+        """Normalize xpaths by combining them with `context`.
 
-        Todo:
-            Discuss appropriate edge cases and what is going on here.
+        Note:
+            May be overridden in child class that does not use `paths`.
 
         """
-        self.paths = [self._normalize_xpath(path) for path in self.paths]
+        self.normalized_paths = [self._normalize_xpath(path) for path in self.paths]
+        self._normalize_condition()
 
     def _valid_rule_configuration(self, case):
         """Check that a configuration being passed into a Rule is valid for the given type of Rule.
-
-        Note:
-            The `name` attribute on the class must be set to a valid rule_type before this function is called.
 
         Args:
             case (dict): A dictionary of values, generally parsed as a case from a Ruleset.
 
         Raises:
-            AttributeError: When the Rule's name is unset or not a permitted rule_type.
+            AttributeError: When the Rule name is unset or does not have the required attributes.
             ValueError: When the case is not valid for the type of Rule.
+
+        Note:
+            The `name` attribute on the class must be set to a valid rule_type before this function is called.
 
         """
         try:
-            ruleset_schema_section = self._ruleset_schema_section()
-        except AttributeError:
-            raise
-
-        try:
-            jsonschema.validate(case, ruleset_schema_section)
+            jsonschema.validate(case, self._ruleset_schema_section())
         except jsonschema.ValidationError:
             raise ValueError
 
@@ -182,22 +220,33 @@ class Rule(object):
 
         Todo:
             Set non-required properties such as a `condition`.
+
         """
-        required_attributes = self._required_case_attributes(self._ruleset_schema_section())
+        required_attributes = self._case_attributes(self._ruleset_schema_section())
         for attrib in required_attributes:
             setattr(self, attrib, case[attrib])
 
-    def _required_case_attributes(self, partial_schema):
+        optional_attributes = self._case_attributes(self._ruleset_schema_section(), False)
+        for attrib in optional_attributes:
+            try:
+                setattr(self, attrib, case[attrib])
+            except KeyError:
+                pass
+
+    def _case_attributes(self, partial_schema, required=True):
         """Determine the attributes that must be present given the Schema for the Rule type.
 
         Args:
             partial_schema (dict): The partial JSONSchema to extract attribute names from.
+            required (bool): Specifies whether the attributes to be returned should be required or optional according to the Ruleset specification.
 
         Returns:
-            list of str: The names of required attributes.
+            list of str: The names of required or optional attributes.
 
         """
-        return [key for key in partial_schema['properties'].keys() if key != 'condition']
+        if required:
+            return [key for key in partial_schema['properties'].keys() if key != 'condition']
+        return [key for key in partial_schema['properties'].keys() if key == 'condition']
 
     def _ruleset_schema_section(self):
         """Locate the section of the Ruleset Schema relevant for the Rule.
@@ -208,304 +257,587 @@ class Rule(object):
             dict: A dictionary of the relevant part of the Ruleset Schema, based on the Rule's name.
 
         Raises:
-            AttributeError: When the Rule's name is unset or not a permitted rule_type.
+            AttributeError: When the Rule name is unset or does not have the required attributes.
 
         """
         ruleset_schema = iati.core.default.ruleset_schema()
         partial_schema = ruleset_schema['patternProperties']['.+']['properties'][self.name]['properties']['cases']['items']  # pylint: disable=E1101
         # make all attributes other than 'condition' in the partial schema required
-        partial_schema['required'] = self._required_case_attributes(partial_schema)
+        partial_schema['required'] = self._case_attributes(partial_schema)
         # ensure that the 'paths' array is not empty
         if 'paths' in partial_schema['properties'].keys():
             partial_schema['properties']['paths']['minItems'] = 1
 
         return partial_schema
 
+    def _find_context_elements(self, dataset):
+        """Find the specific elements in context for the Rule.
+
+        Args:
+            dataset (iati.core.Dataset): The Dataset to be chacked for validity against the Rule.
+
+        Returns:
+            list of elements: Results of XPath query.
+
+        """
+        return dataset.xml_tree.xpath(self.context)
+
+    def _extract_text_from_element_or_attribute(self, context, path):
+        """Return a list of strings regardless of whether XPath result is an attribute or an element.
+
+        Args:
+            context (Element): An xml Element.
+            path (str): An XPath query string.
+
+        Returns:
+            list of str: Text values from XPath query results.
+
+        Note:
+            `Element.text` will return `None` if it contains no text. This is bad. As such, this is converted to an empty string to prevent TypeErrors.
+
+        """
+        xpath_results = context.xpath(path)
+        results = [result if isinstance(result, six.string_types) else result.text for result in xpath_results]
+        return ['' if result is None else result for result in results]
+
+    def _condition_met_for(self, context_element):
+        """Check for condtions of a given case.
+
+        Args:
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against a Rule.
+
+        Returns:
+            bool: Returns `False` when condition not met.
+                  Returns `True` when condition is met.
+            None: Returns `None` when condition met.
+
+        Warning:
+            Current implementation may be vulnerable to XPath injection vulnerabilities.
+
+        Todo:
+            Need to assess the possibility of risk and potential counter-measures/avoidance strategies if needed.
+            Need to decide whether the implementation of this in Rules should `return None` or `continue`.
+            Rename function to sound more truthy.
+
+        """
+        try:
+            if context_element.xpath(self.condition):
+                return True
+        except AttributeError:
+            return False
+
+        return False
+
 
 class RuleAtLeastOne(Rule):
     """Representation of a Rule that checks that there is at least one Element matching a given XPath."""
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise an `atleast_one` rule."""
-        self.name = "atleast_one"
+        self.name = 'atleast_one'
 
-        super(RuleAtLeastOne, self).__init__(xpath_base, case)
+        super(RuleAtLeastOne, self).__init__(context, case)
+
+    def __str__(self):
+        """A string stating what RuleAtLeastOne is checking."""
+        if len(self.paths) == 1:
+            return '`{self.paths[0]}` must be present within each `{self.context}`.'.format(**locals())
+        else:
+            return 'At least one of `{0}` must be present within each `{self.context}`.'.format('` or `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
-        """Check `dataset.xml_tree` has at least one instance of a given case for an Element.
+        """Check Dataset has at least one instance of a given case for an Element.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            Boolean value that changes depending on whether the case is found in the dataset.xml_tree.
+            bool: Return `True` when the case is found in the Dataset.
+                  Return `False` when the case is not found in the Dataset.
+            None: When a condition is met to skip validation.
+
+        Raises:
+            AttributeError: When an argument is given that does not have the required attributes.
+
+        Todo:
+            Check test data.
 
         """
-        found_paths = set()
+        context_elements = self._find_context_elements(dataset)
 
-        for path in self.paths:
-            if dataset.xml_tree.xpath(path) != list():
-                found_paths.add(path)
-        return len(found_paths) == len(self.paths)
+        for context_element in context_elements:
+            if self._condition_met_for(context_element):
+                return None
+            for path in self.paths:
+                if context_element.xpath(path):
+                    return True
+
+        return False
 
 
 class RuleDateOrder(Rule):
     """Representation of a Rule that checks that the date value of `more` is the most recent value in comparison to the date value of `less`."""
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise a `date_order` rule."""
-        self.name = "date_order"
+        self.name = 'date_order'
         self.special_case = 'NOW'  # Was a constant sort of
 
-        super(RuleDateOrder, self).__init__(xpath_base, case)
+        super(RuleDateOrder, self).__init__(context, case)
+
+    def __str__(self):
+        """A string stating what RuleDateOrder is checking."""
+        if self.less == self.special_case and self.more == self.special_case:
+            unformatted_str = '`{self.less}` must be chronologically before `{self.more}`. Try working that one out.'
+        elif self.less == self.special_case:
+            unformatted_str = '`{self.more}` must be in the future within each `{self.context}`.'
+        elif self.more == self.special_case:
+            unformatted_str = '`{self.more}` must be in the past within each `{self.context}`.'
+        else:
+            unformatted_str = '`{self.less}` must be chronologically before `{self.more}` within each `{self.context}`.'
+
+        return unformatted_str.format(**locals())
 
     def _normalize_xpaths(self):
-        """Normalize xpaths by combining them with `xpath_base`."""
+        """Normalize xpaths by combining them with `context`."""
+        self.normalized_paths = list()
         if self.less is not self.special_case:
-            self.less = self._normalize_xpath(self.less)
+            self.normalized_paths.append(self._normalize_xpath(self.less))
 
         if self.more is not self.special_case:
-            self.more = self._normalize_xpath(self.more)
+            self.normalized_paths.append(self._normalize_xpath(self.more))
+
+        self._normalize_condition()
 
     def is_valid_for(self, dataset):
         """Assert that the date value of `less` is older than the date value of `more`.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Return:
-            A boolean value. If `less` is older than `more`, return `True`.
+            bool: Return `True` when `less` is chronologically before `more`.
+
+        Raises:
+            AttributeError: When an argument is given that does not have the required attributes.
+            ValueError: When a date is given that is not in the correct xsd:date format.
+
+        Note:
+            `date` restricted to 10 characters in order to exclude possible timezone values.
 
         """
-        less_date = dataset.xml_tree.xpath(self.less)
-        more_date = dataset.xml_tree.xpath(self.more)
-        earlier_date = time.strptime(less_date[0], '%Y-%m-%d')
-        later_date = time.strptime(more_date[0], '%Y-%m-%d')
+        def get_date(context, path):
+            """Retrieve datetime object from an XPath string.
 
-        return earlier_date < later_date
+            Args:
+                context (an XPath): For the context in which further XPath queries are then made.
+                path: (an XPath): The ultimate XPath query to find the desired elements.
+
+            Returns:
+                datetime.datetime: A datetime object.
+
+            Raises:
+                ValueError:
+                    When a non-permitted number of unique dates are given for a `less` or `more` value.
+                    When datetime cannot convert a string of non-permitted characters.
+                    When non-permitted trailing characters are found after the core date string characters.
+
+            Note:
+                Though technically permitted, any dates with a leading '-' character are almost certainly incorrect and are therefore treated as data errors.
+
+            Todo:
+                Consider breaking this function down further so it follows SRP.
+
+            """
+            if path == self.special_case:
+                return datetime.today()
+
+            dates = self._extract_text_from_element_or_attribute(context, path)
+            if not dates[0]:
+                return
+            # Checks that anything after the YYYY-MM-DD string is a permitted timezone character
+            pattern = re.compile(r'^([+-]([01][0-9]|2[0-3]):([0-5][0-9])|Z)?$')
+            if (len(set(dates)) == 1) and pattern.match(dates[0][10:]):
+                return datetime.strptime(dates[0][:10], '%Y-%m-%d')
+            raise ValueError
+
+        context_elements = self._find_context_elements(dataset)
+
+        for context_element in context_elements:
+            if self._condition_met_for(context_element):
+                return None
+            early_date = get_date(context_element, self.less)
+            later_date = get_date(context_element, self.more)
+
+            try:
+                # python2 allows `bool`s to be compared to `None` without raising a TypeError, while python3 does not
+                if early_date is None or later_date is None:
+                    return None
+
+                if early_date >= later_date:
+                    return False
+            except TypeError:
+                # a TypeError is raised in python3 if either of the dates is None
+                return None
+
+        return True
 
 
 class RuleDependent(Rule):
     """Representation of a Rule that checks that if one of the elements in a given `path` exists then all its dependent paths must also exist."""
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise a `dependent` rule."""
-        self.name = "dependent"
+        self.name = 'dependent'
 
-        super(RuleDependent, self).__init__(xpath_base, case)
+        super(RuleDependent, self).__init__(context, case)
+
+    def __str__(self):
+        """A string stating what TestRuleDependent is checking."""
+        if len(self.paths) == 1:
+            return 'Within each `{self.context}`, either `{self.paths[0]}` exists or it does not. As such, this Rule is always True.'.format(**locals())
+        else:
+            return 'Within each `{self.context}`, either none of `{0}` must exist, or they must all exist.'.format('` or `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
-        """Assert that either all given `paths` or none of the given `paths` exist in a dataset.xml_tree.
+        """Assert that either all given `paths` or none of the given `paths` exist in a Dataset.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            A boolean value. If no `paths`, or all `paths` are found in the dataset.xml_tree, return `True`.
+            bool: Return `True` when all dependent `paths` are found in the Dataset, if any exist.
+
+        Raises:
+            AttributeError: When an argument is given that does not have the required attributes.
+
+        Todo:
+            Determine if it's reasonable to assume the user should give a specific xpath format, or whether the context-path structure dictates automatic conversion to relative paths.
 
         """
-        found_paths = 0
+        context_elements = self._find_context_elements(dataset)
+        unique_paths = set(self.paths)
 
-        for path in self.paths:
-            result = dataset.xml_tree.xpath(path)
-            if result != list():
-                found_paths += 1
+        for context_element in context_elements:
+            if self._condition_met_for(context_element):
+                return None
 
-        return not found_paths or found_paths == len(self.paths)
+            found_paths = 0
+            for path in unique_paths:
+                results = context_element.xpath(path)
+                if len(results):
+                    found_paths += 1
+
+            if not found_paths in [0, len(unique_paths)]:
+                return False
+
+        return True
 
 
 class RuleNoMoreThanOne(Rule):
     """Representation of a Rule that checks that there is no more than one Element matching a given XPath."""
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise a `no_more_than_one` rule."""
-        self.name = "no_more_than_one"
+        self.name = 'no_more_than_one'
 
-        super(RuleNoMoreThanOne, self).__init__(xpath_base, case)
+        super(RuleNoMoreThanOne, self).__init__(context, case)
+
+    def __str__(self):
+        """A string stating what RuleNoMoreThanOne is checking."""
+        if len(self.paths) == 1:
+            return '`{self.paths[0]}` must occur zero or one times within each `{self.context}`.'.format(**locals())
+        else:
+            return 'There must be no more than one element or attribute matched at `{0}` within each `{self.context}`.'.format('` or `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
-        """Check `dataset.xml_tree` has no more than one instance of a given case for an Element.
+        """Check dataset has no more than one instance of a given case for an Element.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            Boolean value that changes depending on whether one or fewer cases are found in the dataset.xml_tree.
+            bool: Return `True` when one or fewer cases are found in the Dataset.
+
+        Raises:
+            AttributeError: When an argument is given that does not have the required attributes.
+
+        Todo:
+            Check test data.
 
         """
-        compliant_paths = set()
+        context_elements = self._find_context_elements(dataset)
+        unique_paths = set(self.paths)
 
-        for path in self.paths:
-            if len(dataset.xml_tree.xpath(path)) <= 1:
-                compliant_paths.add(path)
+        for context_element in context_elements:
+            if self._condition_met_for(context_element):
+                return None
 
-        return len(compliant_paths) == len(self.paths)
+            found_elements = 0
+
+            for path in unique_paths:
+                results = context_element.xpath(path)
+                found_elements += len(results)
+
+            if found_elements > 1:
+                return False
+
+        return True
 
 
 class RuleRegexMatches(Rule):
     """Representation of a Rule that checks that the given `paths` must contain values that match the `regex` value."""
 
-    def __init__(self, xpath_base, case):
-        """Initialise a `regex_matches` rule."""
-        self.name = "regex_matches"
+    def __init__(self, context, case):
+        """Initialise a `regex_matches` Rule.
 
-        super(RuleRegexMatches, self).__init__(xpath_base, case)
+        Raises:
+            ValueError: When the case does not contain valid regex.
+
+        """
+        self.name = 'regex_matches'
+
+        super(RuleRegexMatches, self).__init__(context, case)
 
         try:
             re.compile(self.regex)
         except sre_constants.error:
             raise ValueError
+        if self.regex == '':
+            raise ValueError
+
+    def __str__(self):
+        """A string stating what RuleRegexMatches is checking."""
+        if len(self.paths) == 1:
+            return 'Each `{self.paths[0]}` within each `{self.context}` must match the regular expression `{self.regex}`.'.format(**locals())
+        else:
+            return 'Each instance of `{0}` within each `{self.context}` must match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
         """Assert that the text of the given `paths` matches the `regex` value.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            A boolean value. If the text of the given `path` matches the `regex` value, return `True`.
+            bool: Return `True` when the given `path` text matches the given regex case.
+
+        Raises:
+            AttributeError: When an argument is given that does not have the required attributes.
 
         """
-        pattern = re.compile(self.case['regex'])
+        context_elements = self._find_context_elements(dataset)
+        pattern = re.compile(self.regex)
 
-        for path in self.paths:
-            results = dataset.xml_tree.xpath(path)
-            for result in results:
-                return bool(pattern.match(result.text))
+        for context_element in context_elements:
+            if self._condition_met_for(context_element):
+                return None
+            for path in self.paths:
+                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
+                for string_to_check in strings_to_check:
+                    if not pattern.search(string_to_check):
+                        return False
+                    continue
+
+        return True
 
 
 class RuleRegexNoMatches(Rule):
     """Representation of a Rule that checks that the given `paths` must not contain values that match the `regex` value."""
 
-    def __init__(self, xpath_base, case):
-        """Initialise a `regex_no_matches` rule."""
-        self.name = "regex_no_matches"
+    def __init__(self, context, case):
+        """Initialise a `regex_no_matches` Rule.
 
-        super(RuleRegexNoMatches, self).__init__(xpath_base, case)
+        Raises:
+            ValueError: When the case does not contain valid regex.
+
+        """
+        self.name = 'regex_no_matches'
+
+        super(RuleRegexNoMatches, self).__init__(context, case)
 
         try:
             re.compile(self.regex)
         except sre_constants.error:
             raise ValueError
+        if self.regex == '':
+            raise ValueError
+
+    def __str__(self):
+        """A string stating what RuleRegexNoMatches is checking."""
+        if len(self.paths) == 1:
+            return 'Each `{self.paths[0]}` within each `{self.context}` must not match the regular expression `{self.regex}`.'.format(**locals())
+        else:
+            return 'Each instance of `{0}` within each `{self.context}` must not match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
         """Assert that no text of the given `paths` matches the `regex` value.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            A boolean value. If the text of the given `path` does not match the `regex` value, return `True`.
+            bool: Return `True` when the given `path` text does not match the given regex case.
+
+        Raises:
+            AttributeError: When an argument is given that does not have the required attributes.
 
         """
-        pattern = re.compile(self.case['regex'])
+        context_elements = self._find_context_elements(dataset)
+        pattern = re.compile(self.regex)
 
-        for path in self.paths:
-            results = dataset.xml_tree.xpath(path)
-            for result in results:
-                return not bool(pattern.match(result.text))
+        for context_element in context_elements:
+            if self._condition_met_for(context_element):
+                return None
+            for path in self.paths:
+                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
+                for string_to_check in strings_to_check:
+                    if pattern.search(string_to_check):
+                        return False
+                    continue
+
+        return True
 
 
 class RuleStartsWith(Rule):
-    """Representation of a Rule that checks that the start of each `path` text value matches the `start` text value.
+    """Representation of a Rule that checks that the start of each `path` text value matches the `start` text value."""
 
-    Todo:
-        Test with multiple start strings (should error).
+    def __init__(self, context, case):
+        """Initialise a `startswith` Rule."""
+        self.name = 'startswith'
 
-    """
+        super(RuleStartsWith, self).__init__(context, case)
 
-    def __init__(self, xpath_base, case):
-        """Initialise a `startswith` rule."""
-        self.name = "startswith"
-
-        super(RuleStartsWith, self).__init__(xpath_base, case)
+    def __str__(self):
+        """A string stating what RuleStartsWith is checking."""
+        if len(self.paths) == 1:
+            return 'Each `{self.paths[0]}` within each `{self.context}` must start with the value present at `{self.start}`.'.format(**locals())
+        else:
+            return 'Each instance of `{0}` within each `{self.context}` must start with the value present at `{self.start}`.'.format('` and `'.join(self.paths), **locals())
 
     def _normalize_xpaths(self):
-        """Normalize xpaths by combining them with `xpath_base`."""
+        """Normalize xpaths by combining them with `context`."""
         super(RuleStartsWith, self)._normalize_xpaths()
 
-        self.start = self._normalize_xpath(self.start)
+        self.normalized_paths.append(self._normalize_xpath(self.start))
 
     def is_valid_for(self, dataset):
         """Assert that the prefixing text of all given `paths` starts with the text of `start`.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            A boolean value. If the `path` string starts with the `start` string, return `True`.
+            bool: Return `True` when the `path` text starts with the value of `start`.
+
+        Raises:
+            AttributeError: When an argument is given that does not have the required attributes.
 
         """
-        prefixing_str = dataset.xml_tree.xpath(self.start)
+        context_elements = self._find_context_elements(dataset)
 
-        for path in self.paths:
-            results = dataset.xml_tree.xpath(path)
-            for result in results:
-                el_str = result.text
-                return el_str.startswith(prefixing_str[0])
+        for context_element in context_elements:
+            if self._condition_met_for(context_element):
+                return None
+            prefix = self._extract_text_from_element_or_attribute(context_element, self.start)[0]
+            for path in self.paths:
+                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
+                for string_to_check in strings_to_check:
+                    if not string_to_check.startswith(prefix):
+                        return False
+
+        return True
 
 
 class RuleSum(Rule):
     """Representation of a Rule that checks that the values in given `path` attributes must sum to the given `sum` value."""
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise a `sum` rule."""
-        self.name = "sum"
+        self.name = 'sum'
 
-        super(RuleSum, self).__init__(xpath_base, case)
+        super(RuleSum, self).__init__(context, case)
+
+    def __str__(self):
+        """A string stating what RuleSum is checking."""
+        return 'Within each `{self.context}`, the sum of values matched at `{0}` must be `{self.sum}`.'.format('` and `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
         """Assert that the total of the values given in `paths` match the given `sum` value.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            A boolean value. If the `path` values total to the `sum` value, return `True`.
+            bool: Return `True` when the `path` values total to the `sum` value.
+
+        Raises:
+            AttributeError: When an argument is given that does not have the required attributes.
 
         """
-        sum_values = list()
+        context_elements = self._find_context_elements(dataset)
+        unique_paths = set(self.paths)
+        for context_element in context_elements:
+            if self._condition_met_for(context_element):
+                return None
+            values_in_context = list()
+            for path in unique_paths:
+                values_to_sum = self._extract_text_from_element_or_attribute(context_element, path)
+                for value in values_to_sum:
+                    values_in_context.append(Decimal(value))
+            if sum(values_in_context) != Decimal(str(self.sum)):
+                return False
 
-        for path in self.paths:
-            results = dataset.xml_tree.xpath(path)
-            for result in results:
-                sum_values.append(float(result))
-
-        total = sum(sum_values)
-
-        return total == self.sum  # pylint: disable=no-member
+        return True
 
 
 class RuleUnique(Rule):
     """Representation of a Rule that checks that the text of each given path must be unique."""
 
-    def __init__(self, xpath_base, case):
+    def __init__(self, context, case):
         """Initialise a `unique` rule."""
-        self.name = "unique"
+        self.name = 'unique'
 
-        super(RuleUnique, self).__init__(xpath_base, case)
+        super(RuleUnique, self).__init__(context, case)
+
+    def __str__(self):
+        """A string stating what RuleUnique is checking."""
+        return 'Within each `{self.context}`, the text contained within each of the elements and attributes matched by `{0}` must be unique.'.format('` and `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
-        """Assert that the given paths are not found in the dataset.xml_tree more than once.
+        """Assert that the given `paths` are not found in the dataset.xml_tree more than once.
 
         Args:
-            dataset.xml_tree: an etree created from an XML dataset.
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            A boolean value. If no repeated text is found in the dataset.xml_tree for the given paths the value returned will be `True`.
+            bool: Return `True` when repeated text is found in the dataset for the given `paths`.
+
+        Raises:
+            AttributeError: When an argument is given that does not have the required attributes.
 
         Todo:
             Consider better methods for specifying which elements in the tree contain non-permitted duplication, such as bucket sort.
-            Test with a test ruleset that has multiple paths.
 
         """
-        original = list()
-        unique = set()
+        context_elements = self._find_context_elements(dataset)
 
-        for path in self.paths:
-            results = dataset.xml_tree.xpath(path)
-            for result in results:
-                original.append(result.text)
-                unique.add(result.text)
+        unique_paths = set(self.paths)
 
-        return len(original) == len(unique)
+        for context_element in context_elements:
+            if self._condition_met_for(context_element):
+                return None
+
+            all_content = list()
+            unique_content = set()
+
+            for path in unique_paths:
+                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
+                for string_to_check in strings_to_check:
+                    all_content.append(string_to_check)
+                    unique_content.add(string_to_check)
+
+            if len(all_content) != len(unique_content):
+                return False
+
+        return True

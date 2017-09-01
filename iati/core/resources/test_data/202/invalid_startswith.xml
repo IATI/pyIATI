@@ -1,6 +1,22 @@
 <?xml version="1.0"?>
-
+<!--no element or attribute contains the specified prefixing string-->
 <root_element>
-  <reporting-org ref="text"></reporting-org><!-- iati-identifier does not start with expected prefix -->
-  <iati-identifier>kittens-1234</iati-identifier>
+  <prefix>prefix</prefix><!--prefix value-->
+  <condition></condition><!--condition case-->
+  <element1>bunnies1234</element1><!--single path-->
+  <element2>bunnies1234</element2><!--multiple paths-->
+  <element3>bunnies1234</element3>
+  <element4>bunnies1234</element4><!--duplicate paths-->
+  <element5 attribute="bunnies1234"></element5><!--single path-->
+  <element6 attribute="bunnies1234"></element6><!--multiple paths-->
+  <element7 attribute="bunnies1234"></element7>
+  <element8 attribute="bunnies1234"></element8><!--duplicate paths-->
+  <nest>
+    <element9>bunnies1234</element9><!--nested path-->
+  </nest>
+  <nest>
+    <element10 attribute="bunnies1234"></element10><!--nested path-->
+  </nest>
+  <element11>bunnies1234</element11><!--duplicate element-->
+  <element11>bunnies1234</element11>
 </root_element>

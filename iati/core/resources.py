@@ -148,31 +148,6 @@ def get_codelist_path(codelist_name, version=None):
     return get_path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
 
 
-def get_schema_path(name, version=None):
-    """Determine the path of a schema with the given name.
-
-    Args:
-        name (str): The name of the schema to locate.
-        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
-
-    Returns:
-        str: The path to a file containing the specified schema.
-
-    Note:
-        Does not check whether the specified schema actually exists.
-
-    Warning:
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
-
-    Todo:
-        Handle versions of the standard other than 2.02.
-
-        Test this.
-
-    """
-    return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
-
-
 def get_test_data_path(name, version=None):
     """Determine the path of an IATI data file with the given filename.
 
@@ -281,6 +256,7 @@ def get_schema_path(name, version=None):
         Handle versions of the standard other than 2.02.
 
         Test this.
+
     """
     return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
@@ -317,6 +293,25 @@ def get_path_for_version(path, version=None):
     """
     return os.path.join(get_folder_path_for_version(version), path)
 
+
+def load_as_bytes(path):
+    """Load a resource at the specified path into a bytes object.
+
+    Args:
+        path (str): The path to the file that is to be read in.
+
+    Returns:
+        bytes: The contents of the file at the specified location.
+
+    Todo:
+        Should raise Exceptions when there are problems loading the requested data.
+        Add error handling for when the specified file does not exist.
+        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
+
+    """
+    return pkg_resources.resource_string(PACKAGE, path)
+
+
 def load_as_dataset(path):
     """Load a resource at the specified path into a dataset.
 
@@ -335,23 +330,6 @@ def load_as_dataset(path):
     """
     dataset_str = load_as_string(path)
     return iati.core.Dataset(dataset_str)
-
-def load_as_bytes(path):
-    """Load a resource at the specified path into a bytes object.
-
-    Args:
-        path (str): The path to the file that is to be read in.
-
-    Returns:
-        bytes: The contents of the file at the specified location.
-
-    Todo:
-        Should raise Exceptions when there are problems loading the requested data.
-        Add error handling for when the specified file does not exist.
-        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
-
-    """
-    return pkg_resources.resource_string(PACKAGE, path)
 
 
 def load_as_string(path):

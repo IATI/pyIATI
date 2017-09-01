@@ -120,13 +120,16 @@ def ruleset(version=None):
 
     return iati.core.Ruleset(ruleset_str)
 
+
 def ruleset_schema(version=None):
+    """Return the specified Ruleset schema."""
     name = 'ruleset_schema'
 
     path = iati.core.resources.get_ruleset_path(name, version)
     schema_str = iati.core.resources.load_as_string(path)
     schema = json.loads(schema_str)
     return schema
+
 
 _SCHEMAS = {}
 """A cache of loaded Schemas.

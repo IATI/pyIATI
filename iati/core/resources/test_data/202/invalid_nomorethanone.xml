@@ -1,6 +1,39 @@
 <?xml version="1.0"?>
-
+<!--non-permitted duplication of elements-->
 <root_element>
-  <element_that_only_occurs_once></element_that_only_occurs_once>
-  <element_that_only_occurs_once></element_that_only_occurs_once><!-- more than one element that should only occur once -->
+  <condition></condition><!--condition case-->
+  <element1></element1><!--single path, multiple elements-->
+  <element1></element1>
+  <element2></element2><!--multiple paths, multiple elements-->
+  <element2></element2>
+  <element3></element3>
+  <element3></element3>
+  <element4></element4><!--duplicate paths, multiple elements-->
+  <element4></element4>
+  <element5></element5><!--multiple paths, one valid, one with multiple elements-->
+  <element6></element6>
+  <element6></element6>
+  <element7 attribute=""></element7><!--single path, multiple attributes-->
+  <element7 attribute=""></element7>
+  <element8 attribute=""></element8><!--multiple paths, multiple attributes-->
+  <element8 attribute=""></element8>
+  <element9 attribute=""></element9>
+  <element9 attribute=""></element9>
+  <element10 attribute=""></element10><!--duplicate paths, multiple attributes-->
+  <element10 attribute=""></element10>
+  <element11 attribute=""></element11><!--multiple paths, one valid, one with multiple attributes-->
+  <element12 attribute=""></element12>
+  <element12 attribute=""></element12>
+  <nest>
+    <element13></element13><!--nested duplicates-->
+    <element13></element13>
+  </nest>
+  <nest>
+    <element14 attribute=""></element14><!--nested duplicates-->
+    <element14 attribute=""></element14>
+  </nest>
+  <element15></element15><!--multiple paths, single elements-->
+  <element16></element16>
+  <element17 attribute=""></element17><!--multiple paths, single attributes-->
+  <element18 attribute=""></element18>
 </root_element>
