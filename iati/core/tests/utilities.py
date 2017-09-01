@@ -29,6 +29,8 @@ DATASET_FOR_DATEORDER_RULE_VALID = iati.core.resources.load_as_dataset(iati.core
 """An etree containing XML data that is permitted by `RuleDateOrder`."""
 DATASET_FOR_DATEORDER_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_dateorder'))
 """An etree containing XML data that is not permitted by `RuleDateOrder`."""
+DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_format_dateorder'))
+"""An etree containing XML data that contains dates that are formatted incorrectly according to RuleDateOrder."""
 
 DATASET_FOR_DEPENDENT_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_dependent'))
 """An etree containing XML data that is permitted by `RuleDependent`."""

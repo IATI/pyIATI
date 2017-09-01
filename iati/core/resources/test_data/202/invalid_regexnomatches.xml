@@ -1,5 +1,21 @@
 <?xml version="1.0"?>
-
+<!--all element and attribute text matches the specified regex-->
 <root_element>
-  <iati-identifier>Almost anything is allowed here according to the current standard.</iati-identifier><!-- iati-identifier matches regex -->
+  <condition></condition><!--condition case-->
+  <element1>test</element1><!--single path-->
+  <element2>test</element2><!--multiple paths-->
+  <element3>test</element3>
+  <element4>test</element4><!--duplicate paths-->
+  <element5 attribute="test"></element5><!--single path-->
+  <element6 attribute="test"></element6><!--multiple paths-->
+  <element7 attribute="test"></element7>
+  <element8 attribute="test"></element8><!--duplicate paths-->
+  <nest>
+    <element9>test</element9><!--nested element-->
+  </nest>
+  <nest>
+    <element10 attribute="test"></element10><!--nested attribute-->
+  </nest>
+  <element11>test</element11><!--duplicate element-->
+  <element11>test</element11>
 </root_element>

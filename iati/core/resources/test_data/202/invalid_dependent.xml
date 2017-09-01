@@ -1,7 +1,19 @@
 <?xml version="1.0"?>
-
+<!--required dependent elements or attributes missing-->
 <root_element>
-  <element1><!-- Does not contain all dependencies for transactions -->
-    <element2></element2>
-  </element1>
+  <condition></condition><!--condition case-->
+  <element1></element1><!--dependent element missing-->
+  <element3></element3>
+  <element4 attribute=""></element4><!--dependent attribute missing-->
+  <element6 attribute=""></element6>
+  <nest>
+    <element7></element7>
+    <element15></element15><!--one of the required elements exists in each context-->
+  </nest>
+  <nest>
+    <element9 attribute=""></element9>
+    <element16></element16><!--one of the required elements exists in each context-->
+  </nest>
+  <element11></element11><!--multiple identical elements, missing dependent element-->
+  <element11></element11>
 </root_element>

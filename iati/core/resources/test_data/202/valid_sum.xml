@@ -1,6 +1,58 @@
 <?xml version="1.0"?>
-
+<!--given values sum to specified amount-->
 <root_element>
-  <recipient-country code="AF" percentage="50" /><!-- percentages sum to 100 correctly according to test ruleset -->
-  <recipient-region code="489" vocabulary="1" percentage="50" />
+  <condition></condition><!--condition case-->
+  <element1>3</element1><!--single path-->
+  <element2>1</element2><!--multiple paths-->
+  <element3>2</element3>
+  <element4>3</element4><!--duplicate paths-->
+  <element5>-500</element5><!--negative value-->
+  <element6>-500</element6>
+  <element7>50</element7><!--sum greater than standard percentage value-->
+  <element8>51</element8>
+  <element9>10</element9><!--sum to decimal value-->
+  <element10>5.5</element10>
+  <element11>0</element11><!--sum zero value-->
+  <element12>0</element12>
+  <element13>5e+99</element13><!--big value-->
+  <element14>5e+99</element14>
+  <element15>-5e+99</element15><!--tiny value-->
+  <element16>-5e+99</element16>
+  <element17>1.49896229e6</element17><!--exponential value-->
+  <element18>1.49896229e6</element18>
+  <element19 attribute="3"></element19><!--single path-->
+  <element20 attribute="1"></element20><!--multiple paths-->
+  <element21 attribute="2"></element21>
+  <element22 attribute="3"></element22><!--duplicate paths-->
+  <element23 attribute="-500"></element23><!--negative value-->
+  <element24 attribute="-500"></element24>
+  <element25 attribute="50"></element25><!--sum greater than standard percentage value-->
+  <element26 attribute="51"></element26>
+  <element27 attribute="10"></element27><!--sum to decimal value-->
+  <element28 attribute="5.5"></element28>
+  <element29 attribute="0"></element29><!--sum zero value-->
+  <element30 attribute="0"></element30>
+  <element31 attribute="5e+99"></element31><!--big value-->
+  <element32 attribute="5e+99"></element32>
+  <element33 attribute="-5e+99"></element33><!--tiny value-->
+  <element34 attribute="-5e+99"></element34>
+  <element35 attribute="1.49896229e6"></element35><!--exponential value-->
+  <element36 attribute="1.49896229e6"></element36>
+  <element37>10</element37><!--duplicate elements-->
+  <element37>10</element37>
+  <element37>10</element37>
+  <element37>10</element37>
+  <element37>10</element37>
+  <nest>
+    <element38>1</element38><!--nested elements-->
+    <element39>2</element39>
+  </nest>
+  <nest>
+    <element40 attribute="1"></element40><!--nested attributes-->
+    <element41 attribute="2"></element41>
+  </nest>
+  <element42>0.2</element42><!--sum to value that cannot be represented using standard binary representation-->
+  <element43>0.1</element43>
+  <element44 attribute="0.2"></element44><!--sum to value that cannot be represented using standard binary representation-->
+  <element45 attribute="0.1"></element45>
 </root_element>
