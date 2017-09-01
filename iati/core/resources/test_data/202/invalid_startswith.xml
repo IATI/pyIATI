@@ -2,6 +2,7 @@
 <!--no element or attribute contains the specified prefixing string-->
 <root_element>
   <prefix>prefix</prefix><!--prefix value-->
+  <condition></condition><!--condition case-->
   <element1>bunnies1234</element1><!--single path-->
   <element2>bunnies1234</element2><!--multiple paths-->
   <element3>bunnies1234</element3>

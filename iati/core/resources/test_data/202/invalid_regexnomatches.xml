@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--all element and attribute text matches the specified regex-->
 <root_element>
+  <condition></condition><!--condition case-->
   <element1>test</element1><!--single path-->
   <element2>test</element2><!--multiple paths-->
   <element3>test</element3>

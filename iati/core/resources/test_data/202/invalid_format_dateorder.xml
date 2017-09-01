@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--all dates in the correct order but formatted in non-permitted ways-->
 <root_element>
+  <condition></condition><!--condition case-->
   <element1>17-08-2016</element1><!--Euro-date-->
   <element2>17-08-2017</element2>
   <element3>08-17-2016</element3><!--USA-date-->
