@@ -18,5 +18,5 @@
     <element10 attribute="prefixbeardeddragonsarecool"></element10><!--nested path-->
   </nest>
   <element11>prefix0123</element11><!--duplicate element-->
-  <element11>prefix4567</element11>
+  <element11>prefix</element11>
 </root_element>
