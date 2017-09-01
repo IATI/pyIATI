@@ -687,9 +687,6 @@ class RuleStartsWith(Rule):
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
 
-        Todo:
-            Refactor to properly implement this rule according to the spec.
-
         """
         context_elements = self._find_context_elements(dataset)
 
