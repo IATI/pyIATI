@@ -730,12 +730,14 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     invalidating_cases = [
         {'paths': ['element1']},  # single path
         {'paths': ['element7/@attribute']},
-        {'paths': ['element2', 'element3']},  # multiple paths
+        {'paths': ['element2', 'element3']},  # multiple paths, multiple of each
         {'paths': ['element8/@attribute', 'element9/@attribute']},
         {'paths': ['element4', 'element4']},  # duplicate paths
         {'paths': ['element10/@attribute', 'element10/@attribute']},
         {'paths': ['element5', 'element6']},  # one path valid, another invalid
-        {'paths': ['element11/@attribute', 'element12/@attribute']}
+        {'paths': ['element11/@attribute', 'element12/@attribute']},
+        {'paths': ['element15', 'element16']},  # multiple paths, one of each
+        {'paths': ['element17/@attribute', 'element18/@attribute']}  # multiple paths, one of each
     ]
 
     @pytest.fixture

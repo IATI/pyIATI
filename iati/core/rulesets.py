@@ -530,19 +530,21 @@ class RuleNoMoreThanOne(Rule):
         """
         context_elements = self._find_context_elements(dataset)
         unique_paths = set(self.paths)
-        compliant_paths = list()
-        no_of_paths = 0
 
         for context_element in context_elements:
             if self._condition_met_for(context_element):
                 return None
-            no_of_paths += len(unique_paths)
+
+            found_elements = 0
+
             for path in unique_paths:
                 results = context_element.xpath(path)
-                if len(results) <= 1:
-                    compliant_paths.append(path)
+                found_elements += len(results)
 
-        return len(compliant_paths) == no_of_paths
+            if found_elements > 1:
+                return False
+
+        return True
 
 
 class RuleRegexMatches(Rule):
