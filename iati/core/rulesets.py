@@ -278,11 +278,12 @@ class Rule(object):
         """
         return dataset.xml_tree.xpath(self.context)
 
-    def _extract_text_from_element_or_attribute(self, xpath_results):
+    def _extract_text_from_element_or_attribute(self, context, path):
         """Return a list of strings regardless of whether XPath result is an attribute or an element.
 
         Args:
-            xpath_results (list): Raw XPath query results.
+            context (Element): An xml Element.
+            path (str): An XPath query string.
 
         Returns:
             list of str: Text values from XPath query results.
@@ -291,6 +292,7 @@ class Rule(object):
             `Element.text` will return `None` if it contains no text. This is bad. As such, this is converted to an empty string to prevent TypeErrors.
 
         """
+        xpath_results = context.xpath(path)
         results = [result if isinstance(result, six.string_types) else result.text for result in xpath_results]
         return ['' if result is None else result for result in results]
 
@@ -345,6 +347,9 @@ class RuleAtLeastOne(Rule):
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
+
+        Todo:
+            Check test data.
 
         """
         context_elements = self._find_context_elements(dataset)
@@ -423,8 +428,7 @@ class RuleDateOrder(Rule):
             if path == self.special_case:
                 return datetime.today()
 
-            results = context.xpath(path)
-            dates = self._extract_text_from_element_or_attribute(results)
+            dates = self._extract_text_from_element_or_attribute(context, path)
             if not dates[0]:
                 return
             # Checks that anything after the YYYY-MM-DD string is a permitted timezone character
@@ -480,37 +484,23 @@ class RuleDependent(Rule):
             Determine if it's reasonable to assume the user should give a specific xpath format, or whether the context-path structure dictates automatic conversion to relative paths.
 
         """
-        def add_query_result(result):
-            """Add appropriate result to `found_in_dataset` whether attribute or element.
-
-            Args:
-                result (XPath element or attribute string): An XPath return value.
-
-            Todo:
-                Maybe refactor to return tag instead and extract to Rule base class.
-
-            """
-            try:
-                if result.is_attribute:
-                    found_in_dataset.add(result.getparent().tag)
-            except AttributeError:
-                found_in_dataset.add(result.tag)
-
         context_elements = self._find_context_elements(dataset)
-        paths = set(self.paths)
-        found_in_dataset = set()
+        unique_paths = set(self.paths)
 
         for context_element in context_elements:
             if self._condition_met_for(context_element):
                 return None
-            for path in paths:
-                results = context_element.xpath(path)
-                for result in results:
-                    # result will be an empty list when no elements or attribute text is found
-                    if result != list():
-                        add_query_result(result)
 
-        return not found_in_dataset or len(found_in_dataset) == len(paths)
+            found_paths = 0
+            for path in unique_paths:
+                results = context_element.xpath(path)
+                if len(results):
+                    found_paths += 1
+
+            if not found_paths in [0, len(unique_paths)]:
+                return False
+
+        return True
 
 
 class RuleNoMoreThanOne(Rule):
@@ -533,6 +523,9 @@ class RuleNoMoreThanOne(Rule):
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
+
+        Todo:
+            Check test data.
 
         """
         context_elements = self._find_context_elements(dataset)
@@ -595,8 +588,7 @@ class RuleRegexMatches(Rule):
             if self._condition_met_for(context_element):
                 return None
             for path in self.paths:
-                results = context_element.xpath(path)
-                strings_to_check = self._extract_text_from_element_or_attribute(results)
+                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
                 for string_to_check in strings_to_check:
                     if not pattern.search(string_to_check):
                         return False
@@ -646,8 +638,7 @@ class RuleRegexNoMatches(Rule):
             if self._condition_met_for(context_element):
                 return None
             for path in self.paths:
-                results = context_element.xpath(path)
-                strings_to_check = self._extract_text_from_element_or_attribute(results)
+                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
                 for string_to_check in strings_to_check:
                     if pattern.search(string_to_check):
                         return False
@@ -689,11 +680,11 @@ class RuleStartsWith(Rule):
         for context_element in context_elements:
             if self._condition_met_for(context_element):
                 return None
+            prefix = self._extract_text_from_element_or_attribute(context_element, self.start)[0]
             for path in self.paths:
-                results = context_element.xpath(path)
-                strings_to_check = self._extract_text_from_element_or_attribute(results)
+                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
                 for string_to_check in strings_to_check:
-                    if not string_to_check.startswith(self.start):
+                    if not string_to_check.startswith(prefix):
                         return False
 
         return True
@@ -722,14 +713,13 @@ class RuleSum(Rule):
 
         """
         context_elements = self._find_context_elements(dataset)
-
+        unique_paths = set(self.paths)
         for context_element in context_elements:
             if self._condition_met_for(context_element):
                 return None
             values_in_context = list()
-            for path in set(self.paths):
-                results = context_element.xpath(path)
-                values_to_sum = self._extract_text_from_element_or_attribute(results)
+            for path in unique_paths:
+                values_to_sum = self._extract_text_from_element_or_attribute(context_element, path)
                 for value in values_to_sum:
                     values_in_context.append(Decimal(value))
             if sum(values_in_context) != Decimal(str(self.sum)):
@@ -775,8 +765,7 @@ class RuleUnique(Rule):
             unique_content = set()
 
             for path in unique_paths:
-                results = context_element.xpath(path)
-                strings_to_check = self._extract_text_from_element_or_attribute(results)
+                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
                 for string_to_check in strings_to_check:
                     all_content.append(string_to_check)
                     unique_content.add(string_to_check)

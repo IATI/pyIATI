@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--dates in incorrect order-->
 <root_element>
+  <condition></condition><!--condition case-->
   <element1>2017-08-16</element1><!--elements in wrong chronological order-->
   <element2>2016-08-16</element2>
   <element3>2017-08-16</element3><!--elements have identical values-->

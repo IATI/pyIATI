@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--non-permitted duplication of elements-->
 <root_element>
+  <condition></condition><!--condition case-->
   <element1></element1><!--single path, multiple elements-->
   <element1></element1>
   <element2></element2><!--multiple paths, multiple elements-->
