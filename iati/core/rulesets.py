@@ -475,6 +475,9 @@ class RuleDateOrder(Rule):
             # Checks that anything after the YYYY-MM-DD string is a permitted timezone character
             pattern = re.compile(r'^([+-]([01][0-9]|2[0-3]):([0-5][0-9])|Z)?$')
             if (len(set(dates)) == 1) and pattern.match(dates[0][10:]):
+                if len(dates[0]) < 10:
+                    # '%d' and '%m' are documented as requiring zero-padded dates.as input. This is actually for output. As such, a separate length check is required to ensure zero-padded values.
+                    raise ValueError
                 return datetime.strptime(dates[0][:10], '%Y-%m-%d')
             raise ValueError
 
