@@ -548,7 +548,9 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element23/@attribute', 'more': 'element24/@attribute'},
         {'less': 'element12', 'more': 'element13'},  # multiple identical `more` dates that are chronologically before `less`
         {'less': 'element25/@attribute', 'more': 'element26/@attribute'},
-        {'less': 'element27', 'more': 'element28'}  # multiple identical elements in incorrect order
+        {'less': 'element27', 'more': 'element28'},  # multiple identical elements in incorrect order
+        {'less': 'element29', 'more': 'xpath-that-does-not-exist'},  # the xpath for more does not exist
+        {'less': 'xpath-that-does-not-exist', 'more': 'element29'}  # the xpath for less does not exist
     ]
 
     @pytest.fixture
@@ -627,7 +629,10 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element43', 'more': 'element44'},  # UNIX timestamp format
         {'less': 'element45/@attribute', 'more': 'element46/@attribute'},
         {'less': 'element47', 'more': 'element48'},  # All text date format
-        {'less': 'element49/@attribute', 'more': 'element50/@attribute'}
+        {'less': 'element49/@attribute', 'more': 'element50/@attribute'},
+        {'less': 'element51', 'more': 'element52'},  # missing day
+        {'less': 'element53', 'more': 'element54'},  # day not zero-padded
+        {'less': 'element55', 'more': 'element56'}  # month not zero-padded
     ])
     def test_incorrect_date_format_raises_error(self, valid_single_context, case, rule_constructor):
         """Check that a dataset with dates in an incorrect format raise expected error."""
