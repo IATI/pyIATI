@@ -535,7 +535,9 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element23/@attribute', 'more': 'element24/@attribute'},
         {'less': 'element12', 'more': 'element13'},  # multiple identical `more` dates that are chronologically before `less`
         {'less': 'element25/@attribute', 'more': 'element26/@attribute'},
-        {'less': 'element27', 'more': 'element28'}  # multiple identical elements in incorrect order
+        {'less': 'element27', 'more': 'element28'},  # multiple identical elements in incorrect order
+        {'less': 'element29', 'more': 'xpath-that-does-not-exist'},  # the xpath for more does not exist
+        {'less': 'xpath-that-does-not-exist', 'more': 'element29'}  # the xpath for less does not exist
     ]
 
     @pytest.fixture
