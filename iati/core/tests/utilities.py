@@ -66,8 +66,16 @@ DATASET_FOR_UNIQUE_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.re
 """An etree containing XML data that is permitted by `RuleUnique`."""
 DATASET_FOR_UNIQUE_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_unique'))
 """An etree containing XML data that is not permitted by `RuleUnique`."""
-DATASET_VALID_FOR_STANDARD_RULESET_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('standard_test_dataset_valid'))
+DATASET_FOR_STANDARD_RULESET_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('standard_test_dataset_valid'))
 """An etree containing XML data that meets the IATI Standard ruleset."""
+DATASET_FOR_STANDARD_RULESET_INVALID_BAD_DATE_ORDER = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('standard_test_dataset_invalid_bad_date_order'))
+"""An etree containing XML data that does not meet the IATI Standard ruleset (on account of a bad date order)."""
+DATASET_FOR_STANDARD_RULESET_INVALID_BAD_IDENTIFIER = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('standard_test_dataset_invalid_bad_identifier'))
+"""An etree containing XML data that does not meet the IATI Standard ruleset (on account of a bad IATI identifier)."""
+DATASET_FOR_STANDARD_RULESET_INVALID_DOES_NOT_SUM_100 = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('standard_test_dataset_invalid_does_not_sum_100'))
+"""An etree containing XML data that does not meet the IATI Standard ruleset (on account of a sums not adding to 100%)."""
+DATASET_FOR_STANDARD_RULESET_INVALID_MISSING_SECTOR_ELEMENT = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('standard_test_dataset_invalid_missing_sector_element'))
+"""An etree containing XML data that does not meet the IATI Standard ruleset (on account of a missing sector element)."""
 
 SCHEMA_NAME_VALID = 'iati-activities-schema'
 """A string containing a valid Schema name."""
