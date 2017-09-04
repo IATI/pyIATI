@@ -66,6 +66,8 @@ DATASET_FOR_UNIQUE_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.re
 """An etree containing XML data that is permitted by `RuleUnique`."""
 DATASET_FOR_UNIQUE_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_unique'))
 """An etree containing XML data that is not permitted by `RuleUnique`."""
+DATASET_VALID_FOR_STANDARD_RULESET = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('standard_test_dataset_valid'))
+"""An etree containing XML data that meets the IATI Standard ruleset."""
 
 SCHEMA_NAME_VALID = 'iati-activities-schema'
 """A string containing a valid Schema name."""
