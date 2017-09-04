@@ -91,7 +91,7 @@ class Ruleset(object):
 
         """
         for rule in self.rules:
-            if not rule.is_valid_for(dataset):
+            if rule.is_valid_for(dataset) is False:
                 return False
 
         return True
