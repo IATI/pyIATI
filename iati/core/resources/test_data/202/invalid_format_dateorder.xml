@@ -54,4 +54,6 @@
   <element48>Thirtyfirst of August Twenty-seventeen</element48>
   <element49 attribute="Thirtyfirst of August Twenty-sixteen"></element49>
   <element50 attribute="Thirtyfirst of August Twenty-seventeen"></element50>
+  <element51>2017-08-</element51><!--day missing-->
+  <element52>2016-08-</element52>
 </root_element>

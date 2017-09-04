@@ -616,7 +616,8 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element43', 'more': 'element44'},  # UNIX timestamp format
         {'less': 'element45/@attribute', 'more': 'element46/@attribute'},
         {'less': 'element47', 'more': 'element48'},  # All text date format
-        {'less': 'element49/@attribute', 'more': 'element50/@attribute'}
+        {'less': 'element49/@attribute', 'more': 'element50/@attribute'},
+        {'less': 'element51', 'more': 'element52'}  # missing day
     ])
     def test_incorrect_date_format_raises_error(self, valid_single_context, case, rule_constructor):
         """Check that a dataset with dates in an incorrect format raise expected error."""
