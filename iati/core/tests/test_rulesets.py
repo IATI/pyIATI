@@ -122,6 +122,18 @@ class TestRuleset(object):
             assert isinstance(rule, iati.core.Rule)
             assert isinstance(rule, iati.core.RuleAtLeastOne)
 
+    def test_ruleset_is_valid_for_valid_dataset(self):
+        """Check that a Dataset can be validated against the Standard Ruleset."""
+        ruleset = iati.core.default.ruleset()
+        valid_dataset = iati.core.tests.utilities.VALID_STANDARD_RULESET_DATASET
+        assert ruleset.is_valid_for(valid_dataset)
+
+    def test_ruleset_is_invalid_for_invalid_dataset(self):
+        """Check that a Dataset can be invalidated against the Standard Ruleset."""
+        ruleset = iati.core.default.ruleset()
+        invalid_dataset = iati.core.tests.utilities.INVALID_STANDARD_RULESET_DATASET
+        assert not ruleset.is_valid_for(invalid_dataset)
+
 
 class TestRule(object):
     """A container for tests relating to Rules."""
