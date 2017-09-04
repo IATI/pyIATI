@@ -8,6 +8,7 @@
     <recipient-country code="AF" percentage="25" />
     <recipient-country code="AX" percentage="75" />
     <transaction>
+      <transaction-date>2016-09-04</transaction-date>
       <sector>12345</sector>
     </transaction>
   </iati-activity>
