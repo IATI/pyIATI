@@ -116,8 +116,6 @@ DATASET_FOR_STANDARD_RULESET_INVALID_MISSING_SECTOR_ELEMENT = iati.core.resource
 SCHEMA_NAME_VALID = 'iati-activities-schema'
 """A string containing a valid Schema name."""
 
-XML_TREE_VALID = etree.fromstring(XML_STR_VALID_NOT_IATI)
-"""An etree that is not valid IATI data."""
 XML_TREE_VALID = etree.fromstring(load_as_string('valid_not_iati'))
 """An etree that is valid XML but not IATI XML."""
 XML_TREE_VALID_IATI = etree.fromstring(load_as_string('valid_iati'))
