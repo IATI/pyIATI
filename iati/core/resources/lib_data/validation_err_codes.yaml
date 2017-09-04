@@ -20,6 +20,7 @@
 # * codelist
 # * file
 # * iati-xml
+# * ruleset
 # * tool-lxml
 # * xml
 #
@@ -221,3 +222,14 @@
         This error may occur in an unspecified number of situations. Sorry this help message cannot be more helpful.
     info: |-
         {err}
+
+- err-ruleset-conformance-fail:
+    base_exception: ValueError
+    category: ruleset
+    description: |-
+        A Dataset does not conform with a Ruleset.
+    help: |-
+        Rulesets specify a number of Rules that a valid IATI Dataset must meet.
+        For more information about Rulesets, see http://iatistandard.org/rulesets/
+    info: |-
+        The way in which the Dataset does not conform is unknown.
