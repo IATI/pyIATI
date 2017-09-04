@@ -21,51 +21,62 @@ import iati.core.resources
 
 
 DATASET_FOR_ATLEASTONE_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_atleastone'))
-"""An etree containing XML data that is permitted by `RuleAtLeastOne`."""
+"""A Dataset that is permitted by `RuleAtLeastOne`."""
 DATASET_FOR_ATLEASTONE_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_atleastone'))
-"""An etree containing XML data that is not permitted by `RuleAtLeastOne`."""
+"""A Dataset that is not permitted by `RuleAtLeastOne`."""
 
 DATASET_FOR_DATEORDER_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_dateorder'))
-"""An etree containing XML data that is permitted by `RuleDateOrder`."""
+"""A Dataset that is permitted by `RuleDateOrder`."""
 DATASET_FOR_DATEORDER_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_dateorder'))
-"""An etree containing XML data that is not permitted by `RuleDateOrder`."""
+"""A Dataset that is not permitted by `RuleDateOrder`."""
 DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_format_dateorder'))
-"""An etree containing XML data that contains dates that are formatted incorrectly according to RuleDateOrder."""
+"""A Dataset that contains dates that are formatted incorrectly according to RuleDateOrder."""
 
 DATASET_FOR_DEPENDENT_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_dependent'))
-"""An etree containing XML data that is permitted by `RuleDependent`."""
+"""A Dataset that is permitted by `RuleDependent`."""
 DATASET_FOR_DEPENDENT_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_dependent'))
-"""An etree containing XML data that is not permitted by `RuleDependent`."""
+"""A Dataset that is not permitted by `RuleDependent`."""
 
 DATASET_FOR_NOMORETHANONE_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_nomorethanone'))
-"""An etree containing XML data that is permitted by `RuleNoMoreThanOne`."""
+"""A Dataset that is permitted by `RuleNoMoreThanOne`."""
 DATASET_FOR_NOMORETHANONE_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_nomorethanone'))
-"""An etree containing XML data that is not permitted by `RuleNoMoreThanOne`."""
+"""A Dataset that is not permitted by `RuleNoMoreThanOne`."""
 
 DATASET_FOR_REGEXMATCHES_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_regexmatches'))
-"""An etree containing XML data that is permitted by `RuleRegexMatches`."""
+"""A Dataset that is permitted by `RuleRegexMatches`."""
 DATASET_FOR_REGEXMATCHES_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_regexmatches'))
-"""An etree containing XML data that is not permitted by `RuleRegexMatches`."""
+"""A Dataset that is not permitted by `RuleRegexMatches`."""
 
 DATASET_FOR_REGEXNOMATCHES_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_regexnomatches'))
-"""An etree containing XML data that is permitted by `RuleRegexNoMatches`."""
+"""A Dataset that is permitted by `RuleRegexNoMatches`."""
 DATASET_FOR_REGEXNOMATCHES_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_regexnomatches'))
-"""An etree containing XML data that is not permitted by `RuleRegexNoMatches`."""
+"""A Dataset that is not permitted by `RuleRegexNoMatches`."""
 
 DATASET_FOR_STARTSWITH_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_startswith'))
-"""An etree containing XML data that is permitted by `RuleStartsWith`."""
+"""A Dataset that is permitted by `RuleStartsWith`."""
 DATASET_FOR_STARTSWITH_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_startswith'))
-"""An etree containing XML data that is not permitted by `RuleStartsWith`."""
+"""A Dataset that is not permitted by `RuleStartsWith`."""
 
 DATASET_FOR_SUM_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_sum'))
-"""An etree containing XML data that is permitted by `RuleSum`."""
+"""A Dataset that is permitted by `RuleSum`."""
 DATASET_FOR_SUM_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_sum'))
-"""An etree containing XML data that is not permitted by `RuleSum`."""
+"""A Dataset that is not permitted by `RuleSum`."""
 
 DATASET_FOR_UNIQUE_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_unique'))
-"""An etree containing XML data that is permitted by `RuleUnique`."""
+"""A Dataset that is permitted by `RuleUnique`."""
 DATASET_FOR_UNIQUE_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_unique'))
-"""An etree containing XML data that is not permitted by `RuleUnique`."""
+"""A Dataset that is not permitted by `RuleUnique`."""
+
+DATASET_FOR_STANDARD_RULESET_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_std_ruleset'))
+"""A Dataset that meets the IATI Standard ruleset."""
+DATASET_FOR_STANDARD_RULESET_INVALID_BAD_DATE_ORDER = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_std_ruleset_bad_date_order'))
+"""A Dataset that does not meet the IATI Standard ruleset (on account of a bad date order)."""
+DATASET_FOR_STANDARD_RULESET_INVALID_BAD_IDENTIFIER = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_std_ruleset_bad_identifier'))
+"""A Dataset that does not meet the IATI Standard ruleset (on account of a bad IATI identifier)."""
+DATASET_FOR_STANDARD_RULESET_INVALID_DOES_NOT_SUM_100 = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_std_ruleset_does_not_sum_100'))
+"""A Dataset that does not meet the IATI Standard ruleset (on account of a sums not adding to 100%)."""
+DATASET_FOR_STANDARD_RULESET_INVALID_MISSING_SECTOR_ELEMENT = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_std_ruleset_missing_sector_element'))
+"""A Dataset that does not meet the IATI Standard ruleset (on account of a missing sector element)."""
 
 
 def load_as_dataset(file_path):
@@ -101,18 +112,6 @@ SCHEMA_ACTIVITY_NAME_VALID = 'iati-activities-schema'
 """A string containing a valid IATI Activity Schema name."""
 SCHEMA_ORGANISATION_NAME_VALID = 'iati-organisations-schema'
 """A string containing a valid IATI Organisaion Schema name."""
-
-DATASET_FOR_STANDARD_RULESET_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('standard_test_dataset_valid'))
-"""An etree containing XML data that meets the IATI Standard ruleset."""
-DATASET_FOR_STANDARD_RULESET_INVALID_BAD_DATE_ORDER = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('standard_test_dataset_invalid_bad_date_order'))
-"""An etree containing XML data that does not meet the IATI Standard ruleset (on account of a bad date order)."""
-DATASET_FOR_STANDARD_RULESET_INVALID_BAD_IDENTIFIER = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('standard_test_dataset_invalid_bad_identifier'))
-"""An etree containing XML data that does not meet the IATI Standard ruleset (on account of a bad IATI identifier)."""
-DATASET_FOR_STANDARD_RULESET_INVALID_DOES_NOT_SUM_100 = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('standard_test_dataset_invalid_does_not_sum_100'))
-"""An etree containing XML data that does not meet the IATI Standard ruleset (on account of a sums not adding to 100%)."""
-DATASET_FOR_STANDARD_RULESET_INVALID_MISSING_SECTOR_ELEMENT = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('standard_test_dataset_invalid_missing_sector_element'))
-"""An etree containing XML data that does not meet the IATI Standard ruleset (on account of a missing sector element)."""
-
 SCHEMA_NAME_VALID = 'iati-activities-schema'
 """A string containing a valid Schema name."""
 
