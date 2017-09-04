@@ -15,7 +15,7 @@ class TestConstants(object):
         assert isinstance(iati.core.constants.NSMAP['xsd'], str)
 
     def test_standard_versions_all_are_numbers(self):
-        """Check that each item in standard versions is a string that can be converted to a float."""
+        """Check that each item in standard versions is a string that can be considered to be a decimal number."""
         for version in iati.core.constants.STANDARD_VERSIONS:
             assert isinstance(version, str)
             assert float(version)
