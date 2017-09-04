@@ -1,4 +1,5 @@
 """A file to define py.test fixtures that are used across more than one test file."""
+import collections
 import pytest
 import iati.core.constants
 
@@ -10,7 +11,8 @@ import iati.core.constants
     ('1.04', 59)  # There are 35 embedded codelists at v1.04, plus 24 non-embedded codelists (which are valid for any version)
 ])
 def codelist_lengths_by_version(request):
-    return request.param
+    output = collections.namedtuple('output', 'version expected_length')
+    return output(version=request.param[0], expected_length=request.param[1])
 
 
 @pytest.fixture(params=['no_arguments', None] + iati.core.constants.STANDARD_VERSIONS)

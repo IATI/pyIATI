@@ -68,9 +68,9 @@ class TestDefault(object):
 
     def test_default_codelists_length(self, codelist_lengths_by_version):
         """Check that the default Codelists for each version contain the expected number of Codelists."""
-        codelists = iati.core.default.codelists(codelist_lengths_by_version[0])
+        codelists = iati.core.default.codelists(codelist_lengths_by_version.version)
 
-        assert len(codelists) == codelist_lengths_by_version[1]
+        assert len(codelists) == codelist_lengths_by_version.expected_length
 
     def test_default_activity_schemas(self):
         """Check that the default ActivitySchemas are correct.
