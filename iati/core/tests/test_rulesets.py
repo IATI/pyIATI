@@ -209,7 +209,7 @@ class RuleSubclassTestBase(object):
 
     @pytest.fixture
     def non_existent_context(self):
-        """Return a valid context with multiple matches."""
+        """Return an XPath for a context that does not exist."""
         return '//non-existent-context'
 
     @pytest.fixture(params=[
