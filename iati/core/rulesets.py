@@ -79,6 +79,23 @@ class Ruleset(object):
         self.rules = set()
         self._set_rules()
 
+    def is_valid_for(self, dataset):
+        """Validate a Dataset against the Ruleset.
+
+        Args:
+            Dataset (iati.core.Dataset): A Dataset to be checked for validity against the Ruleset.
+
+        Returns:
+            bool: Return `True` when the Dataset is valid against the Ruleset.
+                  Return `False` when a part of the Dataset is not valid against the Ruleset.
+
+        """
+        for rule in self.rules:
+            if not rule.is_valid_for(dataset):
+                return False
+
+        return True
+
     def validate_ruleset(self):
         """Validate a Ruleset against the Ruleset Schema.
 
