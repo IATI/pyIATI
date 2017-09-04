@@ -30,13 +30,13 @@ class TestRuleset(object):
         assert isinstance(ruleset.rules, set)
         assert ruleset.rules == set()
 
-    @pytest.mark.parametrize("not_a_ruleset", iati.core.tests.utilities.find_parameter_by_type(['str', 'bytearray'], False))
+    @pytest.mark.parametrize("not_a_ruleset", iati.core.tests.utilities.generate_test_types(['str', 'bytearray'], True))
     def test_ruleset_init_ruleset_str_not_str(self, not_a_ruleset):
         """Check that a Ruleset cannot be created when given at least one Rule in a non-string format."""
         with pytest.raises(ValueError):
             iati.core.Ruleset(not_a_ruleset)
 
-    @pytest.mark.parametrize("byte_array", iati.core.tests.utilities.find_parameter_by_type(['bytearray']))
+    @pytest.mark.parametrize("byte_array", iati.core.tests.utilities.generate_test_types(['bytearray']))
     def test_ruleset_init_ruleset_str_bytearray(self, byte_array):
         """Check that a Ruleset cannot be created when given at least one Rule in a bytearray format."""
         with pytest.raises(ValueError):
@@ -164,7 +164,7 @@ class TestRuleSubclasses(object):
         with pytest.raises(TypeError):
             rule_constructor()
 
-    @pytest.mark.parametrize("case", iati.core.tests.utilities.find_parameter_by_type(['mapping'], False))
+    @pytest.mark.parametrize("case", iati.core.tests.utilities.generate_test_types(['mapping'], True))
     def test_rule_init_invalid_case(self, rule_constructor, case):
         """Check that a Rule cannot be created when case is not a dictionary."""
         context = 'an xpath'
@@ -296,7 +296,7 @@ class RuleSubclassTestBase(object):
         assert '{0}' not in str(rule_instantiating)
         assert 'This is a Rule' not in str(rule_instantiating)
 
-    @pytest.mark.parametrize("context", iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    @pytest.mark.parametrize("context", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_rule_init_invalid_context(self, rule_constructor, context, instantiating_case):
         """Check that a Rule subclass cannot be created when context is not a string."""
         with pytest.raises(TypeError):
@@ -316,7 +316,7 @@ class RuleSubclassTestBase(object):
         """Check that a given Rule returns the expected result when given a Dataset."""
         assert not rule_invalid.is_valid_for(invalid_dataset)
 
-    @pytest.mark.parametrize("junk_data", iati.core.tests.utilities.find_parameter_by_type([], False))
+    @pytest.mark.parametrize("junk_data", iati.core.tests.utilities.generate_test_types([], True))
     def test_is_valid_for_raises_error_on_non_permitted_argument(self, rule_instantiating, junk_data):
         """Check that a given Rule returns expected error when passed an argument that is not a Dataset."""
         with pytest.raises(AttributeError):
@@ -364,7 +364,7 @@ class RuleSubclassTestBase(object):
         """
         assert not invalid_condition_rule.is_valid_for(invalid_dataset)
 
-    @pytest.mark.parametrize("junk_condition", [''] + iati.core.tests.utilities.find_parameter_by_type(['str'], False))
+    @pytest.mark.parametrize("junk_condition", [''] + iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_uninstantiating_condition_case(self, rule_constructor, valid_single_context, validating_case, junk_condition):
         """Check that a non-permitted condition case will not instantiate."""
         junk_condition_case = deepcopy(validating_case)

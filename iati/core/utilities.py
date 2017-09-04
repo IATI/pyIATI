@@ -39,11 +39,11 @@ def add_namespace(tree, new_ns_name, new_ns_uri):
         msg = "The `tree` parameter must be of type `etree._ElementTree` - it was of type {0}".format(type(tree))
         iati.core.utilities.log_error(msg)
         raise TypeError(msg)
-    if not isinstance(new_ns_name, str) or len(new_ns_name) == 0:
+    if not isinstance(new_ns_name, str) or not new_ns_name:
         msg = "The `new_ns_name` parameter must be a non-empty string."
         iati.core.utilities.log_error(msg)
         raise ValueError(msg)
-    if not isinstance(new_ns_uri, str) or len(new_ns_uri) == 0:
+    if not isinstance(new_ns_uri, str) or not new_ns_uri:
         msg = "The `new_ns_uri` parameter must be a valid URI."
         iati.core.utilities.log_error(msg)
         raise ValueError(msg)
@@ -83,7 +83,7 @@ def convert_tree_to_schema(tree):
     Warning:
         Should raise exceptions when there are errors during execution.
 
-        Needs to better distinguish between an `etree.XMLSchema` and an `iati.core.Schema`.
+        Needs to better distinguish between an `etree.XMLSchema`, an `iati.core.Schema`, an `iati.core.ActivitySchema` and an `iati.core.OrganisationSchema`.
 
         Does not fully hide the lxml internal workings.
 
