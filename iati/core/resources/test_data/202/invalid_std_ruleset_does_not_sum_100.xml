@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<iati-activities>
+  <iati-activity>
+    <iati-identifier>AA-AAA-123456789-ABC123</iati-identifier>
+    <activity-date type="1">2016-09-04</activity-date>
+    <activity-date type="3">2017-12-31</activity-date>
+    <recipient-country code="AF" percentage="125" /><!-- All recipient-country/@percentage attributes must add up to 100. -->
+    <recipient-country code="AX" percentage="75" />
+    <transaction>
+      <sector>12345</sector>
+    </transaction>
+  </iati-activity>
+</iati-activities>

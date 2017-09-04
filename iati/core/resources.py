@@ -68,7 +68,7 @@ FILE_SCHEMA_EXTENSION = '.xsd'
 """The extension of a file containing a Schema."""
 
 
-def find_all_codelist_paths(version=None):
+def get_all_codelist_paths(version=None):
     """Find the paths for all codelists.
 
     Args:
@@ -90,13 +90,13 @@ def find_all_codelist_paths(version=None):
 
     """
     files = pkg_resources.resource_listdir(PACKAGE, get_path_for_version(PATH_CODELISTS, version))
-    paths = [get_codelist_path(file, version) for file in files]
-    paths_codelists_only = [path for path in paths if path[-4:] == FILE_CODELIST_EXTENSION]
+    files_codelists_only = [file_name for file_name in files if file_name[-4:] == FILE_CODELIST_EXTENSION]
+    paths = [get_codelist_path(file_name, version) for file_name in files_codelists_only]
 
-    return paths_codelists_only
+    return paths
 
 
-def find_all_schema_paths(version=None):
+def get_all_schema_paths(version=None):
     """Find the paths for all schemas.
 
     Args:
@@ -114,10 +114,58 @@ def find_all_schema_paths(version=None):
     Todo:
         Handle versions, including errors.
 
-        Implement for more than a single specified activity schema.
+        Potentially add the IATI codelist schema.
+
+    """
+    return get_all_activity_schema_paths(version) + get_all_org_schema_paths(version)
+
+
+def get_all_activity_schema_paths(version=None):
+    """Find the paths for all activity schemas.
+
+    Args:
+        version (str): The version of the Standard to return the activity schemas for. Defaults to None. This means that paths to the latest version of the activity Schemas are returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        list of str: A list of paths to all of the activity Schemas at the specified version of the Standard.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+    Todo:
+        Handle versions, including errors.
+
+        Potentially add the IATI codelist schema.
 
     """
     return [get_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version)]
+
+
+def get_all_org_schema_paths(version=None):
+    """Find the paths for all organisation schemas.
+
+    Args:
+        version (str): The version of the Standard to return the organisation schemas for. Defaults to None. This means that paths to the latest version of the activity Schemas are returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        list: A list of paths to all of the organisation Schemas at the specified version of the Standard.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+    Todo:
+        Handle versions, including errors.
+
+        Potentially add the IATI codelist schema.
+
+    """
+    return [get_schema_path(FILE_SCHEMA_ORGANISATION_NAME, version)]
 
 
 def get_codelist_path(codelist_name, version=None):
@@ -148,31 +196,6 @@ def get_codelist_path(codelist_name, version=None):
     return get_path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
 
 
-def get_schema_path(name, version=None):
-    """Determine the path of a schema with the given name.
-
-    Args:
-        name (str): The name of the schema to locate.
-        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
-
-    Returns:
-        str: The path to a file containing the specified schema.
-
-    Note:
-        Does not check whether the specified schema actually exists.
-
-    Warning:
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
-
-    Todo:
-        Handle versions of the standard other than 2.02.
-
-        Test this.
-
-    """
-    return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
-
-
 def get_test_data_path(name, version=None):
     """Determine the path of an IATI data file with the given filename.
 
@@ -194,6 +217,29 @@ def get_test_data_path(name, version=None):
 
     """
     return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
+
+
+def get_test_ruleset_path(name, version=None):
+    """Determine the path of an IATI test Ruleset file with the given filename.
+
+    Args:
+        name (str): The name of the data file to locate. The filename must not contain the '.json' file extension.
+        version (float): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+
+    Returns:
+        str: The path to a file containing the specified test Ruleset.
+
+    Note:
+        Does not check whether the specified file actually exists.
+
+    Warning:
+        Needs to handle a more complex file structure than a single flat directory.
+
+    Todo:
+        Test this.
+
+    """
+    return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), 'rulesets/{0}'.format(name) + FILE_RULESET_EXTENSION)
 
 
 def get_folder_name_for_version(version=None):
@@ -258,6 +304,7 @@ def get_schema_path(name, version=None):
         Handle versions of the standard other than 2.02.
 
         Test this.
+
     """
     return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
@@ -297,60 +344,61 @@ def get_path_for_version(path, version=None):
 
 def load_as_bytes(path):
     """Load a resource at the specified path into a bytes object.
-
     Args:
         path (str): The path to the file that is to be read in.
-
     Returns:
         bytes: The contents of the file at the specified location.
-
     Todo:
         Should raise Exceptions when there are problems loading the requested data.
         Add error handling for when the specified file does not exist.
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
-
     """
     return pkg_resources.resource_string(PACKAGE, path)
 
 
-def load_as_string(path):
-    """Load a resource at the specified path into a string.
-
+def load_as_dataset(path):
+    """Load a resource at the specified path into a dataset.
     Args:
         path (str): The path to the file that is to be read in.
+    Returns:
+        dataset: A Dataset object with the contents of the file at the specified location.
+    Warning:
+        Should raise Exceptions when there are problems loading the requested data.
+    Todo:
+        Add error handling for when the specified file does not exist.
+    """
+    dataset_str = load_as_string(path)
 
+    return iati.core.Dataset(dataset_str)
+
+
+def load_as_string(path):
+    """Load a resource at the specified path into a string.
+    Args:
+        path (str): The path to the file that is to be read in.
     Returns:
         str (python3) / unicode (python2): The contents of the file at the specified location.
-
     Todo:
         Should raise Exceptions when there are problems loading the requested data.
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
-
     """
     return load_as_bytes(path).decode('utf-8')
 
 
 def load_as_tree(path):
     """Load a schema with the specified name into an ElementTree.
-
     Args:
         path (str): The path to the file that is to be converted to an ElementTree.
             The file at the specified location must contain valid XML.
-
     Returns:
         etree._ElementTree: An ElementTree representing the parsed XML.
-
     Raises:
         OSError: An error occurred accessing the specified file.
-
     Warning:
         There should be errors raised when the request is to load something that is not valid XML.
-
         Does not fully hide the lxml internal workings. This includes making reference to a private lxml type.
-
     Todo:
         Handle when the specified file can be accessed without issue, but it does not contain valid XML.
-
     """
     path_filename = resource_filename(path)
     try:

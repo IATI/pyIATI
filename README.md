@@ -56,14 +56,16 @@ Once installed, the library provides functionality to represent IATI Schemas, Co
 
 ### Loading an XSD Schema
 
-The `.xsd` schema file should be stored in the folder: `iati.core/iati/core/resources/schemas/202/`
+A number of default IATI `.xsd` schema files are included as part of the library. They are stored in the folder: `iati.core/iati/core/resources/schemas/202/`
 
-The following example loads the included IATI v2.02 schema at:  `iati.core/iati/core/resources/schemas/202/iati-activities-schema.xsd`.
+The following example loads the default IATI v2.02 `iati-activities-schema.xsd` schema:
 
 ```
-import iati.core.schemas
-schema = iati.core.Schema(name='iati-activities-schema')
+import iati.core.default
+schema = iati.core.default.schema('iati-activities-schema')
 ```
+
+Helper functions will be written in due course to return all xpaths within a schema, as well as documentation for each element.
 
 ### Loading codelists
 
@@ -84,7 +86,30 @@ for _, codelist in iati.core.default.codelists().items():
 
 ### Loading Rulesets
 
+The default IATI Ruleset can be loaded by using:
+
+```
+import iati.core.default
+
+iati.core.default.ruleset()
+```
+
+If you wish to load your own Ruleset you can do this using:
+
+```
+import iati.core.resources
+import iati.core.Rulesets
+
+ruleset_str = iati.core.resources.load_as_string(filepath)
+# To create a Ruleset object from your ruleset_str:
+iati.core.Ruleset(ruleset_str)
+```
+
 **Note:** This functionality is not yet implemented.
+
+Validate an IATI Dataset against the Standard Ruleset:
+
+To be added.
 
 
 ### Working with IATI datasets

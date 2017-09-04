@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<iati-activities>
+  <iati-activity>
+    <iati-identifier>AA-AAA-123456789-ABC123</iati-identifier>
+    <activity-date type="1">2016-09-04</activity-date>
+    <activity-date type="3">2017-12-31</activity-date>
+    <recipient-country code="AF" percentage="25" />
+    <recipient-country code="AX" percentage="75" />
+    <transaction>
+      <transaction-date>2016-09-04</transaction-date>
+      <sector>12345</sector>
+    </transaction>
+  </iati-activity>
+</iati-activities>

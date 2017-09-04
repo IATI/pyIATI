@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<iati-activities>
+  <iati-activity>
+    <iati-identifier>////////</iati-identifier><!-- iati-identifier does not meet the specified regex. -->
+    <activity-date type="1">2016-09-04</activity-date>
+    <activity-date type="3">2017-12-31</activity-date>
+    <recipient-country code="AF" percentage="25" />
+    <recipient-country code="AX" percentage="75" />
+    <transaction>
+      <sector>12345</sector>
+    </transaction>
+  </iati-activity>
+</iati-activities>
