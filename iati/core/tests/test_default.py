@@ -4,6 +4,7 @@ import iati.core.codelists
 import iati.core.constants
 import iati.core.default
 import iati.core.schemas
+import iati.core.tests.utilities
 
 
 class TestDefault(object):
