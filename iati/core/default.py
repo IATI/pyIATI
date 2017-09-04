@@ -15,6 +15,21 @@ import iati.core.constants
 import iati.core.resources
 
 
+def get_default_version_if_none(version):
+    """Returns the default version number if the input version is None. Otherwise returns the input version as is.
+
+    Args:
+        version (str or None): The version to test against.
+
+    Returns:
+        str or version: The default version if the input version is None.  Otherwise returns the input version.
+    """
+    if version is None:
+        return iati.core.constants.STANDARD_VERSION_LATEST
+    else:
+        return version
+
+
 _CODELISTS = {}
 """A cache of loaded Codelists.
 
@@ -89,8 +104,7 @@ def codelists(version=None, use_cache=False):
         Add a function to return a single Codelist by name.
 
     """
-    if version is None:
-        version = iati.core.constants.STANDARD_VERSION_LATEST
+    version = get_default_version_if_none(version)
 
     paths = iati.core.resources.get_all_codelist_paths(version)
 
@@ -205,8 +219,7 @@ def schema(name, version=None):
         KeyError: If the input schema name is not found as part of the default IATI Schemas.
 
     """
-    if version is None:
-        version = iati.core.constants.STANDARD_VERSION_LATEST
+    version = get_default_version_if_none(version)
 
     try:
         return schemas()[version][name]
