@@ -23,9 +23,7 @@ def standard_version_optional(request):
         list: Either i) an empty list, ii) a list containing None, or iii) a string which corresponds to a version of the Standard.
 
     """
-    arg = request.param
-
-    if arg == 'no_arguments':
+    if request.param == 'no_arguments':
         return []
     else:
-        return [arg]
+        return [request.param]
