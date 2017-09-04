@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--expected elements and attributes missing-->
 <root_element>
+  <condition></condition><!--condition case-->
   <!-- no expected elements or attributes -->
   <nest><!--Only one nested element exists-->
     <!--element2 missing in nest-->

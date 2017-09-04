@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--all elements and attributes contain the specified prefixing string-->
 <root_element>
+  <prefix>prefix</prefix><!--prefix value-->
   <condition></condition><!--condition case-->
   <element1>prefix1234</element1><!--single path-->
   <element2>prefix5678</element2><!--multiple paths-->
@@ -17,5 +18,5 @@
     <element10 attribute="prefixbeardeddragonsarecool"></element10><!--nested path-->
   </nest>
   <element11>prefix0123</element11><!--duplicate element-->
-  <element11>prefix4567</element11>
+  <element11>prefix</element11>
 </root_element>

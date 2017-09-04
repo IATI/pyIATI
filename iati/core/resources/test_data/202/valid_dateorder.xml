@@ -16,7 +16,7 @@
     <element9>2016-08-16</element9><!--nested elements-->
     <element10>2017-08-16</element10>
   </nest>
-  <nOw>2016-08-16</nOw>
+  <nOw>2016-08-16</nOw><!--element value rather than special case-->
   <noW>2017-08-16</noW>
   <element11 attribute="2014-01-01"></element11><!--Attribute dates are in the correct order-->
   <element12 attribute="2014-12-31"></element12>
@@ -48,7 +48,7 @@
   <element34 attribute="2017-08-17-05:25"></element34>
   <element35 attribute="2016-08-16Z"></element35><!--valid UTC timezone-->
   <element36 attribute="2017-08-17Z"></element36>
-  <now attribute="2016-08-16"></now>
+  <now attribute="2016-08-16"></now><!--attribute value rather than special case-->
   <Now attribute="2017-08-16"></Now>
   <element37>2016-08-25</element37><!--multiple identical elements in correct order with duplicated values-->
   <element37>2016-08-25</element37>

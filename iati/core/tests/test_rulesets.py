@@ -211,8 +211,8 @@ class RuleSubclassTestBase(object):
         'count(condition)>0',
         'condition'
     ])
-    def valid_condition_case(self, validating_case, request):
-        """Return a case with optional condition attribute."""
+    def condition_is_True_valid(self, validating_case, request):
+        """Return a case with optional condition that evaluates to `True` for a valid dataset."""
         condition_validating_case = deepcopy(validating_case)
         condition_validating_case['condition'] = request.param
         return condition_validating_case
@@ -221,11 +221,21 @@ class RuleSubclassTestBase(object):
         'count(condition)>0',
         'condition'
     ])
-    def invalid_condition_case(self, invalidating_case, request):
-        """Return a case with optional condition attribute."""
+    def condition_is_True_invalid(self, invalidating_case, request):
+        """Return a case with optional condition that evaluates to `True` for an invalid dataset."""
         condition_invalidating_case = deepcopy(invalidating_case)
         condition_invalidating_case['condition'] = request.param
         return condition_invalidating_case
+
+    @pytest.fixture(params=[
+        'count(condition)<1',
+        'nocondition'
+    ])
+    def condition_is_False_valid(self, validating_case, request):
+        """Return a case with an optional condition that evaluates to False for a valid dataset."""
+        condition_validating_case = deepcopy(validating_case)
+        condition_validating_case['condition'] = request.param
+        return condition_validating_case
 
     @pytest.fixture
     def rule_instantiating(self, rule_constructor, instantiating_case, valid_single_context):
@@ -253,14 +263,14 @@ class RuleSubclassTestBase(object):
         return iati.core.rulesets.constructor_for_rule_type(rule_type)
 
     @pytest.fixture
-    def valid_condition_rule(self, rule_constructor, valid_single_context, valid_condition_case):
+    def valid_condition_rule(self, rule_constructor, valid_single_context, condition_is_True_valid):
         """Return a Rule with a `condition`."""
-        return rule_constructor(valid_single_context, valid_condition_case)
+        return rule_constructor(valid_single_context, condition_is_True_valid)
 
     @pytest.fixture
-    def invalid_condition_rule(self, rule_constructor, valid_single_context, invalid_condition_case):
+    def invalid_condition_rule(self, rule_constructor, valid_single_context, condition_is_True_invalid):
         """Return a Rule with a `condition`."""
-        return rule_constructor(valid_single_context, invalid_condition_case)
+        return rule_constructor(valid_single_context, condition_is_True_invalid)
 
     def test_rule_init_valid_parameter_types(self, rule_instantiating):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
@@ -279,9 +289,9 @@ class RuleSubclassTestBase(object):
             # Ensure that the attribute exists - if not, an AttributeError will be raised
             getattr(rule_instantiating, attrib)
 
-    def test_optional_rule_attributes_from_case(self, rule_constructor, valid_single_context, valid_condition_case):
+    def test_optional_rule_attributes_from_case(self, rule_constructor, valid_single_context, condition_is_True_valid):
         """Check that a Rule subclass has optional case attributes set."""
-        rule = rule_constructor(valid_single_context, valid_condition_case)
+        rule = rule_constructor(valid_single_context, condition_is_True_valid)
         optional_attributes = rule._case_attributes(rule._ruleset_schema_section(), False)
         for attrib in optional_attributes:
             # Ensure that the attribute exists - if not, an AttributeError will be raised
@@ -345,11 +355,20 @@ class RuleSubclassTestBase(object):
         rule = rule_constructor(valid_multiple_context, invalid_nest_case)
         assert not rule.is_valid_for(invalid_dataset)
 
-    def test_condition_case_is_True(self, valid_condition_rule, valid_dataset):
+    def test_condition_case_is_True_for_valid_dataset(self, valid_condition_rule, valid_dataset):
         """Check that if a condition is `True`, the rule returns None which is considered equivalent to skipping."""
         assert valid_condition_rule.is_valid_for(valid_dataset) is None
 
-    def test_condition_case_is_False(self, invalid_condition_rule, invalid_dataset):
+    def test_condition_case_is_True_for_invalid_dataset(self, invalid_condition_rule, invalid_dataset):
+        """Check that if a condition is `True`, the rule returns None which is considered equivalent to skipping."""
+        assert invalid_condition_rule.is_valid_for(invalid_dataset) is None
+
+    def test_condition_case_is_False_for_valid_dataset(self, rule_constructor, valid_single_context, condition_is_False_valid, valid_dataset):
+        """Check that if a condition is `False`, the rule validates normally."""
+        rule = rule_constructor(valid_single_context, condition_is_False_valid)
+        assert rule.is_valid_for(valid_dataset)
+
+    def test_condition_case_is_False_for_invalid_dataset(self, invalid_condition_rule, invalid_dataset):
         """Check that if a condition is `False`, the rule validates normally.
 
         Note:
@@ -604,7 +623,11 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element35/@attribute', 'more': 'element36/@attribute'},
         {'less': 'element37', 'more': 'element38'},  # non-permitted leading timezone character
         {'less': 'element39/@attribute', 'more': 'element40/@attribute'},
-        {'less': 'element41', 'more': 'element42'}  # multiple identical elements but non-duplicated values
+        {'less': 'element41', 'more': 'element42'},  # multiple identical elements but non-duplicated values
+        {'less': 'element43', 'more': 'element44'},  # UNIX timestamp format
+        {'less': 'element45/@attribute', 'more': 'element46/@attribute'},
+        {'less': 'element47', 'more': 'element48'},  # All text date format
+        {'less': 'element49/@attribute', 'more': 'element50/@attribute'}
     ])
     def test_incorrect_date_format_raises_error(self, valid_single_context, case, rule_constructor):
         """Check that a dataset with dates in an incorrect format raise expected error."""
@@ -685,6 +708,7 @@ class TestRuleDependent(RuleSubclassTestBase):
     @pytest.fixture(params=[
         {'paths': ['./element5', './element6']},
         {'paths': ['./element11/@attribute', './element12/@attribute']}
+
     ])
     def valid_nest_case(self, request):
         """Permitted case for validating an XML dataset against RuleDependent in nested context."""
@@ -692,7 +716,8 @@ class TestRuleDependent(RuleSubclassTestBase):
 
     @pytest.fixture(params=[
         {'paths': ['./element7', './element8']},
-        {'paths': ['./element9/@attribute', './element10/@attribute']}
+        {'paths': ['./element9/@attribute', './element10/@attribute']},
+        {'paths': ['./element15', './element16']}
     ])
     def invalid_nest_case(self, request):
         """Non-permitted case for validating an XML dataset against RuleDependent in nested context."""
@@ -738,12 +763,14 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     invalidating_cases = [
         {'paths': ['element1']},  # single path
         {'paths': ['element7/@attribute']},
-        {'paths': ['element2', 'element3']},  # multiple paths
+        {'paths': ['element2', 'element3']},  # multiple paths, multiple of each
         {'paths': ['element8/@attribute', 'element9/@attribute']},
         {'paths': ['element4', 'element4']},  # duplicate paths
         {'paths': ['element10/@attribute', 'element10/@attribute']},
         {'paths': ['element5', 'element6']},  # one path valid, another invalid
-        {'paths': ['element11/@attribute', 'element12/@attribute']}
+        {'paths': ['element11/@attribute', 'element12/@attribute']},
+        {'paths': ['element15', 'element16']},  # multiple paths, one of each
+        {'paths': ['element17/@attribute', 'element18/@attribute']}  # multiple paths, one of each
     ]
 
     @pytest.fixture
@@ -1015,7 +1042,7 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         {'start': 'prefix', 'paths': ['element11']}  # duplicate element
     ]
 
-    nest_case = [{'start': 'prefix', 'paths': ['element9', 'element10/@attribute']}]
+    nest_case = [{'start': '//prefix', 'paths': ['element9', 'element10/@attribute']}]
 
     @pytest.fixture
     def rule_type(self):
@@ -1097,8 +1124,8 @@ class TestRuleSum(RuleSubclassTestBase):
         {'paths': ['element17', 'element18'], 'sum': 2.99792458e6},  # exponential sum
         {'paths': ['element35/@attribute', 'element36/@attribute'], 'sum': 2.99792458e6},
         {'paths': ['element37'], 'sum': 50},  # duplicate elements in data **
-        {'paths': ['element42', 'element43'], 'sum': 0.1},  # sum to value that cannot be represented using standard binary representation
-        {'paths': ['element44/@attribute', 'element45/@attribute'], 'sum': 0.1}
+        {'paths': ['element42', 'element43'], 'sum': 0.3},  # sum to value that cannot be represented using standard binary representation
+        {'paths': ['element44/@attribute', 'element45/@attribute'], 'sum': 0.3}
     ]
 
     uninstantiating_cases = [
