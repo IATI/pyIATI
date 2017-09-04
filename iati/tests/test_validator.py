@@ -876,7 +876,6 @@ class TestValidateRulesets(object):
         assert iati.validator.is_iati_xml(data, schema_ruleset)
         assert iati.validator.is_valid(data, schema_ruleset)
 
-    @pytest.mark.skip(reason='Validation of various types of Rule is being implemented separately')
     def test_basic_validation_ruleset_invalid(self, schema_ruleset):
         """Perform data validation against valid IATI XML that does not conform to the default Ruleset."""
         data = iati.core.tests.utilities.load_as_dataset('valid_iati_breaks_rule')

@@ -324,6 +324,64 @@ def _check_is_xml(maybe_xml):
     return error_log
 
 
+def _check_rules(dataset, ruleset):
+    """Determine whether a given Dataset conforms with a provided Ruleset.
+
+    Args:
+        dataset (iati.core.data.Dataset): The Dataset to check Ruleset conformance with.
+        ruleset (iati.code.Ruleset): The Ruleset to check conformance with.
+
+
+    Returns:
+        iati.validator.ValidationErrorLog: A log of the errors that occurred.
+
+    """
+    error_log = ValidationErrorLog()
+
+    for rule in ruleset.rules:
+        if not rule.is_valid_for(dataset):
+            error = ValidationError('err-ruleset-conformance-fail', locals())
+
+            error_log.add(error)
+
+    return error_log
+
+
+def _check_ruleset_conformance(dataset, schema):
+    """Check whether a given Dataset conforms with Rulesets that have been added to a Schema.
+
+    Args:
+        dataset (iati.core.data.Dataset): The Dataset to check Ruleset conformance with.
+        schema (iati.core.schemas.Schema): The Schema to locate Rulesets within.
+
+    Returns:
+        iati.validator.ValidationErrorLog: A log of the errors that occurred.
+
+    """
+    error_log = ValidationErrorLog()
+
+    for ruleset in schema.rulesets:
+        error_log.extend(_check_rules(dataset, ruleset))
+
+    return error_log
+
+
+def _conforms_with_ruleset(dataset, schema):
+    """Determine whether a given Dataset conforms with Rulesets that have been added to a Schema.
+
+    Args:
+        dataset (iati.core.data.Dataset): The Dataset to check Ruleset conformance with.
+        schema (iati.core.schemas.Schema): The Schema to locate Rulesets within.
+
+    Returns:
+        bool: A boolean indicating whether the given Dataset conforms with Rulesets attached to the given Schema.
+
+    """
+    error_log = _check_ruleset_conformance(dataset, schema)
+
+    return not error_log.contains_errors()
+
+
 def _correct_codelist_values(dataset, schema):
     """Determine whether a given Dataset has values from Codelists that have been added to a Schema where expected.
 
@@ -332,7 +390,7 @@ def _correct_codelist_values(dataset, schema):
         schema (iati.core.schemas.Schema): The Schema to locate Codelists within.
 
     Returns:
-        bool: If `error_log` is False. A boolean indicating whether the given Dataset has values from the specified Codelists where they should be.
+        bool: A boolean indicating whether the given Dataset has values from the specified Codelists where they should be.
 
     """
     error_log = _check_codelist_values(dataset, schema)
@@ -490,7 +548,7 @@ def is_valid(dataset, schema):
     except iati.core.exceptions.SchemaError:
         return False
 
-    return _correct_codelist_values(dataset, schema)
+    return _correct_codelist_values(dataset, schema) and _conforms_with_ruleset(dataset, schema)
 
 
 def is_xml(maybe_xml):
