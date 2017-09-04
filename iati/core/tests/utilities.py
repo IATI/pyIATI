@@ -66,6 +66,7 @@ DATASET_FOR_UNIQUE_RULE_VALID = iati.core.resources.load_as_dataset(iati.core.re
 """An etree containing XML data that is permitted by `RuleUnique`."""
 DATASET_FOR_UNIQUE_RULE_INVALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_unique'))
 """An etree containing XML data that is not permitted by `RuleUnique`."""
+
 DATASET_FOR_STANDARD_RULESET_VALID = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('standard_test_dataset_valid'))
 """An etree containing XML data that meets the IATI Standard ruleset."""
 DATASET_FOR_STANDARD_RULESET_INVALID_BAD_DATE_ORDER = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('standard_test_dataset_invalid_bad_date_order'))
