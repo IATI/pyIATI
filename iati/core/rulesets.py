@@ -470,7 +470,7 @@ class RuleDateOrder(Rule):
                 return datetime.today()
 
             dates = self._extract_text_from_element_or_attribute(context, path)
-            if not dates[0]:
+            if not len(dates) or not dates[0]:
                 return
             # Checks that anything after the YYYY-MM-DD string is a permitted timezone character
             pattern = re.compile(r'^([+-]([01][0-9]|2[0-3]):([0-5][0-9])|Z)?$')
