@@ -15,8 +15,9 @@ def codelist_lengths_by_version(request):
 
 @pytest.fixture(params=['no_arguments', None] + iati.core.constants.STANDARD_VERSIONS)
 def standard_version_optional(request):
-    """Return a list that can be used as variable positional parameters (i.e. `*standard_version_optional`) to test.
-    This can then be used in tests which have an optional parameter for the version, or expect None.
+    """Return a list that can be passed to a function using the argument list unpacking functionality - see https://docs.python.org/3.6/tutorial/controlflow.html#unpacking-argument-lists
+    For example, the returned list can be used to test functions (such as `get_all_codelist_paths`) which has an optional parameter for the version, or can expect version=None.,
+    In this case test usage would be `get_all_codelist_paths(*standard_version_optional)`.
 
     Returns:
         list: Either i) an empty list, ii) a list containing None, or iii) a string which corresponds to a version of the Standard.
