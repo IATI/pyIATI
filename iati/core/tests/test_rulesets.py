@@ -207,6 +207,11 @@ class RuleSubclassTestBase(object):
         """Return a valid context with multiple matches."""
         return '//nest'
 
+    @pytest.fixture
+    def non_existent_context(self):
+        """Return a valid context with multiple matches."""
+        return '//non-existent-context'
+
     @pytest.fixture(params=[
         'count(condition)>0',
         'condition'
@@ -354,6 +359,16 @@ class RuleSubclassTestBase(object):
         """Check Rule returns expected result when checking multiple contexts."""
         rule = rule_constructor(valid_multiple_context, invalid_nest_case)
         assert not rule.is_valid_for(invalid_dataset)
+
+    def test_non_existent_context_is_valid_for(self, non_existent_context, valid_nest_case, rule_constructor, valid_dataset):
+        """Check Rule returns expected result when checking multiple contexts."""
+        rule = rule_constructor(non_existent_context, valid_nest_case)
+        assert rule.is_valid_for(valid_dataset)
+
+    def test_non_existent_context_is_invalid_for(self, non_existent_context, invalid_nest_case, rule_constructor, invalid_dataset):
+        """Check Rule returns expected result when checking multiple contexts."""
+        rule = rule_constructor(non_existent_context, invalid_nest_case)
+        assert rule.is_valid_for(invalid_dataset)
 
     def test_condition_case_is_True_for_valid_dataset(self, valid_condition_rule, valid_dataset):
         """Check that if a condition is `True`, the rule returns None which is considered equivalent to skipping."""
