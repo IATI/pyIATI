@@ -1,0 +1,223 @@
+# A YAML file containing the error codes that may be output from validation.
+#
+# The structure of a code is:
+#
+#   - name-of-the-error-or-warning:
+#       base_exception: The name of a Python exception that the error code represents. Should be valid for both Python 2 and Python 3. https://docs.python.org/2/library/exceptions.html#exception-hierarchy
+#       category: The high level category that the error falls into.
+#       description: |-
+#           A short general description of the error that has occurred.
+#       help: |-
+#           A more detailed general description of the error that has occurred.
+#           This will generally span multiple lines. Line breaks will be maintained through use of the block operator.
+#           External references may be included towards the end of the help message.
+#           Details about YAML block and chomp operators may be found at https://stackoverflow.com/a/21699210.
+#       info: |-
+#           Specific information about the error that has occurred.
+#
+# Currently used values for the category are:
+#
+# * codelist
+# * file
+# * iati-xml
+# * tool-lxml
+# * xml
+#
+# The `description`, `help` and `info` will be formatted with local variables from the calling scope. As such, variable names may be used as placeholders for string formatting. Some commonly used variables are:
+#
+# * Instances of `iati.core.Code` will be called `code`
+# * Instances of `iati.core.Codelist` will be called `codelist`
+# * Any errors passed from lxml will be called `err`.
+# * Instances of `iati.core.Rule` will be called `rule`
+# * Instances of `iati.core.Ruleset` will be called `ruleset`
+# * Other variables may be available depending on the specific error.
+---
+- err-code-not-on-codelist:
+    base_exception: ValueError
+    category: codelist
+    description: |-
+        An attribute that requires a Code from a particular complete Codelist contained a value not on the Codelist.
+    help: |-
+        The `{attr_name}` attribute must contain a value on the `{codelist.name}` Codelist.
+        See http://iatistandard.org/202/codelists/{codelist.name} for permitted values.
+    info: |-
+        {code} is not a valid Code on the {codelist.name} Codelist.
+
+- warn-code-not-on-codelist:
+    base_exception: Warning
+    category: codelist
+    description: |-
+        An attribute that should contain a Code from a particular incomplete Codelist contained a value not on the Codelist.
+    help: |-
+        The `{attr_name}` attribute should contain a value on the `{codelist.name}` Codelist. Note that values not on the Codelist may be valid in particular circumstances.
+        See http://iatistandard.org/202/codelists/{codelist.name} for values on the Codelist.
+    info: |-
+        {code} is not a Code on the {codelist.name} Codelist.
+
+- err-not-iati-xml-uncategorised-document-error:
+    base_exception: Exception
+    category: xml
+    description: |-
+        An uncategorised error occurred when checking whether a Dataset contains valid IATI data.
+    help: |-
+        There are many different ways in which a file may not be valid IATI XML. The most common of these have had specific error messages created. This is not currently one of them.
+        Should it be identified that this error occurs frequently, a specific error message will be created.
+    info: |-
+        {err}
+
+- err-not-xml-not-string:
+    base_exception: TypeError
+    category: xml
+    description: |-
+        A variable that is not a string cannot be XML.
+    help: |-
+        A string is a series of characters (letters, numbers, punctuation, etc). For more information about what these are, see https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str
+    info: |-
+        The value provided is a `{problem_var_type}` rather than a `str`.
+
+- err-not-xml-uncategorised-xml-syntax-error:
+    base_exception: Exception
+    category: xml
+    description: |-
+        An uncategorised syntax error occurred when parsing the XML.
+    help: |-
+        There are many different ways in which a file may not be valid XML. The most common of these have had specific error messages created. This is not currently one of them.
+        Should it be identified that this error occurs frequently, a specific error message will be created.
+        For an introduction to XML see https://www.w3schools.com/Xml/
+    info: |-
+        {err}
+
+- err-not-xml-content-at-end:
+    base_exception: ValueError
+    category: xml
+    description: |-
+        An XML file must contain no information after the XML has finished.
+    help: |-
+        An XML document contains a number of elements that are started and ended using tags. The XML is deemed finished once the number of start tags and the number of end tags is the same.
+        The contents of the data after this point does not matter - it may be valid XML on its own, or may have no meaning.
+        Should it be required that additional information be in the document, XML comments may be used. For information about comments in XML, see https://www.w3schools.com/xml/xml_syntax.asp
+    info: |-
+        {err}
+
+- err-not-xml-empty-document:
+    base_exception: ValueError
+    category: xml
+    description: |-
+        An XML file must start with the XML start tag. The XML start tag is `<`.
+    help: |-
+        An XML document must contain only valid XML.
+        Should it be required that additional information be in the document, XML comments may be used. Comments may not, however, be right at the very start of the document.
+        For information about comments in XML, see https://www.w3schools.com/xml/xml_syntax.asp
+    info: |-
+        {err}
+
+- err-not-xml-xml-text-decl-only-at-doc-start:
+    base_exception: ValueError
+    category: xml
+    description: |-
+        The XML text declaration must occur at the start of the document.
+    help: |-
+        The XML text declaration specifies how a computer must read the rest of the XML file. Since it tells the computer how to read the XML file, it must occur at the start of an XML document without any content before it.
+        It looks similar to: `<?xml version="1.0" encoding="UTF-8"?>`.
+        For more information about the XML text declaration, see https://www.w3schools.com/xml/xml_syntax.asp and https://www.w3.org/TR/2000/REC-xml-20001006#sec-TextDecl
+    info: |-
+        {err}
+
+- err-not-iati-xml-forbidden-attribute:
+    base_exception: ValueError
+    category: iati-xml
+    description: |-
+        An element has an attribute that is not permitted.
+    help: |-
+        The IATI Standard specifies the attributes that elements may have. Other attributes are not permitted.
+        For more information about XML attributes, see https://www.w3schools.com/xml/xml_attributes.asp
+    info: |-
+        {err}
+
+- err-not-iati-xml-incorrect-datatype:
+    base_exception: ValueError
+    category: iati-xml
+    description: |-
+        A provided value is not in the correct format.
+    help: |-
+        Certain pieces of information within an IATI dataset must be formatted in a specified way if they are to be correctly interpreted. The expected format is known at the `type`.
+        For more information about XML data types, see http://books.xmlschemata.org/relaxng/relax-CHP-19.html
+    info: |-
+        {err}
+
+- err-not-iati-xml-missing-attribute:
+    base_exception: ValueError
+    category: iati-xml
+    description: |-
+        A required attribute is missing.
+    help: |-
+        The IATI Standard specifies a number of attributes that must be present for the data to be understood.
+        For more information about XML attributes, see https://www.w3schools.com/xml/xml_attributes.asp
+    info: |-
+        {err}
+
+- err-not-iati-xml-missing-required-element:
+    base_exception: ValueError
+    category: iati-xml
+    description: |-
+        A different element was found than was expected.
+    help: |-
+        There are a number of mandatory elements that an IATI data file must contain. Additionally, these must occur in the required order.
+        For more information about what an XML element is, see https://www.w3schools.com/xml/xml_elements.asp
+    info: |-
+        {err}
+
+- err-not-iati-xml-non-whitespace-in-element-only:
+    base_exception: ValueError
+    category: iati-xml
+    description: |-
+        An element contains text where it may only contain other elements.
+    help: |-
+        Some elements are classed as `elements-only`. This means that they may only contain other elements and whitespace (spaces, tabs, etc). Other text is not permitted.
+        For more information about `elements-only` types, see https://www.w3schools.com/xml/schema_complex_elements.asp
+    info: |-
+        {err}
+
+- err-not-iati-xml-root-element-undeclared:
+    base_exception: ValueError
+    category: iati-xml
+    description: |-
+        The root element in the data is not contained within the Schema.
+    help: |-
+        The root element within an XML data file is the one that contains all other data. In an IATI dataset, this is generally `iati-activities` or `iati-organisations`.
+        Note that this error may be raised if an Activity Dataset is validated against an Organisation Schema or vice versa.
+    info: |-
+        {err}
+
+- err-encoding-invalid:
+    base_exception: ValueError
+    category: file
+    description: |-
+        The encoding specified within the XML text declaration is different from the actual encoding of the XML file.
+    help: |-
+        The encoding of a file specifies how a computer should interpret the 1s and 0s that it is made up of. For more information about encoding, see https://www.w3.org/International/questions/qa-what-is-encoding
+        The XML text declaration looks similar to: `<?xml version="1.0" encoding="UTF-8"?>`.
+        For more information about the XML text declaration, see https://www.w3schools.com/xml/xml_syntax.asp and https://www.w3.org/TR/2000/REC-xml-20001006#sec-TextDecl
+    info: |-
+        {err}
+
+- err-encoding-unsupported:
+    base_exception: ValueError
+    category: file
+    description: |-
+        The encoding of the XML file is not supported by a tool used by IATI.
+    help: |-
+        The encoding of a file specifies how a computer should interpret the 1s and 0s that it is made up of.
+        For more information about encoding, see https://www.w3.org/International/questions/qa-what-is-encoding
+    info: |-
+        {err}
+
+- err-lxml-internal-error:
+    base_exception: Exception
+    category: tool-lxml
+    description: |-
+        An internal error occurred in a tool used to parse XML.
+    help: |-
+        This error may occur in an unspecified number of situations. Sorry this help message cannot be more helpful.
+    info: |-
+        {err}

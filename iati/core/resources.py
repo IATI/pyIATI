@@ -43,6 +43,8 @@ BASE_PATH = 'resources'
 """The relative location of the resources folder."""
 BASE_PATH_STANDARD = os.path.join(BASE_PATH, 'standard')
 """The relative location of resources related to the IATI Standard."""
+BASE_PATH_LIB_DATA = os.path.join(BASE_PATH, 'lib_data')
+"""The relative location of resources not related to the IATI Standard."""
 PATH_CODELISTS = 'codelists'
 """The location of the folder containing codelists from the SSOT."""
 PATH_TEST_DATA = os.path.join(BASE_PATH, 'test_data')
@@ -212,6 +214,52 @@ def get_codelist_mapping_path(version=None):
 
     """
     return get_path_for_version(FILE_CODELIST_MAPPING, version)
+
+
+def get_lib_data_path(name):
+    """Determine the path of a general library data file with the given name.
+
+    The data file is not part of the IATI Standard. It is also required in the library itself, not just for testing purposes.
+
+    Args:
+        name (str): The name of the data file to locate. The name must include the file extension.
+
+    Returns:
+        str: The path to the specified file.
+
+    Note:
+        Does not check whether the specified file actually exists.
+
+    Todo:
+        Test this.
+
+    """
+    return os.path.join(BASE_PATH_LIB_DATA, name)
+
+
+def get_schema_path(name, version=None):
+    """Determine the path of a schema with the given name.
+
+    Args:
+        name (str): The name of the schema to locate.
+        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
+
+    Returns:
+        str: The path to a file containing the specified schema.
+
+    Note:
+        Does not check whether the specified schema actually exists.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+    Todo:
+        Handle versions of the standard other than 2.02.
+
+        Test this.
+
+    """
+    return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
 
 def get_test_data_path(name, version=None):
