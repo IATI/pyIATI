@@ -10,8 +10,8 @@
   <element5>2016-08-16</element5>
   <element6>2017-08-16</element6>
   <element7>2016-08-16</element7><!-- multiple identical `more` values-->
-  <element8>2017-08-16</element8>
-  <element8>2017-08-16</element8>
+  <element8>2017-08-05</element8>
+  <element8>2017-08-05</element8>
   <nest>
     <element9>2016-08-16</element9><!--nested elements-->
     <element10>2017-08-16</element10>
