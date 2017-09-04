@@ -1,11 +1,11 @@
-iati.tests package
-==================
+iati\.tests package
+===================
 
 Submodules
 ----------
 
-iati.tests.test_validate module
--------------------------------
+iati\.tests\.test\_validate module
+----------------------------------
 
 .. automodule:: iati.tests.test_validate
     :members:

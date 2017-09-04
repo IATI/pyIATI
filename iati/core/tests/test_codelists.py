@@ -30,7 +30,7 @@ class TestCodelists(object):
     def test_codelist_default_attributes(self):
         """Check a Codelist's default attributes are correct."""
         with pytest.raises(TypeError) as excinfo:
-            iati.core.Codelist()
+            iati.core.Codelist()  # pylint: disable=E1120
 
         assert ('__init__() missing 1 required positional argument' in str(excinfo.value)) or ('__init__() takes at least 2 arguments' in str(excinfo.value))
 
