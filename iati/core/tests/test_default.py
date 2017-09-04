@@ -39,7 +39,7 @@ class TestDefault(object):
             AidTypeFlag was an embedded codelist in v1.04 and v1.05, but is not valid at any version after this.
             For example, BudgetStatus was added as an embedded codelist in v2.02, so is not valid prior to this.
         """
-        try:
+        try:  # Note pytest.raises() is not used here in order to keep this test flexible for parameterization.
             result = iati.core.default.codelist(codelist_name, version)
         except ValueError as excinfo:
             result = excinfo
