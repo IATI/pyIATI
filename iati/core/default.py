@@ -9,10 +9,10 @@ Todo:
 
 """
 
-from collections import defaultdict
-from copy import deepcopy
 import json
 import os
+from collections import defaultdict
+from copy import deepcopy
 import iati.core.codelists
 import iati.core.constants
 import iati.core.resources
