@@ -569,21 +569,21 @@ class RuleDependent(Rule):
         return True
 
     # def is_valid_for(self, dataset):
-        """Assert that either all given `paths` or none of the given `paths` exist in a Dataset.
-
-        Args:
-            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
-
-        Returns:
-            bool: Return `True` when all dependent `paths` are found in the Dataset, if any exist.
-
-        Raises:
-            AttributeError: When an argument is given that does not have the required attributes.
-
-    #     Todo:
-    #         Determine if it's reasonable to assume the user should give a specific xpath format, or whether the context-path structure dictates automatic conversion to relative paths.
+    #     """Assert that either all given `paths` or none of the given `paths` exist in a Dataset.
     #
-    #     """
+    #     Args:
+    #         dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+    #
+    #     Returns:
+    #         bool: Return `True` when all dependent `paths` are found in the Dataset, if any exist.
+    #
+    #     Raises:
+    #         AttributeError: When an argument is given that does not have the required attributes.
+    #
+    # #     Todo:
+    # #         Determine if it's reasonable to assume the user should give a specific xpath format, or whether the context-path structure dictates automatic conversion to relative paths.
+    # #
+    # #     """
     #     context_elements = self._find_context_elements(dataset)
     #     unique_paths = set(self.paths)
     #
@@ -618,7 +618,7 @@ class RuleNoMoreThanOne(Rule):
             return '`{self.paths[0]}` must occur zero or one times within each `{self.context}`.'.format(**locals())
         return 'There must be no more than one element or attribute matched at `{0}` within each `{self.context}`.'.format('` or `'.join(self.paths), **locals())
 
-    def is_valid_for(self, dataset):
+    def _check_against_Rule(self, context_element):
         """Check dataset has no more than one instance of a given case for an Element.
 
         Args:
@@ -630,27 +630,55 @@ class RuleNoMoreThanOne(Rule):
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
 
-        Todo:
-            Check test data.
-
         """
-        context_elements = self._find_context_elements(dataset)
         unique_paths = set(self.paths)
 
-        for context_element in context_elements:
-            if self._condition_met_for(context_element):
-                return None
+        if self._condition_met_for(context_element):
+            return None
 
-            found_elements = 0
+        found_elements = 0
 
-            for path in unique_paths:
-                results = context_element.xpath(path)
-                found_elements += len(results)
+        for path in unique_paths:
+            results = context_element.xpath(path)
+            found_elements += len(results)
 
-            if found_elements > 1:
-                return False
-
+        if found_elements > 1:
+            return False
         return True
+
+    # def is_valid_for(self, dataset):
+    #     """Check dataset has no more than one instance of a given case for an Element.
+    #
+    #     Args:
+    #         dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+    #
+    #     Returns:
+    #         bool: Return `True` when one or fewer cases are found in the Dataset.
+    #
+    #     Raises:
+    #         AttributeError: When an argument is given that does not have the required attributes.
+    #
+    #     Todo:
+    #         Check test data.
+    #
+    #     """
+    #     context_elements = self._find_context_elements(dataset)
+
+        # for context_element in context_elements:
+        #     unique_paths = set(self.paths)
+        #     if self._condition_met_for(context_element):
+        #         return None
+        #
+        #     found_elements = 0
+        #
+        #     for path in unique_paths:
+        #         results = context_element.xpath(path)
+        #         found_elements += len(results)
+        #
+        #     if found_elements > 1:
+        #         return False
+        #
+        # return True
 
 
 class RuleRegexMatches(Rule):
@@ -680,7 +708,7 @@ class RuleRegexMatches(Rule):
             return 'Each `{self.paths[0]}` within each `{self.context}` must match the regular expression `{self.regex}`.'.format(**locals())
         return 'Each instance of `{0}` within each `{self.context}` must match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
 
-    def is_valid_for(self, dataset):
+    def _check_against_Rule(self, context_element):
         """Assert that the text of the given `paths` matches the `regex` value.
 
         Args:
@@ -693,20 +721,44 @@ class RuleRegexMatches(Rule):
             AttributeError: When an argument is given that does not have the required attributes.
 
         """
-        context_elements = self._find_context_elements(dataset)
         pattern = re.compile(self.regex)
+        if self._condition_met_for(context_element):
+            return None
+        for path in self.paths:
+            strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
+            for string_to_check in strings_to_check:
+                if not pattern.search(string_to_check):
+                    return False
+                continue
 
-        for context_element in context_elements:
-            if self._condition_met_for(context_element):
-                return None
-            for path in self.paths:
-                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
-                for string_to_check in strings_to_check:
-                    if not pattern.search(string_to_check):
-                        return False
-                    continue
 
-        return True
+    # def is_valid_for(self, dataset):
+    #     """Assert that the text of the given `paths` matches the `regex` value.
+    #
+    #     Args:
+    #         dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+    #
+    #     Returns:
+    #         bool: Return `True` when the given `path` text matches the given regex case.
+    #
+    #     Raises:
+    #         AttributeError: When an argument is given that does not have the required attributes.
+    #
+    #     """
+        # context_elements = self._find_context_elements(dataset)
+
+        # for context_element in context_elements:
+            # pattern = re.compile(self.regex)
+        #     if self._condition_met_for(context_element):
+        #         return None
+        #     for path in self.paths:
+        #         strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
+        #         for string_to_check in strings_to_check:
+        #             if not pattern.search(string_to_check):
+        #                 return False
+        #             continue
+        #
+        # return True
 
 
 class RuleRegexNoMatches(Rule):
