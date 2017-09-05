@@ -144,7 +144,7 @@ class TestRule(object):
         context = 'an xpath'
         case = {'paths': ['path_1', 'path_2']}
 
-        with pytest.raises(AttributeError):
+        with pytest.raises(TypeError):
             iati.core.Rule(context, case)
 
     def test_rule_class_cannot_be_instantiated_directly_with_name(self):
@@ -317,7 +317,7 @@ class RuleSubclassTestBase(object):
     @pytest.mark.parametrize("context", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_rule_init_invalid_context(self, rule_constructor, context, instantiating_case):
         """Check that a Rule subclass cannot be created when context is not a string."""
-        with pytest.raises(TypeError):
+        with pytest.raises(AttributeError):
             rule_constructor(context, instantiating_case)
 
     def test_rule_invalid_case(self, rule_constructor, uninstantiating_case):
@@ -337,7 +337,7 @@ class RuleSubclassTestBase(object):
     @pytest.mark.parametrize("junk_data", iati.core.tests.utilities.generate_test_types([], True))
     def test_is_valid_for_raises_error_on_non_permitted_argument(self, rule_instantiating, junk_data):
         """Check that a given Rule returns expected error when passed an argument that is not a Dataset."""
-        with pytest.raises(TypeError):
+        with pytest.raises(AttributeError):
             rule_instantiating.is_valid_for(junk_data)
 
     def test_is_valid_for_raises_error_when_passed_an_etree(self, rule_instantiating):

@@ -360,13 +360,10 @@ class Rule(object):
             None: When a condition is met to skip validation.
 
         Raises:
-            TypeError: When a `dataset` is given that is not a valid IATI Dataset.
+            AttributeError: When an argument is given that does not have the required attributes.
 
         """
-        try:
-            context_elements = self._find_context_elements(dataset)
-        except AttributeError:
-            raise TypeError
+        context_elements = self._find_context_elements(dataset)
         if context_elements == list():
             return True
         for context_element in context_elements:
