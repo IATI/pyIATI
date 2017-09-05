@@ -382,7 +382,7 @@ class RuleAtLeastOne(Rule):
         """
         context_elements = self._find_context_elements(dataset)
 
-        if not len(context_elements):
+        if context_elements == list():
             return True
 
         for context_element in context_elements:
