@@ -339,7 +339,7 @@ def _check_rules(dataset, ruleset):
     error_log = ValidationErrorLog()
 
     for rule in ruleset.rules:
-        if not rule.is_valid_for(dataset):
+        if rule.is_valid_for(dataset) is False:
             error = ValidationError('err-ruleset-conformance-fail', locals())
 
             error_log.add(error)
