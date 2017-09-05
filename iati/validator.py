@@ -466,6 +466,7 @@ def full_validation(dataset, schema):
 
     error_log.extend(_check_is_xml(dataset))
     error_log.extend(_check_codelist_values(dataset, schema))
+    error_log.extend(_check_ruleset_conformance(dataset, schema))
 
     return error_log
 
