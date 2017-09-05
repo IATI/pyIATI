@@ -788,16 +788,6 @@ class RuleStartsWith(Rule):
 
         self.normalized_paths.append(self._normalize_xpath(self.start))
 
-    def _do_stuff_for_is_valid_for(yada):
-        if self._condition_met_for(context_element):
-            return None
-        prefix = self._extract_text_from_element_or_attribute(context_element, self.start)[0]
-        for path in self.paths:
-            strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
-            for string_to_check in strings_to_check:
-                if not string_to_check.startswith(prefix):
-                    return False
-
     def is_valid_for(self, dataset):
         """Assert that the prefixing text of all given `paths` starts with the text of `start`.
 
@@ -814,7 +804,14 @@ class RuleStartsWith(Rule):
         context_elements = self._find_context_elements(dataset)
 
         for context_element in context_elements:
-            self._do_stuff_for_is_valid_for()
+            if self._condition_met_for(context_element):
+                return None
+            prefix = self._extract_text_from_element_or_attribute(context_element, self.start)[0]
+            for path in self.paths:
+                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
+                for string_to_check in strings_to_check:
+                    if not string_to_check.startswith(prefix):
+                        return False
 
         return True
 

@@ -148,7 +148,7 @@ class TestRule(object):
         context = 'an xpath'
         case = {'paths': ['path_1', 'path_2']}
 
-        with pytest.raises(TypeError):
+        with pytest.raises(AttributeError):
             iati.core.Rule(context, case)
 
     def test_rule_class_cannot_be_instantiated_directly_with_name(self):
@@ -321,7 +321,7 @@ class RuleSubclassTestBase(object):
     @pytest.mark.parametrize("context", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_rule_init_invalid_context(self, rule_constructor, context, instantiating_case):
         """Check that a Rule subclass cannot be created when context is not a string."""
-        with pytest.raises(AttributeError):
+        with pytest.raises(TypeError):
             rule_constructor(context, instantiating_case)
 
     def test_rule_invalid_case(self, rule_constructor, uninstantiating_case):
@@ -351,7 +351,7 @@ class RuleSubclassTestBase(object):
             Use more generic Dataset.
 
         """
-        with pytest.raises(TypeError):
+        with pytest.raises(AttributeError):
             rule_instantiating.is_valid_for(iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_atleastone')))
 
     def test_multiple_valid_context_matches_is_valid_for(self, valid_multiple_context, valid_nest_case, rule_constructor, valid_dataset):
