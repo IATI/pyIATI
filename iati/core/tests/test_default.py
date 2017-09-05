@@ -68,7 +68,7 @@ class TestDefault(object):
             assert isinstance(codelist, iati.core.Codelist)
 
     def test_codelist_mapping_condition(self):
-        """Check that the Codelist mapping file is being read correctly.
+        """Check that the Codelist mapping file is having conditions read.
 
         Todo:
             Split into multiple tests.
@@ -79,14 +79,17 @@ class TestDefault(object):
         assert mapping['Version'][0]['condition'] is None
 
     def test_codelist_mapping_xpath(self):
-        """Check that the Codelist mapping file is being read correctly.
+        """Check that the Codelist mapping file is being read for both org and activity mappings.
 
         Todo:
             Split into multiple tests.
         """
         mapping = iati.core.default.codelist_mapping()
 
-        assert mapping['Version'][0]['xpath'] == '//iati-activities/@version'
+        version_xpaths = [mapping['Version'][0]['xpath'], mapping['Version'][1]['xpath']]
+
+        assert '//iati-activities/@version' in version_xpaths
+        assert '//iati-organisations/@version' in version_xpaths
         assert len(mapping['InvalidCodelistName']) == 0
 
     def test_default_ruleset(self):

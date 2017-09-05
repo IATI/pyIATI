@@ -132,10 +132,6 @@ def codelist_mapping(version=None):
     Returns:
         dict of dict: A dictionary containing mapping information. Keys in the first dictionary are Codelist names. Keys in the second dictionary are `xpath` and `condition`. The condition is `None` if there is no condition.
 
-    Todo:
-        Test this.
-        Stop filtering out filters for org files.
-
     """
     path = iati.core.resources.get_codelist_mapping_path()
     mapping_tree = iati.core.resources.load_as_tree(path)
@@ -144,8 +140,7 @@ def codelist_mapping(version=None):
     for mapping in mapping_tree.getroot().xpath('//mapping'):
         codelist_name = mapping.find('codelist').attrib['ref']
         codelist_location = mapping.find('path').text
-        if 'organisation' in codelist_location:
-            continue
+
         try:
             condition = mapping.find('condition').text
         except AttributeError:  # there is no condition
