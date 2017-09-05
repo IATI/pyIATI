@@ -322,7 +322,7 @@ def load_as_bytes(path):
         FileNotFoundError: When a file at the specified path does not exist.
 
     Todo:
-        Should raise Exceptions when there are problems loading the requested data.
+        Ensure all reasonably possible OSErrors are documented here and in functions that call this.
         Add error handling for when the specified file does not exist.
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
 
@@ -343,7 +343,6 @@ def load_as_string(path):
         FileNotFoundError: When a file at the specified path does not exist.
 
     Todo:
-        Should raise Exceptions when there are problems loading the requested data.
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
 
     """
