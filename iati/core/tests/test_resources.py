@@ -2,14 +2,19 @@
 from lxml import etree
 import pytest
 import six
+import iati.core.constants
 import iati.core.resources
+from iati.core.tests.utilities import codelist_lengths_by_version, standard_version_optional  # shorthand import provided for fixtures
 
 
 class TestResources(object):
     """A container for tests relating to resources."""
 
     @pytest.mark.parametrize('version, expected_version_foldername', [
-        ('2.02', '202')
+        ('2.02', '202'),
+        ('2.01', '201'),
+        ('1.05', '105'),
+        ('1.04', '104')
     ])
     def test_get_folder_name_for_version(self, version, expected_version_foldername):
         """Check that expected components are present within folder paths."""
@@ -28,76 +33,62 @@ class TestResources(object):
         with pytest.raises(ValueError):
             iati.core.resources.get_folder_name_for_version(version)
 
-    @pytest.mark.parametrize('version', [
-        '2.02',
-    ])
     @pytest.mark.parametrize('path_component', [
         'resources',
         'standard'
     ])
-    def test_get_folder_path_for_version(self, version, path_component):
+    def test_get_folder_path_for_version(self, standard_version_optional, path_component):
         """Check that expected components are present within folder paths."""
-        path = iati.core.resources.get_folder_path_for_version(version)
+        path = iati.core.resources.get_folder_path_for_version(*standard_version_optional)
         assert path_component in path
 
-    def test_codelist_flow_type(self):
-        """Check that the FlowType codelist contains content."""
-        path = iati.core.resources.get_codelist_path('FlowType')
+    def test_codelist_flow_type(self, standard_version_optional):
+        """Check that the FlowType codelist is loaded as a string and contains content."""
+        path = iati.core.resources.get_codelist_path('FlowType', *standard_version_optional)
 
         content = iati.core.resources.load_as_string(path)
 
         assert len(content) > 3200
 
-    def test_find_codelist_paths(self):
-        """Check that all codelist paths are being found.
+    def test_find_codelist_paths(self, codelist_lengths_by_version):
+        """Check that all codelist paths are being found."""
+        paths = iati.core.resources.get_all_codelist_paths(codelist_lengths_by_version[0])
 
-        Todo:
-            Add other tests relating to specific versions of the Standard.
-
-        """
-        paths = iati.core.resources.get_all_codelist_paths()
-
-        assert len(paths) == 62
+        assert len(paths) == codelist_lengths_by_version[1]
         for path in paths:
             assert path[-4:] == iati.core.resources.FILE_CODELIST_EXTENSION
             assert iati.core.resources.PATH_CODELISTS in path
 
-    def test_get_all_activity_schema_paths(self):
+    def test_get_all_activity_schema_paths(self, standard_version_optional):
         """Check that all activity schema paths are found.
 
         Todo:
-            Add other tests relating to specific versions of the Standard.
-
             Handle all paths to schemas being found correctly.
 
         """
-        activity_paths = iati.core.resources.get_all_activity_schema_paths()
+        activity_paths = iati.core.resources.get_all_activity_schema_paths(*standard_version_optional)
 
         assert len(activity_paths) == 1
 
-    def test_get_all_org_schema_paths(self):
+    def test_get_all_org_schema_paths(self, standard_version_optional):
         """Check that all organisation schema paths are found.
 
         Todo:
-            Add other tests relating to specific versions of the Standard.
-
             Handle all paths to schemas being found correctly.
 
         """
-        organisation_paths = iati.core.resources.get_all_org_schema_paths()
+        organisation_paths = iati.core.resources.get_all_org_schema_paths(*standard_version_optional)
 
         assert len(organisation_paths) == 1
 
-    def test_find_schema_paths(self):
-        """Check that all schema paths are being found.
+    def test_find_schema_paths(self, standard_version_optional):
+        """Check that both the activity and organisation schema paths are being found.
 
         Todo:
-            Add other tests relating to specific versions of the Standard.
-
             Handle all paths to schemas being found correctly.
 
         """
-        paths = iati.core.resources.get_all_schema_paths()
+        paths = iati.core.resources.get_all_schema_paths(*standard_version_optional)
 
         assert len(paths) == 2
 
@@ -106,9 +97,9 @@ class TestResources(object):
         iati.core.resources.get_all_activity_schema_paths,
         iati.core.resources.get_all_org_schema_paths
     ])
-    def test_find_schema_paths_file_extension(self, get_schema_path_function):
+    def test_find_schema_paths_file_extension(self, standard_version_optional, get_schema_path_function):
         """Check that the correct file extension is present within file paths returned by get_all_*schema_paths functions."""
-        paths = get_schema_path_function()
+        paths = get_schema_path_function(*standard_version_optional)
 
         for path in paths:
             assert path[-4:] == iati.core.resources.FILE_SCHEMA_EXTENSION
@@ -117,9 +108,9 @@ class TestResources(object):
         'Name',
         'Name.xml',
     ])
-    def test_get_codelist_path_name(self, codelist):
+    def test_get_codelist_path_name(self, standard_version_optional, codelist):
         """Check that a codelist path is found from just a name."""
-        path = iati.core.resources.get_codelist_path(codelist)
+        path = iati.core.resources.get_codelist_path(codelist, *standard_version_optional)
 
         assert path[-4:] == iati.core.resources.FILE_CODELIST_EXTENSION
         assert path.count(iati.core.resources.FILE_CODELIST_EXTENSION) == 1
