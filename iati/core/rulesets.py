@@ -566,7 +566,6 @@ class RuleDependent(Rule):
 
         if found_paths not in [0, len(unique_paths)]:
             return False
-        return True
 
     # def is_valid_for(self, dataset):
     #     """Assert that either all given `paths` or none of the given `paths` exist in a Dataset.
@@ -633,9 +632,6 @@ class RuleNoMoreThanOne(Rule):
         """
         unique_paths = set(self.paths)
 
-        if self._condition_met_for(context_element):
-            return None
-
         found_elements = 0
 
         for path in unique_paths:
@@ -644,7 +640,6 @@ class RuleNoMoreThanOne(Rule):
 
         if found_elements > 1:
             return False
-        return True
 
     # def is_valid_for(self, dataset):
     #     """Check dataset has no more than one instance of a given case for an Element.
@@ -722,8 +717,7 @@ class RuleRegexMatches(Rule):
 
         """
         pattern = re.compile(self.regex)
-        if self._condition_met_for(context_element):
-            return None
+
         for path in self.paths:
             strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
             for string_to_check in strings_to_check:
@@ -803,8 +797,7 @@ class RuleRegexNoMatches(Rule):
 
         """
         pattern = re.compile(self.regex)
-        if self._condition_met_for(context_element):
-            return None
+
         for path in self.paths:
             strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
             for string_to_check in strings_to_check:
@@ -863,7 +856,7 @@ class RuleStartsWith(Rule):
 
         self.normalized_paths.append(self._normalize_xpath(self.start))
 
-    def is_valid_for(self, dataset):
+    def _check_against_Rule(self, context_element):
         """Assert that the prefixing text of all given `paths` starts with the text of `start`.
 
         Args:
@@ -876,19 +869,40 @@ class RuleStartsWith(Rule):
             AttributeError: When an argument is given that does not have the required attributes.
 
         """
-        context_elements = self._find_context_elements(dataset)
+        prefix = self._extract_text_from_element_or_attribute(context_element, self.start)[0]
 
-        for context_element in context_elements:
-            if self._condition_met_for(context_element):
-                return None
-            prefix = self._extract_text_from_element_or_attribute(context_element, self.start)[0]
-            for path in self.paths:
-                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
-                for string_to_check in strings_to_check:
-                    if not string_to_check.startswith(prefix):
-                        return False
+        for path in self.paths:
+            strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
+            for string_to_check in strings_to_check:
+                if not string_to_check.startswith(prefix):
+                    return False
 
-        return True
+    # def is_valid_for(self, dataset):
+        # """Assert that the prefixing text of all given `paths` starts with the text of `start`.
+        #
+        # Args:
+        #     dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+        #
+        # Returns:
+        #     bool: Return `True` when the `path` text starts with the value of `start`.
+        #
+        # Raises:
+        #     AttributeError: When an argument is given that does not have the required attributes.
+        #
+        # """
+        # context_elements = self._find_context_elements(dataset)
+        #
+        # for context_element in context_elements:
+            # if self._condition_met_for(context_element):
+            #     return None
+            # prefix = self._extract_text_from_element_or_attribute(context_element, self.start)[0]
+            # for path in self.paths:
+            #     strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
+            #     for string_to_check in strings_to_check:
+            #         if not string_to_check.startswith(prefix):
+            #             return False
+
+        # return True
 
 
 class RuleSum(Rule):
@@ -904,7 +918,7 @@ class RuleSum(Rule):
         """A string stating what RuleSum is checking."""
         return 'Within each `{self.context}`, the sum of values matched at `{0}` must be `{self.sum}`.'.format('` and `'.join(self.paths), **locals())
 
-    def is_valid_for(self, dataset):
+    def _check_against_Rule(self, context_element):
         """Assert that the total of the values given in `paths` match the given `sum` value.
 
         Args:
@@ -917,20 +931,42 @@ class RuleSum(Rule):
             AttributeError: When an argument is given that does not have the required attributes.
 
         """
-        context_elements = self._find_context_elements(dataset)
         unique_paths = set(self.paths)
-        for context_element in context_elements:
-            if self._condition_met_for(context_element):
-                return None
-            values_in_context = list()
-            for path in unique_paths:
-                values_to_sum = self._extract_text_from_element_or_attribute(context_element, path)
-                for value in values_to_sum:
-                    values_in_context.append(Decimal(value))
-            if sum(values_in_context) != Decimal(str(self.sum)):
-                return False
+        values_in_context = list()
+        for path in unique_paths:
+            values_to_sum = self._extract_text_from_element_or_attribute(context_element, path)
+            for value in values_to_sum:
+                values_in_context.append(Decimal(value))
+        if sum(values_in_context) != Decimal(str(self.sum)):
+            return False
 
-        return True
+    # def is_valid_for(self, dataset):
+    #     """Assert that the total of the values given in `paths` match the given `sum` value.
+    #
+    #     Args:
+    #         dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+    #
+    #     Returns:
+    #         bool: Return `True` when the `path` values total to the `sum` value.
+    #
+    #     Raises:
+    #         AttributeError: When an argument is given that does not have the required attributes.
+    #
+    #     """
+        # context_elements = self._find_context_elements(dataset)
+        # for context_element in context_elements:
+        #     if self._condition_met_for(context_element):
+        #         return None
+        #     unique_paths = set(self.paths)
+        #     values_in_context = list()
+        #     for path in unique_paths:
+        #         values_to_sum = self._extract_text_from_element_or_attribute(context_element, path)
+        #         for value in values_to_sum:
+        #             values_in_context.append(Decimal(value))
+        #     if sum(values_in_context) != Decimal(str(self.sum)):
+        #         return False
+        #
+        # return True
 
 
 class RuleUnique(Rule):
@@ -946,7 +982,7 @@ class RuleUnique(Rule):
         """A string stating what RuleUnique is checking."""
         return 'Within each `{self.context}`, the text contained within each of the elements and attributes matched by `{0}` must be unique.'.format('` and `'.join(self.paths), **locals())
 
-    def is_valid_for(self, dataset):
+    def _check_against_Rule(self, context_element):
         """Assert that the given `paths` are not found in the dataset.xml_tree more than once.
 
         Args:
@@ -962,24 +998,53 @@ class RuleUnique(Rule):
             Consider better methods for specifying which elements in the tree contain non-permitted duplication, such as bucket sort.
 
         """
-        context_elements = self._find_context_elements(dataset)
-
         unique_paths = set(self.paths)
+        all_content = list()
+        unique_content = set()
 
-        for context_element in context_elements:
-            if self._condition_met_for(context_element):
-                return None
+        for path in unique_paths:
+            strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
+            for string_to_check in strings_to_check:
+                all_content.append(string_to_check)
+                unique_content.add(string_to_check)
 
-            all_content = list()
-            unique_content = set()
+        if len(all_content) != len(unique_content):
+            return False
 
-            for path in unique_paths:
-                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
-                for string_to_check in strings_to_check:
-                    all_content.append(string_to_check)
-                    unique_content.add(string_to_check)
-
-            if len(all_content) != len(unique_content):
-                return False
-
-        return True
+    # def is_valid_for(self, dataset):
+    #     """Assert that the given `paths` are not found in the dataset.xml_tree more than once.
+    #
+    #     Args:
+    #         dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+    #
+    #     Returns:
+    #         bool: Return `True` when repeated text is found in the dataset for the given `paths`.
+    #
+    #     Raises:
+    #         AttributeError: When an argument is given that does not have the required attributes.
+    #
+    #     Todo:
+    #         Consider better methods for specifying which elements in the tree contain non-permitted duplication, such as bucket sort.
+    #
+    #     """
+        # context_elements = self._find_context_elements(dataset)
+        #
+        #
+        # for context_element in context_elements:
+        #     if self._condition_met_for(context_element):
+        #         return None
+        # 
+        #     unique_paths = set(self.paths)
+        #     all_content = list()
+        #     unique_content = set()
+        #
+        #     for path in unique_paths:
+        #         strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
+        #         for string_to_check in strings_to_check:
+        #             all_content.append(string_to_check)
+        #             unique_content.add(string_to_check)
+        #
+        #     if len(all_content) != len(unique_content):
+        #         return False
+        #
+        # return True
