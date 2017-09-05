@@ -297,6 +297,9 @@ def load_as_dataset(path):
     Warning:
         Should raise Exceptions when there are problems loading the requested data.
 
+    Raises:
+        ValueError: When a file at the specified path does not contain valid XML.
+
     Todo:
         Add error handling for when the specified file does not exist.
 

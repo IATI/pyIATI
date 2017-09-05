@@ -133,6 +133,13 @@ class TestResources(object):
         assert isinstance(result, iati.core.Dataset)
         assert '<?xml version="1.0"?>\n\n<iati-activities version="2.02">' in result.xml_str
 
+    def test_load_as_dataset_invalid(self):
+        """Test that resources.load_as_dataset raises an error when the provided path does not lead to a file containing valid XML."""
+        path_test_data = iati.core.resources.get_test_data_path('invalid')
+
+        with pytest.raises(ValueError):
+            _ = iati.core.resources.load_as_dataset(path_test_data)
+
     def test_load_as_string(self):
         """Test that resources.load_as_string returns a string (python3) or unicode (python2) object with the expected content."""
         path_test_data = iati.core.resources.get_test_data_path('invalid')
