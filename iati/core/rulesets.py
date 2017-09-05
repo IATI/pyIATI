@@ -360,10 +360,13 @@ class Rule(object):
             None: When a condition is met to skip validation.
 
         Raises:
-            AttributeError: When an argument is given that does not have the required attributes.
+            TypeError: When a Dataset is not given as an argument.
 
         """
-        context_elements = self._find_context_elements(dataset)
+        try:
+            context_elements = self._find_context_elements(dataset)
+        except AttributeError:
+            raise TypeError
         if context_elements == list():
             return True
         for context_element in context_elements:
@@ -402,10 +405,13 @@ class RuleAtLeastOne(Rule):
             None: When a condition is met to skip validation.
 
         Raises:
-            AttributeError: When an argument is given that does not have the required attributes.
+            TypeError: When a Dataset is not given as an argument.
 
         """
-        context_elements = self._find_context_elements(dataset)
+        try:
+            context_elements = self._find_context_elements(dataset)
+        except AttributeError:
+            raise TypeError
 
         if context_elements == list():
             return True
@@ -502,14 +508,17 @@ class RuleDateOrder(Rule):
             bool: Return `True` when `less` is chronologically before `more`.
 
         Raises:
-            AttributeError: When an argument is given that does not have the required attributes.
+            TypeError: When a Dataset is not given as an argument.
             ValueError: When a date is given that is not in the correct xsd:date format.
 
         Note:
             `date` restricted to 10 characters in order to exclude possible timezone values.
 
         """
-        context_elements = self._find_context_elements(dataset)
+        try:
+            context_elements = self._find_context_elements(dataset)
+        except AttributeError:
+            raise TypeError
 
         for context_element in context_elements:
             if self._condition_met_for(context_element):

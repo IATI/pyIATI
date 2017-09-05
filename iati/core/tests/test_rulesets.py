@@ -341,7 +341,7 @@ class RuleSubclassTestBase(object):
     @pytest.mark.parametrize("junk_data", iati.core.tests.utilities.generate_test_types([], True))
     def test_is_valid_for_raises_error_on_non_permitted_argument(self, rule_instantiating, junk_data):
         """Check that a given Rule returns expected error when passed an argument that is not a Dataset."""
-        with pytest.raises(AttributeError):
+        with pytest.raises(TypeError):
             rule_instantiating.is_valid_for(junk_data)
 
     def test_is_valid_for_raises_error_when_passed_an_etree(self, rule_instantiating):
@@ -351,7 +351,7 @@ class RuleSubclassTestBase(object):
             Use more generic Dataset.
 
         """
-        with pytest.raises(AttributeError):
+        with pytest.raises(TypeError):
             rule_instantiating.is_valid_for(iati.core.resources.load_as_tree(iati.core.resources.get_test_data_path('valid_atleastone')))
 
     def test_multiple_valid_context_matches_is_valid_for(self, valid_multiple_context, valid_nest_case, rule_constructor, valid_dataset):
