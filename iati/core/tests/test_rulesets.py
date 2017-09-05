@@ -36,7 +36,6 @@ class TestRuleset(object):
         with pytest.raises(ValueError):
             iati.core.Ruleset(not_a_ruleset)
 
-    @pytest.mark.skip(reason="Bytearrays cause multiple types of errors. This is confusing. Probs due to the stupid null byte at the start of one of the sample bytearrays. Grr! Argh!")
     @pytest.mark.parametrize("byte_array", iati.core.tests.utilities.generate_test_types(['bytearray']))
     def test_ruleset_init_ruleset_str_bytearray(self, byte_array):
         """Check that a Ruleset cannot be created when given at least one Rule in a bytearray format."""
@@ -123,6 +122,19 @@ class TestRuleset(object):
             assert isinstance(rule, iati.core.Rule)
             assert isinstance(rule, iati.core.RuleAtLeastOne)
 
+    def test_ruleset_is_valid_for_valid_dataset(self):
+        """Check that a Dataset can be validated against the Standard Ruleset."""
+        ruleset = iati.core.default.ruleset()
+        valid_dataset = iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_VALID
+        assert ruleset.is_valid_for(valid_dataset)
+
+    # @pytest.mark.parametrize()
+    # def test_ruleset_is_invalid_for_invalid_dataset(self):
+    #     """Check that a Dataset can be invalidated against the Standard Ruleset."""
+    #     ruleset = iati.core.default.ruleset()
+    #     invalid_dataset = iati.core.tests.utilities.INVALID_STANDARD_RULESET_DATASET
+    #     assert not ruleset.is_valid_for(invalid_dataset)
+
 
 class TestRule(object):
     """A container for tests relating to Rules."""
@@ -206,6 +218,11 @@ class RuleSubclassTestBase(object):
     def valid_multiple_context(self):
         """Return a valid context with multiple matches."""
         return '//nest'
+
+    @pytest.fixture
+    def non_existent_context(self):
+        """Return an XPath for a context that does not exist."""
+        return '//non-existent-context'
 
     @pytest.fixture(params=[
         'count(condition)>0',
@@ -354,6 +371,16 @@ class RuleSubclassTestBase(object):
         """Check Rule returns expected result when checking multiple contexts."""
         rule = rule_constructor(valid_multiple_context, invalid_nest_case)
         assert not rule.is_valid_for(invalid_dataset)
+
+    def test_non_existent_context_is_valid_for(self, non_existent_context, valid_nest_case, rule_constructor, valid_dataset):
+        """Check Rule returns expected result when checking multiple contexts."""
+        rule = rule_constructor(non_existent_context, valid_nest_case)
+        assert rule.is_valid_for(valid_dataset)
+
+    def test_non_existent_context_is_invalid_for(self, non_existent_context, invalid_nest_case, rule_constructor, invalid_dataset):
+        """Check Rule returns expected result when checking multiple contexts."""
+        rule = rule_constructor(non_existent_context, invalid_nest_case)
+        assert rule.is_valid_for(invalid_dataset)
 
     def test_condition_case_is_True_for_valid_dataset(self, valid_condition_rule, valid_dataset):
         """Check that if a condition is `True`, the rule returns None which is considered equivalent to skipping."""
@@ -548,7 +575,9 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element23/@attribute', 'more': 'element24/@attribute'},
         {'less': 'element12', 'more': 'element13'},  # multiple identical `more` dates that are chronologically before `less`
         {'less': 'element25/@attribute', 'more': 'element26/@attribute'},
-        {'less': 'element27', 'more': 'element28'}  # multiple identical elements in incorrect order
+        {'less': 'element27', 'more': 'element28'},  # multiple identical elements in incorrect order
+        {'less': 'element29', 'more': 'xpath-that-does-not-exist'},  # the xpath for more does not exist
+        {'less': 'xpath-that-does-not-exist', 'more': 'element29'}  # the xpath for less does not exist
     ]
 
     @pytest.fixture
@@ -627,7 +656,10 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element43', 'more': 'element44'},  # UNIX timestamp format
         {'less': 'element45/@attribute', 'more': 'element46/@attribute'},
         {'less': 'element47', 'more': 'element48'},  # All text date format
-        {'less': 'element49/@attribute', 'more': 'element50/@attribute'}
+        {'less': 'element49/@attribute', 'more': 'element50/@attribute'},
+        {'less': 'element51', 'more': 'element52'},  # missing day
+        {'less': 'element53', 'more': 'element54'},  # day not zero-padded
+        {'less': 'element55', 'more': 'element56'}  # month not zero-padded
     ])
     def test_incorrect_date_format_raises_error(self, valid_single_context, case, rule_constructor):
         """Check that a dataset with dates in an incorrect format raise expected error."""

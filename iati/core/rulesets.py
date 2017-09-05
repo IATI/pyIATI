@@ -91,7 +91,7 @@ class Ruleset(object):
 
         """
         for rule in self.rules:
-            if not rule.is_valid_for(dataset):
+            if rule.is_valid_for(dataset) is False:
                 return False
 
         return True
@@ -390,6 +390,9 @@ class RuleAtLeastOne(Rule):
         """
         context_elements = self._find_context_elements(dataset)
 
+        if not len(context_elements):
+            return True
+
         for context_element in context_elements:
             if self._condition_met_for(context_element):
                 return None
@@ -417,7 +420,7 @@ class RuleDateOrder(Rule):
         elif self.less == self.special_case:
             unformatted_str = '`{self.more}` must be in the future within each `{self.context}`.'
         elif self.more == self.special_case:
-            unformatted_str = '`{self.more}` must be in the past within each `{self.context}`.'
+            unformatted_str = '`{self.less}` must be in the past within each `{self.context}`.'
         else:
             unformatted_str = '`{self.less}` must be chronologically before `{self.more}` within each `{self.context}`.'
 
@@ -478,11 +481,14 @@ class RuleDateOrder(Rule):
                 return datetime.today()
 
             dates = self._extract_text_from_element_or_attribute(context, path)
-            if not dates[0]:
+            if not len(dates) or not dates[0]:
                 return
             # Checks that anything after the YYYY-MM-DD string is a permitted timezone character
             pattern = re.compile(r'^([+-]([01][0-9]|2[0-3]):([0-5][0-9])|Z)?$')
             if (len(set(dates)) == 1) and pattern.match(dates[0][10:]):
+                if len(dates[0]) < 10:
+                    # '%d' and '%m' are documented as requiring zero-padded dates.as input. This is actually for output. As such, a separate length check is required to ensure zero-padded values.
+                    raise ValueError
                 return datetime.strptime(dates[0][:10], '%Y-%m-%d')
             raise ValueError
 
