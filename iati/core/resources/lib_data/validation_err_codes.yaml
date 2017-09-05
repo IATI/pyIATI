@@ -332,3 +332,14 @@
         For more information about this Rule, see http://iatistandard.org/rulesets/
     info: |-
         The way in which the Dataset does not conform is unknown.
+
+- warn-rule-skipped:
+    base_exception: Warning
+    category: rule
+    description: |-
+        The test for a given Rule was skipped.
+    help: |-
+        Circumstances in the activity deem that the Rule is skipped.
+        For more information about the circumstances where a Rule is skipped, see http://iatistandard.org/rulesets/ruleset-spec/
+    info: |-
+        The exact reason for why the Rule was skipped is unknown.
