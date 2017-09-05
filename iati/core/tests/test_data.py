@@ -19,7 +19,7 @@ class TestDatasets(object):
     @pytest.fixture
     def dataset_initialised(self):
         """Return an initialised dataset to work from in other tests."""
-        return iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_not_iati'))
+        return iati.core.tests.utilities.load_as_dataset('valid_not_iati')
 
     def test_dataset_no_params(self):
         """Test Dataset creation with no parameters."""
@@ -239,14 +239,12 @@ class TestDatasetSourceFinding(object):
     """A container for tests relating to finding source context within a Dataset."""
 
     @pytest.fixture(params=[
-        iati.core.tests.utilities.load_as_string('valid_not_iati'),
-        iati.core.tests.utilities.load_as_string('valid_iati')
+        iati.core.tests.utilities.load_as_dataset('valid_not_iati'),
+        iati.core.tests.utilities.load_as_dataset('valid_iati')
     ])
     def data(self, request):
         """A Dataset to test."""
-        xml_str = request.param.strip()
-
-        return iati.core.Dataset(xml_str)
+        return request.param
 
     @pytest.fixture
     def split_xml_str(self, data):
@@ -274,7 +272,7 @@ class TestDatasetSourceFinding(object):
 
         Ensure that the line numbers from which source is being returned are the same ones provided by the `sourceline` attribute from tree elements.
         """
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_not_iati').strip())
+        data = iati.core.tests.utilities.load_as_dataset('valid_not_iati')
         split_xml_str = [''] + data.xml_str.split('\n')
         line_num = line_el_pair['line']
         el_from_tree = data.xml_tree.xpath(line_el_pair['el'])[0]
