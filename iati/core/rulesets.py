@@ -420,7 +420,7 @@ class RuleDateOrder(Rule):
         elif self.less == self.special_case:
             unformatted_str = '`{self.more}` must be in the future within each `{self.context}`.'
         elif self.more == self.special_case:
-            unformatted_str = '`{self.more}` must be in the past within each `{self.context}`.'
+            unformatted_str = '`{self.less}` must be in the past within each `{self.context}`.'
         else:
             unformatted_str = '`{self.less}` must be chronologically before `{self.more}` within each `{self.context}`.'
 
