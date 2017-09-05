@@ -91,10 +91,10 @@ class Ruleset(object):
 
         """
         for rule in self.rules:
+            # import pdb; pdb.set_trace()
             if rule.is_valid_for(dataset) is False:
                 return False
-
-        return True
+            return True
 
     def validate_ruleset(self):
         """Validate a Ruleset against the Ruleset Schema.
@@ -367,13 +367,20 @@ class Rule(object):
             context_elements = self._find_context_elements(dataset)
         except AttributeError:
             raise TypeError
+
         if context_elements == list():
-            return True
+            return None
+
         for context_element in context_elements:
             if self._condition_met_for(context_element):
                 return None
-            if self._check_against_Rule(context_element) is False:
+
+            rule_check_result = self._check_against_Rule(context_element)
+            if rule_check_result is False:
                 return False
+            elif rule_check_result is None:
+                return None
+
         return True
 
 
@@ -393,6 +400,23 @@ class RuleAtLeastOne(Rule):
         else:
             return 'At least one of `{0}` must be present within each `{self.context}`.'.format('` or `'.join(self.paths), **locals())
 
+    def _check_against_Rule(self, context_element):
+        """Check Dataset has at least one instance of a given case for an Element.
+
+        Args:
+            context_element (Element): An xml Element.
+
+        Returns:
+            bool: Return `True` when the case is found in the Dataset.
+                  Return `False` when the case is not found in the Dataset.
+            None: When a condition is met to skip validation.
+
+        """
+        for path in self.paths:
+            if context_element.xpath(path):
+                return False
+            return True
+
     def is_valid_for(self, dataset):
         """Check Dataset has at least one instance of a given case for an Element.
 
@@ -408,22 +432,50 @@ class RuleAtLeastOne(Rule):
             TypeError: When a Dataset is not given as an argument.
 
         """
-        try:
-            context_elements = self._find_context_elements(dataset)
-        except AttributeError:
-            raise TypeError
+        # try:
+        #     context_elements = self._find_context_elements(dataset)
+        # except AttributeError:
+        #     raise TypeError
+        #
+        # if context_elements == list():
+        #     return True
+        #
+        # for context_element in context_elements:
+        #     if self._condition_met_for(context_element):
+        #         return None
+        #     for path in self.paths:
+        #         if context_element.xpath(path):
+        #             return True
+        #
+        # return False
+        parent = super(RuleAtLeastOne, self).is_valid_for(dataset)
 
-        if context_elements == list():
-            return True
+        if parent is True:
+            return False
+        elif parent is None:
+            return None
+        return True
+        # try:
+        #     context_elements = self._find_context_elements(dataset)
+        # except AttributeError:
+        #     raise TypeError
+        #
+        # if context_elements == list():
+        #     return True
+        #
+        # for context_element in context_elements:
+        #     if self._condition_met_for(context_element):
+        #         return None
+        #
+        #     rule_check_result = self._check_against_Rule(context_element)
+        #     if rule_check_result is True:
+        #         return True
+        #     elif rule_check_result is None:
+        #         return None
+        #
+        # return False
 
-        for context_element in context_elements:
-            if self._condition_met_for(context_element):
-                return None
-            for path in self.paths:
-                if context_element.xpath(path):
-                    return True
 
-        return False
 
 
 class RuleDateOrder(Rule):
@@ -498,45 +550,35 @@ class RuleDateOrder(Rule):
             return datetime.strptime(dates[0][:10], '%Y-%m-%d')
         raise ValueError
 
-    def is_valid_for(self, dataset):
+    def _check_against_Rule(self, context_element):
         """Assert that the date value of `less` is older than the date value of `more`.
 
         Args:
-            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+            context_element (Element): An xml Element.
 
         Return:
             bool: Return `True` when `less` is chronologically before `more`.
 
         Raises:
-            TypeError: When a Dataset is not given as an argument.
             ValueError: When a date is given that is not in the correct xsd:date format.
 
         Note:
             `date` restricted to 10 characters in order to exclude possible timezone values.
 
         """
+        early_date = self._get_date(context_element, self.less)
+        later_date = self._get_date(context_element, self.more)
+
         try:
-            context_elements = self._find_context_elements(dataset)
-        except AttributeError:
-            raise TypeError
-
-        for context_element in context_elements:
-            if self._condition_met_for(context_element):
-                return None
-            early_date = self._get_date(context_element, self.less)
-            later_date = self._get_date(context_element, self.more)
-
-            try:
-                # python2 allows `bool`s to be compared to `None` without raising a TypeError, while python3 does not
-                if early_date is None or later_date is None:
-                    return None
-
-                if early_date >= later_date:
-                    return False
-            except TypeError:
-                # a TypeError is raised in python3 if either of the dates is None
+            # python2 allows `bool`s to be compared to `None` without raising a TypeError, while python3 does not
+            if early_date is None or later_date is None:
                 return None
 
+            if early_date >= later_date:
+                return False
+        except TypeError:
+            # a TypeError is raised in python3 if either of the dates is None
+            return None
         return True
 
 
@@ -575,7 +617,7 @@ class RuleDependent(Rule):
 
         if found_paths not in [0, len(unique_paths)]:
             return False
-
+        return True
 
 class RuleNoMoreThanOne(Rule):
     """Representation of a Rule that checks that there is no more than one Element matching a given XPath."""
@@ -615,6 +657,7 @@ class RuleNoMoreThanOne(Rule):
 
         if found_elements > 1:
             return False
+        return True
 
 
 class RuleRegexMatches(Rule):
@@ -664,7 +707,7 @@ class RuleRegexMatches(Rule):
             for string_to_check in strings_to_check:
                 if not pattern.search(string_to_check):
                     return False
-                continue
+                return True
 
 
 class RuleRegexNoMatches(Rule):
@@ -715,7 +758,7 @@ class RuleRegexNoMatches(Rule):
             for string_to_check in strings_to_check:
                 if pattern.search(string_to_check):
                     return False
-                continue
+                return True
 
 
 class RuleStartsWith(Rule):
@@ -760,6 +803,7 @@ class RuleStartsWith(Rule):
             for string_to_check in strings_to_check:
                 if not string_to_check.startswith(prefix):
                     return False
+                return True
 
 
 class RuleSum(Rule):
@@ -796,6 +840,7 @@ class RuleSum(Rule):
                 values_in_context.append(Decimal(value))
         if sum(values_in_context) != Decimal(str(self.sum)):
             return False
+        return True
 
 
 class RuleUnique(Rule):
@@ -839,3 +884,4 @@ class RuleUnique(Rule):
 
         if len(all_content) != len(unique_content):
             return False
+        return True
