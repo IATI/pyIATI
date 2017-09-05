@@ -91,7 +91,7 @@ class Ruleset(object):
 
         """
         for rule in self.rules:
-            if not rule.is_valid_for(dataset):
+            if rule.is_valid_for(dataset) is False:
                 return False
 
         return True
@@ -389,6 +389,9 @@ class RuleAtLeastOne(Rule):
 
         """
         context_elements = self._find_context_elements(dataset)
+
+        if not len(context_elements):
+            return True
 
         for context_element in context_elements:
             if self._condition_met_for(context_element):

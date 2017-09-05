@@ -107,20 +107,16 @@ DATASET_FOR_STANDARD_RULESET_INVALID_DOES_NOT_SUM_100 = iati.core.resources.load
 DATASET_FOR_STANDARD_RULESET_INVALID_MISSING_SECTOR_ELEMENT = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('invalid_std_ruleset_missing_sector_element'))
 """A Dataset that does not meet the IATI Standard ruleset (on account of a missing sector element)."""
 
-SCHEMA_NAME_VALID = 'iati-activities-schema'
-"""A string containing a valid Schema name."""
-
-
-XML_TREE_VALID = etree.fromstring(load_as_string('valid_not_iati'))
-
 
 SCHEMA_ACTIVITY_NAME_VALID = 'iati-activities-schema'
 """A string containing a valid IATI Activity Schema name."""
 SCHEMA_ORGANISATION_NAME_VALID = 'iati-organisations-schema'
 """A string containing a valid IATI Organisaion Schema name."""
+SCHEMA_NAME_VALID = 'iati-activities-schema'
+"""A string containing a valid Schema name."""
 
 XML_TREE_VALID = etree.fromstring(load_as_string('valid_not_iati'))
-"""An etree that is not valid IATI data."""
+"""An etree that is valid XML but not IATI XML."""
 XML_TREE_VALID_IATI = etree.fromstring(load_as_string('valid_iati'))
 """A valid IATI etree."""
 XML_TREE_VALID_IATI_INVALID_CODE = etree.fromstring(load_as_string('valid_iati_invalid_code'))
