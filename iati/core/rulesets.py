@@ -296,6 +296,9 @@ class Rule(object):
         Returns:
             list of elements: Results of XPath query.
 
+        Raises:
+            AttributeError: When an argument is given that does not have the required attributes.
+
         """
         return dataset.xml_tree.xpath(self.context)
 
@@ -345,6 +348,34 @@ class Rule(object):
 
         return False
 
+    def is_valid_for(self, dataset):
+        """Check Dataset is valid against the Rule.
+
+        Args:
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+
+        Returns:
+            bool: Return `True` when the Dataset is valid against the Rule.
+                  Return `False` when the Dataset is not valid against the Rule.
+            None: When a condition is met to skip validation.
+
+        Raises:
+            TypeError: When a `dataset` is given that is not a valid IATI Dataset.
+
+        """
+        try:
+            context_elements = self._find_context_elements(dataset)
+        except AttributeError:
+            raise TypeError
+        if context_elements == list():
+            return True
+        for context_element in context_elements:
+            if self._condition_met_for(context_element):
+                return None
+            if self._check_against_Rule(context_element) is False:
+                return False
+        return True
+
 
 class RuleAtLeastOne(Rule):
     """Representation of a Rule that checks that there is at least one Element matching a given XPath."""
@@ -375,9 +406,6 @@ class RuleAtLeastOne(Rule):
 
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
-
-        Todo:
-            Check test data.
 
         """
         context_elements = self._find_context_elements(dataset)
@@ -519,10 +547,31 @@ class RuleDependent(Rule):
         """A string stating what TestRuleDependent is checking."""
         if len(self.paths) == 1:
             return 'Within each `{self.context}`, either `{self.paths[0]}` exists or it does not. As such, this Rule is always True.'.format(**locals())
-        else:
-            return 'Within each `{self.context}`, either none of `{0}` must exist, or they must all exist.'.format('` or `'.join(self.paths), **locals())
+        return 'Within each `{self.context}`, either none of `{0}` must exist, or they must all exist.'.format('` or `'.join(self.paths), **locals())
 
-    def is_valid_for(self, dataset):
+    def _check_against_Rule(self, context_element):
+        """Assert that either all given `paths` or none of the given `paths` exist in a Dataset.
+
+        Args:
+            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+
+        Returns:
+            bool: Return `True` when all dependent `paths` are found in the Dataset, if any exist.
+                  Return `False` when only some of the dependent `paths` are found in the Dataset.
+
+        """
+        unique_paths = set(self.paths)
+        found_paths = 0
+        for path in unique_paths:
+            results = context_element.xpath(path)
+            if len(results):
+                found_paths += 1
+
+        if found_paths not in [0, len(unique_paths)]:
+            return False
+        return True
+
+    # def is_valid_for(self, dataset):
         """Assert that either all given `paths` or none of the given `paths` exist in a Dataset.
 
         Args:
@@ -534,27 +583,27 @@ class RuleDependent(Rule):
         Raises:
             AttributeError: When an argument is given that does not have the required attributes.
 
-        Todo:
-            Determine if it's reasonable to assume the user should give a specific xpath format, or whether the context-path structure dictates automatic conversion to relative paths.
-
-        """
-        context_elements = self._find_context_elements(dataset)
-        unique_paths = set(self.paths)
-
-        for context_element in context_elements:
-            if self._condition_met_for(context_element):
-                return None
-
-            found_paths = 0
-            for path in unique_paths:
-                results = context_element.xpath(path)
-                if len(results):
-                    found_paths += 1
-
-            if not found_paths in [0, len(unique_paths)]:
-                return False
-
-        return True
+    #     Todo:
+    #         Determine if it's reasonable to assume the user should give a specific xpath format, or whether the context-path structure dictates automatic conversion to relative paths.
+    #
+    #     """
+    #     context_elements = self._find_context_elements(dataset)
+    #     unique_paths = set(self.paths)
+    #
+    #     for context_element in context_elements:
+    #         if self._condition_met_for(context_element):
+    #             return None
+    #
+    #         found_paths = 0
+    #         for path in unique_paths:
+    #             results = context_element.xpath(path)
+    #             if len(results):
+    #                 found_paths += 1
+    #
+    #         if not found_paths in [0, len(unique_paths)]:
+    #             return False
+    #
+    #     return True
 
 
 class RuleNoMoreThanOne(Rule):
@@ -570,8 +619,7 @@ class RuleNoMoreThanOne(Rule):
         """A string stating what RuleNoMoreThanOne is checking."""
         if len(self.paths) == 1:
             return '`{self.paths[0]}` must occur zero or one times within each `{self.context}`.'.format(**locals())
-        else:
-            return 'There must be no more than one element or attribute matched at `{0}` within each `{self.context}`.'.format('` or `'.join(self.paths), **locals())
+        return 'There must be no more than one element or attribute matched at `{0}` within each `{self.context}`.'.format('` or `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
         """Check dataset has no more than one instance of a given case for an Element.
@@ -633,8 +681,7 @@ class RuleRegexMatches(Rule):
         """A string stating what RuleRegexMatches is checking."""
         if len(self.paths) == 1:
             return 'Each `{self.paths[0]}` within each `{self.context}` must match the regular expression `{self.regex}`.'.format(**locals())
-        else:
-            return 'Each instance of `{0}` within each `{self.context}` must match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
+        return 'Each instance of `{0}` within each `{self.context}` must match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
 
     def is_valid_for(self, dataset):
         """Assert that the text of the given `paths` matches the `regex` value.
@@ -744,6 +791,16 @@ class RuleStartsWith(Rule):
 
         self.normalized_paths.append(self._normalize_xpath(self.start))
 
+    def _do_stuff_for_is_valid_for(yada):
+        if self._condition_met_for(context_element):
+            return None
+        prefix = self._extract_text_from_element_or_attribute(context_element, self.start)[0]
+        for path in self.paths:
+            strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
+            for string_to_check in strings_to_check:
+                if not string_to_check.startswith(prefix):
+                    return False
+
     def is_valid_for(self, dataset):
         """Assert that the prefixing text of all given `paths` starts with the text of `start`.
 
@@ -760,14 +817,7 @@ class RuleStartsWith(Rule):
         context_elements = self._find_context_elements(dataset)
 
         for context_element in context_elements:
-            if self._condition_met_for(context_element):
-                return None
-            prefix = self._extract_text_from_element_or_attribute(context_element, self.start)[0]
-            for path in self.paths:
-                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
-                for string_to_check in strings_to_check:
-                    if not string_to_check.startswith(prefix):
-                        return False
+            self._do_stuff_for_is_valid_for()
 
         return True
 
