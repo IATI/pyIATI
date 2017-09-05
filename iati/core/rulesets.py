@@ -464,7 +464,7 @@ class RuleDateOrder(Rule):
         """Retrieve datetime object from an XPath string.
 
         Args:
-            context (an XPath): For the context in which further XPath queries are then made.
+            context (Element): An XML Element.
             path: (an XPath): The ultimate XPath query to find the desired elements.
 
         Returns:
@@ -559,7 +559,7 @@ class RuleDependent(Rule):
         """Assert that either all given `paths` or none of the given `paths` exist in a Dataset.
 
         Args:
-            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+            context_element (Element): An xml Element.
 
         Returns:
             bool: Return `True` when all dependent `paths` are found in the Dataset, if any exist.
@@ -596,7 +596,7 @@ class RuleNoMoreThanOne(Rule):
         """Check dataset has no more than one instance of a given case for an Element.
 
         Args:
-            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+            context_element (Element): An xml Element.
 
         Returns:
             bool: Return `True` when one or fewer cases are found in the Dataset.
@@ -648,7 +648,7 @@ class RuleRegexMatches(Rule):
         """Assert that the text of the given `paths` matches the `regex` value.
 
         Args:
-            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+            context_element (Element): An xml Element.
 
         Returns:
             bool: Return `True` when the given `path` text matches the given regex case.
@@ -699,7 +699,7 @@ class RuleRegexNoMatches(Rule):
         """Assert that no text of the given `paths` matches the `regex` value.
 
         Args:
-            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+            context_element (Element): An xml Element.
 
         Returns:
             bool: Return `True` when the given `path` text does not match the given regex case.
@@ -744,7 +744,7 @@ class RuleStartsWith(Rule):
         """Assert that the prefixing text of all given `paths` starts with the text of `start`.
 
         Args:
-            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+            context_element (Element): An xml Element.
 
         Returns:
             bool: Return `True` when the `path` text starts with the value of `start`.
@@ -779,7 +779,7 @@ class RuleSum(Rule):
         """Assert that the total of the values given in `paths` match the given `sum` value.
 
         Args:
-            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+            context_element (Element): An xml Element.
 
         Returns:
             bool: Return `True` when the `path` values total to the `sum` value.
@@ -815,7 +815,7 @@ class RuleUnique(Rule):
         """Assert that the given `paths` are not found in the dataset.xml_tree more than once.
 
         Args:
-            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+            context_element (Element): An xml Element.
 
         Returns:
             bool: Return `True` when repeated text is found in the dataset for the given `paths`.
