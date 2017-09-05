@@ -789,7 +789,7 @@ class RuleRegexNoMatches(Rule):
         else:
             return 'Each instance of `{0}` within each `{self.context}` must not match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
 
-    def is_valid_for(self, dataset):
+    def _check_against_Rule(self, context_element):
         """Assert that no text of the given `paths` matches the `regex` value.
 
         Args:
@@ -802,20 +802,43 @@ class RuleRegexNoMatches(Rule):
             AttributeError: When an argument is given that does not have the required attributes.
 
         """
-        context_elements = self._find_context_elements(dataset)
         pattern = re.compile(self.regex)
+        if self._condition_met_for(context_element):
+            return None
+        for path in self.paths:
+            strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
+            for string_to_check in strings_to_check:
+                if pattern.search(string_to_check):
+                    return False
+                continue
 
-        for context_element in context_elements:
-            if self._condition_met_for(context_element):
-                return None
-            for path in self.paths:
-                strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
-                for string_to_check in strings_to_check:
-                    if pattern.search(string_to_check):
-                        return False
-                    continue
+    # def is_valid_for(self, dataset):
+        # """Assert that no text of the given `paths` matches the `regex` value.
+        #
+        # Args:
+        #     dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+        #
+        # Returns:
+        #     bool: Return `True` when the given `path` text does not match the given regex case.
+        #
+        # Raises:
+        #     AttributeError: When an argument is given that does not have the required attributes.
+        #
+        # """
+        # context_elements = self._find_context_elements(dataset)
 
-        return True
+        # for context_element in context_elements:
+        #     pattern = re.compile(self.regex)
+        #     if self._condition_met_for(context_element):
+        #         return None
+        #     for path in self.paths:
+        #         strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
+        #         for string_to_check in strings_to_check:
+        #             if pattern.search(string_to_check):
+        #                 return False
+        #             continue
+        #
+        # return True
 
 
 class RuleStartsWith(Rule):
