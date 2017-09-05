@@ -128,12 +128,16 @@ class TestRuleset(object):
         valid_dataset = iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_VALID
         assert ruleset.is_valid_for(valid_dataset)
 
-    # @pytest.mark.parametrize()
-    # def test_ruleset_is_invalid_for_invalid_dataset(self):
-    #     """Check that a Dataset can be invalidated against the Standard Ruleset."""
-    #     ruleset = iati.core.default.ruleset()
-    #     invalid_dataset = iati.core.tests.utilities.INVALID_STANDARD_RULESET_DATASET
-    #     assert not ruleset.is_valid_for(invalid_dataset)
+    @pytest.mark.parametrize("invalid_dataset", [
+        iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_BAD_DATE_ORDER,
+        iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_BAD_IDENTIFIER,
+        iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_DOES_NOT_SUM_100,
+        iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_MISSING_SECTOR_ELEMENT
+    ])
+    def test_ruleset_is_invalid_for_invalid_dataset(self, invalid_dataset):
+        """Check that a Dataset can be invalidated against the Standard Ruleset."""
+        ruleset = iati.core.default.ruleset()
+        assert not ruleset.is_valid_for(invalid_dataset)
 
 
 class TestRule(object):
