@@ -298,6 +298,7 @@ def load_as_dataset(path):
         Should raise Exceptions when there are problems loading the requested data.
 
     Raises:
+        FileNotFoundError: When a file at the specified path does not exist.
         ValueError: When a file at the specified path does not contain valid XML.
 
     Todo:
@@ -317,6 +318,9 @@ def load_as_bytes(path):
     Returns:
         bytes: The contents of the file at the specified location.
 
+    Raises:
+        FileNotFoundError: When a file at the specified path does not exist.
+
     Todo:
         Should raise Exceptions when there are problems loading the requested data.
         Add error handling for when the specified file does not exist.
@@ -334,6 +338,9 @@ def load_as_string(path):
 
     Returns:
         str (python3) / unicode (python2): The contents of the file at the specified location.
+
+    Raises:
+        FileNotFoundError: When a file at the specified path does not exist.
 
     Todo:
         Should raise Exceptions when there are problems loading the requested data.

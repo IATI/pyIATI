@@ -149,6 +149,14 @@ class TestResources(object):
         assert isinstance(result, six.string_types)
         assert result == 'This is a string that is not valid XML\n'
 
+    @pytest.mark.parametrize("load_method", [iati.core.resources.load_as_bytes, iati.core.resources.load_as_dataset, iati.core.resources.load_as_string])
+    def test_load_as_x_non_existing_file(self, load_method):
+        """Test that resources.load_as_bytes returns a bytes object with the expected content."""
+        path_test_data = iati.core.resources.get_test_data_path('this-file-does-not-exist')
+
+        with pytest.raises(FileNotFoundError):
+            _ = load_method(path_test_data)
+
     def test_resource_filename(self):
         """Check that resource file names are found correctly.
 
