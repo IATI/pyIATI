@@ -151,7 +151,7 @@ class Rule(object):
         self._normalize_xpaths()
 
     def __str__(self):
-        """A string stating what the Rule is checking."""
+        """Return string to state what the Rule is checking."""
         return 'This is a Rule.'
 
     def _validated_context(self, context):
@@ -397,11 +397,10 @@ class RuleAtLeastOne(Rule):
         super(RuleAtLeastOne, self).__init__(context, case)
 
     def __str__(self):
-        """A string stating what RuleAtLeastOne is checking."""
+        """Return string stating what RuleAtLeastOne is checking."""
         if len(self.paths) == 1:
             return '`{self.paths[0]}` must be present within each `{self.context}`.'.format(**locals())
-        else:
-            return 'At least one of `{0}` must be present within each `{self.context}`.'.format('` or `'.join(self.paths), **locals())
+        return 'At least one of `{0}` must be present within each `{self.context}`.'.format('` or `'.join(self.paths), **locals())
 
     def _check_against_Rule(self, context_element):
         """Check `context_element` has at least one specified Element or Attribute.
@@ -454,7 +453,7 @@ class RuleDateOrder(Rule):
         super(RuleDateOrder, self).__init__(context, case)
 
     def __str__(self):
-        """A string stating what RuleDateOrder is checking."""
+        """Return string stating what RuleDateOrder is checking."""
         if self.less == self.special_case and self.more == self.special_case:
             unformatted_str = '`{self.less}` must be chronologically before `{self.more}`. Try working that one out.'
         elif self.less == self.special_case:
@@ -504,7 +503,7 @@ class RuleDateOrder(Rule):
             return datetime.today()
 
         dates = self._extract_text_from_element_or_attribute(context_element, path)
-        if not len(dates) or not dates[0]:
+        if dates == list() or not dates[0]:
             return
         # Checks that anything after the YYYY-MM-DD string is a permitted timezone character
         pattern = re.compile(r'^([+-]([01][0-9]|2[0-3]):([0-5][0-9])|Z)?$')
@@ -559,7 +558,7 @@ class RuleDependent(Rule):
         super(RuleDependent, self).__init__(context, case)
 
     def __str__(self):
-        """A string stating what TestRuleDependent is checking."""
+        """Return string stating what TestRuleDependent is checking."""
         if len(self.paths) == 1:
             return 'Within each `{self.context}`, either `{self.paths[0]}` exists or it does not. As such, this Rule is always True.'.format(**locals())
         return 'Within each `{self.context}`, either none of `{0}` must exist, or they must all exist.'.format('` or `'.join(self.paths), **locals())
@@ -597,7 +596,7 @@ class RuleNoMoreThanOne(Rule):
         super(RuleNoMoreThanOne, self).__init__(context, case)
 
     def __str__(self):
-        """A string stating what RuleNoMoreThanOne is checking."""
+        """Return string stating what RuleNoMoreThanOne is checking."""
         if len(self.paths) == 1:
             return '`{self.paths[0]}` must occur zero or one times within each `{self.context}`.'.format(**locals())
         return 'There must be no more than one element or attribute matched at `{0}` within each `{self.context}`.'.format('` or `'.join(self.paths), **locals())
@@ -648,7 +647,7 @@ class RuleRegexMatches(Rule):
             raise ValueError
 
     def __str__(self):
-        """A string stating what RuleRegexMatches is checking."""
+        """Return string stating what RuleRegexMatches is checking."""
         if len(self.paths) == 1:
             return 'Each `{self.paths[0]}` within each `{self.context}` must match the regular expression `{self.regex}`.'.format(**locals())
         return 'Each instance of `{0}` within each `{self.context}` must match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
@@ -696,11 +695,10 @@ class RuleRegexNoMatches(Rule):
             raise ValueError
 
     def __str__(self):
-        """A string stating what RuleRegexNoMatches is checking."""
+        """Return string stating what RuleRegexNoMatches is checking."""
         if len(self.paths) == 1:
             return 'Each `{self.paths[0]}` within each `{self.context}` must not match the regular expression `{self.regex}`.'.format(**locals())
-        else:
-            return 'Each instance of `{0}` within each `{self.context}` must not match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
+        return 'Each instance of `{0}` within each `{self.context}` must not match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
 
     def _check_against_Rule(self, context_element):
         """Assert that no text of the given `paths` matches the `regex` value.
@@ -733,11 +731,10 @@ class RuleStartsWith(Rule):
         super(RuleStartsWith, self).__init__(context, case)
 
     def __str__(self):
-        """A string stating what RuleStartsWith is checking."""
+        """Return string stating what RuleStartsWith is checking."""
         if len(self.paths) == 1:
             return 'Each `{self.paths[0]}` within each `{self.context}` must start with the value present at `{self.start}`.'.format(**locals())
-        else:
-            return 'Each instance of `{0}` within each `{self.context}` must start with the value present at `{self.start}`.'.format('` and `'.join(self.paths), **locals())
+        return 'Each instance of `{0}` within each `{self.context}` must start with the value present at `{self.start}`.'.format('` and `'.join(self.paths), **locals())
 
     def _normalize_xpaths(self):
         """Normalize xpaths by combining them with `context`."""
@@ -776,7 +773,7 @@ class RuleSum(Rule):
         super(RuleSum, self).__init__(context, case)
 
     def __str__(self):
-        """A string stating what RuleSum is checking."""
+        """Return string stating what RuleSum is checking."""
         return 'Within each `{self.context}`, the sum of values matched at `{0}` must be `{self.sum}`.'.format('` and `'.join(self.paths), **locals())
 
     def _check_against_Rule(self, context_element):
@@ -813,7 +810,7 @@ class RuleUnique(Rule):
         super(RuleUnique, self).__init__(context, case)
 
     def __str__(self):
-        """A string stating what RuleUnique is checking."""
+        """Return string stating what RuleUnique is checking."""
         return 'Within each `{self.context}`, the text contained within each of the elements and attributes matched by `{0}` must be unique.'.format('` and `'.join(self.paths), **locals())
 
     def _check_against_Rule(self, context_element):
