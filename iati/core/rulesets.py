@@ -401,7 +401,7 @@ class RuleAtLeastOne(Rule):
             return 'At least one of `{0}` must be present within each `{self.context}`.'.format('` or `'.join(self.paths), **locals())
 
     def _check_against_Rule(self, context_element):
-        """Check Dataset has at least one instance of a given case for an Element.
+        """Check `context_element` has at least one specified Element or Attribute.
 
         Args:
             context_element (Element): An XML Element.
@@ -417,14 +417,14 @@ class RuleAtLeastOne(Rule):
         return True
 
     def is_valid_for(self, dataset):
-        """Check Dataset has at least one instance of a given case for an Element.
+        """Check Dataset is valid against the Rule.
 
         Args:
             dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            bool: Return `True` when the case is found in the Dataset.
-                  Return `False` when the case is not found in the Dataset.
+            bool: Return `True` when the Dataset is valid against the Rule.
+                  Return `False` when the Dataset is not valid against the Rule.
             None: When a condition is met to skip validation.
 
         Raises:
@@ -494,7 +494,7 @@ class RuleDateOrder(Rule):
             Though technically permitted, any dates with a leading '-' character are almost certainly incorrect and are therefore treated as data errors.
 
         Todo:
-            Consider breaking this function down further so it follows SRP.
+            Consider breaking this function down further.
 
         """
         if path == self.special_case:
@@ -513,7 +513,7 @@ class RuleDateOrder(Rule):
         raise ValueError
 
     def _check_against_Rule(self, context_element):
-        """Assert that the date value of `less` is older than the date value of `more`.
+        """Assert that the date value of `less` is chronologically before the date value of `more`.
 
         Args:
             context_element (Element): An XML Element.
@@ -547,7 +547,7 @@ class RuleDateOrder(Rule):
 
 
 class RuleDependent(Rule):
-    """Representation of a Rule that checks that if one of the elements in a given `path` exists then all its dependent paths must also exist."""
+    """Representation of a Rule that checks that if one of the Elements or Attributes in a given `path` exists then all its dependent Elements or Attributes must also exist."""
 
     def __init__(self, context, case):
         """Initialise a `dependent` rule."""
@@ -562,7 +562,7 @@ class RuleDependent(Rule):
         return 'Within each `{self.context}`, either none of `{0}` must exist, or they must all exist.'.format('` or `'.join(self.paths), **locals())
 
     def _check_against_Rule(self, context_element):
-        """Assert that either all given `paths` or none of the given `paths` exist in a Dataset.
+        """Assert that either all given `paths` or none of the given `paths` exist for the `context_element`.
 
         Args:
             context_element (Element): An XML Element.
@@ -585,7 +585,7 @@ class RuleDependent(Rule):
 
 
 class RuleNoMoreThanOne(Rule):
-    """Representation of a Rule that checks that there is no more than one Element matching a given XPath."""
+    """Representation of a Rule that checks that there is no more than one Element or Attribute matching a given XPath."""
 
     def __init__(self, context, case):
         """Initialise a `no_more_than_one` rule."""
@@ -600,7 +600,7 @@ class RuleNoMoreThanOne(Rule):
         return 'There must be no more than one element or attribute matched at `{0}` within each `{self.context}`.'.format('` or `'.join(self.paths), **locals())
 
     def _check_against_Rule(self, context_element):
-        """Check dataset has no more than one instance of a given case for an Element.
+        """Check `context_element` has no more than one result for a specified Element or Attribute.
 
         Args:
             context_element (Element): An XML Element.
@@ -624,7 +624,7 @@ class RuleNoMoreThanOne(Rule):
 
 
 class RuleRegexMatches(Rule):
-    """Representation of a Rule that checks that the given `paths` must contain values that match the `regex` value."""
+    """Representation of a Rule that checks that the text of the given `paths` must match the `regex` value."""
 
     def __init__(self, context, case):
         """Initialise a `regex_matches` Rule.
@@ -654,13 +654,11 @@ class RuleRegexMatches(Rule):
         """Assert that the text of the given `paths` matches the `regex` value.
 
         Args:
-            context_element (Element): An xml Element.
+            context_element (Element): An XML Element.
 
         Returns:
-            bool: Return `True` when the given `path` text matches the given regex case.
-
-        Raises:
-            AttributeError: When an argument is given that does not have the required attributes.
+            bool: Return `True` when the given `path` text matches the given regex.
+                  Return `False` when the given `path` text does not match the given `regex`.
 
         """
         pattern = re.compile(self.regex)
@@ -670,11 +668,11 @@ class RuleRegexMatches(Rule):
             for string_to_check in strings_to_check:
                 if not pattern.search(string_to_check):
                     return False
-                return True
+        return True
 
 
 class RuleRegexNoMatches(Rule):
-    """Representation of a Rule that checks that the given `paths` must not contain values that match the `regex` value."""
+    """Representation of a Rule that checks that the text of the given `paths` must not match the `regex` value."""
 
     def __init__(self, context, case):
         """Initialise a `regex_no_matches` Rule.
@@ -705,13 +703,11 @@ class RuleRegexNoMatches(Rule):
         """Assert that no text of the given `paths` matches the `regex` value.
 
         Args:
-            context_element (Element): An xml Element.
+            context_element (Element): An XML Element.
 
         Returns:
-            bool: Return `True` when the given `path` text does not match the given regex case.
-
-        Raises:
-            AttributeError: When an argument is given that does not have the required attributes.
+            bool: Return `True` when the given `path` text does not match the given `regex`.
+                  Return `False` when the given `path` text matched the given `regex`.
 
         """
         pattern = re.compile(self.regex)
@@ -721,11 +717,11 @@ class RuleRegexNoMatches(Rule):
             for string_to_check in strings_to_check:
                 if pattern.search(string_to_check):
                     return False
-                return True
+        return True
 
 
 class RuleStartsWith(Rule):
-    """Representation of a Rule that checks that the start of each `path` text value matches the `start` text value."""
+    """Representation of a Rule that checks that the prefixing text of each text value for `path` matches the `start` text value."""
 
     def __init__(self, context, case):
         """Initialise a `startswith` Rule."""
@@ -750,13 +746,11 @@ class RuleStartsWith(Rule):
         """Assert that the prefixing text of all given `paths` starts with the text of `start`.
 
         Args:
-            context_element (Element): An xml Element.
+            context_element (Element): An XML Element.
 
         Returns:
-            bool: Return `True` when the `path` text starts with the value of `start`.
-
-        Raises:
-            AttributeError: When an argument is given that does not have the required attributes.
+            bool: Return `True` when the `path` text starts with the text value of `start`.
+                  Return `False` when the `path` text does not start with the text value of `start`.
 
         """
         prefix = self._extract_text_from_element_or_attribute(context_element, self.start)[0]
@@ -766,7 +760,7 @@ class RuleStartsWith(Rule):
             for string_to_check in strings_to_check:
                 if not string_to_check.startswith(prefix):
                     return False
-                return True
+        return True
 
 
 class RuleSum(Rule):
@@ -786,21 +780,21 @@ class RuleSum(Rule):
         """Assert that the total of the values given in `paths` match the given `sum` value.
 
         Args:
-            context_element (Element): An xml Element.
+            context_element (Element): An XML Element.
 
         Returns:
             bool: Return `True` when the `path` values total to the `sum` value.
-
-        Raises:
-            AttributeError: When an argument is given that does not have the required attributes.
+                  Return `False` when the `path` values do not total to the `sum` value.
 
         """
         unique_paths = set(self.paths)
         values_in_context = list()
+
         for path in unique_paths:
             values_to_sum = self._extract_text_from_element_or_attribute(context_element, path)
             for value in values_to_sum:
                 values_in_context.append(Decimal(value))
+
         if sum(values_in_context) != Decimal(str(self.sum)):
             return False
         return True
@@ -820,16 +814,14 @@ class RuleUnique(Rule):
         return 'Within each `{self.context}`, the text contained within each of the elements and attributes matched by `{0}` must be unique.'.format('` and `'.join(self.paths), **locals())
 
     def _check_against_Rule(self, context_element):
-        """Assert that the given `paths` are not found in the dataset.xml_tree more than once.
+        """Assert that the given `paths` are not found for `context_element` more than once.
 
         Args:
-            context_element (Element): An xml Element.
+            context_element (Element): An XML Element.
 
         Returns:
-            bool: Return `True` when repeated text is found in the dataset for the given `paths`.
-
-        Raises:
-            AttributeError: When an argument is given that does not have the required attributes.
+            bool: Return `True` when repeated text is not found in the Dataset.
+                  Return `False` when repeated text is found in the Dataset.
 
         Todo:
             Consider better methods for specifying which elements in the tree contain non-permitted duplication, such as bucket sort.
