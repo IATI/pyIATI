@@ -220,7 +220,7 @@ class RuleSubclassTestBase(object):
         'count(condition)>0',
         'condition'
     ])
-    def condition_is_True_valid(self, validating_case, request):
+    def condition_is_true_valid(self, validating_case, request):
         """Return a case with optional condition that evaluates to `True` for a valid dataset."""
         condition_validating_case = deepcopy(validating_case)
         condition_validating_case['condition'] = request.param
@@ -230,7 +230,7 @@ class RuleSubclassTestBase(object):
         'count(condition)>0',
         'condition'
     ])
-    def condition_is_True_invalid(self, invalidating_case, request):
+    def condition_is_true_invalid(self, invalidating_case, request):
         """Return a case with optional condition that evaluates to `True` for an invalid dataset."""
         condition_invalidating_case = deepcopy(invalidating_case)
         condition_invalidating_case['condition'] = request.param
@@ -240,7 +240,7 @@ class RuleSubclassTestBase(object):
         'count(condition)<1',
         'nocondition'
     ])
-    def condition_is_False_valid(self, validating_case, request):
+    def condition_is_false_valid(self, validating_case, request):
         """Return a case with an optional condition that evaluates to False for a valid dataset."""
         condition_validating_case = deepcopy(validating_case)
         condition_validating_case['condition'] = request.param
@@ -272,14 +272,14 @@ class RuleSubclassTestBase(object):
         return iati.core.rulesets.constructor_for_rule_type(rule_type)
 
     @pytest.fixture
-    def valid_condition_rule(self, rule_constructor, valid_single_context, condition_is_True_valid):
+    def valid_condition_rule(self, rule_constructor, valid_single_context, condition_is_true_valid):
         """Return a Rule with a `condition`."""
-        return rule_constructor(valid_single_context, condition_is_True_valid)
+        return rule_constructor(valid_single_context, condition_is_true_valid)
 
     @pytest.fixture
-    def invalid_condition_rule(self, rule_constructor, valid_single_context, condition_is_True_invalid):
+    def invalid_condition_rule(self, rule_constructor, valid_single_context, condition_is_true_invalid):
         """Return a Rule with a `condition`."""
-        return rule_constructor(valid_single_context, condition_is_True_invalid)
+        return rule_constructor(valid_single_context, condition_is_true_invalid)
 
     def test_rule_init_valid_parameter_types(self, rule_instantiating):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
@@ -298,9 +298,9 @@ class RuleSubclassTestBase(object):
             # Ensure that the attribute exists - if not, an AttributeError will be raised
             getattr(rule_instantiating, attrib)
 
-    def test_optional_rule_attributes_from_case(self, rule_constructor, valid_single_context, condition_is_True_valid):
+    def test_optional_rule_attributes_from_case(self, rule_constructor, valid_single_context, condition_is_true_valid):
         """Check that a Rule subclass has optional case attributes set."""
-        rule = rule_constructor(valid_single_context, condition_is_True_valid)
+        rule = rule_constructor(valid_single_context, condition_is_true_valid)
         optional_attributes = rule._case_attributes(rule._ruleset_schema_section(), False)
         for attrib in optional_attributes:
             # Ensure that the attribute exists - if not, an AttributeError will be raised
@@ -382,9 +382,9 @@ class RuleSubclassTestBase(object):
         """Check that if a condition is `True`, the rule returns None which is considered equivalent to skipping."""
         assert invalid_condition_rule.is_valid_for(invalid_dataset) is None
 
-    def test_condition_case_is_False_for_valid_dataset(self, rule_constructor, valid_single_context, condition_is_False_valid, valid_dataset):
+    def test_condition_case_is_False_for_valid_dataset(self, rule_constructor, valid_single_context, condition_is_false_valid, valid_dataset):
         """Check that if a condition is `False`, the rule validates normally."""
-        rule = rule_constructor(valid_single_context, condition_is_False_valid)
+        rule = rule_constructor(valid_single_context, condition_is_false_valid)
         assert rule.is_valid_for(valid_dataset)
 
     def test_condition_case_is_False_for_invalid_dataset(self, invalid_condition_rule, invalid_dataset):
@@ -1027,6 +1027,7 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
         assert 'must not match the regular expression' in str(rule_instantiating)
+
 
 class TestRuleStartsWith(RuleSubclassTestBase):
     """A container for tests relating to RuleStartsWith."""
