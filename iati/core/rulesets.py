@@ -91,10 +91,10 @@ class Ruleset(object):
 
         """
         for rule in self.rules:
-            # import pdb; pdb.set_trace()
             if rule.is_valid_for(dataset) is False:
                 return False
-            return True
+
+        return True
 
     def validate_ruleset(self):
         """Validate a Ruleset against the Ruleset Schema.
@@ -404,18 +404,17 @@ class RuleAtLeastOne(Rule):
         """Check Dataset has at least one instance of a given case for an Element.
 
         Args:
-            context_element (Element): An xml Element.
+            context_element (Element): An XML Element.
 
         Returns:
-            bool: Return `True` when the case is found in the Dataset.
-                  Return `False` when the case is not found in the Dataset.
-            None: When a condition is met to skip validation.
+            bool: Return `False` when the case is found in the Dataset.
+                  Return `True` when the case is not found in the Dataset.
 
         """
         for path in self.paths:
             if context_element.xpath(path):
                 return False
-            return True
+        return True
 
     def is_valid_for(self, dataset):
         """Check Dataset has at least one instance of a given case for an Element.
@@ -432,22 +431,6 @@ class RuleAtLeastOne(Rule):
             TypeError: When a Dataset is not given as an argument.
 
         """
-        # try:
-        #     context_elements = self._find_context_elements(dataset)
-        # except AttributeError:
-        #     raise TypeError
-        #
-        # if context_elements == list():
-        #     return True
-        #
-        # for context_element in context_elements:
-        #     if self._condition_met_for(context_element):
-        #         return None
-        #     for path in self.paths:
-        #         if context_element.xpath(path):
-        #             return True
-        #
-        # return False
         parent = super(RuleAtLeastOne, self).is_valid_for(dataset)
 
         if parent is True:
@@ -455,27 +438,6 @@ class RuleAtLeastOne(Rule):
         elif parent is None:
             return None
         return True
-        # try:
-        #     context_elements = self._find_context_elements(dataset)
-        # except AttributeError:
-        #     raise TypeError
-        #
-        # if context_elements == list():
-        #     return True
-        #
-        # for context_element in context_elements:
-        #     if self._condition_met_for(context_element):
-        #         return None
-        #
-        #     rule_check_result = self._check_against_Rule(context_element)
-        #     if rule_check_result is True:
-        #         return True
-        #     elif rule_check_result is None:
-        #         return None
-        #
-        # return False
-
-
 
 
 class RuleDateOrder(Rule):
@@ -512,11 +474,11 @@ class RuleDateOrder(Rule):
 
         self._normalize_condition()
 
-    def _get_date(self, context, path):
+    def _get_date(self, context_element, path):
         """Retrieve datetime object from an XPath string.
 
         Args:
-            context (Element): An XML Element.
+            context_element (Element): An XML Element.
             path: (an XPath): The ultimate XPath query to find the desired elements.
 
         Returns:
@@ -538,7 +500,7 @@ class RuleDateOrder(Rule):
         if path == self.special_case:
             return datetime.today()
 
-        dates = self._extract_text_from_element_or_attribute(context, path)
+        dates = self._extract_text_from_element_or_attribute(context_element, path)
         if not len(dates) or not dates[0]:
             return
         # Checks that anything after the YYYY-MM-DD string is a permitted timezone character
@@ -554,10 +516,12 @@ class RuleDateOrder(Rule):
         """Assert that the date value of `less` is older than the date value of `more`.
 
         Args:
-            context_element (Element): An xml Element.
+            context_element (Element): An XML Element.
 
         Return:
             bool: Return `True` when `less` is chronologically before `more`.
+                  Return `False` when `less` is not chronologically before `more`.
+            None: When a condition is met to skip validation.
 
         Raises:
             ValueError: When a date is given that is not in the correct xsd:date format.
@@ -601,7 +565,7 @@ class RuleDependent(Rule):
         """Assert that either all given `paths` or none of the given `paths` exist in a Dataset.
 
         Args:
-            context_element (Element): An xml Element.
+            context_element (Element): An XML Element.
 
         Returns:
             bool: Return `True` when all dependent `paths` are found in the Dataset, if any exist.
@@ -612,12 +576,13 @@ class RuleDependent(Rule):
         found_paths = 0
         for path in unique_paths:
             results = context_element.xpath(path)
-            if len(results):
+            if results != list():
                 found_paths += 1
 
         if found_paths not in [0, len(unique_paths)]:
             return False
         return True
+
 
 class RuleNoMoreThanOne(Rule):
     """Representation of a Rule that checks that there is no more than one Element matching a given XPath."""
@@ -638,13 +603,11 @@ class RuleNoMoreThanOne(Rule):
         """Check dataset has no more than one instance of a given case for an Element.
 
         Args:
-            context_element (Element): An xml Element.
+            context_element (Element): An XML Element.
 
         Returns:
-            bool: Return `True` when one or fewer cases are found in the Dataset.
-
-        Raises:
-            AttributeError: When an argument is given that does not have the required attributes.
+            bool: Return `True` when one or fewer results are found in the Dataset.
+                  Return `False` when one or more results are found in the Dataset.
 
         """
         unique_paths = set(self.paths)

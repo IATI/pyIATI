@@ -122,22 +122,22 @@ class TestRuleset(object):
             assert isinstance(rule, iati.core.Rule)
             assert isinstance(rule, iati.core.RuleAtLeastOne)
 
-    # def test_ruleset_is_valid_for_valid_dataset(self):
-    #     """Check that a Dataset can be validated against the Standard Ruleset."""
-    #     ruleset = iati.core.default.ruleset()
-    #     valid_dataset = iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_VALID
-    #     assert ruleset.is_valid_for(valid_dataset)
-    #
-    # @pytest.mark.parametrize("invalid_dataset", [
-    #     iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_BAD_DATE_ORDER,
-    #     iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_BAD_IDENTIFIER,
-    #     iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_DOES_NOT_SUM_100,
-    #     iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_MISSING_SECTOR_ELEMENT
-    # ])
-    # def test_ruleset_is_invalid_for_invalid_dataset(self, invalid_dataset):
-    #     """Check that a Dataset can be invalidated against the Standard Ruleset."""
-    #     ruleset = iati.core.default.ruleset()
-    #     assert not ruleset.is_valid_for(invalid_dataset)
+    def test_ruleset_is_valid_for_valid_dataset(self):
+        """Check that a Dataset can be validated against the Standard Ruleset."""
+        ruleset = iati.core.tests.utilities.RULESET_FOR_TESTING
+        valid_dataset = iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_VALID
+        assert ruleset.is_valid_for(valid_dataset)
+
+    @pytest.mark.parametrize("invalid_dataset", [
+        iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_BAD_DATE_ORDER,
+        iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_BAD_IDENTIFIER,
+        iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_DOES_NOT_SUM_100,
+        iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_MISSING_SECTOR_ELEMENT
+    ])
+    def test_ruleset_is_invalid_for_invalid_dataset(self, invalid_dataset):
+        """Check that a Dataset can be invalidated against the Standard Ruleset."""
+        ruleset = iati.core.tests.utilities.RULESET_FOR_TESTING
+        assert not ruleset.is_valid_for(invalid_dataset)
 
 
 class TestRule(object):

@@ -111,6 +111,10 @@ DATASET_FOR_STANDARD_RULESET_INVALID_DOES_NOT_SUM_100 = load_as_dataset('invalid
 DATASET_FOR_STANDARD_RULESET_INVALID_MISSING_SECTOR_ELEMENT = load_as_dataset('invalid_std_ruleset_missing_sector_element')
 """A Dataset that does not meet the IATI Standard ruleset (on account of a missing sector element)."""
 
+# This will need updating once test data forcing XML format is fixed
+RULESET_FOR_TESTING = iati.core.Ruleset(iati.core.resources.load_as_string(iati.core.resources.get_ruleset_path('ruleset_for_tests')))
+"""A working Ruleset based on the Standard Ruleset."""
+
 
 @pytest.fixture(params=[
     ('2.02', 62),  # There are 38 embedded codelists at v2.02, plus 24 non-embedded codelists (which are valid for any version)
