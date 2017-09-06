@@ -15,7 +15,6 @@ import re
 import sre_constants
 from decimal import Decimal
 import jsonschema
-# import lxml
 import six
 import iati.core.default
 import iati.core.utilities
