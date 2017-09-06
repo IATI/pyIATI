@@ -362,6 +362,9 @@ class Rule(object):
         Raises:
             TypeError: When a Dataset is not given as an argument.
 
+        Note:
+            May be overridden in child class that does not have the same return structure for boolean results.
+
         """
         try:
             context_elements = self._find_context_elements(dataset)
