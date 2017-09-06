@@ -101,6 +101,7 @@ DATASET_FOR_UNIQUE_RULE_INVALID = load_as_dataset('invalid_unique')
 
 DATASET_FOR_STANDARD_RULESET_VALID = load_as_dataset('valid_std_ruleset')
 """A Dataset that meets the IATI Standard ruleset."""
+
 DATASET_FOR_STANDARD_RULESET_INVALID_BAD_DATE_ORDER = load_as_dataset('invalid_std_ruleset_bad_date_order')
 """A Dataset that does not meet the IATI Standard ruleset (on account of a bad date order)."""
 DATASET_FOR_STANDARD_RULESET_INVALID_BAD_IDENTIFIER = load_as_dataset('invalid_std_ruleset_bad_identifier')
@@ -109,6 +110,10 @@ DATASET_FOR_STANDARD_RULESET_INVALID_DOES_NOT_SUM_100 = load_as_dataset('invalid
 """A Dataset that does not meet the IATI Standard ruleset (on account of a sums not adding to 100%)."""
 DATASET_FOR_STANDARD_RULESET_INVALID_MISSING_SECTOR_ELEMENT = load_as_dataset('invalid_std_ruleset_missing_sector_element')
 """A Dataset that does not meet the IATI Standard ruleset (on account of a missing sector element)."""
+
+# This will need updating once test data forcing XML format is fixed
+RULESET_FOR_TESTING = iati.core.Ruleset(iati.core.resources.load_as_string(iati.core.resources.get_ruleset_path('ruleset_for_tests')))
+"""A working Ruleset based on the Standard Ruleset."""
 
 
 @pytest.fixture(params=[

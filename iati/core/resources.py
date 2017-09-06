@@ -232,7 +232,7 @@ def get_test_ruleset_path(name, version=None):
         Needs to handle a more complex file structure than a single flat directory.
 
     Todo:
-        Test this.
+        Might need removing. What is using it now?
 
     """
     return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), 'rulesets/{0}'.format(name) + FILE_RULESET_EXTENSION)
