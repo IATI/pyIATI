@@ -10,6 +10,13 @@ from iati.core.tests.utilities import codelist_lengths_by_version, standard_vers
 class TestDefault(object):
     """A container for tests relating to Default data."""
 
+
+    @pytest.mark.parametrize("invalid_version", iati.core.tests.utilities.generate_test_types(['none'], True))
+    def test_get_default_version_if_none_invalid_version_str(self, invalid_version):
+        """Check that an invalid version causes an error."""
+        with pytest.raises(ValueError):
+            iati.core.default.get_default_version_if_none(invalid_version)
+
     def test_default_codelist_valid_at_all_versions(self, standard_version_optional):
         """Check that a named default Codelist may be located.
 

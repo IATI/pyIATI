@@ -21,13 +21,18 @@ def get_default_version_if_none(version):
     Args:
         version (str / None): The version to test against.
 
+    Raises:
+        ValueError: When the `version` parameter is not a valid version.
+
     Returns:
         str: The default version if the input version is None. Otherwise returns the input version.
+
     """
     if version is None:
         return iati.core.constants.STANDARD_VERSION_LATEST
-    else:
-        return version
+    elif version not in iati.core.constants.STANDARD_VERSIONS:
+        raise ValueError("Version {0} is not a valid version of the IATI Standard.".format(version))
+    return version
 
 
 _CODELISTS = {}
