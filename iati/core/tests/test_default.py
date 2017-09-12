@@ -4,7 +4,7 @@ import iati.core.codelists
 import iati.core.constants
 import iati.core.default
 import iati.core.schemas
-from iati.core.tests.utilities import codelist_lengths_by_version, standard_version_optional
+from iati.core.tests.utilities import codelist_lengths_by_version, standard_version_mandatory, standard_version_optional
 
 
 class TestDefault(object):
@@ -136,7 +136,7 @@ class TestDefaultModifications(object):
         return iati.core.Code('new code value', 'new code name')
 
     def test_default_codelist_modification(self, codelist_name, new_code, standard_version_optional):
-        """Check that default Codelists cannot be modified by adding Codes to returned lists."""
+        """Check that a default Codelist cannot be modified by adding Codes to returned lists."""
         default_codelist = iati.core.default.codelist(codelist_name, *standard_version_optional)
         base_default_codelist_length = len(default_codelist.codes)
 
@@ -145,3 +145,29 @@ class TestDefaultModifications(object):
 
         assert len(default_codelist.codes) == base_default_codelist_length + 1
         assert len(unmodified_codelist.codes) == base_default_codelist_length
+
+    def test_default_codelists_modification_safe(self, codelist_name, new_code, standard_version_optional):
+        """Check that default Codelists cannot be modified by adding Codes to returned lists with default parameters."""
+        default_codelists = iati.core.default.codelists(*standard_version_optional)
+        codelist_of_interest = default_codelists[codelist_name]
+        base_default_codelist_length = len(codelist_of_interest.codes)
+
+        codelist_of_interest.codes.add(new_code)
+        unmodified_codelists = iati.core.default.codelists(*standard_version_optional)
+        unmodified_codelist_of_interest = unmodified_codelists[codelist_name]
+
+        assert len(codelist_of_interest.codes) == base_default_codelist_length + 1
+        assert len(unmodified_codelist_of_interest.codes) == base_default_codelist_length
+
+    def test_default_codelists_modification_dangerous(self, codelist_name, new_code, standard_version_mandatory):
+        """Check that default Codelists cannot be modified by adding Codes to returned lists."""
+        default_codelists = iati.core.default.codelists(*standard_version_mandatory, True)
+        codelist_of_interest = default_codelists[codelist_name]
+        base_default_codelist_length = len(codelist_of_interest.codes)
+
+        codelist_of_interest.codes.add(new_code)
+        unmodified_codelists = iati.core.default.codelists(*standard_version_mandatory, True)
+        unmodified_codelist_of_interest = unmodified_codelists[codelist_name]
+
+        assert len(codelist_of_interest.codes) == base_default_codelist_length + 1
+        assert len(unmodified_codelist_of_interest.codes) == base_default_codelist_length + 1
