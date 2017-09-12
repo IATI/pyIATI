@@ -22,7 +22,7 @@ def get_default_version_if_none(version):
         version (str / None): The version to test against.
 
     Raises:
-        ValueError: When the `version` parameter is not a valid version.
+        ValueError: When a specified version is not a valid version of the IATI Standard.
 
     Returns:
         str: The default version if the input version is None. Otherwise returns the input version.
@@ -152,6 +152,9 @@ def _activity_schema(version=None, use_cache=False):
         version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
         use_cache (bool): Whether the cache should be used rather than loading the Schema from disk again. If used, a `deepcopy()` should be performed on any returned Schema before it is modified.
 
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
     Returns:
         dict: Containing the version (as keys) and a corresponding ActivitySchema object (as values).
 
@@ -174,6 +177,9 @@ def activity_schema(version=None):
     Args:
         version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
 
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
     Returns:
         dict: Containing the version (as keys) and a corresponding ActivitySchema object (as values).
 
@@ -187,6 +193,9 @@ def _organisation_schema(version=None, use_cache=False):
     Args:
         version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
         use_cache (bool): Whether the cache should be used rather than loading the Schema from disk again. If used, a `deepcopy()` should be performed on any returned Schema before it is modified.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
 
     Returns:
         dict: Containing the version (as keys) and a corresponding OrganisationSchema object (as values).
@@ -209,6 +218,9 @@ def organisation_schema(version=None):
 
     Args:
         version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
 
     Returns:
         dict: Containing the version (as keys) and a corresponding OrganisationSchema object (as values).

@@ -11,23 +11,44 @@ class TestDefault(object):
     """A container for tests relating to Default data."""
 
 
-    @pytest.mark.parametrize("invalid_version", iati.core.tests.utilities.generate_test_types(['none'], True))
-    def test_get_default_version_if_none_invalid_version_str(self, invalid_version):
-        """Check that an invalid version causes an error."""
-        with pytest.raises(ValueError):
-            iati.core.default.get_default_version_if_none(invalid_version)
+    @pytest.fixture
+    def codelist_name(self):
+        """Return the name of a valid Codelist."""
+        return 'Country'
 
-    def test_default_codelist_valid_at_all_versions(self, standard_version_optional):
+    @pytest.mark.parametrize("invalid_version", iati.core.tests.utilities.generate_test_types(['none'], True))
+    @pytest.mark.parametrize("func_to_check", [
+        iati.core.default.get_default_version_if_none,
+        iati.core.default.codelists,
+        iati.core.default.activity_schema,
+        iati.core.default.organisation_schema
+    ])
+    def test_invalid_version(self, invalid_version, func_to_check):
+        """Check that an invalid version causes an error when obtaining default data."""
+        with pytest.raises(ValueError):
+            func_to_check(invalid_version)
+
+    @pytest.mark.parametrize("invalid_version", iati.core.tests.utilities.generate_test_types(['none'], True))
+    def test_invalid_version_single_codelist(self, invalid_version, codelist_name):
+        """Check that an invalid version causes an error when obtaining a single default Codelist.
+
+        Note:
+            This is a separate test since the function takes a parameter other than the `version`.
+
+        """
+        with pytest.raises(ValueError):
+            iati.core.default.codelist(codelist_name, invalid_version)
+
+    def test_default_codelist_valid_at_all_versions(self, codelist_name, standard_version_optional):
         """Check that a named default Codelist may be located.
 
         Todo:
             Check internal values beyond the codelists being the correct type.
         """
-        name = 'Country'
-        codelist = iati.core.default.codelist(name, *standard_version_optional)
+        codelist = iati.core.default.codelist(codelist_name, *standard_version_optional)
 
         assert isinstance(codelist, iati.core.Codelist)
-        assert codelist.name == name
+        assert codelist.name == codelist_name
         for code in codelist.codes:
             assert isinstance(code, iati.core.Code)
 
