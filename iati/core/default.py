@@ -61,8 +61,6 @@ def codelist(name, version=None):
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
     Todo:
-        Actually handle versions, including errors.
-
         Better distinguish the types of ValueError.
 
         Better distinguish TypeErrors from KeyErrors - sometimes the latter is raised when the former should have been.
@@ -152,9 +150,6 @@ def activity_schemas(use_cache=False):
     Returns:
         dict: Containing the version (as keys) and a corresponding ActivitySchema object (as values).
 
-    Todo:
-        Test a cache bypass where data is updated.
-
     """
     output = {}
     for version in iati.core.constants.STANDARD_VERSIONS:
@@ -177,9 +172,6 @@ def organisation_schemas(use_cache=False):
 
     Returns:
         dict: Containing the version (as keys) and a corresponding OrganisationSchema object (as values).
-
-    Todo:
-        Test a cache bypass where data is updated.
 
     """
     output = {}
@@ -206,8 +198,6 @@ def schemas(use_cache=False):
 
     Todo:
         Consider the Schema that defines the format of Codelists.
-
-        Test a cache bypass where data is updated.
 
     """
     activity_schemas(use_cache)
