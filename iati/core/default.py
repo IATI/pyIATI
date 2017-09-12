@@ -8,8 +8,8 @@ Todo:
     Implement more than Codelists.
 
 """
-from copy import deepcopy
 import os
+from copy import deepcopy
 import iati.core.codelists
 import iati.core.constants
 import iati.core.resources
