@@ -85,11 +85,10 @@ def get_all_codelist_paths(version=None):
     Returns:
         list: A list of paths to all of the Codelists at the specified version of the Standard.
 
-    Warning:
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
-
     Todo:
-        Handle versions, including errors.
+        Further exploration needs to be undertaken in how to handle pre-1.04 versions of the Standard.
+
+        Add tests to show that versions 1.04 and above are being correctly handled, including errors.
 
         Provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
 
@@ -117,7 +116,7 @@ def get_all_schema_paths(version=None):
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
     Todo:
-        Handle versions, including errors.
+        Add tests for version parameters that are invalid.
 
         Potentially add the IATI codelist schema.
 
@@ -141,7 +140,7 @@ def get_all_activity_schema_paths(version=None):
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
     Todo:
-        Handle versions, including errors.
+        Add tests for version parameters that are invalid.
 
         Potentially add the IATI codelist schema.
 
@@ -165,7 +164,7 @@ def get_all_org_schema_paths(version=None):
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
     Todo:
-        Handle versions, including errors.
+        Add tests for version parameters that are invalid.
 
         Potentially add the IATI codelist schema.
 
@@ -187,12 +186,9 @@ def get_codelist_path(codelist_name, version=None):
         Does not check whether the specified codelist actually exists.
 
     Warning:
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+        Further exploration needs to be undertaken on how to handle pre-1.04 versions of the Standard.
 
         It needs to be determined how best to locate a user-defined Codelist that is available at a URL that needs fetching.
-
-    Todo:
-        Test this.
 
     """
     if codelist_name[-4:] == FILE_CODELIST_EXTENSION:
@@ -252,11 +248,6 @@ def get_schema_path(name, version=None):
 
     Warning:
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
-
-    Todo:
-        Handle versions of the standard other than 2.02.
-
-        Test this.
 
     """
     return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)

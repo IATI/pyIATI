@@ -9,13 +9,28 @@ Todo:
 
 """
 
-from collections import defaultdict
-from copy import deepcopy
 import json
 import os
+from collections import defaultdict
+from copy import deepcopy
 import iati.core.codelists
 import iati.core.constants
 import iati.core.resources
+
+
+def get_default_version_if_none(version):
+    """Returns the default version number if the input version is None. Otherwise returns the input version as is.
+
+    Args:
+        version (str or None): The version to test against.
+
+    Returns:
+        str or version: The default version if the input version is None.  Otherwise returns the input version.
+    """
+    if version is None:
+        return iati.core.constants.STANDARD_VERSION_LATEST
+    else:
+        return version
 
 
 _CODELISTS = {}
@@ -92,17 +107,21 @@ def codelists(version=None, use_cache=False):
         Add a function to return a single Codelist by name.
 
     """
-    paths = iati.core.resources.get_all_codelist_paths()
+    version = get_default_version_if_none(version)
+
+    paths = iati.core.resources.get_all_codelist_paths(version)
 
     for path in paths:
         _, filename = os.path.split(path)
         name = filename[:-len(iati.core.resources.FILE_CODELIST_EXTENSION)]  # Get the name of the codelist, without the '.xml' file extension
-        if (name not in _CODELISTS.keys()) or not use_cache:
+        codelists_by_version = _CODELISTS.get(version, {})
+        if (name not in codelists_by_version.keys()) or not use_cache:
             xml_str = iati.core.resources.load_as_string(path)
             codelist_found = iati.core.Codelist(name, xml=xml_str)
-            _CODELISTS[name] = codelist_found
+            codelists_by_version[name] = codelist_found
+            _CODELISTS[version] = codelists_by_version
 
-    return _CODELISTS
+    return _CODELISTS[version]
 
 
 def codelist_mapping(version=None):
@@ -113,10 +132,6 @@ def codelist_mapping(version=None):
     Returns:
         dict of dict: A dictionary containing mapping information. Keys in the first dictionary are Codelist names. Keys in the second dictionary are `xpath` and `condition`. The condition is `None` if there is no condition.
 
-    Todo:
-        Test this.
-        Stop filtering out filters for org files.
-
     """
     path = iati.core.resources.get_codelist_mapping_path()
     mapping_tree = iati.core.resources.load_as_tree(path)
@@ -125,8 +140,7 @@ def codelist_mapping(version=None):
     for mapping in mapping_tree.getroot().xpath('//mapping'):
         codelist_name = mapping.find('codelist').attrib['ref']
         codelist_location = mapping.find('path').text
-        if 'organisation' in codelist_location:
-            continue
+
         try:
             condition = mapping.find('condition').text
         except AttributeError:  # there is no condition
@@ -249,8 +263,6 @@ def schemas(use_cache=False):
 
         Test a cache bypass where data is updated.
 
-        Needs to handle multiple versions of the Schemas. This will probably involve passing in a version as a param, which should tidy up the function too.
-
     """
     activity_schemas(use_cache)
     organisation_schemas(use_cache)
@@ -272,8 +284,7 @@ def schema(name, version=None):
         KeyError: If the input schema name is not found as part of the default IATI Schemas.
 
     """
-    if version is None:
-        version = iati.core.constants.STANDARD_VERSION_LATEST
+    version = get_default_version_if_none(version)
 
     try:
         return schemas()[version][name]
