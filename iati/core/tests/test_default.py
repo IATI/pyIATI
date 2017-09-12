@@ -73,31 +73,25 @@ class TestDefault(object):
 
         assert len(codelists) == codelist_lengths_by_version.expected_length
 
-    def test_default_activity_schemas(self):
+    def test_default_activity_schemas(self, standard_version_optional):
         """Check that the default ActivitySchemas are correct.
 
         Todo:
             Check internal values beyond the schemas being the correct type.
         """
-        schemas = iati.core.default.activity_schemas()
+        schema = iati.core.default.activity_schema(*standard_version_optional)
 
-        assert isinstance(schemas, dict)
-        assert len(schemas) == len(iati.core.constants.STANDARD_VERSIONS)
-        for _, schema in schemas.items():
-            assert isinstance(schema, iati.core.ActivitySchema)
+        assert isinstance(schema, iati.core.ActivitySchema)
 
-    def test_default_organisation_schemas(self):
+    def test_default_organisation_schemas(self, standard_version_optional):
         """Check that the default ActivitySchemas are correct.
 
         Todo:
             Check internal values beyond the schemas being the correct type.
         """
-        schemas = iati.core.default.organisation_schemas()
+        schema = iati.core.default.organisation_schema(*standard_version_optional)
 
-        assert isinstance(schemas, dict)
-        assert len(schemas) == len(iati.core.constants.STANDARD_VERSIONS)
-        for _, schema in schemas.items():
-            assert isinstance(schema, iati.core.OrganisationSchema)
+        assert isinstance(schema, iati.core.OrganisationSchema)
 
     def test_default_schemas(self):
         """Check that the default Schemas are correct.
@@ -113,12 +107,6 @@ class TestDefault(object):
         assert len(schemas[version]) == 2
         for schema in schemas[version].values():
             assert isinstance(schema, (iati.core.ActivitySchema, iati.core.OrganisationSchema))
-
-    @pytest.mark.parametrize("invalid_name", iati.core.tests.utilities.generate_test_types([], True))
-    def test_default_schema(self, invalid_name):
-        """Check that an Error is raised when attempting to load a Schema name that does not exist."""
-        with pytest.raises((ValueError, TypeError)):
-            iati.core.default.schema(invalid_name)
 
 
 class TestDefaultModifications(object):
@@ -165,8 +153,8 @@ class TestDefaultModifications(object):
         assert len(unmodified_codelist_of_interest.codes) == base_default_codelist_length
 
     @pytest.mark.parametrize("default_call", [
-        iati.core.default.activity_schemas,
-        iati.core.default.organisation_schemas
+        iati.core.default.activity_schema,
+        iati.core.default.organisation_schema
     ])
     def test_default_x_schema_modification(self, default_call, codelist, standard_version_mandatory):
         """Check that the default Schemas cannot be modified.
@@ -175,31 +163,31 @@ class TestDefaultModifications(object):
             Implementation is by attempting to add a Codelist to the Schema.
 
         """
-        default_schema = default_call()[standard_version_mandatory[0]]
+        default_schema = default_call(standard_version_mandatory[0])
         base_codelist_count = len(default_schema.codelists)
 
         default_schema.codelists.add(codelist)
-        unmodified_schema = default_call()[standard_version_mandatory[0]]
+        unmodified_schema = default_call(standard_version_mandatory[0])
 
         assert len(default_schema.codelists) == base_codelist_count + 1
         assert len(unmodified_schema.codelists) == base_codelist_count
 
-    @pytest.mark.parametrize("schema_name", [
-        'iati-activities-schema',
-        'iati-organisations-schema'
+    @pytest.mark.parametrize("schema_func", [
+        iati.core.default.activity_schema,
+        iati.core.default.organisation_schema
     ])
-    def test_default_schema_modification(self, schema_name, standard_version_optional, codelist):
+    def test_default_schema_modification(self, schema_func, standard_version_optional, codelist):
         """Check that the default Schemas cannot be modified when called individually.
 
         Note:
             Implementation is by attempting to add a Codelist to the Schema.
 
         """
-        default_schema = iati.core.default.schema(schema_name, *standard_version_optional)
+        default_schema = schema_func(*standard_version_optional)
         base_codelist_count = len(default_schema.codelists)
 
         default_schema.codelists.add(codelist)
-        unmodified_schema = iati.core.default.schema(schema_name, *standard_version_optional)
+        unmodified_schema = schema_func(*standard_version_optional)
 
         assert len(default_schema.codelists) == base_codelist_count + 1
         assert len(unmodified_schema.codelists) == base_codelist_count

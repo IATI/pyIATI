@@ -141,10 +141,11 @@ Warning:
 """
 
 
-def _activity_schemas(use_cache=False):
+def _activity_schema(version=None, use_cache=False):
     """Return a dictionary of the default ActivitySchema objects for all versions of the Standard.
 
     Args:
+        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
         use_cache (bool): Whether the cache should be used rather than loading the Schema from disk again. If used, a `deepcopy()` should be performed on any returned Schema before it is modified.
 
     Returns:
@@ -152,32 +153,39 @@ def _activity_schemas(use_cache=False):
 
     """
     output = {}
-    for version in iati.core.constants.STANDARD_VERSIONS:
-        activity_schema_paths = iati.core.resources.get_all_activity_schema_paths(version)
-        if ('iati-activities-schema' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
-            if version not in _SCHEMAS.keys():
-                _SCHEMAS[version] = {}
-            _SCHEMAS[version]['iati-activities-schema'] = iati.core.ActivitySchema(activity_schema_paths[0])
 
-        output[version] = _SCHEMAS[version]['iati-activities-schema']
+    version = get_default_version_if_none(version)
 
-    return output
+    activity_schema_paths = iati.core.resources.get_all_activity_schema_paths(version)
+    # import pdb;pdb.set_trace()
+    if ('iati-activities-schema' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
+        if version not in _SCHEMAS.keys():
+            _SCHEMAS[version] = {}
+        _SCHEMAS[version]['iati-activities-schema'] = iati.core.ActivitySchema(activity_schema_paths[0])
+
+    output[version] = _SCHEMAS[version]['iati-activities-schema']
+
+    return output[version]
 
 
-def activity_schemas():
+def activity_schema(version=None):
     """Return a dictionary of the default ActivitySchema objects for all versions of the Standard.
+
+    Args:
+        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
 
     Returns:
         dict: Containing the version (as keys) and a corresponding ActivitySchema object (as values).
 
     """
-    return _activity_schemas()
+    return _activity_schema(version)
 
 
-def _organisation_schemas(use_cache=False):
+def _organisation_schema(version=None, use_cache=False):
     """Return a dictionary of the default OrganisationSchema objects for all versions of the Standard.
 
     Args:
+        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
         use_cache (bool): Whether the cache should be used rather than loading the Schema from disk again. If used, a `deepcopy()` should be performed on any returned Schema before it is modified.
 
     Returns:
@@ -185,32 +193,38 @@ def _organisation_schemas(use_cache=False):
 
     """
     output = {}
-    for version in iati.core.constants.STANDARD_VERSIONS:
-        organisation_schema_paths = iati.core.resources.get_all_org_schema_paths(version)
-        if ('iati-organisations-schema' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
-            if version not in _SCHEMAS.keys():
-                _SCHEMAS[version] = {}
-            _SCHEMAS[version]['iati-organisations-schema'] = iati.core.OrganisationSchema(organisation_schema_paths[0])
 
-        output[version] = _SCHEMAS[version]['iati-organisations-schema']
+    version = get_default_version_if_none(version)
 
-    return output
+    organisation_schema_paths = iati.core.resources.get_all_org_schema_paths(version)
+    if ('iati-organisations-schema' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
+        if version not in _SCHEMAS.keys():
+            _SCHEMAS[version] = {}
+        _SCHEMAS[version]['iati-organisations-schema'] = iati.core.OrganisationSchema(organisation_schema_paths[0])
+
+    output[version] = _SCHEMAS[version]['iati-organisations-schema']
+
+    return output[version]
 
 
-def organisation_schemas():
+def organisation_schema(version=None):
     """Return a dictionary of the default OrganisationSchema objects for all versions of the Standard.
+
+    Args:
+        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
 
     Returns:
         dict: Containing the version (as keys) and a corresponding OrganisationSchema object (as values).
 
     """
-    return _organisation_schemas()
+    return _organisation_schema(version)
 
 
 def _schemas(use_cache=False):
     """Locate all the default IATI Schemas and return them within a dictionary.
 
     Args:
+        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
         use_cache (bool): Whether the cache should be used rather than loading the Schema from disk again. If used, a `deepcopy()` should be performed on any returned Schema before it is modified.
 
     Returns:
@@ -220,41 +234,20 @@ def _schemas(use_cache=False):
         Consider the Schema that defines the format of Codelists.
 
     """
-    _activity_schemas(use_cache)
-    _organisation_schemas(use_cache)
+    _activity_schema(use_cache)
+    _organisation_schema(use_cache)
 
     return _SCHEMAS  # Both activity_schemas and organisation_schemas will update the _SCHEMAS constant.
 
 
-def schemas():
+def schemas(version=None):
     """Locate all the default IATI Schemas and return them within a dictionary.
+
+    Args:
+        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
 
     Returns:
         dict: A dictionary containing all the Schemas for versions of the Standard. This returns the name of the Schema (as the key) and a subclass of iati.core.schemas.Schema() (as the value).
 
     """
-    return _schemas()
-
-
-def schema(name, version=None):
-    """Return a default Schema with the specified name for the specified version of the Standard.
-
-    Args:
-        name (str): The name of the Schema to locate. Current values are 'iati-activities-schema' or 'iati-organisations-schema'.
-        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
-
-    Returns:
-        iati.core.schema.Schema (or subclass): An instance of the schema corresponding to the input name and version.
-
-    Raises:
-        KeyError: If the input schema name is not found as part of the default IATI Schemas.
-
-    """
-    version = get_default_version_if_none(version)
-
-    try:
-        return schemas()[version][name]
-    except KeyError:
-        msg = 'There is no default Schema in version {0} of the Standard with the name {1}.'.format(version, name)
-        iati.core.utilities.log_warning(msg)
-        raise ValueError(msg)
+    return _schemas(version)
