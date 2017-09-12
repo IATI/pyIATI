@@ -5,6 +5,7 @@ import iati.core.constants
 import iati.core.default
 import iati.core.schemas
 import iati.core.tests.utilities
+from iati.core.tests.utilities import schema_ruleset
 
 
 class TestDefault(object):
@@ -83,7 +84,7 @@ class TestDefault(object):
 
         assert isinstance(ruleset, iati.core.Ruleset)
 
-    def test_default_ruleset_rules_valid(self):
+    def test_default_ruleset_validation_rules_valid(self):
         """Check that each Rule within a Ruleset acts correctly
         i.e. gets the expected result for a valid and an invalid dataset.
 
@@ -92,6 +93,82 @@ class TestDefault(object):
             Add a ValidationError object: warning-rule-skipped
             Add mapping between the error type (similar to `_parse_lxml_log_entry` converts failing rule into a ValidationError.)
             May need to add some extra utility functions in validator.py (which should also be tested)
+        """
+        pass
+
+    def test_default_ruleset_validation_rule_atleast_one(self):
+        """Perform data validation against valid IATI XML that has invalid data for RuleAtLeastOne.
+
+        Todo:
+            Add additional asserts to actually test for a RuleAtLeastOne failure.
+        """
+        pass
+
+    def test_default_ruleset_validation_rule_date_order(self, schema_ruleset):
+        """Perform data validation against valid IATI XML that has invalid data for RuleDateOrder.
+
+        Todo:
+            Add additional asserts to actually test for a RuleDateOrder failure.
+        """
+        data = iati.core.tests.utilities.load_as_dataset('invalid_std_ruleset_bad_date_order')
+
+        assert iati.validator.is_xml(data.xml_str)
+        assert iati.validator.is_iati_xml(data, schema_ruleset)
+        assert not iati.validator.is_valid(data, schema_ruleset)
+
+    def test_default_ruleset_validation_rule_dependent(self):
+        """Perform data validation against valid IATI XML that has invalid data for RuleDependent.
+
+        Todo:
+            Add additional asserts to actually test for a RuleDependent failure.
+        """
+        pass
+
+    def test_default_ruleset_validation_rule_no_more_than_one(self):
+        """Perform data validation against valid IATI XML that has invalid data for RuleNoMoreThanOne.
+
+        Todo:
+            Add additional asserts to actually test for a RuleNoMoreThanOne failure.
+        """
+        pass
+
+    def test_default_ruleset_validation_rule_regex_matches(self):
+        """Perform data validation against valid IATI XML that has invalid data for RuleRegexMatches.
+
+        Todo:
+            Add additional asserts to actually test for a RuleRegexMatches failure.
+        """
+        pass
+
+    def test_default_ruleset_validation_rule_regex_no_matches(self):
+        """Perform data validation against valid IATI XML that has invalid data for RuleRegexNoMatches.
+
+        Todo:
+            Add additional asserts to actually test for a RuleRegexNoMatches failure.
+        """
+        pass
+
+    def test_default_ruleset_validation_rule_regex_starts_with(self):
+        """Perform data validation against valid IATI XML that has invalid data for RuleStartsWith.
+
+        Todo:
+            Add additional asserts to actually test for a RuleStartsWith failure.
+        """
+        pass
+
+    def test_default_ruleset_validation_rule_sum(self):
+        """Perform data validation against valid IATI XML that has invalid data for RuleSum.
+
+        Todo:
+            Add additional asserts to actually test for a RuleSum failure.
+        """
+        pass
+
+    def test_default_ruleset_validation_rule_unique(self):
+        """Perform data validation against valid IATI XML that has invalid data for RuleUnique.
+
+        Todo:
+            Add additional asserts to actually test for a RuleUnique failure.
         """
         pass
 

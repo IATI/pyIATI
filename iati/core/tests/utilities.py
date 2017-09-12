@@ -17,6 +17,7 @@ Todo:
 """
 import decimal
 from lxml import etree
+import pytest
 import iati.core.resources
 
 
@@ -173,3 +174,19 @@ def generate_test_types(types, invert_types=False):
         results = results + TYPE_TEST_DATA[key]
 
     return results
+
+
+@pytest.fixture
+def schema_ruleset():
+    """A schema with the default Ruleset added.
+
+    Returns:
+        A valid activity schema with the default Ruleset added.
+    """
+    schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
+    schema = iati.core.Schema(schema_path)
+    ruleset = iati.core.default.ruleset()
+
+    schema.rulesets.add(ruleset)
+
+    return schema

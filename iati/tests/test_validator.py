@@ -5,6 +5,7 @@ import iati.core.default
 import iati.core.schemas
 import iati.core.tests.utilities
 import iati.validator
+from iati.core.tests.utilities import schema_ruleset
 
 
 class TestValidationError(object):
@@ -849,20 +850,6 @@ class TestValidationVocabularies(ValidateCodelistsBase):
 class TestValidateRulesets(object):
     """A container for tests relating to validation of Rulesets."""
 
-    @pytest.fixture
-    def schema_ruleset(self):
-        """A schema with the default Ruleset added.
-        Returns:
-            A valid activity schema with the Version Codelist added.
-        """
-        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        schema = iati.core.Schema(schema_path)
-        ruleset = iati.core.default.ruleset()
-
-        schema.rulesets.add(ruleset)
-
-        return schema
-
     def test_basic_validation_ruleset_valid(self, schema_ruleset):
         """Perform data validation against valid IATI XML that has valid Codelist values."""
         data = iati.core.tests.utilities.load_as_dataset('valid_std_ruleset')
@@ -879,82 +866,6 @@ class TestValidateRulesets(object):
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_ruleset)
         assert not iati.validator.is_valid(data, schema_ruleset)
-
-    def test_basic_validation_rule_atleast_one(self):
-        """Perform data validation against valid IATI XML that has invalid data for RuleAtLeastOne.
-
-        Todo:
-            Add additional assets to actually test for a RuleAtLeastOne failure.
-        """
-        pass
-
-    def test_basic_validation_rule_date_order(self, schema_ruleset):
-        """Perform data validation against valid IATI XML that has invalid data for RuleDateOrder.
-
-        Todo:
-            Add additional assets to actually test for a RuleDateOrder failure.
-        """
-        data = iati.core.tests.utilities.load_as_dataset('invalid_std_ruleset_bad_date_order')
-
-        assert iati.validator.is_xml(data.xml_str)
-        assert iati.validator.is_iati_xml(data, schema_ruleset)
-        assert not iati.validator.is_valid(data, schema_ruleset)
-
-    def test_basic_validation_rule_dependent(self):
-        """Perform data validation against valid IATI XML that has invalid data for RuleDependent.
-
-        Todo:
-            Add additional assets to actually test for a RuleDependent failure.
-        """
-        pass
-
-    def test_basic_validation_rule_no_more_than_one(self):
-        """Perform data validation against valid IATI XML that has invalid data for RuleNoMoreThanOne.
-
-        Todo:
-            Add additional assets to actually test for a RuleNoMoreThanOne failure.
-        """
-        pass
-
-    def test_basic_validation_rule_regex_matches(self):
-        """Perform data validation against valid IATI XML that has invalid data for RuleRegexMatches.
-
-        Todo:
-            Add additional assets to actually test for a RuleRegexMatches failure.
-        """
-        pass
-
-    def test_basic_validation_rule_regex_no_matches(self):
-        """Perform data validation against valid IATI XML that has invalid data for RuleRegexNoMatches.
-
-        Todo:
-            Add additional assets to actually test for a RuleRegexNoMatches failure.
-        """
-        pass
-
-    def test_basic_validation_rule_regex_starts_with(self):
-        """Perform data validation against valid IATI XML that has invalid data for RuleStartsWith.
-
-        Todo:
-            Add additional assets to actually test for a RuleStartsWith failure.
-        """
-        pass
-
-    def test_basic_validation_rule_sum(self):
-        """Perform data validation against valid IATI XML that has invalid data for RuleSum.
-
-        Todo:
-            Add additional assets to actually test for a RuleSum failure.
-        """
-        pass
-
-    def test_basic_validation_rule_unique(self):
-        """Perform data validation against valid IATI XML that has invalid data for RuleUnique.
-
-        Todo:
-            Add additional assets to actually test for a RuleUnique failure.
-        """
-        pass
 
 
 class TestValidatorFullValidation(ValidateCodelistsBase):
