@@ -218,36 +218,3 @@ def organisation_schema(version=None):
 
     """
     return _organisation_schema(version)
-
-
-def _schemas(use_cache=False):
-    """Locate all the default IATI Schemas and return them within a dictionary.
-
-    Args:
-        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
-        use_cache (bool): Whether the cache should be used rather than loading the Schema from disk again. If used, a `deepcopy()` should be performed on any returned Schema before it is modified.
-
-    Returns:
-        dict: A dictionary containing all the Schemas for versions of the Standard. This returns the name of the Schema (as the key) and a subclass of iati.core.schemas.Schema() (as the value).
-
-    Todo:
-        Consider the Schema that defines the format of Codelists.
-
-    """
-    _activity_schema(use_cache)
-    _organisation_schema(use_cache)
-
-    return _SCHEMAS  # Both activity_schemas and organisation_schemas will update the _SCHEMAS constant.
-
-
-def schemas(version=None):
-    """Locate all the default IATI Schemas and return them within a dictionary.
-
-    Args:
-        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
-
-    Returns:
-        dict: A dictionary containing all the Schemas for versions of the Standard. This returns the name of the Schema (as the key) and a subclass of iati.core.schemas.Schema() (as the value).
-
-    """
-    return _schemas(version)

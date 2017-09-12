@@ -93,21 +93,6 @@ class TestDefault(object):
 
         assert isinstance(schema, iati.core.OrganisationSchema)
 
-    def test_default_schemas(self):
-        """Check that the default Schemas are correct.
-
-        Todo:
-            Check internal values beyond the schemas being the correct type.
-        """
-        version = iati.core.constants.STANDARD_VERSION_LATEST
-        schemas = iati.core.default.schemas()
-
-        assert isinstance(schemas, dict)
-        assert isinstance(schemas[version], dict)
-        assert len(schemas[version]) == 2
-        for schema in schemas[version].values():
-            assert isinstance(schema, (iati.core.ActivitySchema, iati.core.OrganisationSchema))
-
 
 class TestDefaultModifications(object):
     """A container for tests relating to the ability to modify defaults."""
