@@ -172,7 +172,7 @@ class TestDefaultModifications(object):
 
         codelist_of_interest.codes.add(new_code)
         modified_codelists = iati.core.default.codelists(standard_version_mandatory[0], True)
-        modified_codelist_of_interest = unmodified_codelists[codelist_name]
+        modified_codelist_of_interest = modified_codelists[codelist_name]
 
         assert len(codelist_of_interest.codes) == base_default_codelist_length + 1
         assert len(modified_codelist_of_interest.codes) == base_default_codelist_length + 1
