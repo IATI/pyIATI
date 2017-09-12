@@ -152,20 +152,16 @@ def _activity_schema(version=None, use_cache=False):
         dict: Containing the version (as keys) and a corresponding ActivitySchema object (as values).
 
     """
-    output = {}
-
     version = get_default_version_if_none(version)
 
     activity_schema_paths = iati.core.resources.get_all_activity_schema_paths(version)
-    # import pdb;pdb.set_trace()
+
     if ('iati-activities-schema' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
         if version not in _SCHEMAS.keys():
             _SCHEMAS[version] = {}
         _SCHEMAS[version]['iati-activities-schema'] = iati.core.ActivitySchema(activity_schema_paths[0])
 
-    output[version] = _SCHEMAS[version]['iati-activities-schema']
-
-    return output[version]
+    return _SCHEMAS[version]['iati-activities-schema']
 
 
 def activity_schema(version=None):
@@ -192,19 +188,16 @@ def _organisation_schema(version=None, use_cache=False):
         dict: Containing the version (as keys) and a corresponding OrganisationSchema object (as values).
 
     """
-    output = {}
-
     version = get_default_version_if_none(version)
 
     organisation_schema_paths = iati.core.resources.get_all_org_schema_paths(version)
+
     if ('iati-organisations-schema' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
         if version not in _SCHEMAS.keys():
             _SCHEMAS[version] = {}
         _SCHEMAS[version]['iati-organisations-schema'] = iati.core.OrganisationSchema(organisation_schema_paths[0])
 
-    output[version] = _SCHEMAS[version]['iati-organisations-schema']
-
-    return output[version]
+    return _SCHEMAS[version]['iati-organisations-schema']
 
 
 def organisation_schema(version=None):
