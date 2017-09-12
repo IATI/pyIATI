@@ -154,6 +154,12 @@ class TestResources(object):
         """Test that resources.load_as_bytes returns a bytes object with the expected content."""
         path_test_data = iati.core.resources.get_test_data_path('this-file-does-not-exist')
 
+        # python 2/3 compatibility - FileNotFoundError introduced at Python 3
+        try:
+            FileNotFoundError
+        except NameError:
+            FileNotFoundError = IOError
+
         with pytest.raises(FileNotFoundError):
             _ = load_method(path_test_data)
 
