@@ -46,7 +46,7 @@ class TestDefault(object):
 
         assert isinstance(codelists, dict)
         assert len(codelists) == 62
-        for _, codelist in codelists.items():
+        for codelist in codelists.values():
             assert isinstance(codelist, iati.core.Codelist)
 
     def test_codelist_mapping_condition(self):
@@ -93,7 +93,7 @@ class TestDefault(object):
 
         assert isinstance(schemas, dict)
         assert len(schemas) == 1
-        for _, schema in schemas.items():
+        for schema in schemas.values():
             assert isinstance(schema, iati.core.ActivitySchema)
 
     def test_default_organisation_schemas(self):
@@ -106,7 +106,7 @@ class TestDefault(object):
 
         assert isinstance(schemas, dict)
         assert len(schemas) == 1
-        for _, schema in schemas.items():
+        for schema in schemas.values():
             assert isinstance(schema, iati.core.OrganisationSchema)
 
     def test_default_schemas(self):
