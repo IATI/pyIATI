@@ -65,6 +65,7 @@ class ValidationError(object):
 
 class ValidationErrorLog(object):
     """A container to keep track of a set of ValidationErrors.
+    This acts and an iterable, so that ValidationErrors can be looped over.
 
     ValidationErrors may be added to the log.
 
@@ -290,12 +291,16 @@ def _check_is_iati_xml(dataset, schema):
 
 def _check_is_xml(maybe_xml):
     """Check whether a given parameter is valid XML.
+
     Args:
         maybe_xml (str): An string that may or may not contain valid XML.
+
     Returns:
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
+
     Todo:
         Consider how a Dataset may be passed when creating errors so that context can be obtained.
+
     """
     error_log = ValidationErrorLog()
 
@@ -330,7 +335,6 @@ def _check_rules(dataset, ruleset):
     Args:
         dataset (iati.core.data.Dataset): The Dataset to check Ruleset conformance with.
         ruleset (iati.code.Ruleset): The Ruleset to check conformance with.
-
 
     Returns:
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
@@ -590,4 +594,3 @@ def validate_is_xml(maybe_xml):
 
     """
     return _check_is_xml(maybe_xml)
-
