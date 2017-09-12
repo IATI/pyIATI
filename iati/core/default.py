@@ -69,7 +69,7 @@ def codelist(name, version=None):
 
     """
     try:
-        codelist_found = codelists(version, True)[name]
+        codelist_found = _codelists(version, True)[name]
         return deepcopy(codelist_found)
     except (KeyError, TypeError):
         msg = "There is no default Codelist in version {0} of the Standard with the name {1}.".format(version, name)
@@ -77,7 +77,7 @@ def codelist(name, version=None):
         raise ValueError(msg)
 
 
-def codelists(version=None, use_cache=False):
+def _codelists(version=None, use_cache=False):
     """Locate the default Codelists for the specified version of the Standard.
 
     Args:
@@ -94,14 +94,8 @@ def codelists(version=None, use_cache=False):
         Setting `use_cache` to `True` is dangerous since it does not return a deep copy of the Codelists. This means that modification of a returned Codelist will modify the Codelist everywhere.
         A `deepcopy()` should be performed on any returned value before it is modified.
 
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
-
-    Todo:
-        Actually handle versions, including errors.
-
-        Test a cache bypass where data is updated.
-
-        Add a function to return a single Codelist by name.
+    Note:
+        This is a private function so as to prevent the (dangerous) `use_cache` parameter being part of the public API.
 
     """
     version = get_default_version_if_none(version)
@@ -119,6 +113,23 @@ def codelists(version=None, use_cache=False):
             _CODELISTS[version] = codelists_by_version
 
     return _CODELISTS[version]
+
+
+def codelists(version=None):
+    """Locate the default Codelists for the specified version of the Standard.
+
+    Args:
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelist is returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.core.Codelist() instances.
+
+    """
+    return _codelists(version)
+
 
 
 _SCHEMAS = {}
