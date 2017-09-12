@@ -133,6 +133,13 @@ class TestResources(object):
         assert isinstance(result, iati.core.Dataset)
         assert '<?xml version="1.0"?>\n\n<iati-activities version="2.02">' in result.xml_str
 
+    def test_load_as_dataset_invalid(self):
+        """Test that resources.load_as_dataset raises an error when the provided path does not lead to a file containing valid XML."""
+        path_test_data = iati.core.resources.get_test_data_path('invalid')
+
+        with pytest.raises(ValueError):
+            _ = iati.core.resources.load_as_dataset(path_test_data)
+
     def test_load_as_string(self):
         """Test that resources.load_as_string returns a string (python3) or unicode (python2) object with the expected content."""
         path_test_data = iati.core.resources.get_test_data_path('invalid')
@@ -141,6 +148,20 @@ class TestResources(object):
 
         assert isinstance(result, six.string_types)
         assert result == 'This is a string that is not valid XML\n'
+
+    @pytest.mark.parametrize("load_method", [iati.core.resources.load_as_bytes, iati.core.resources.load_as_dataset, iati.core.resources.load_as_string])
+    def test_load_as_x_non_existing_file(self, load_method):
+        """Test that resources.load_as_bytes returns a bytes object with the expected content."""
+        path_test_data = iati.core.resources.get_test_data_path('this-file-does-not-exist')
+
+        # python 2/3 compatibility - FileNotFoundError introduced at Python 3
+        try:
+            FileNotFoundError
+        except NameError:
+            FileNotFoundError = IOError
+
+        with pytest.raises(FileNotFoundError):
+            _ = load_method(path_test_data)
 
     def test_resource_filename(self):
         """Check that resource file names are found correctly.

@@ -297,6 +297,10 @@ def load_as_dataset(path):
     Warning:
         Should raise Exceptions when there are problems loading the requested data.
 
+    Raises:
+        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+        ValueError: When a file at the specified path does not contain valid XML.
+
     Todo:
         Add error handling for when the specified file does not exist.
 
@@ -314,8 +318,11 @@ def load_as_bytes(path):
     Returns:
         bytes: The contents of the file at the specified location.
 
+    Raises:
+        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+
     Todo:
-        Should raise Exceptions when there are problems loading the requested data.
+        Ensure all reasonably possible OSErrors are documented here and in functions that call this.
         Add error handling for when the specified file does not exist.
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
 
@@ -332,8 +339,10 @@ def load_as_string(path):
     Returns:
         str (python3) / unicode (python2): The contents of the file at the specified location.
 
+    Raises:
+        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+
     Todo:
-        Should raise Exceptions when there are problems loading the requested data.
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
 
     """
