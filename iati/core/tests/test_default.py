@@ -217,4 +217,22 @@ class TestDefaultModifications(object):
         assert len(default_schema.codelists) == base_codelist_count + 1
         assert len(modified_schema.codelists) == base_codelist_count + 1
 
+    @pytest.mark.parametrize("schema_name", [
+        'iati-activities-schema',
+        'iati-organisations-schema'
+    ])
+    def test_default_schema_modification(self, schema_name, standard_version_optional, codelist):
+        """Check that the default Schemas cannot be modified when called individually.
 
+        Note:
+            Implementation is by attempting to add a Codelist to the Schema.
+
+        """
+        default_schema = iati.core.default.schema(schema_name, *standard_version_optional)
+        base_codelist_count = len(default_schema.codelists)
+
+        default_schema.codelists.add(codelist)
+        unmodified_schema = iati.core.default.schema(schema_name, *standard_version_optional)
+
+        assert len(default_schema.codelists) == base_codelist_count + 1
+        assert len(unmodified_schema.codelists) == base_codelist_count
