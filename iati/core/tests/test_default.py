@@ -119,3 +119,29 @@ class TestDefault(object):
         """Check that an Error is raised when attempting to load a Schema name that does not exist."""
         with pytest.raises((ValueError, TypeError)):
             iati.core.default.schema(invalid_name)
+
+
+class TestDefaultModifications(object):
+    """A container for tests relating to the ability to modify defaults."""
+
+
+    @pytest.fixture
+    def codelist_name(self):
+        """Return the name of a Codelist that exists at all versions of the Standard."""
+        return 'Country'
+
+    @pytest.fixture
+    def new_code(self):
+        """Return a Code object that has not been added to a Codelist."""
+        return iati.core.Code('new code value', 'new code name')
+
+    def test_default_codelist_modification(self, codelist_name, new_code, standard_version_optional):
+        """Check that default Codelists cannot be modified by adding Codes to returned lists."""
+        default_codelist = iati.core.default.codelist(codelist_name, *standard_version_optional)
+        base_default_codelist_length = len(default_codelist.codes)
+
+        default_codelist.codes.add(new_code)
+        unmodified_codelist = iati.core.default.codelist(codelist_name, *standard_version_optional)
+
+        assert len(default_codelist.codes) == base_default_codelist_length + 1
+        assert len(unmodified_codelist.codes) == base_default_codelist_length
