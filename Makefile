@@ -17,7 +17,7 @@ complexity: $(IATI_FOLDER)
 
 
 docs: $(IATI_FOLDER) $(DOCS_FOLDER_SOURCE)
-	sphinx-apidoc -f -o $(DOCS_FOLDER_SOURCE) $(IATI_FOLDER)
+	sphinx-apidoc -f -o $(DOCS_FOLDER_SOURCE) $(IATI_FOLDER) iati/core/tests/* iati/tests/*
 	echo $(LINE_SEP)
 	sphinx-build -b html $(DOCS_FOLDER_SOURCE) $(DOCS_FOLDER_BUILD)
 
