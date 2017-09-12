@@ -131,6 +131,11 @@ class TestDefaultModifications(object):
         return 'Country'
 
     @pytest.fixture
+    def codelist(self, codelist_name):
+        """Return a Codelist."""
+        return iati.core.default.codelist(codelist_name)
+
+    @pytest.fixture
     def new_code(self):
         """Return a Code object that has not been added to a Codelist."""
         return iati.core.Code('new code value', 'new code name')
@@ -160,14 +165,55 @@ class TestDefaultModifications(object):
         assert len(unmodified_codelist_of_interest.codes) == base_default_codelist_length
 
     def test_default_codelists_modification_dangerous(self, codelist_name, new_code, standard_version_mandatory):
-        """Check that default Codelists cannot be modified by adding Codes to returned lists."""
+        """Check that default Codelists can be modified by adding Codes to returned lists in DANGER MODE."""
         default_codelists = iati.core.default.codelists(*standard_version_mandatory, True)
         codelist_of_interest = default_codelists[codelist_name]
         base_default_codelist_length = len(codelist_of_interest.codes)
 
         codelist_of_interest.codes.add(new_code)
-        unmodified_codelists = iati.core.default.codelists(*standard_version_mandatory, True)
-        unmodified_codelist_of_interest = unmodified_codelists[codelist_name]
+        modified_codelists = iati.core.default.codelists(*standard_version_mandatory, True)
+        modified_codelist_of_interest = unmodified_codelists[codelist_name]
 
         assert len(codelist_of_interest.codes) == base_default_codelist_length + 1
-        assert len(unmodified_codelist_of_interest.codes) == base_default_codelist_length + 1
+        assert len(modified_codelist_of_interest.codes) == base_default_codelist_length + 1
+
+    @pytest.mark.parametrize("default_call", [
+        iati.core.default.activity_schemas,
+        iati.core.default.organisation_schemas
+    ])
+    def test_default_activity_schema_modification_safe(self, default_call, codelist, standard_version_mandatory):
+        """Check that the default Schemas cannot be modified.
+
+        Note:
+            Implementation is by attempting to add a Codelist to the Schema.
+
+        """
+        default_schema = default_call()[standard_version_mandatory[0]]
+        base_codelist_count = len(default_schema.codelists)
+
+        default_schema.codelists.add(codelist)
+        unmodified_schema = default_call()[standard_version_mandatory[0]]
+
+        assert len(default_schema.codelists) == base_codelist_count + 1
+        assert len(unmodified_schema.codelists) == base_codelist_count
+
+    @pytest.mark.parametrize("default_call", [
+        iati.core.default.activity_schemas,
+        iati.core.default.organisation_schemas
+    ])
+    def test_default_activity_schema_modification_dangerous(self, default_call, codelist, standard_version_mandatory):
+        """Check that the default Schemas can be modified when called in DANGER MODE.
+
+        Note:
+            Implementation is by attempting to add a Codelist to the Schema.
+
+        """
+        default_schema = default_call(True)[standard_version_mandatory[0]]
+        base_codelist_count = len(default_schema.codelists)
+
+        default_schema.codelists.add(codelist)
+        modified_schema = default_call(True)[standard_version_mandatory[0]]
+
+        assert len(default_schema.codelists) == base_codelist_count + 1
+        assert len(modified_schema.codelists) == base_codelist_count + 1
+
