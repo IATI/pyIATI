@@ -2,6 +2,9 @@
 
 Todo:
     Remove references to `case`.
+    Check all tests are still necessary/relevant.
+    Condense tests for individual Rules.
+    Try to standardise Rule arrays for extraction.
 
 """
 from copy import deepcopy
