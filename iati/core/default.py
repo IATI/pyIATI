@@ -141,7 +141,7 @@ Warning:
 """
 
 
-def activity_schemas(use_cache=False):
+def _activity_schemas(use_cache=False):
     """Return a dictionary of the default ActivitySchema objects for all versions of the Standard.
 
     Args:
@@ -164,7 +164,17 @@ def activity_schemas(use_cache=False):
     return output
 
 
-def organisation_schemas(use_cache=False):
+def activity_schemas():
+    """Return a dictionary of the default ActivitySchema objects for all versions of the Standard.
+
+    Returns:
+        dict: Containing the version (as keys) and a corresponding ActivitySchema object (as values).
+
+    """
+    return _activity_schemas()
+
+
+def _organisation_schemas(use_cache=False):
     """Return a dictionary of the default OrganisationSchema objects for all versions of the Standard.
 
     Args:
@@ -187,7 +197,17 @@ def organisation_schemas(use_cache=False):
     return output
 
 
-def schemas(use_cache=False):
+def organisation_schemas():
+    """Return a dictionary of the default OrganisationSchema objects for all versions of the Standard.
+
+    Returns:
+        dict: Containing the version (as keys) and a corresponding OrganisationSchema object (as values).
+
+    """
+    return _organisation_schemas()
+
+
+def _schemas(use_cache=False):
     """Locate all the default IATI Schemas and return them within a dictionary.
 
     Args:
@@ -200,10 +220,20 @@ def schemas(use_cache=False):
         Consider the Schema that defines the format of Codelists.
 
     """
-    activity_schemas(use_cache)
-    organisation_schemas(use_cache)
+    _activity_schemas(use_cache)
+    _organisation_schemas(use_cache)
 
     return _SCHEMAS  # Both activity_schemas and organisation_schemas will update the _SCHEMAS constant.
+
+
+def schemas():
+    """Locate all the default IATI Schemas and return them within a dictionary.
+
+    Returns:
+        dict: A dictionary containing all the Schemas for versions of the Standard. This returns the name of the Schema (as the key) and a subclass of iati.core.schemas.Schema() (as the value).
+
+    """
+    return _schemas()
 
 
 def schema(name, version=None):
