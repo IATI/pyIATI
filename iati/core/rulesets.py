@@ -9,10 +9,10 @@ Todo:
     Remove references to `case`.
 
 """
-from datetime import datetime
 import json
 import re
 import sre_constants
+from datetime import datetime
 from decimal import Decimal
 import jsonschema
 import six
