@@ -166,12 +166,12 @@ class TestDefaultModifications(object):
 
     def test_default_codelists_modification_dangerous(self, codelist_name, new_code, standard_version_mandatory):
         """Check that default Codelists can be modified by adding Codes to returned lists in DANGER MODE."""
-        default_codelists = iati.core.default.codelists(*standard_version_mandatory, True)
+        default_codelists = iati.core.default.codelists(standard_version_mandatory[0], True)
         codelist_of_interest = default_codelists[codelist_name]
         base_default_codelist_length = len(codelist_of_interest.codes)
 
         codelist_of_interest.codes.add(new_code)
-        modified_codelists = iati.core.default.codelists(*standard_version_mandatory, True)
+        modified_codelists = iati.core.default.codelists(standard_version_mandatory[0], True)
         modified_codelist_of_interest = unmodified_codelists[codelist_name]
 
         assert len(codelist_of_interest.codes) == base_default_codelist_length + 1
