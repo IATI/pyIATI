@@ -157,6 +157,3 @@ def standard_version_optional(request):
         return []
     else:
         return [request.param]
-
-
-
