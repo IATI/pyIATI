@@ -181,7 +181,7 @@ class TestDefaultModifications(object):
         iati.core.default.activity_schemas,
         iati.core.default.organisation_schemas
     ])
-    def test_default_activity_schema_modification_safe(self, default_call, codelist, standard_version_mandatory):
+    def test_default_x_schema_modification_safe(self, default_call, codelist, standard_version_mandatory):
         """Check that the default Schemas cannot be modified.
 
         Note:
@@ -201,7 +201,7 @@ class TestDefaultModifications(object):
         iati.core.default.activity_schemas,
         iati.core.default.organisation_schemas
     ])
-    def test_default_activity_schema_modification_dangerous(self, default_call, codelist, standard_version_mandatory):
+    def test_default_x_schema_modification_dangerous(self, default_call, codelist, standard_version_mandatory):
         """Check that the default Schemas can be modified when called in DANGER MODE.
 
         Note:
@@ -216,4 +216,5 @@ class TestDefaultModifications(object):
 
         assert len(default_schema.codelists) == base_codelist_count + 1
         assert len(modified_schema.codelists) == base_codelist_count + 1
+
 
