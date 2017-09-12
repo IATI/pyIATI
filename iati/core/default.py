@@ -19,10 +19,10 @@ def get_default_version_if_none(version):
     """Returns the default version number if the input version is None. Otherwise returns the input version as is.
 
     Args:
-        version (str or None): The version to test against.
+        version (str / None): The version to test against.
 
     Returns:
-        str or version: The default version if the input version is None.  Otherwise returns the input version.
+        str: The default version if the input version is None. Otherwise returns the input version.
     """
     if version is None:
         return iati.core.constants.STANDARD_VERSION_LATEST
