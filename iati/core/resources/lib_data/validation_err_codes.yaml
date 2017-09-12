@@ -333,6 +333,16 @@
     info: |-
         The way in which the Dataset does not conform is unknown.
 
+- err-rule-uncategorised-conformance-fail:
+    base_exception: Exception
+    category: rule
+    description: |-
+        An uncategorised Rule error occurred when checking whether a Dataset contains valid IATI data.
+    help: |-
+        There are many different ways in which a file may not be valid IATI XML. The most common of these have had specific error messages created. This is not currently one of them.
+    info: |-
+        The way in which the Dataset does not conform is unknown.
+
 - warn-rule-skipped:
     base_exception: Warning
     category: rule
