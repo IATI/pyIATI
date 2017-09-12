@@ -83,6 +83,18 @@ class TestDefault(object):
 
         assert isinstance(ruleset, iati.core.Ruleset)
 
+    def test_default_ruleset_rules_valid(self):
+        """Check that each Rule within a Ruleset acts correctly
+        i.e. gets the expected result for a valid and an invalid dataset.
+
+        Overall todos:
+            Add extra ValidationError objects for every type of rule (- in yaml file and tests)
+            Add a ValidationError object: warning-rule-skipped
+            Add mapping between the error type (similar to `_parse_lxml_log_entry` converts failing rule into a ValidationError.)
+            May need to add some extra utility functions in validator.py (which should also be tested)
+        """
+        pass
+
     def test_default_activity_schemas(self):
         """Check that the default ActivitySchemas are correct.
 
