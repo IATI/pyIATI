@@ -342,10 +342,14 @@ def _check_rules(dataset, ruleset):
     """
     error_log = ValidationErrorLog()
 
-    if not ruleset.is_valid_for(dataset):
-        error = ValidationError('err-ruleset-conformance-fail', locals())
+    for rule in ruleset.rules:
+        if rule.is_valid_for(dataset) is None:
+            error = ValidationError('warn-rule-skipped', locals())
+            error_log.add(error)
 
-        error_log.add(error)
+        elif rule.is_valid_for(dataset) is False:
+            error = _parse_ruleset_fail(rule)
+            error_log.add(error)
 
     return error_log
 
@@ -443,6 +447,41 @@ def _parse_lxml_log_entry(log_entry):
     except KeyError:
         # TODO: it may be desired to make there be different uncategorised errors - eg. IATI error vs. XML error
         err_name = 'err-not-xml-uncategorised-xml-syntax-error'
+
+    error = ValidationError(err_name, locals())
+
+    return error
+
+
+def _parse_ruleset_fail(rule):
+    """Parse a Rule skip or failure and convert it to a IATI ValidationError.
+
+    Args:
+        rule (iati.core.rulesets.Rule): The Rule which has either skipped or failed.
+
+    Returns:
+        ValidationError: An IATI ValidationError that contains the information from the log entry.
+
+    """
+    # undertake the mapping between Rule subclass and error name formats
+    rule_to_iati_error_mapping = {
+        'RuleAtLeastOne': 'err-rule-at-least-one-conformance-fail',
+        'RuleDateOrder': 'err-rule-date-order-conformance-fail',
+        'RuleDependent': 'err-rule-dependent-conformance-fail',
+        'RuleNoMoreThanOne': 'err-rule-no-more-than-one-conformance-fail',
+        'RuleRegexMatches': 'err-rule-regex-matches-conformance-fail',
+        'RuleRegexNoMatches': 'err-rule-regex-no-matches-conformance-fail',
+        'RuleStartsWith': 'err-rule-starts-with-conformance-fail',
+        'RuleSum': 'err-rule-sum-conformance-fail',
+        'RuleUnique': 'err-rule-unique-conformance-fail'
+    }
+
+    rule_name = rule.__class__.__name__
+    try:
+        err_name = rule_to_iati_error_mapping[rule_name]
+    except KeyError:
+        # TODO: it may be desired to make different uncategorised Ruleset errors, depending on findings from usage.
+        err_name = 'err-rule-uncategorised-conformance-fail'
 
     error = ValidationError(err_name, locals())
 
