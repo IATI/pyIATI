@@ -457,31 +457,30 @@ def _parse_lxml_log_entry(log_entry):
 
 
 def _parse_ruleset_fail(rule):
-    """Parse a Rule skip or failure and convert it to a IATI ValidationError.
+    """Parse a Rule skip or failure and convert it into an IATI ValidationError.
 
     Args:
         rule (iati.core.rulesets.Rule): The Rule which has either skipped or failed.
 
     Returns:
-        ValidationError: An IATI ValidationError that contains the information from the log entry.
+        ValidationError: An IATI ValidationError that contains information about the Rule that has failed.
 
     """
     # undertake the mapping between Rule subclass and error name formats
     rule_to_iati_error_mapping = {
-        'RuleAtLeastOne': 'err-rule-at-least-one-conformance-fail',
-        'RuleDateOrder': 'err-rule-date-order-conformance-fail',
-        'RuleDependent': 'err-rule-dependent-conformance-fail',
-        'RuleNoMoreThanOne': 'err-rule-no-more-than-one-conformance-fail',
-        'RuleRegexMatches': 'err-rule-regex-matches-conformance-fail',
-        'RuleRegexNoMatches': 'err-rule-regex-no-matches-conformance-fail',
-        'RuleStartsWith': 'err-rule-starts-with-conformance-fail',
-        'RuleSum': 'err-rule-sum-conformance-fail',
-        'RuleUnique': 'err-rule-unique-conformance-fail'
+        'atleast_one': 'err-rule-at-least-one-conformance-fail',
+        'date_order': 'err-rule-date-order-conformance-fail',
+        'dependent': 'err-rule-dependent-conformance-fail',
+        'no_more_than_one': 'err-rule-no-more-than-one-conformance-fail',
+        'regex_matches': 'err-rule-regex-matches-conformance-fail',
+        'regex_no_matches': 'err-rule-regex-no-matches-conformance-fail',
+        'startswith': 'err-rule-starts-with-conformance-fail',
+        'sum': 'err-rule-sum-conformance-fail',
+        'unique': 'err-rule-unique-conformance-fail'
     }
 
-    rule_name = rule.__class__.__name__
     try:
-        err_name = rule_to_iati_error_mapping[rule_name]
+        err_name = rule_to_iati_error_mapping[rule.name]
     except KeyError:
         # TODO: it may be desired to make different uncategorised Ruleset errors, depending on findings from usage.
         err_name = 'err-rule-uncategorised-conformance-fail'
