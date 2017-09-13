@@ -1121,6 +1121,23 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         """Check that the string format of the Rule contains some relevant information."""
         assert 'must start with' in str(rule_instantiating)
 
+    @pytest.mark.parametrize("test_case", [
+        {'start': 'duplicateprefix', 'paths': ['element12']},  # `start` matches multiple elements with the same text value
+        {'start': 'multiprefix', 'paths': ['element13']}  # `start` matches multiple elements with different text values
+    ])
+    def test_multiple_matching_start_elements_raise_error(self, valid_single_context, rule_constructor, test_case, invalid_dataset):
+        """Check that an error is raised when the specified XPath for `start` returns multiple elements."""
+        rule = rule_constructor(valid_single_context, test_case)
+        with pytest.raises(ValueError):
+            rule.is_valid_for(invalid_dataset)
+
+    def test_missing_start_value_raises_error(self, valid_single_context, rule_constructor, invalid_dataset):
+        """Check that if no prefix value is found the rule returns None which is considered equivalent to skipping."""
+        missing_value_case = {'start': 'missingprefix', 'paths': ['element14']}
+        rule = rule_constructor(valid_single_context, missing_value_case)
+        with pytest.raises(ValueError):
+            rule.is_valid_for(invalid_dataset)
+
 
 class TestRuleSum(RuleSubclassTestBase):
     """A container for tests relating to RuleSum.
@@ -1248,6 +1265,12 @@ class TestRuleSum(RuleSubclassTestBase):
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
         assert 'sum of values' in str(rule_instantiating)
+
+    def test_no_values_to_sum_skips(self, valid_single_context, rule_constructor, valid_dataset):
+        """Check that the Rule is skipped if no values are found to compare to the value of `sum`."""
+        no_values_case = {'paths': ['this_element_does_not_exist', 'neither_does_this_one'], 'sum': 100}
+        rule = rule_constructor(valid_single_context, no_values_case)
+        assert rule.is_valid_for(valid_dataset) is None
 
 
 class TestRuleUnique(RuleSubclassTestBase):

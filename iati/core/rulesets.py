@@ -9,10 +9,10 @@ Todo:
     Remove references to `case`.
 
 """
-from datetime import datetime
 import json
 import re
 import sre_constants
+from datetime import datetime
 from decimal import Decimal
 import jsonschema
 import six
@@ -752,7 +752,14 @@ class RuleStartsWith(Rule):
                   Return `False` when the `path` text does not start with the text value of `start`.
 
         """
-        prefix = self._extract_text_from_element_or_attribute(context_element, self.start)[0]
+        start_results = self._extract_text_from_element_or_attribute(context_element, self.start)
+
+        if len(start_results) > 1:
+            raise ValueError
+        try:
+            prefix = start_results[0]
+        except IndexError:
+            raise ValueError
 
         for path in self.paths:
             strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
@@ -784,6 +791,7 @@ class RuleSum(Rule):
         Returns:
             bool: Return `True` when the `path` values total to the `sum` value.
                   Return `False` when the `path` values do not total to the `sum` value.
+            None: When no elements are found for the specified `paths`.
 
         """
         unique_paths = set(self.paths)
@@ -793,6 +801,9 @@ class RuleSum(Rule):
             values_to_sum = self._extract_text_from_element_or_attribute(context_element, path)
             for value in values_to_sum:
                 values_in_context.append(Decimal(value))
+
+        if values_in_context == list():
+            return None
 
         if sum(values_in_context) != Decimal(str(self.sum)):
             return False
