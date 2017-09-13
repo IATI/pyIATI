@@ -1131,9 +1131,11 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         with pytest.raises(ValueError):
             rule.is_valid_for(invalid_dataset)
 
-    # def test_condition_case_is_True_for_valid_dataset(self, valid_condition_rule, valid_dataset):
-    #     """Check that if a condition is `True`, the rule returns None which is considered equivalent to skipping."""
-    #     assert valid_condition_rule.is_valid_for(valid_dataset) is None
+    def test_missing_start_value_returns_None(self, valid_single_context, rule_constructor, valid_dataset):
+        """Check that if no prefix value is found the rule returns None which is considered equivalent to skipping."""
+        missing_value_case = {'start': 'missingprefix', 'paths': ['element14']}
+        rule = rule_constructor(valid_single_context, missing_value_case)
+        assert rule.is_valid_for(valid_dataset) is None
 
 
 class TestRuleSum(RuleSubclassTestBase):
