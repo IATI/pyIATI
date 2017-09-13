@@ -7,6 +7,7 @@ Todo:
     Implement more than Codelists.
 """
 import os
+from collections import defaultdict
 from copy import deepcopy
 import iati.core.codelists
 import iati.core.constants
@@ -33,7 +34,7 @@ def get_default_version_if_none(version):
     return version
 
 
-_CODELISTS = {}
+_CODELISTS = defaultdict(lambda : defaultdict(dict))
 """A cache of loaded Codelists.
 
 This removes the need to repeatedly load a Codelist from disk each time it is accessed.
@@ -146,7 +147,7 @@ def codelists(version=None):
     return _codelists(version)
 
 
-_SCHEMAS = {}
+_SCHEMAS = defaultdict(lambda : defaultdict(dict))
 """A cache of loaded Schemas.
 
 This removes the need to repeatedly load a Schema from disk each time it is accessed.
@@ -193,10 +194,6 @@ def _activity_schema(version=None, use_cache=False):
     activity_schema_paths = iati.core.resources.get_all_activity_schema_paths(version)
 
     if ('activity' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
-        if version not in _SCHEMAS.keys():
-            _SCHEMAS[version] = {}
-        if 'activity' not in _SCHEMAS[version].keys():
-               _SCHEMAS[version]['activity'] = {}
         _SCHEMAS[version]['activity']['unpopulated'] = iati.core.ActivitySchema(activity_schema_paths[0])
 
     return _SCHEMAS[version]['activity']['unpopulated']
@@ -237,10 +234,6 @@ def _organisation_schema(version=None, use_cache=False):
     organisation_schema_paths = iati.core.resources.get_all_org_schema_paths(version)
 
     if ('organisation' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
-        if version not in _SCHEMAS.keys():
-            _SCHEMAS[version] = {}
-        if 'organisation' not in _SCHEMAS[version].keys():
-           _SCHEMAS[version]['organisation'] = {}
         _SCHEMAS[version]['organisation']['unpopulated'] = iati.core.OrganisationSchema(organisation_schema_paths[0])
 
     return _SCHEMAS[version]['organisation']['unpopulated']
