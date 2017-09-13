@@ -29,7 +29,7 @@ class TestSchemas(object):
         For use where both ActivitySchema and OrganisaionSchema must produce the same result.
 
         Returns:
-            iati.core.ActivitySchema / iati.core.OrganisationSchema: An activity and organisaion that has been initialised based on the default IATI Activity and Organisaion schemas.
+            iati.core.Schema: An activity or organisaion Schema that has been initialised.
 
         """
         schema_path = request.param['path_func'](*standard_version_optional)[0]

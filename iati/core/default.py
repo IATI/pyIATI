@@ -215,7 +215,7 @@ def _schema(path_func, schema_class, version=None, populate=True, use_cache=Fals
         ValueError: When a specified version is not a valid version of the IATI Standard.
 
     Returns:
-        dict: Containing the version (as keys) and a corresponding ActivitySchema object (as values).
+        iati.core.Schema: An instantiated IATI Schema for the specified version.
 
     """
     population_key = 'populated' if populate else 'unpopulated'
@@ -244,7 +244,7 @@ def activity_schema(version=None, populate=True):
         ValueError: When a specified version is not a valid version of the IATI Standard.
 
     Returns:
-        dict: Containing the version (as keys) and a corresponding ActivitySchema object (as values).
+        iati.core.ActivitySchema: An instantiated IATI Schema for the specified version.
 
     """
     return _schema(iati.core.resources.get_all_activity_schema_paths, iati.core.ActivitySchema, version, populate)
@@ -261,7 +261,7 @@ def organisation_schema(version=None, populate=True):
         ValueError: When a specified version is not a valid version of the IATI Standard.
 
     Returns:
-        dict: Containing the version (as keys) and a corresponding OrganisationSchema object (as values).
+        iati.core.OrganisationSchema: An instantiated IATI Schema for the specified version.
 
     """
     return _schema(iati.core.resources.get_all_org_schema_paths, iati.core.OrganisationSchema, version, populate)
