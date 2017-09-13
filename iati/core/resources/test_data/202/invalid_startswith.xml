@@ -25,4 +25,5 @@
   <multiprefix>prefix1</multiprefix><!--duplicate `start` element with differing text value-->
   <multiprefix>prefix2</multiprefix>
   <element13>prefix1</element13><!--prefix matches one of the prefixes given but prefix elements specified are invalid-->
+  <element14>missingprefix1234</element14><!--element that would match missing prefix element value-->
 </root_element>

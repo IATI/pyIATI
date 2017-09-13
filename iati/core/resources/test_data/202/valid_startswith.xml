@@ -19,5 +19,4 @@
   </nest>
   <element11>prefix0123</element11><!--duplicate element-->
   <element11>prefix</element11>
-  <element12>missingprefix1234</element12><!--element that would match missing prefix element value-->
 </root_element>

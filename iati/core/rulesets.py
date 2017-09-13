@@ -759,7 +759,7 @@ class RuleStartsWith(Rule):
         try:
             prefix = start_results[0]
         except IndexError:
-            return None
+            raise ValueError
 
         for path in self.paths:
             strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)
