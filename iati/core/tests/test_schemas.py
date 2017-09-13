@@ -1,9 +1,11 @@
 """A module containing tests for the library representation of Schemas."""
+from collections import namedtuple
 from lxml import etree
 import pytest
 import iati.core.codelists
 import iati.core.default
 import iati.core.exceptions
+import iati.core.resources
 import iati.core.schemas
 import iati.core.tests.utilities
 from iati.core.tests.utilities import standard_version_optional
@@ -13,8 +15,14 @@ class TestSchemas(object):
     """A container for tests relating to Schemas."""
 
     @pytest.fixture(params=[
-        iati.core.default.activity_schema,
-        iati.core.default.organisation_schema
+        {
+            "path_func": iati.core.resources.get_all_activity_schema_paths,
+            "schema_class": iati.core.ActivitySchema
+        },
+        {
+            "path_func": iati.core.resources.get_all_org_schema_paths,
+            "schema_class": iati.core.OrganisationSchema
+        }
     ])
     def schema_initialised(self, request, standard_version_optional):
         """Create and return a single ActivitySchema or OrganisaionSchema object.
@@ -24,9 +32,8 @@ class TestSchemas(object):
             iati.core.ActivitySchema / iati.core.OrganisationSchema: An activity and organisaion that has been initialised based on the default IATI Activity and Organisaion schemas.
 
         """
-        schema_func = request.param
-
-        return schema_func(*standard_version_optional)
+        schema_path = request.param['path_func'](*standard_version_optional)[0]
+        return request.param['schema_class'](schema_path)
 
     @pytest.mark.parametrize("schema_func, expected_root_element_name", [
         (iati.core.default.activity_schema, 'iati-activities'),
