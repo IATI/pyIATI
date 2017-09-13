@@ -240,8 +240,7 @@
     description: |-
         A Dataset does not conform with an 'atleast_one' Rule.
     help: |-
-        The 'atleast_one' Rule specifies that there must be at least one element described by the given paths.
-        For more information about this Rule, see http://iatistandard.org/rulesets/
+        {rule}
     info: |-
         The way in which the Dataset does not conform is unknown.
 
@@ -251,8 +250,7 @@
     description: |-
         A Dataset does not conform with a 'date_order' Rule.
     help: |-
-        The 'date_order' Rule specifies that the date matched by less must be less than the date matched by more. If either of these dates is not found, the rule is ignored.
-        For more information about this Rule, see http://iatistandard.org/rulesets/
+        {rule}
     info: |-
         The way in which the Dataset does not conform is unknown.
 
@@ -262,8 +260,7 @@
     description: |-
         A Dataset does not conform with a 'dependent' Rule.
     help: |-
-        The 'dependent' Rule specifies that if one of the provided paths exists, they must all exist.
-        For more information about this Rule, see http://iatistandard.org/rulesets/
+        {rule}
     info: |-
         The way in which the Dataset does not conform is unknown.
 
@@ -273,8 +270,7 @@
     description: |-
         A Dataset does not conform with a 'no_more_than_one' Rule.
     help: |-
-        The 'no_more_than_one' Rule specifies that there must be no more than one element described by the given paths.
-        For more information about this Rule, see http://iatistandard.org/rulesets/
+        {rule}
     info: |-
         The way in which the Dataset does not conform is unknown.
 
@@ -284,8 +280,7 @@
     description: |-
         A Dataset does not conform with a 'regex_matches' Rule.
     help: |-
-        The 'regex_matches' Rule specifies that the provided regex must match the text of all elements matched by paths.
-        For more information about this Rule, see http://iatistandard.org/rulesets/
+        {rule}
     info: |-
         The way in which the Dataset does not conform is unknown.
 
@@ -295,8 +290,7 @@
     description: |-
         A Dataset does not conform with a 'regex_no_matches' Rule.
     help: |-
-        The 'regex_no_matches' Rule specifies that the provided regex must match the text of none of the elements matched by paths.
-        For more information about this Rule, see http://iatistandard.org/rulesets/
+        {rule}
     info: |-
         The way in which the Dataset does not conform is unknown.
 
@@ -306,8 +300,7 @@
     description: |-
         A Dataset does not conform with a 'startswith' Rule.
     help: |-
-        The 'startswith' Rule specifies that the text of the each element matched by paths must start with the text of the element matched by start.
-        For more information about this Rule, see http://iatistandard.org/rulesets/
+        {rule}
     info: |-
         The way in which the Dataset does not conform is unknown.
 
@@ -317,8 +310,7 @@
     description: |-
         A Dataset does not conform with a 'sum' Rule.
     help: |-
-        The 'sum' Rule specifies that the numerical sum of the values of elements matched by paths must match the value for the sum key.
-        For more information about this Rule, see http://iatistandard.org/rulesets/
+        {rule}
     info: |-
         The way in which the Dataset does not conform is unknown.
 
@@ -328,8 +320,7 @@
     description: |-
         A Dataset does not conform with a 'unique' Rule.
     help: |-
-        The 'unique' Rule specifies that the text of each of the elements described by paths must be unique.
-        For more information about this Rule, see http://iatistandard.org/rulesets/
+        {rule}
     info: |-
         The way in which the Dataset does not conform is unknown.
 
