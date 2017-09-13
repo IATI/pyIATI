@@ -123,7 +123,7 @@ class ValidationErrorLog(object):
             bool: Whether there is an error or warning with the specified name within the log.
 
         """
-        errors_with_name = [err for err in self._values if err.name == err_name]
+        errors_with_name = self.get_errors_or_warning_by_name(err_name)
 
         return len(errors_with_name) > 0
 
@@ -137,10 +137,33 @@ class ValidationErrorLog(object):
             bool: Whether there is an error or warning with the specified type within the log.
 
         """
-        errors_with_type = [err for err in self._values if err.base_exception == err_type]
+        errors_with_type = self.get_errors_or_warning_by_type(err_type)
 
         return len(errors_with_type) > 0
 
+    def contains_errors(self):
+        """Determine whether there are errors contained within the ErrorLog.
+
+        Note:
+            The error log may contain warnings, or may be empty.
+
+        Returns:
+            bool: Whether there are errors within this error log.
+
+        """
+        return len(self.get_errors()) > 0
+
+    def contains_warnings(self):
+        """Determine whether there are warnings contained within the ErrorLog.
+
+        Note:
+            The error log may contain errors, or may be empty.
+
+        Returns:
+            bool: Whether there are warnings within this error log.
+
+        """
+        return len(self.get_warnings()) > 0
 
     def extend(self, values):
         """Extend the ErrorLog with ValidationErrors from an iterable.
@@ -161,33 +184,58 @@ class ValidationErrorLog(object):
             except TypeError:
                 pass
 
-    def contains_errors(self):
-        """Determine whether there are errors contained within the ErrorLog.
-
-        Note:
-            The error log may contain warnings, or may be empty.
+    def get_errors(self):
+        """Return a list of errors contained.
 
         Returns:
-            bool: Whether there are errors within this error log.
+            list: Containing errors only.
 
+        Todo:
+            Add explicit tests.
         """
-        actual_errors = [err for err in self if err.status == 'error']
+        return [err for err in self if err.status == 'error']
 
-        return len(actual_errors) > 0
+    def get_errors_or_warning_by_name(self, err_name):
+        """Return a list of errors or warnings with the specified name.
 
-    def contains_warnings(self):
-        """Determine whether there are warnings contained within the ErrorLog.
-
-        Note:
-            The error log may contain errors, or may be empty.
+        Args:
+            err_name (str): The name of the error to look for.
 
         Returns:
-            bool: Whether there are warnings within this error log.
+            list: Containing the error/s or warning/s with the specified name that are present within the log.
+
+        Todo:
+            Add explicit tests.
 
         """
-        actual_warnings = [err for err in self if err.status == 'warning']
+        return [err for err in self._values if err.name == err_name]
 
-        return len(actual_warnings) > 0
+    def get_errors_or_warning_by_type(self, err_type):
+        """Return a list of errors or warnings of the specified type.
+
+        Args:
+            err_type (type): The type of the error to look for.
+
+        Returns:
+            list: Containing the error/s or warning/s of the specified type that are present within the log.
+
+        Todo:
+            Add explicit tests.
+
+        """
+        return [err for err in self._values if err.base_exception == err_type]
+
+    def get_warnings(self):
+        """Return a list of warnings contained.
+
+        Returns:
+            list: Containing warnings only.
+
+        Todo:
+            Add explicit tests.
+
+        """
+        return [err for err in self if err.status == 'warning']
 
 
 def _check_codes(dataset, codelist):
