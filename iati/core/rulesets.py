@@ -752,7 +752,11 @@ class RuleStartsWith(Rule):
                   Return `False` when the `path` text does not start with the text value of `start`.
 
         """
-        prefix = self._extract_text_from_element_or_attribute(context_element, self.start)[0]
+        start_results = self._extract_text_from_element_or_attribute(context_element, self.start)
+
+        if len(start_results) > 1:
+            raise ValueError
+        prefix = start_results[0]
 
         for path in self.paths:
             strings_to_check = self._extract_text_from_element_or_attribute(context_element, path)

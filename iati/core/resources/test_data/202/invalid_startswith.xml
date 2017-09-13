@@ -19,4 +19,10 @@
   </nest>
   <element11>bunnies1234</element11><!--duplicate element-->
   <element11>bunnies1234</element11>
+  <duplicateprefix>duplicateprefix</duplicateprefix><!--duplicate `start` element with duplicate text value-->
+  <duplicateprefix>duplicateprefix</duplicateprefix>
+  <element12>duplicateprefix1234</element12><!--prefix matches but prefix element specified is invalid-->
+  <multiprefix>prefix1</multiprefix><!--duplicate `start` element with differing text value-->
+  <multiprefix>prefix2</multiprefix>
+  <element13>prefix1</element13><!--prefix matches one of the prefixes given but prefix elements specified are invalid-->
 </root_element>

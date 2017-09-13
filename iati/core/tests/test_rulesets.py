@@ -1121,6 +1121,20 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         """Check that the string format of the Rule contains some relevant information."""
         assert 'must start with' in str(rule_instantiating)
 
+    @pytest.mark.parametrize("test_case", [
+        {'start': 'duplicateprefix', 'paths': ['element12']},  # `start` matches multiple elements with the same text value
+        {'start': 'multiprefix', 'paths': ['element13']}  # `start` matches multiple elements with different text values
+    ])
+    def test_multiple_matching_start_elements_raise_error(self, valid_single_context, rule_constructor, test_case, invalid_dataset):
+        """Check that an error is raised when the specified XPath for `start` returns multiple elements."""
+        rule = rule_constructor(valid_single_context, test_case)
+        with pytest.raises(ValueError):
+            rule.is_valid_for(invalid_dataset)
+
+    # def test_condition_case_is_True_for_valid_dataset(self, valid_condition_rule, valid_dataset):
+    #     """Check that if a condition is `True`, the rule returns None which is considered equivalent to skipping."""
+    #     assert valid_condition_rule.is_valid_for(valid_dataset) is None
+
 
 class TestRuleSum(RuleSubclassTestBase):
     """A container for tests relating to RuleSum.
