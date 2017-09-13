@@ -93,26 +93,30 @@ class TestDefault(object):
         assert iati.validator.is_iati_xml(data, schema_ruleset)
         assert not result.contains_errors()
 
-    @pytest.mark.parametrize("rule_error, invalid_dataset_name", [
-        ('err-rule-at-least-one-conformance-fail', 'invalid_std_ruleset_missing_sector_element'),
-        ('err-rule-date-order-conformance-fail', 'invalid_std_ruleset_bad_date_order'),
-        ('err-rule-regex-matches-conformance-fail', 'invalid_std_ruleset_bad_identifier'),
-        ('err-rule-sum-conformance-fail', 'invalid_std_ruleset_does_not_sum_100')
+    @pytest.mark.parametrize("rule_error, invalid_dataset_name, help_text", [
+        ('err-rule-at-least-one-conformance-fail', 'invalid_std_ruleset_missing_sector_element', 'At least one of `sector` or `transaction/sector` must be present within each `//iati-activity`.'),
+        ('err-rule-date-order-conformance-fail', 'invalid_std_ruleset_bad_date_order', '`activity-date[@type=\'1\']/@iso-date` must be chronologically before `activity-date[@type=\'3\']/@iso-date` within each `//iati-activity`.'),
+        ('err-rule-regex-matches-conformance-fail', 'invalid_std_ruleset_bad_identifier', 'Each instance of `reporting-org/@ref` and `iati-identifier` and `participating-org/@ref` and `transaction/provider-org/@ref` and `transaction/receiver-org/@ref` within each `//iati-activity` must match the regular expression `[^\\/\\&\\|\\?]+`.'),
+        ('err-rule-sum-conformance-fail', 'invalid_std_ruleset_does_not_sum_100', 'Within each `//iati-activity`, the sum of values matched at `recipient-country/@percentage` and `recipient-region/@percentage` must be `100`.')
         # Note the Rules relating to 'dependent', 'no_more_than_one', 'regex_no_matches', 'startswith' and 'unique' are not used in the Standard Ruleset.
     ])
-    def test_default_ruleset_validation_rules_invalid(self, schema_ruleset, rule_error, invalid_dataset_name):
+    def test_default_ruleset_validation_rules_invalid(self, schema_ruleset, rule_error, invalid_dataset_name, help_text):
         """Check that the expected rule error is detected when validating files containing invalid data for that rule.
 
         Todo:
             Consider whether this test should remove all warnings and assert that there is only the expected warning contained within the test file.
+
+            Check that the expected missing elements appear the the help text for the given element.
         """
         data = iati.core.tests.utilities.load_as_dataset(invalid_dataset_name)
         result = iati.validator.full_validation(data, schema_ruleset)
+        errors_for_rule_error = result.get_errors_or_warning_by_name(rule_error)
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_ruleset)
         assert not iati.validator.is_valid(data, schema_ruleset)
-        assert result.contains_error_called(rule_error)
+        assert len(errors_for_rule_error) == 1
+        assert help_text in errors_for_rule_error[0].help
 
     def test_default_activity_schemas(self):
         """Check that the default ActivitySchemas are correct.
