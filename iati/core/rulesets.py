@@ -607,8 +607,8 @@ class RuleNoMoreThanOne(Rule):
             context_element (etree._Element): An XML Element.
 
         Returns:
-            bool: Return `True` when one or fewer results are found in the Dataset.
-                  Return `False` when one or more results are found in the Dataset.
+            bool: Return `True` when one result or no results are found in the Dataset.
+                  Return `False` when more than one result is found in the Dataset.
 
         """
         unique_paths = set(self.paths)
@@ -625,7 +625,7 @@ class RuleNoMoreThanOne(Rule):
 
 
 class RuleRegexMatches(Rule):
-    """Representation of a Rule that checks that the text of the given `paths` must match the `regex` value."""
+    """Representation of a Rule that checks that the text of the given `paths` must match the regex value."""
 
     def __init__(self, context, case):
         """Initialise a `regex_matches` Rule.
@@ -652,14 +652,14 @@ class RuleRegexMatches(Rule):
         return 'Each instance of `{0}` within each `{self.context}` must match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
 
     def _check_against_Rule(self, context_element):
-        """Assert that the text of the given `paths` matches the `regex` value.
+        """Assert that the text of the given `paths` matches the regex value.
 
         Args:
             context_element (etree._Element): An XML Element.
 
         Returns:
             bool: Return `True` when the given `path` text matches the given regex.
-                  Return `False` when the given `path` text does not match the given `regex`.
+                  Return `False` when the given `path` text does not match the given regex.
 
         """
         pattern = re.compile(self.regex)
@@ -673,7 +673,7 @@ class RuleRegexMatches(Rule):
 
 
 class RuleRegexNoMatches(Rule):
-    """Representation of a Rule that checks that the text of the given `paths` must not match the `regex` value."""
+    """Representation of a Rule that checks that the text of the given `paths` must not match the regex value."""
 
     def __init__(self, context, case):
         """Initialise a `regex_no_matches` Rule.
@@ -700,14 +700,14 @@ class RuleRegexNoMatches(Rule):
         return 'Each instance of `{0}` within each `{self.context}` must not match the regular expression `{self.regex}`.'.format('` and `'.join(self.paths), **locals())
 
     def _check_against_Rule(self, context_element):
-        """Assert that no text of the given `paths` matches the `regex` value.
+        """Assert that no text of the given `paths` matches the regex value.
 
         Args:
             context_element (etree._Element): An XML Element.
 
         Returns:
-            bool: Return `True` when the given `path` text does not match the given `regex`.
-                  Return `False` when the given `path` text matched the given `regex`.
+            bool: Return `True` when the given `path` text does not match the given regex.
+                  Return `False` when the given `path` text matched the given regex.
 
         """
         pattern = re.compile(self.regex)
