@@ -10,7 +10,6 @@ from iati.core.tests.utilities import codelist_lengths_by_version, standard_vers
 class TestDefault(object):
     """A container for tests relating to Default data."""
 
-
     @pytest.fixture
     def codelist_name(self):
         """Return the name of a valid Codelist."""
@@ -64,7 +63,8 @@ class TestDefault(object):
     ])
     def test_default_codelist_valid_only_at_some_versions(self, codelist_name, version, expected_type):
         """Check that a codelist that is valid at some version/s is not valid in other versions.
-        For example:
+
+        Example:
             AidTypeFlag was an embedded codelist in v1.04 and v1.05, but is not valid at any version after this.
             For example, BudgetStatus was added as an embedded codelist in v2.02, so is not valid prior to this.
         """

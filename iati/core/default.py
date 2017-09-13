@@ -4,9 +4,7 @@ This includes Codelists, Schemas and Rulesets at various versions of the Standar
 
 Todo:
     Handle multiple versions of the Standard rather than limiting to the latest.
-
     Implement more than Codelists.
-
 """
 import os
 from copy import deepcopy
@@ -16,7 +14,7 @@ import iati.core.resources
 
 
 def get_default_version_if_none(version):
-    """Returns the default version number if the input version is None. Otherwise returns the input version as is.
+    """Return the default version number if the input version is None. Otherwise returns the input version as is.
 
     Args:
         version (str / None): The version to test against.
