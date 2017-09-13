@@ -1133,7 +1133,7 @@ class TestRuleStartsWith(RuleSubclassTestBase):
 
     def test_missing_start_value_returns_None(self, valid_single_context, rule_constructor, valid_dataset):
         """Check that if no prefix value is found the rule returns None which is considered equivalent to skipping."""
-        missing_value_case = {'start': 'missingprefix', 'paths': ['element14']}
+        missing_value_case = {'start': 'missingprefix', 'paths': ['element12']}
         rule = rule_constructor(valid_single_context, missing_value_case)
         assert rule.is_valid_for(valid_dataset) is None
 
