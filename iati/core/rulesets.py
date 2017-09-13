@@ -707,7 +707,7 @@ class RuleRegexNoMatches(Rule):
 
         Returns:
             bool: Return `True` when the given `path` text does not match the given regex.
-                  Return `False` when the given `path` text matched the given regex.
+                  Return `False` when the given `path` text matches the given regex.
 
         """
         pattern = re.compile(self.regex)
