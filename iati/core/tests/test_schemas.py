@@ -1,5 +1,4 @@
 """A module containing tests for the library representation of Schemas."""
-from collections import namedtuple
 from lxml import etree
 import pytest
 import iati.core.codelists
