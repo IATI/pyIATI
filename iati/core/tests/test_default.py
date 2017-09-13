@@ -148,7 +148,7 @@ class TestDefaultSchemas(object):
     ])
     def test_default_schemas_unpopulated(self, schema_func, standard_version_mandatory):
         """Check that the default Codelists for each version contain the expected number of Codelists."""
-        schema = schema_func(*standard_version_mandatory, False)
+        schema = schema_func(standard_version_mandatory[0], False)
 
         assert len(schema.codelists) == 0
 
