@@ -34,7 +34,7 @@ def get_default_version_if_none(version):
     return version
 
 
-_CODELISTS = defaultdict(lambda : defaultdict(dict))
+_CODELISTS = defaultdict(dict)
 """A cache of loaded Codelists.
 
 This removes the need to repeatedly load a Codelist from disk each time it is accessed.
@@ -121,12 +121,10 @@ def _codelists(version=None, use_cache=False):
     for path in paths:
         _, filename = os.path.split(path)
         name = filename[:-len(iati.core.resources.FILE_CODELIST_EXTENSION)]  # Get the name of the codelist, without the '.xml' file extension
-        codelists_by_version = _CODELISTS.get(version, {})
-        if (name not in codelists_by_version.keys()) or not use_cache:
+        if (name not in _CODELISTS[version].keys()) or not use_cache:
             xml_str = iati.core.resources.load_as_string(path)
             codelist_found = iati.core.Codelist(name, xml=xml_str)
-            codelists_by_version[name] = codelist_found
-            _CODELISTS[version] = codelists_by_version
+            _CODELISTS[version][name] = codelist_found
 
     return _CODELISTS[version]
 
@@ -193,7 +191,7 @@ def _activity_schema(version=None, use_cache=False):
 
     activity_schema_paths = iati.core.resources.get_all_activity_schema_paths(version)
 
-    if ('activity' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
+    if ('activity' not in _SCHEMAS[version].keys()) or not use_cache:
         _SCHEMAS[version]['activity']['unpopulated'] = iati.core.ActivitySchema(activity_schema_paths[0])
 
     return _SCHEMAS[version]['activity']['unpopulated']
@@ -233,7 +231,7 @@ def _organisation_schema(version=None, use_cache=False):
 
     organisation_schema_paths = iati.core.resources.get_all_org_schema_paths(version)
 
-    if ('organisation' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
+    if ('organisation' not in _SCHEMAS[version].keys()) or not use_cache:
         _SCHEMAS[version]['organisation']['unpopulated'] = iati.core.OrganisationSchema(organisation_schema_paths[0])
 
     return _SCHEMAS[version]['organisation']['unpopulated']
