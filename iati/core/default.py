@@ -38,6 +38,20 @@ _CODELISTS = {}
 
 This removes the need to repeatedly load a Codelist from disk each time it is accessed.
 
+The dictionary is structured as:
+
+{
+    "version_number_a": {
+        "codelist_name_1": iati.core.Codelist(codelist_1),
+        "codelist_name_2": iati.core.Codelist(codelist_2)
+        [...]
+    },
+    "version_number_b": {
+        [...]
+    },
+    [...]
+}
+
 Warning:
     Modifying values directly obtained from this cache can potentially cause unexpected behavior. As such, it is highly recommended to perform a `deepcopy()` on any accessed Codelist before it is modified in any way.
 
@@ -137,6 +151,23 @@ _SCHEMAS = {}
 
 This removes the need to repeatedly load a Schema from disk each time it is accessed.
 
+{
+    "version_number_a": {
+        "populated": {
+            "activity": iati.core.ActivitySchema
+            "organisation": iati.core.OrganisationSchema
+        },
+        "unpopulated": {
+            "activity": iati.core.ActivitySchema
+            "organisation": iati.core.OrganisationSchema
+        },
+    },
+    "version_number_b": {
+        [...]
+    },
+    [...]
+}
+
 Warning:
     Modifying values directly obtained from this cache can potentially cause unexpected behavior. As such, it is highly recommended to perform a `deepcopy()` on any accessed Schema before it is modified in any way.
 
@@ -161,12 +192,14 @@ def _activity_schema(version=None, use_cache=False):
 
     activity_schema_paths = iati.core.resources.get_all_activity_schema_paths(version)
 
-    if ('iati-activities-schema' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
+    if ('activity' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
         if version not in _SCHEMAS.keys():
             _SCHEMAS[version] = {}
-        _SCHEMAS[version]['iati-activities-schema'] = iati.core.ActivitySchema(activity_schema_paths[0])
+        if 'activity' not in _SCHEMAS[version].keys():
+               _SCHEMAS[version]['activity'] = {}
+        _SCHEMAS[version]['activity']['unpopulated'] = iati.core.ActivitySchema(activity_schema_paths[0])
 
-    return _SCHEMAS[version]['iati-activities-schema']
+    return _SCHEMAS[version]['activity']['unpopulated']
 
 
 def activity_schema(version=None):
@@ -203,12 +236,14 @@ def _organisation_schema(version=None, use_cache=False):
 
     organisation_schema_paths = iati.core.resources.get_all_org_schema_paths(version)
 
-    if ('iati-organisations-schema' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
+    if ('organisation' not in _SCHEMAS.get(version, {}).keys()) or not use_cache:
         if version not in _SCHEMAS.keys():
             _SCHEMAS[version] = {}
-        _SCHEMAS[version]['iati-organisations-schema'] = iati.core.OrganisationSchema(organisation_schema_paths[0])
+        if 'organisation' not in _SCHEMAS[version].keys():
+           _SCHEMAS[version]['organisation'] = {}
+        _SCHEMAS[version]['organisation']['unpopulated'] = iati.core.OrganisationSchema(organisation_schema_paths[0])
 
-    return _SCHEMAS[version]['iati-organisations-schema']
+    return _SCHEMAS[version]['organisation']['unpopulated']
 
 
 def organisation_schema(version=None):
