@@ -1266,6 +1266,12 @@ class TestRuleSum(RuleSubclassTestBase):
         """Check that the string format of the Rule contains some relevant information."""
         assert 'sum of values' in str(rule_instantiating)
 
+    def test_no_values_to_sum_skips(self, valid_single_context, rule_constructor, valid_dataset):
+        """Check that the Rule is skipped if no values are found to compare to the value of `sum`."""
+        no_values_case = {'paths': ['this_element_does_not_exist', 'neither_does_this_one'], 'sum': 100}
+        rule = rule_constructor(valid_single_context, no_values_case)
+        assert rule.is_valid_for(valid_dataset) is None
+
 
 class TestRuleUnique(RuleSubclassTestBase):
     """A container for tests relating to RuleUnique."""

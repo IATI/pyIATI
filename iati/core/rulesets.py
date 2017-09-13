@@ -791,6 +791,7 @@ class RuleSum(Rule):
         Returns:
             bool: Return `True` when the `path` values total to the `sum` value.
                   Return `False` when the `path` values do not total to the `sum` value.
+            None: When no elements are found for the specified `paths`.
 
         """
         unique_paths = set(self.paths)
@@ -800,6 +801,9 @@ class RuleSum(Rule):
             values_to_sum = self._extract_text_from_element_or_attribute(context_element, path)
             for value in values_to_sum:
                 values_in_context.append(Decimal(value))
+
+        if values_in_context == list():
+            return None
 
         if sum(values_in_context) != Decimal(str(self.sum)):
             return False
