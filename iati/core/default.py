@@ -201,7 +201,7 @@ def _populate_schema(schema, version=None):
     return schema
 
 
-def _schema(path_func, schema_class, version=None, populate=False, use_cache=False):
+def _schema(path_func, schema_class, version=None, populate=True, use_cache=False):
     """Return the default Schema of the specified type for the specified version of the Standard.
 
     Args:
@@ -233,7 +233,7 @@ def _schema(path_func, schema_class, version=None, populate=False, use_cache=Fal
     return _SCHEMAS[version][population_key][schema_class.ROOT_ELEMENT_NAME]
 
 
-def activity_schema(version=None, populate=False):
+def activity_schema(version=None, populate=True):
     """Return the default ActivitySchema objects for the specified version of the Standard.
 
     Args:
@@ -250,7 +250,7 @@ def activity_schema(version=None, populate=False):
     return _schema(iati.core.resources.get_all_activity_schema_paths, iati.core.ActivitySchema, version, populate)
 
 
-def organisation_schema(version=None, populate=False):
+def organisation_schema(version=None, populate=True):
     """Return the default OrganisationSchema objects for the specified version of the Standard.
 
     Args:

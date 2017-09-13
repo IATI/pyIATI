@@ -131,13 +131,14 @@ class TestDefaultSchemas(object):
 
         assert isinstance(schema, iati.core.OrganisationSchema)
 
+    @pytest.mark.parametrize("population_status", [[], [True]])
     @pytest.mark.parametrize("schema_func", [
         iati.core.default.activity_schema,
         iati.core.default.organisation_schema
     ])
-    def test_default_schemas_populated(self, schema_func, codelist_lengths_by_version):
+    def test_default_schemas_populated(self, population_status, schema_func, codelist_lengths_by_version):
         """Check that the default Codelists for each version contain the expected number of Codelists."""
-        schema = schema_func(codelist_lengths_by_version.version, True)
+        schema = schema_func(codelist_lengths_by_version.version, *population_status)
 
         assert len(schema.codelists) == codelist_lengths_by_version.expected_length
 
