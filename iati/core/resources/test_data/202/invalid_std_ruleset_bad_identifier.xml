@@ -12,7 +12,7 @@
     <description>
       <narrative>Xxxxxxx</narrative>
     </description>
-    <participating-org role="2"></participating-org>
+    <participating-org ref="BB-BBB-123456789" role="2"></participating-org>
     <activity-status code="2"/><!--ruleset check-->
     <activity-date type="1" iso-date="2016-09-04" /><!--ruleset check-->
     <activity-date type="3" iso-date="2017-12-31" /><!--ruleset check-->
