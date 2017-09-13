@@ -2,15 +2,40 @@ language: python
 cache:
     pip
 python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.6"
+  - 2.7
+  - 3.4
+  - 3.5
+  - 3.6
 install:
-    - pip install -U pip wheel
-    - pip install -r requirements-dev.txt
+  - pip install -U pip wheel
+  - pip install -r requirements-dev.txt
 script:
-    - make test
-    - make lint
-    - make complexity
-    - make docs
+  - make test
+  - make lint
+  - make complexity
+  - make docs
+
+stages:
+  - test
+  - strict lint
+
+jobs:
+    include:
+        - stage: strict lint
+          python: 3.6
+          install: pip install pylint
+          env: LINTER=pylint
+          script: make pylint
+          if: branch=master
+        - stage: strict lint
+          python: 3.6
+          install: pip install flake8
+          env: LINTER=flake8
+          script: make flake8
+          if: branch=master
+        - stage: strict lint
+          python: 3.6
+          install: pip install pydocstyle
+          env: LINTER=pydocstyle
+          script: make pydocstyle
+          if: branch=master
