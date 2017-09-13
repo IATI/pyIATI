@@ -173,13 +173,42 @@ Warning:
 """
 
 
-def _schema(path_func, schema_class, version=None, use_cache=False):
+def _populate_schema(schema, version=None):
+    """Populate a Schema with all its extras.
+
+    The extras include Codelists and Rulesets.
+
+    Args:
+        schema (iati.core.Schema): The Schema to populate.
+        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Standard is assumed.
+
+    Returns:
+        iati.core.Schema: The provided Schema, populated with additional information.
+
+    Warning:
+        Does not create a copy of the provided Schema, instead adding to it directly.
+
+    Todo:
+        Populate the Schema with Rulesets.
+
+    """
+    version = get_default_version_if_none(version)
+
+    codelists_to_add = codelists(version)
+    for codelist in codelists_to_add.values():
+        schema.codelists.add(codelist)
+
+    return schema
+
+
+def _schema(path_func, schema_class, version=None, populate=False, use_cache=False):
     """Return the default Schema of the specified type for the specified version of the Standard.
 
     Args:
         path_func (func): A function to return the paths at which the relevant Schema can be found.
         schema_class (type): A class definition for the Schema of interest.
         version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
+        populate (bool): Whether the Schema should be populated with auxilliary information such as Codelists and Rulesets.
         use_cache (bool): Whether the cache should be used rather than loading the Schema from disk again. If used, a `deepcopy()` should be performed on any returned Schema before it is modified.
 
     Raises:
@@ -189,21 +218,27 @@ def _schema(path_func, schema_class, version=None, use_cache=False):
         dict: Containing the version (as keys) and a corresponding ActivitySchema object (as values).
 
     """
+    population_key = 'populated' if populate else 'unpopulated'
+
     version = get_default_version_if_none(version)
 
     schema_paths = path_func(version)
 
-    if (schema_class.ROOT_ELEMENT_NAME not in _SCHEMAS[version].keys()) or not use_cache:
-        _SCHEMAS[version]['unpopulated'][schema_class.ROOT_ELEMENT_NAME] = schema_class(schema_paths[0])
+    if (schema_class.ROOT_ELEMENT_NAME not in _SCHEMAS[version][population_key].keys()) or not use_cache:
+        schema = schema_class(schema_paths[0])
+        if populate:
+            schema = _populate_schema(schema, version)
+        _SCHEMAS[version][population_key][schema_class.ROOT_ELEMENT_NAME] = schema
 
-    return _SCHEMAS[version]['unpopulated'][schema_class.ROOT_ELEMENT_NAME]
+    return _SCHEMAS[version][population_key][schema_class.ROOT_ELEMENT_NAME]
 
 
-def activity_schema(version=None):
+def activity_schema(version=None, populate=False):
     """Return the default ActivitySchema objects for the specified version of the Standard.
 
     Args:
         version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
+        populate (bool): Whether the Schema should be populated with auxilliary information such as Codelists and Rulesets.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -212,14 +247,15 @@ def activity_schema(version=None):
         dict: Containing the version (as keys) and a corresponding ActivitySchema object (as values).
 
     """
-    return _schema(iati.core.resources.get_all_activity_schema_paths, iati.core.ActivitySchema, version)
+    return _schema(iati.core.resources.get_all_activity_schema_paths, iati.core.ActivitySchema, version, populate)
 
 
-def organisation_schema(version=None):
+def organisation_schema(version=None, populate=False):
     """Return the default OrganisationSchema objects for the specified version of the Standard.
 
     Args:
         version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
+        populate (bool): Whether the Schema should be populated with auxilliary information such as Codelists and Rulesets.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -228,4 +264,4 @@ def organisation_schema(version=None):
         dict: Containing the version (as keys) and a corresponding OrganisationSchema object (as values).
 
     """
-    return _schema(iati.core.resources.get_all_org_schema_paths, iati.core.OrganisationSchema, version)
+    return _schema(iati.core.resources.get_all_org_schema_paths, iati.core.OrganisationSchema, version, populate)

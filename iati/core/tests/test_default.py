@@ -10,10 +10,6 @@ from iati.core.tests.utilities import codelist_lengths_by_version, standard_vers
 class TestDefault(object):
     """A container for tests relating to Default data."""
 
-    @pytest.fixture
-    def codelist_name(self):
-        """Return the name of a valid Codelist."""
-        return 'Country'
 
     @pytest.mark.parametrize("invalid_version", iati.core.tests.utilities.generate_test_types(['none'], True))
     @pytest.mark.parametrize("func_to_check", [
@@ -26,6 +22,16 @@ class TestDefault(object):
         """Check that an invalid version causes an error when obtaining default data."""
         with pytest.raises(ValueError):
             func_to_check(invalid_version)
+
+
+class TestDefaultCodelist(object):
+    """A container for tests relating to default Codelists."""
+
+
+    @pytest.fixture
+    def codelist_name(self):
+        """Return the name of a valid Codelist."""
+        return 'Country'
 
     @pytest.mark.parametrize("invalid_version", iati.core.tests.utilities.generate_test_types(['none'], True))
     def test_invalid_version_single_codelist(self, invalid_version, codelist_name):
@@ -101,6 +107,10 @@ class TestDefault(object):
 
         assert len(codelists) == codelist_lengths_by_version.expected_length
 
+
+class TestDefaultSchemas(object):
+    """A container for tests relating to default Schemas."""
+
     def test_default_activity_schemas(self, standard_version_optional):
         """Check that the default ActivitySchemas are correct.
 
@@ -120,6 +130,26 @@ class TestDefault(object):
         schema = iati.core.default.organisation_schema(*standard_version_optional)
 
         assert isinstance(schema, iati.core.OrganisationSchema)
+
+    @pytest.mark.parametrize("schema_func", [
+        iati.core.default.activity_schema,
+        iati.core.default.organisation_schema
+    ])
+    def test_default_schemas_populated(self, schema_func, codelist_lengths_by_version):
+        """Check that the default Codelists for each version contain the expected number of Codelists."""
+        schema = schema_func(codelist_lengths_by_version.version, True)
+
+        assert len(schema.codelists) == codelist_lengths_by_version.expected_length
+
+    @pytest.mark.parametrize("schema_func", [
+        iati.core.default.activity_schema,
+        iati.core.default.organisation_schema
+    ])
+    def test_default_schemas_unpopulated(self, schema_func, standard_version_mandatory):
+        """Check that the default Codelists for each version contain the expected number of Codelists."""
+        schema = schema_func(*standard_version_mandatory, False)
+
+        assert len(schema.codelists) == 0
 
 
 class TestDefaultModifications(object):
