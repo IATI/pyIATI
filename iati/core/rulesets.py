@@ -313,6 +313,7 @@ class Rule(object):
 
         Note:
             `Element.text` will return `None` if it contains no text. This is bad. As such, this is converted to an empty string to prevent TypeErrors.
+            `path` should be validated outside of this function to avoid unexpected errors.
 
         """
         xpath_results = context.xpath(path)
@@ -750,6 +751,10 @@ class RuleStartsWith(Rule):
         Returns:
             bool: Return `True` when the `path` text starts with the text value of `start`.
                   Return `False` when the `path` text does not start with the text value of `start`.
+
+        Raises:
+            ValueError: When more than one element or attribute is retured for the prefix value.
+                        When no results are returned for the prefix value.
 
         """
         start_results = self._extract_text_from_element_or_attribute(context_element, self.start)

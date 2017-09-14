@@ -861,7 +861,9 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         {'regex': r'\btest\b', 'paths': ['element6/@attribute', 'element7/@attribute']},
         {'regex': r'\btest\b', 'paths': ['element4', 'element4']},  # duplicate paths with regex
         {'regex': r'\btest\b', 'paths': ['element8/@attribute', 'element8/@attribute']},
-        {'regex': r'\btest\b', 'paths': ['element11']}  # duplicate element
+        {'regex': r'\btest\b', 'paths': ['element11']},  # duplicate element
+        {'regex': r'\btest\b', 'paths': ['element12']},  # no such element exists
+        {'regex': r'\btest\b', 'paths': ['element13/@attribute']}  # no such attribute exists
     ]
 
     uninstantiating_cases = [
