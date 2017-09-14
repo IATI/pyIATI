@@ -406,3 +406,21 @@ class TestDatasetSourceFinding(object):
         for line_num in range(0, num_lines_xml):
             with pytest.raises(TypeError):
                 data.source_around_line(line_num, invalid_value)
+
+
+class TestDatasetVersionDetection(object):
+    """A container for tests relating to detecting the version of a Dataset."""
+
+    @pytest.fixture(params=iati.core.constants.STANDARD_VERSIONS)
+    def sample_dataset_v1(self, request):
+        return """
+        <iati-activities version="{0}">
+            <iati-activity version="{0}"></iati-activity>
+            <iati-activity version="{0}"></iati-activity>
+            <iati-activity version="{0}"></iati-activity>
+        <iati-activities>
+        """.format(request.param)
+
+    def test_detect_v1_version(self, sample_dataset_v1):
+        import pdb; pdb.set_trace()
+        pass
