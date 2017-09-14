@@ -1047,7 +1047,9 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         {'start': 'prefix', 'paths': ['element6/@attribute', 'element7/@attribute']},
         {'start': 'prefix', 'paths': ['element4', 'element4']},  # duplicate paths with valid prefix string
         {'start': 'prefix', 'paths': ['element8/@attribute', 'element8/@attribute']},
-        {'start': 'prefix', 'paths': ['element11']}  # duplicate element
+        {'start': 'prefix', 'paths': ['element11']},  # duplicate element
+        {'start': 'prefix', 'paths': ['element12']},  # no such element exists
+        {'start': 'prefix', 'paths': ['element13/@attribute']}  # no such attribute exists
     ]
 
     uninstantiating_cases = [
