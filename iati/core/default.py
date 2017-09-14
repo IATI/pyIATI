@@ -138,9 +138,7 @@ def ruleset(version=None):
         Actually handle versions, including errors.
 
     """
-    name = 'standard_ruleset'
-
-    path = iati.core.resources.get_ruleset_path(name, version)
+    path = iati.core.resources.get_ruleset_path(iati.core.resources.FILE_STD_RULESET_NAME, version)
     ruleset_str = iati.core.resources.load_as_string(path)
 
     return iati.core.Ruleset(ruleset_str)
@@ -148,12 +146,11 @@ def ruleset(version=None):
 
 def ruleset_schema(version=None):
     """Return the specified Ruleset schema."""
-    name = 'ruleset_schema'
-
-    path = iati.core.resources.get_ruleset_path(name, version)
+    path = iati.core.resources.get_ruleset_path(iati.core.resources.FILE_RULESET_SCHEMA_NAME, version)
     schema_str = iati.core.resources.load_as_string(path)
-    schema = json.loads(schema_str)
-    return schema
+    rs_schema = json.loads(schema_str)
+
+    return rs_schema
 
 
 _SCHEMAS = {}
