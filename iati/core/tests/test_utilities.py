@@ -15,7 +15,7 @@ class TestUtilities(object):
         activity_schema_path = iati.core.resources.get_schema_path(
             iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID
         )
-        return iati.core.ActivitySchema(activity_schema_path)._schema_base_tree
+        return iati.core.ActivitySchema(activity_schema_path)._schema_base_tree  # pylint: disable=protected-access
 
     def test_add_namespace_schema_new(self, schema_base_tree):
         """Check that an additional namespace can be added to a Schema.

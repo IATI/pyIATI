@@ -82,6 +82,8 @@ class Schema(object):
             etree._ElementTree: The modified tree.
 
         Todo:
+            Add more robust tests for schemas at different versions.
+
             Check whether this is safe in the general case, so allowing it to be performed in __init__().
 
             Make resource locations more able to handle the general case.
@@ -112,7 +114,7 @@ class Schema(object):
         # create a new element
         xinclude_el = etree.Element(
             '{' + xi_uri + '}include',
-            href=iati.core.resources.resource_filename(iati.core.resources.get_schema_path(include_location[:-4])),
+            href=iati.core.resources.resource_filename(iati.core.resources.get_schema_path(include_location[:-4], self._get_version())),
             parse='xml',
             nsmap=new_nsmap
         )
@@ -120,7 +122,7 @@ class Schema(object):
         # make the path to `xml.xsd` reference the correct file
         import_xpath = (iati.core.constants.NAMESPACE + 'import')
         import_el = tree.getroot().find(import_xpath)
-        import_el.attrib['schemaLocation'] = iati.core.resources.resource_filename(iati.core.resources.get_schema_path('xml'))
+        import_el.attrib['schemaLocation'] = iati.core.resources.resource_filename(iati.core.resources.get_schema_path('xml', self._get_version()))
 
         # insert the new element
         tree.getroot().insert(import_el.getparent().index(import_el) + 1, xinclude_el)
@@ -129,6 +131,15 @@ class Schema(object):
         etree.strip_elements(tree.getroot(), include_xpath)
 
         return tree
+
+    def _get_version(self):
+        """Return the version that this schema is defined as.
+
+        Returns:
+            str or None: The version stated for the schema, according to the value defined in the 'version' attribute at root of the XSD schema. Returns None if there is no 'version' attribute.
+
+        """
+        return self._schema_base_tree.getroot().get('version')
 
     def flatten_includes(self, tree):
         """Flatten includes so that all nodes are accessible through lxml.
@@ -142,6 +153,8 @@ class Schema(object):
             etree._ElementTree: The flattened tree.
 
         Todo:
+            Add more robust tests for schemas at different versions.
+
             Consider moving this out of Schema().
 
             Tidy this up.
@@ -156,7 +169,7 @@ class Schema(object):
         # remove nested schema elements
         schema_xpath = (iati.core.constants.NAMESPACE + 'schema')
         for nested_schema_el in tree.getroot().findall(schema_xpath):
-            if isinstance(nested_schema_el, etree._Element):
+            if isinstance(nested_schema_el, etree._Element):  # pylint: disable=protected-access
                 # move contents of nested schema elements up a level
                 for elem in nested_schema_el[:]:
                     # do not duplicate an import statement
