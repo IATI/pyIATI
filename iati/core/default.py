@@ -195,8 +195,8 @@ def _populate_schema(schema, version=None):
     version = get_default_version_if_none(version)
 
     codelists_to_add = codelists(version)
-    for codelist in codelists_to_add.values():
-        schema.codelists.add(codelist)
+    for codelist_to_add in codelists_to_add.values():
+        schema.codelists.add(codelist_to_add)
 
     return schema
 

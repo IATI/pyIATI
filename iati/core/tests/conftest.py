@@ -53,5 +53,4 @@ def standard_version_optional(request):
     """
     if request.param == 'no_arguments':
         return []
-    else:
-        return [request.param]
+    return [request.param]

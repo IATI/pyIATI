@@ -158,7 +158,7 @@ class TestResources(object):
         try:
             FileNotFoundError
         except NameError:
-            FileNotFoundError = IOError
+            FileNotFoundError = IOError  # pylint: disable=redefined-builtin,invalid-name
 
         with pytest.raises(FileNotFoundError):
             _ = load_method(path_test_data)
