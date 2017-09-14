@@ -164,8 +164,13 @@ class TestDefaultModifications(object):
 
     @pytest.fixture
     def codelist(self, codelist_name):
-        """Return a Codelist."""
+        """Return a default Codelist that is part of the IATI Standard."""
         return iati.core.default.codelist(codelist_name)
+
+    @pytest.fixture
+    def codelist_non_default(self):
+        """Return a Codelist that is not part of the IATI Standard."""
+        return iati.core.Codelist('custom codelist')
 
     @pytest.fixture
     def new_code(self):
@@ -200,38 +205,38 @@ class TestDefaultModifications(object):
         iati.core.default.activity_schema,
         iati.core.default.organisation_schema
     ])
-    def test_default_x_schema_modification(self, default_call, codelist, standard_version_mandatory):
-        """Check that the default Schemas cannot be modified.
+    def test_default_x_schema_modification_unpopulated(self, default_call, codelist, standard_version_mandatory):
+        """Check that unpopulated default Schemas cannot be modified.
 
         Note:
             Implementation is by attempting to add a Codelist to the Schema.
 
         """
-        default_schema = default_call(standard_version_mandatory[0])
+        default_schema = default_call(standard_version_mandatory[0], False)
         base_codelist_count = len(default_schema.codelists)
 
         default_schema.codelists.add(codelist)
-        unmodified_schema = default_call(standard_version_mandatory[0])
+        unmodified_schema = default_call(standard_version_mandatory[0], False)
 
         assert len(default_schema.codelists) == base_codelist_count + 1
         assert len(unmodified_schema.codelists) == base_codelist_count
 
-    @pytest.mark.parametrize("schema_func", [
+    @pytest.mark.parametrize("default_call", [
         iati.core.default.activity_schema,
         iati.core.default.organisation_schema
     ])
-    def test_default_schema_modification(self, schema_func, standard_version_optional, codelist):
-        """Check that the default Schemas cannot be modified when called individually.
+    def test_default_x_schema_modification_populated(self, default_call, codelist_non_default, standard_version_mandatory):
+        """Check that populated default Schemas cannot be modified.
 
         Note:
             Implementation is by attempting to add a Codelist to the Schema.
 
         """
-        default_schema = schema_func(*standard_version_optional)
+        default_schema = default_call(standard_version_mandatory[0], True)
         base_codelist_count = len(default_schema.codelists)
 
-        default_schema.codelists.add(codelist)
-        unmodified_schema = schema_func(*standard_version_optional)
+        default_schema.codelists.add(codelist_non_default)
+        unmodified_schema = default_call(standard_version_mandatory[0], True)
 
         assert len(default_schema.codelists) == base_codelist_count + 1
         assert len(unmodified_schema.codelists) == base_codelist_count
