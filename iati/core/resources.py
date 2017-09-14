@@ -85,11 +85,10 @@ def get_all_codelist_paths(version=None):
     Returns:
         list: A list of paths to all of the Codelists at the specified version of the Standard.
 
-    Warning:
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
-
     Todo:
-        Handle versions, including errors.
+        Further exploration needs to be undertaken in how to handle pre-1.04 versions of the Standard.
+
+        Add tests to show that versions 1.04 and above are being correctly handled, including errors.
 
         Provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
 
@@ -117,7 +116,7 @@ def get_all_schema_paths(version=None):
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
     Todo:
-        Handle versions, including errors.
+        Add tests for version parameters that are invalid.
 
         Potentially add the IATI codelist schema.
 
@@ -141,7 +140,7 @@ def get_all_activity_schema_paths(version=None):
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
     Todo:
-        Handle versions, including errors.
+        Add tests for version parameters that are invalid.
 
         Potentially add the IATI codelist schema.
 
@@ -165,7 +164,7 @@ def get_all_org_schema_paths(version=None):
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
     Todo:
-        Handle versions, including errors.
+        Add tests for version parameters that are invalid.
 
         Potentially add the IATI codelist schema.
 
@@ -187,12 +186,9 @@ def get_codelist_path(codelist_name, version=None):
         Does not check whether the specified codelist actually exists.
 
     Warning:
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+        Further exploration needs to be undertaken on how to handle pre-1.04 versions of the Standard.
 
         It needs to be determined how best to locate a user-defined Codelist that is available at a URL that needs fetching.
-
-    Todo:
-        Test this.
 
     """
     if codelist_name[-4:] == FILE_CODELIST_EXTENSION:
@@ -252,11 +248,6 @@ def get_schema_path(name, version=None):
 
     Warning:
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
-
-    Todo:
-        Handle versions of the standard other than 2.02.
-
-        Test this.
 
     """
     return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
@@ -456,6 +447,10 @@ def load_as_bytes(path):
     Returns:
         bytes: The contents of the file at the specified location.
 
+    Raises:
+        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+        ValueError: When a file at the specified path does not contain valid XML.
+
     Todo:
         Should raise Exceptions when there are problems loading the requested data.
         Add error handling for when the specified file does not exist.
@@ -472,10 +467,11 @@ def load_as_dataset(path):
     Returns:
         dataset: A Dataset object with the contents of the file at the specified location.
 
-    Warning:
-        Should raise Exceptions when there are problems loading the requested data.
+    Raises:
+        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
 
     Todo:
+        Ensure all reasonably possible OSErrors are documented here and in functions that call this.
         Add error handling for when the specified file does not exist.
 
     """
@@ -486,12 +482,17 @@ def load_as_dataset(path):
 
 def load_as_string(path):
     """Load a resource at the specified path into a string.
+
     Args:
         path (str): The path to the file that is to be read in.
+
     Returns:
         str (python3) / unicode (python2): The contents of the file at the specified location.
+
+    Raises:
+        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+
     Todo:
-        Should raise Exceptions when there are problems loading the requested data.
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
 
         Add test to load a dataset saved in non-UTF-8 formats. This should include `UTF-16LE`, `UTF-16BE` and `windows-1252` since there are published Datasets using these encodings.

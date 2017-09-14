@@ -9,7 +9,7 @@ Todo:
     Allow logging constants to be user-definable.
 """
 
-STANDARD_VERSIONS = ['2.02']
+STANDARD_VERSIONS = ['1.04', '1.05', '2.01', '2.02']
 """Define all versions of the Standard.
 Todo:
     This constant to be populated by the values in the Version codelist, rather than hard-coded.
