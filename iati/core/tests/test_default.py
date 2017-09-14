@@ -6,6 +6,7 @@ import iati.core.default
 import iati.core.schemas
 import iati.core.tests.utilities
 
+
 class TestDefault(object):
     """A container for tests relating to Default data."""
 
