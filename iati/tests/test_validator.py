@@ -243,9 +243,8 @@ class ValidationTestBase(object):
 
     @pytest.fixture
     def schema_basic(self):
-        """A schema with no Codelists added."""
-        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        return iati.core.Schema(schema_path)
+        """An Activity Schema with no Codelists added."""
+        return iati.core.default.activity_schema(None, False)
 
     @pytest.fixture(params=[
         iati.core.tests.utilities.load_as_string('valid_not_iati'),
@@ -321,14 +320,8 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_version(self):
-        """A schema with the Version Codelist added.
-
-        Returns:
-            A valid activity schema with the Version Codelist added.
-
-        """
-        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        schema = iati.core.Schema(schema_path)
+        """Return an Activity Schema with the Version Codelist added."""
+        schema = iati.core.default.activity_schema(None, False)
         codelist = iati.core.default.codelists()['Version']
 
         schema.codelists.add(codelist)
@@ -337,14 +330,8 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_org_type(self):
-        """A schema with the OrganisationType Codelist added.
-
-        Returns:
-            A valid activity schema with the OrganisationType Codelist added.
-
-        """
-        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        schema = iati.core.Schema(schema_path)
+        """Rturn an Activity Schema with the OrganisationType Codelist added."""
+        schema = iati.core.default.activity_schema(None, False)
         codelist = iati.core.default.codelists()['OrganisationType']
 
         schema.codelists.add(codelist)
@@ -353,14 +340,8 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_incomplete_codelist(self):
-        """A schema with an incomplete Codelist added.
-
-        Returns:
-            A valid activity schema with the OrganisationType Codelist added.
-
-        """
-        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        schema = iati.core.Schema(schema_path)
+        """Return an Activity Schema with an incomplete Codelist added."""
+        schema = iati.core.default.activity_schema(None, False)
         codelist = iati.core.default.codelists()['Country']
 
         schema.codelists.add(codelist)
@@ -369,14 +350,8 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_sectors(self):
-        """A schema with the DAC Sector Codelists and appropriate vocabulary added.
-
-        Returns:
-            A valid activity schema with the DAC Sector Codelists and appropriate vocabulary added.
-
-        """
-        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        schema = iati.core.Schema(schema_path)
+        """Return an Activity Schema with the DAC Sector Codelists and appropriate vocabulary added."""
+        schema = iati.core.default.activity_schema(None, False)
 
         codelist_1 = iati.core.default.codelists()['SectorVocabulary']
         codelist_2 = iati.core.default.codelists()['Sector']
@@ -855,8 +830,7 @@ class TestValidateRulesets(object):
         Returns:
             A valid activity schema with the Version Codelist added.
         """
-        schema_path = iati.core.resources.get_schema_path(iati.core.tests.utilities.SCHEMA_NAME_VALID)
-        schema = iati.core.Schema(schema_path)
+        schema = iati.core.default.activity_schema(None, False)
         ruleset = iati.core.default.ruleset()
 
         schema.rulesets.add(ruleset)
