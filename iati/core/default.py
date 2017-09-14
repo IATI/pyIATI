@@ -213,15 +213,14 @@ def _populate_schema(schema, version=None):
     Warning:
         Does not create a copy of the provided Schema, instead adding to it directly.
 
-    Todo:
-        Populate the Schema with Rulesets.
-
     """
     version = get_default_version_if_none(version)
 
     codelists_to_add = codelists(version)
     for codelist in codelists_to_add.values():
         schema.codelists.add(codelist)
+
+    schema.rulesets.add(ruleset(version))
 
     return schema
 

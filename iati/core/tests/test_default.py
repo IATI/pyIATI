@@ -112,15 +112,14 @@ class TestDefaultCodelist(object):
 class TestDefaultRulesets(object):
     """A container for tests relating to default Rulesets."""
 
-    def test_default_ruleset(self):
+    def test_default_ruleset(self, standard_version_optional):
         """Check that the default Ruleset is correct.
 
         Todo:
-            Handle multiple versions.
-
             Check internal values beyond the Ruleset being the correct type.
+
         """
-        ruleset = iati.core.default.ruleset()
+        ruleset = iati.core.default.ruleset(*standard_version_optional)
 
         assert isinstance(ruleset, iati.core.Ruleset)
 
