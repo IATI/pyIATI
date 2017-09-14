@@ -5,12 +5,9 @@ import iati.core.constants
 import iati.core.default
 import iati.core.schemas
 import iati.core.tests.utilities
-from iati.core.tests.utilities import codelist_lengths_by_version, standard_version_optional, standard_version_mandatory  # shorthand import provided for fixtures
-
 
 class TestDefault(object):
     """A container for tests relating to Default data."""
-
 
     @pytest.mark.parametrize("invalid_version", iati.core.tests.utilities.generate_test_types(['none'], True))
     @pytest.mark.parametrize("func_to_check", [
@@ -27,7 +24,6 @@ class TestDefault(object):
 
 class TestDefaultCodelist(object):
     """A container for tests relating to default Codelists."""
-
 
     @pytest.fixture
     def codelist_name(self):
@@ -167,12 +163,11 @@ class TestDefaultSchemas(object):
         """Check that the default Codelists for each version contain the expected number of Codelists."""
         schema = schema_func(standard_version_mandatory[0], False)
 
-        assert len(schema.codelists) == 0
+        assert schema.codelists == set()
 
 
 class TestDefaultModifications(object):
     """A container for tests relating to the ability to modify defaults."""
-
 
     @pytest.fixture
     def codelist_name(self):

@@ -35,7 +35,7 @@ def add_namespace(tree, new_ns_name, new_ns_uri):
         Tidy this up.
 
     """
-    if not isinstance(tree, etree._ElementTree):
+    if not isinstance(tree, etree._ElementTree):  # pylint: disable=protected-access
         msg = "The `tree` parameter must be of type `etree._ElementTree` - it was of type {0}".format(type(tree))
         iati.core.utilities.log_error(msg)
         raise TypeError(msg)
