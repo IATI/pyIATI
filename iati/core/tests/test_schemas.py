@@ -7,8 +7,7 @@ import iati.core.exceptions
 import iati.core.resources
 import iati.core.schemas
 import iati.core.tests.utilities
-
-standard_version_optional = iati.core.tests.utilities.standard_version_optional
+from iati.core.tests.utilities import standard_version_optional
 
 
 class TestSchemas(object):

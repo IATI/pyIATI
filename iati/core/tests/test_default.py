@@ -4,11 +4,7 @@ import iati.core.codelists
 import iati.core.constants
 import iati.core.default
 import iati.core.schemas
-import iati.core.tests.utilities
-
-codelist_lengths_by_version = iati.core.tests.utilities.codelist_lengths_by_version
-standard_version_mandatory = iati.core.tests.utilities.standard_version_mandatory
-standard_version_optional = iati.core.tests.utilities.standard_version_optional
+from iati.core.tests.utilities import codelist_lengths_by_version, standard_version_mandatory, standard_version_optional
 
 
 class TestDefault(object):
