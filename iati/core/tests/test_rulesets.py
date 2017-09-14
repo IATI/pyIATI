@@ -7,6 +7,7 @@ Todo:
     Try to standardise Rule arrays for extraction.
 
 """
+# pylint: disable=protected-access,too-many-lines
 from copy import deepcopy
 import pytest
 import iati.core.default
@@ -21,7 +22,7 @@ class TestRuleset(object):
     def test_ruleset_init_no_parameters(self):
         """Check that a Ruleset cannot be created when no parameters are given."""
         with pytest.raises(TypeError):
-            iati.core.Ruleset()
+            iati.core.Ruleset()  # pylint: disable=no-value-for-parameter
 
     def test_ruleset_init_ruleset_str_valid(self):
         """Check that a Ruleset is created when given a JSON Ruleset in string format."""
@@ -161,7 +162,7 @@ class TestRule(object):
         case = {'paths': ['path_1', 'path_2']}
 
         with pytest.raises(TypeError):
-            iati.core.Rule(name, context, case)
+            iati.core.Rule(name, context, case)  # pylint: disable=too-many-function-args
 
 
 class TestRuleSubclasses(object):
@@ -201,7 +202,7 @@ class TestRuleSubclasses(object):
             rule_constructor(context, case)
 
 
-class RuleSubclassTestBase(object):
+class RuleSubclassTestBase(object):  # pylint: disable=too-many-public-methods
     """A base class for Rule subclass tests."""
 
     @pytest.fixture
