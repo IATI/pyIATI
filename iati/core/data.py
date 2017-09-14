@@ -161,6 +161,9 @@ class Dataset(object):
         Returns:
             str or None: The version of this Dataset. None if the version cannot be detected.
 
+        Todo:
+            Consider if this should raise an error if the Dataset is specified at a version that does not exist.
+
         """
         root_tree = self.xml_tree.getroot()
         assumed_version_if_no_version_stated = '1.01'
