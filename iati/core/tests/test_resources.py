@@ -4,7 +4,6 @@ import pytest
 import six
 import iati.core.constants
 import iati.core.resources
-from iati.core.tests.utilities import codelist_lengths_by_version, standard_version_optional
 
 
 class TestResources(object):
