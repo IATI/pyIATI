@@ -62,7 +62,7 @@ FILE_RULESET_EXTENSION = '.json'
 
 FILE_RULESET_SCHEMA_NAME = 'ruleset_schema'
 """The name of a file containing the Ruleset schema."""
-FILE_STD_RULESET_NAME = 'standard_ruleset'
+FILE_RULESET_STANDARD_NAME = 'standard_ruleset'
 """The name of a file containing the Standard Ruleset."""
 FILE_SCHEMA_ACTIVITY_NAME = 'iati-activities-schema'
 """The name of a file containing an Activity Schema."""
