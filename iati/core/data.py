@@ -154,6 +154,33 @@ class Dataset(object):
         except IndexError:
             raise ValueError
 
+    @property
+    def version(self):
+        """Finds the version that this Dataset is specified against.
+
+        Returns:
+            str or None: The version of this Dataset. None if the version cannot be detected.
+
+        """
+        root_tree = self.xml_tree.getroot()
+        assumed_version_if_no_version_stated = '1.01'
+        version_iati_activities = root_tree.get('version', assumed_version_if_no_version_stated)
+
+        if version_iati_activities.startswith('1'):
+            # Version 1 data, so need to check that all child `iati-activity` elements are at the same version
+            versions_in_activities = list()
+            for activity_tree in root_tree.findall('iati-activity'):
+                activity_version = activity_tree.get('version', assumed_version_if_no_version_stated)
+                versions_in_activities.append(activity_version)
+
+            if len(set(versions_in_activities)) == 1 and versions_in_activities[0] == version_iati_activities:
+                return version_iati_activities
+            else:
+                return None
+        else:
+            # Not version 1 data, so can return the version specified in `iati-activities/@version`
+            return version_iati_activities
+
     def source_at_line(self, line_number):
         """Return the value of the XML source at the specified line.
 

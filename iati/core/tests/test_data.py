@@ -8,6 +8,7 @@ from future.standard_library import install_aliases
 from lxml import etree
 import pytest
 import iati.core.data
+import iati.core.default
 import iati.core.tests.utilities
 
 install_aliases()
@@ -411,16 +412,90 @@ class TestDatasetSourceFinding(object):
 class TestDatasetVersionDetection(object):
     """A container for tests relating to detecting the version of a Dataset."""
 
-    @pytest.fixture(params=iati.core.constants.STANDARD_VERSIONS)
-    def sample_dataset_v1(self, request):
-        return """
+    @pytest.mark.parametrize("version", iati.core.default.get_versions_by_integer()[1])
+    def test_detect_version_v1_simple(self, version):
+        """Check that a version 1 dataset is detected correctly."""
+        data = iati.core.Dataset("""
         <iati-activities version="{0}">
             <iati-activity version="{0}"></iati-activity>
             <iati-activity version="{0}"></iati-activity>
             <iati-activity version="{0}"></iati-activity>
-        <iati-activities>
-        """.format(request.param)
+        </iati-activities>
+        """.format(version))
+        result = data.version
 
-    def test_detect_v1_version(self, sample_dataset_v1):
-        import pdb; pdb.set_trace()
-        pass
+        assert result == version
+
+    def test_detect_version_explicit_iati_activities_mismatch_explicit_iati_activity(self):
+        data = iati.core.Dataset("""
+        <iati-activities version="1.02">
+            <iati-activity version="1.02"></iati-activity>
+            <iati-activity version="1.02"></iati-activity>
+            <iati-activity version="1.03"></iati-activity>
+        </iati-activities>
+        """)
+        result = data.version
+
+        assert result is None
+
+    def test_detect_version_implicit_iati_activities_matches_implicit_iati_activity(self):
+        data = iati.core.Dataset("""
+        <iati-activities>
+            <iati-activity></iati-activity>
+            <iati-activity></iati-activity>
+            <iati-activity></iati-activity>
+        </iati-activities>
+        """)
+        result = data.version
+
+        assert result == '1.01'
+
+    def test_detect_version_explicit_iati_activities_matches_implicit_iati_activity(self):
+        data = iati.core.Dataset("""
+        <iati-activities version='1.01'>
+            <iati-activity></iati-activity>
+            <iati-activity></iati-activity>
+            <iati-activity></iati-activity>
+        </iati-activities>
+        """)
+        result = data.version
+
+        assert result == '1.01'
+
+    def test_detect_version_explicit_iati_activities_mismatch_implicit_iati_activity(self):
+        data = iati.core.Dataset("""
+        <iati-activities version='1.02'>
+            <iati-activity></iati-activity>
+            <iati-activity></iati-activity>
+            <iati-activity></iati-activity>
+        </iati-activities>
+        """)
+        result = data.version
+
+        assert result is None
+
+    def test_detect_version_imlicit_iati_activities_mismatch_explicit_iati_activity(self):
+        data = iati.core.Dataset("""
+        <iati-activities>
+            <iati-activity version="1.02"></iati-activity>
+            <iati-activity></iati-activity>
+            <iati-activity></iati-activity>
+        </iati-activities>
+        """)
+        result = data.version
+
+        assert result is None
+
+    @pytest.mark.parametrize("version", iati.core.default.get_versions_by_integer()[2])
+    def test_detect_version_v2_simple(self, version):
+        """Check that a version 2 dataset is detected correctly."""
+        data = iati.core.Dataset("""
+        <iati-activities version="{0}">
+            <iati-activity></iati-activity>
+            <iati-activity></iati-activity>
+            <iati-activity></iati-activity>
+        </iati-activities>
+        """.format(version))
+        result = data.version
+
+        assert result == version
