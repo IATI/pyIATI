@@ -867,6 +867,23 @@ class TestValidateRulesets(object):
         assert iati.validator.is_iati_xml(data, schema_ruleset)
         assert not iati.validator.is_valid(data, schema_ruleset)
 
+    def test_one_ruleset_error_added_for_multiple_rule_errors(self, schema_ruleset):
+        """Check that a dataset containing multiple rule errors produces an error log containing only one ruleset error."""
+        data_with_multiple_rule_errors = iati.core.tests.utilities.load_as_dataset('invalid_std_ruleset_multiple_rule_errors')
+        result = iati.validator.full_validation(data_with_multiple_rule_errors, schema_ruleset)
+
+        assert len(result.get_errors_or_warnings_by_category('rule')) > 1
+        assert len(result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')) == 1
+
+    def test_no_ruleset_errors_added_for_rule_warnings(self, schema_ruleset):
+        """Check that a dataset containing only rule warnings does not result in a ruleset error being added."""
+        data_with_rule_warnings_only = iati.core.tests.utilities.load_as_dataset('valid_std_ruleset')
+        result = iati.validator.full_validation(data_with_rule_warnings_only, schema_ruleset)
+
+        assert len(result.get_warnings()) > 0
+        assert len(result.get_errors_or_warnings_by_category('rule')) > 0
+        assert len(result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')) == 0
+
 
 class TestValidatorFullValidation(ValidateCodelistsBase):
     """A container for tests relating to detailed error output from validation."""

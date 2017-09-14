@@ -110,12 +110,14 @@ class TestDefault(object):
         """
         data = iati.core.tests.utilities.load_as_dataset(invalid_dataset_name)
         result = iati.validator.full_validation(data, schema_ruleset)
-        errors_for_rule_error = result.get_errors_or_warning_by_name(rule_error)
+        errors_for_rule_error = result.get_errors_or_warnings_by_name(rule_error)
+        errors_for_ruleset = result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_ruleset)
         assert not iati.validator.is_valid(data, schema_ruleset)
         assert len(errors_for_rule_error) == 1
+        assert len(errors_for_ruleset) == 1
         assert help_text in errors_for_rule_error[0].help
 
     def test_default_activity_schemas(self):

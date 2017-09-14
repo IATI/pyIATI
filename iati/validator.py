@@ -123,7 +123,7 @@ class ValidationErrorLog(object):
             bool: Whether there is an error or warning with the specified name within the log.
 
         """
-        errors_with_name = self.get_errors_or_warning_by_name(err_name)
+        errors_with_name = self.get_errors_or_warnings_by_name(err_name)
 
         return len(errors_with_name) > 0
 
@@ -195,7 +195,22 @@ class ValidationErrorLog(object):
         """
         return [err for err in self if err.status == 'error']
 
-    def get_errors_or_warning_by_name(self, err_name):
+    def get_errors_or_warnings_by_category(self, err_category):
+        """Return a list of errors or warnings of the specified category.
+
+        Args:
+            err_category (str): The category of the error to look for.
+
+        Returns:
+            list: Containing the error/s or warning/s of the specified category that are present within the log.
+
+        Todo:
+            Add explicit tests.
+
+        """
+        return [err for err in self._values if err.category == err_category]
+
+    def get_errors_or_warnings_by_name(self, err_name):
         """Return a list of errors or warnings with the specified name.
 
         Args:
@@ -389,6 +404,7 @@ def _check_rules(dataset, ruleset):
 
     """
     error_log = ValidationErrorLog()
+    error_found = False
 
     for rule in ruleset.rules:
         result_rule_validation = rule.is_valid_for(dataset)
@@ -401,6 +417,12 @@ def _check_rules(dataset, ruleset):
             # A result of `False` signifies that a rule did not pass.
             error = _parse_ruleset_fail(rule)
             error_log.add(error)
+            error_found = True
+
+    if error_found:
+        # Add a ruleset error if at least one rule error was found.
+        error = ValidationError('err-ruleset-conformance-fail', locals())
+        error_log.add(error)
 
     return error_log
 
