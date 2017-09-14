@@ -1290,7 +1290,9 @@ class TestRuleUnique(RuleSubclassTestBase):
         {'paths': ['element6/@attribute', 'element7/@attribute']},
         {'paths': ['element4', 'element4']},  # duplicate paths
         {'paths': ['element8/@attribute', 'element8/@attribute']},
-        {'paths': ['element13']}  # duplicate elements exist for path
+        {'paths': ['element13']},  # duplicate elements exist for path
+        {'paths': ['element14']},  # no such element exists
+        {'paths': ['element15/@attribute']}  # no such attribute exists
     ]
 
     uninstantiating_cases = [
