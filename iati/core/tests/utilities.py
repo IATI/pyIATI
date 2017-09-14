@@ -49,17 +49,25 @@ def load_as_string(file_path):
     return iati.core.resources.load_as_string(iati.core.resources.get_test_data_path(file_path))
 
 
+# This will need updating once test data forcing XML format is fixed
+RULESET_FOR_TESTING = iati.core.Ruleset(iati.core.resources.load_as_string(iati.core.resources.get_ruleset_path('ruleset_for_tests')))
+"""A working Ruleset based on the Standard Ruleset."""
+
+
 SCHEMA_ACTIVITY_NAME_VALID = 'iati-activities-schema'
 """A string containing a valid IATI Activity Schema name."""
 SCHEMA_ORGANISATION_NAME_VALID = 'iati-organisations-schema'
 """A string containing a valid IATI Organisaion Schema name."""
+SCHEMA_NAME_VALID = 'iati-activities-schema'
+"""A string containing a valid Schema name."""
 
 XML_TREE_VALID = etree.fromstring(load_as_string('valid_not_iati'))
-"""An etree that is not valid IATI data."""
+"""An etree that is valid XML but not IATI XML."""
 XML_TREE_VALID_IATI = etree.fromstring(load_as_string('valid_iati'))
 """A valid IATI etree."""
 XML_TREE_VALID_IATI_INVALID_CODE = etree.fromstring(load_as_string('valid_iati_invalid_code'))
 """A valid IATI etree that has an invalid Code value."""
+
 
 TYPE_TEST_DATA = {
     'bool': [True, False],

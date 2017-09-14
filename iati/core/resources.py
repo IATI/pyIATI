@@ -48,6 +48,8 @@ PATH_TEST_DATA = os.path.join(BASE_PATH, 'test_data')
 """The relative location of the folder containing IATI data files."""
 PATH_SCHEMAS = 'schemas'
 """The location of the folder containing schemas from the SSOT."""
+PATH_RULESETS = 'rulesets'
+"""The location of the folder containing rulesets from the SSOT."""
 
 FILE_CODELIST_EXTENSION = '.xml'
 """The extension of a file containing a Codelist."""
@@ -55,6 +57,13 @@ FILE_CODELIST_EXTENSION = '.xml'
 FILE_DATA_EXTENSION = '.xml'
 """The extension of a file containing IATI data."""
 
+FILE_RULESET_EXTENSION = '.json'
+"""The extension of a file containing a Ruleset."""
+
+FILE_RULESET_SCHEMA_NAME = 'ruleset_schema'
+"""The name of a file containing the Ruleset schema."""
+FILE_RULESET_STANDARD_NAME = 'standard_ruleset'
+"""The name of a file containing the Standard Ruleset."""
 FILE_SCHEMA_ACTIVITY_NAME = 'iati-activities-schema'
 """The name of a file containing an Activity Schema."""
 FILE_SCHEMA_ORGANISATION_NAME = 'iati-organisations-schema'
@@ -176,23 +185,6 @@ def get_codelist_path(codelist_name, version=None):
     return get_path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
 
 
-def get_schema_path(name, version=None):
-    """Determine the path of a schema with the given name.
-
-    Args:
-        name (str): The name of the schema to locate.
-        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
-
-    Returns:
-        str: The path to a file containing the specified schema.
-
-    Note:
-        Does not check whether the specified schema actually exists.
-
-    """
-    return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
-
-
 def get_test_data_path(name, version=None):
     """Determine the path of an IATI data file with the given filename.
 
@@ -216,6 +208,29 @@ def get_test_data_path(name, version=None):
     return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
 
 
+def get_test_ruleset_path(name, version=None):
+    """Determine the path of an IATI test Ruleset file with the given filename.
+
+    Args:
+        name (str): The name of the data file to locate. The filename must not contain the '.json' file extension.
+        version (float): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+
+    Returns:
+        str: The path to a file containing the specified test Ruleset.
+
+    Note:
+        Does not check whether the specified file actually exists.
+
+    Warning:
+        Needs to handle a more complex file structure than a single flat directory.
+
+    Todo:
+        Might need removing. What is using it now?
+
+    """
+    return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), 'rulesets/{0}'.format(name) + FILE_RULESET_EXTENSION)
+
+
 def get_folder_name_for_version(version=None):
     """Return the folder name for a given version of the Standard.
 
@@ -236,6 +251,51 @@ def get_folder_name_for_version(version=None):
         return version.replace('.', '')
     else:
         raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
+
+
+def get_ruleset_path(name, version=None):
+    """Determine the path of a ruleset with the given name.
+
+    Args:
+        name (str): The name of the ruleset to locate.
+        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that paths to the latest version of the Ruleset are returned.
+
+    Returns:
+        str: The path to a file containing the specified ruleset.
+
+    Note:
+        Does not check whether the specified ruleset actually exists.
+
+    Todo:
+        Test this.
+
+    """
+    return get_path_for_version(os.path.join(PATH_RULESETS, '{0}'.format(name) + FILE_RULESET_EXTENSION), version)
+
+
+def get_schema_path(name, version=None):
+    """Determine the path of a schema with the given name.
+
+    Args:
+        name (str): The name of the schema to locate.
+        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
+
+    Returns:
+        str: The path to a file containing the specified schema.
+
+    Note:
+        Does not check whether the specified schema actually exists.
+
+    Warning:
+        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
+
+    Todo:
+        Handle versions of the standard other than 2.02.
+
+        Test this.
+
+    """
+    return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
 
 def get_folder_path_for_version(version=None):
@@ -271,6 +331,27 @@ def get_path_for_version(path, version=None):
     return os.path.join(get_folder_path_for_version(version), path)
 
 
+def load_as_bytes(path):
+    """Load a resource at the specified path into a bytes object.
+
+    Args:
+        path (str): The path to the file that is to be read in.
+
+    Returns:
+        bytes: The contents of the file at the specified location.
+
+    Raises:
+        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+
+    Todo:
+        Ensure all reasonably possible OSErrors are documented here and in functions that call this.
+        Add error handling for when the specified file does not exist.
+        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
+
+    """
+    return pkg_resources.resource_string(PACKAGE, path)
+
+
 def load_as_dataset(path):
     """Load a resource at the specified path into a dataset.
 
@@ -292,28 +373,8 @@ def load_as_dataset(path):
 
     """
     dataset_str = load_as_string(path)
+
     return iati.core.Dataset(dataset_str)
-
-
-def load_as_bytes(path):
-    """Load a resource at the specified path into a bytes object.
-
-    Args:
-        path (str): The path to the file that is to be read in.
-
-    Returns:
-        bytes: The contents of the file at the specified location.
-
-    Raises:
-        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
-
-    Todo:
-        Ensure all reasonably possible OSErrors are documented here and in functions that call this.
-        Add error handling for when the specified file does not exist.
-        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
-
-    """
-    return pkg_resources.resource_string(PACKAGE, path)
 
 
 def load_as_string(path):
@@ -339,8 +400,7 @@ def load_as_tree(path):
     """Load a schema with the specified name into an ElementTree.
 
     Args:
-        path (str): The path to the file that is to be converted to an ElementTree.
-            The file at the specified location must contain valid XML.
+        path (str): The path to the file that is to be converted to an ElementTree. The file at the specified location must contain valid XML.
 
     Returns:
         etree._ElementTree: An ElementTree representing the parsed XML.
@@ -350,7 +410,6 @@ def load_as_tree(path):
 
     Warning:
         There should be errors raised when the request is to load something that is not valid XML.
-
         Does not fully hide the lxml internal workings. This includes making reference to a private lxml type.
 
     Todo:

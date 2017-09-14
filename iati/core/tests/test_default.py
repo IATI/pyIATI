@@ -4,6 +4,7 @@ import iati.core.codelists
 import iati.core.constants
 import iati.core.default
 import iati.core.schemas
+import iati.core.tests.utilities
 
 
 class TestDefault(object):
@@ -105,6 +106,21 @@ class TestDefaultCodelist(object):
         assert len(codelists) == codelist_lengths_by_version.expected_length
 
 
+class TestDefaultRulesets(object):
+    """A container for tests relating to default Rulesets."""
+
+    def test_default_ruleset(self, standard_version_optional):
+        """Check that the default Ruleset is correct.
+
+        Todo:
+            Check internal values beyond the Ruleset being the correct type.
+
+        """
+        ruleset = iati.core.default.ruleset(*standard_version_optional)
+
+        assert isinstance(ruleset, iati.core.Ruleset)
+
+
 class TestDefaultSchemas(object):
     """A container for tests relating to default Schemas."""
 
@@ -138,6 +154,7 @@ class TestDefaultSchemas(object):
         schema = schema_func(codelist_lengths_by_version.version, *population_status)
 
         assert len(schema.codelists) == codelist_lengths_by_version.expected_length
+        assert len(schema.rulesets) == 1
 
     @pytest.mark.parametrize("schema_func", [
         iati.core.default.activity_schema,
@@ -148,6 +165,7 @@ class TestDefaultSchemas(object):
         schema = schema_func(standard_version_mandatory[0], False)
 
         assert schema.codelists == set()
+        assert schema.rulesets == set()
 
 
 class TestDefaultModifications(object):

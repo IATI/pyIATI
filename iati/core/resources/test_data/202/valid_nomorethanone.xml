@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--Specified elements present no more than once-->
+<root_element>
+  <condition></condition><!--condition case-->
+  <element1></element1><!--single path-->
+  <element2></element2><!--multiple paths, only one exists-->
+  <element4></element4><!--duplicate paths-->
+  <element5 attribute=""></element5><!--single path-->
+  <element6 attribute=""></element6><!--multiple paths, only one exists-->
+  <element8 attribute=""></element8><!--duplicate paths-->
+  <nest>
+    <element9></element9><!--nested element-->
+  </nest>
+  <nest>
+    <element10 attribute=""></element10><!--nested attribute-->
+  </nest>
+</root_element>

@@ -86,7 +86,30 @@ for codelist in iati.core.default.codelists().values():
 
 ### Loading Rulesets
 
+The default IATI Ruleset can be loaded by using:
+
+```
+import iati.core.default
+
+iati.core.default.ruleset()
+```
+
+If you wish to load your own Ruleset you can do this using:
+
+```
+import iati.core.resources
+import iati.core.Rulesets
+
+ruleset_str = iati.core.resources.load_as_string(filepath)
+# To create a Ruleset object from your ruleset_str:
+iati.core.Ruleset(ruleset_str)
+```
+
 **Note:** This functionality is not yet implemented.
+
+Validate an IATI Dataset against the Standard Ruleset:
+
+To be added.
 
 
 ### Working with IATI datasets

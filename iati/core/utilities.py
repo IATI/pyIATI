@@ -124,6 +124,34 @@ def convert_xml_to_tree(xml):
         raise ValueError(msg)
 
 
+def dict_raise_on_duplicates(ordered_pairs):
+    """Reject duplicate keys in a dictionary.
+
+    RFC4627 merely says that keys in a JSON file SHOULD be unique. As such, `json.loads()` permits duplicate keys, and overwrites earlier values with those later in the string.
+
+    In creating Rulesets, we wish to forbid duplicate keys. As such, this function may be used to do this.
+
+    Algorithm from https://stackoverflow.com/a/14902564
+
+    Args:
+        ordered_pairs (list of tuples): A list of (key, value) pairs.
+
+    Raises:
+        ValueError: When there are duplicate keys.
+
+    Returns:
+        dict: A dictionary constructed from `ordered_pairs`.
+
+    """
+    duplicate_free_dict = {}
+    for key, value in ordered_pairs:
+        if key in duplicate_free_dict:
+            raise ValueError("duplicate key: %r" % (key,))
+        else:
+            duplicate_free_dict[key] = value
+    return duplicate_free_dict
+
+
 def log(lvl, msg, *args, **kwargs):
     """Log a message of some level.
 

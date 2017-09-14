@@ -6,6 +6,7 @@ Todo:
     Handle multiple versions of the Standard rather than limiting to the latest.
     Implement more than Codelists.
 """
+import json
 import os
 from collections import defaultdict
 from copy import deepcopy
@@ -133,16 +134,40 @@ def codelists(version=None):
     """Locate the default Codelists for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelist is returned.
+    version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelist is returned.
+
+    Returns:
+    dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.core.Codelist() instances.
+
+    """
+    return _codelists(version)
+
+
+def ruleset(version=None):
+    """Locate the default Ruleset for the specified version of the Standard.
+
+    Args:
+        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that the latest version of the Ruleset is returned.
+
+    Returns:
+        iati.core.ruleset.Ruleset: The default Ruleset for the specified version of the Standard.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
 
-    Returns:
-        dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.core.Codelist() instances.
-
     """
-    return _codelists(version)
+    path = iati.core.resources.get_ruleset_path(iati.core.resources.FILE_RULESET_STANDARD_NAME, version)
+    ruleset_str = iati.core.resources.load_as_string(path)
+
+    return iati.core.Ruleset(ruleset_str)
+
+
+def ruleset_schema(version=None):
+    """Return the specified Ruleset schema."""
+    path = iati.core.resources.get_ruleset_path(iati.core.resources.FILE_RULESET_SCHEMA_NAME, version)
+    schema_str = iati.core.resources.load_as_string(path)
+
+    return json.loads(schema_str)
 
 
 _SCHEMAS = defaultdict(lambda: defaultdict(dict))
@@ -188,15 +213,14 @@ def _populate_schema(schema, version=None):
     Warning:
         Does not create a copy of the provided Schema, instead adding to it directly.
 
-    Todo:
-        Populate the Schema with Rulesets.
-
     """
     version = get_default_version_if_none(version)
 
     codelists_to_add = codelists(version)
     for codelist_to_add in codelists_to_add.values():
         schema.codelists.add(codelist_to_add)
+
+    schema.rulesets.add(ruleset(version))
 
     return schema
 

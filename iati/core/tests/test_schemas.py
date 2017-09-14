@@ -200,8 +200,9 @@ class TestSchemas(object):
 
         Todo:
             Consider if this test should test against a versioned Ruleset.
+
         """
-        ruleset = iati.core.Ruleset()
+        ruleset = iati.core.default.ruleset()
 
         schema_initialised.rulesets.add(ruleset)
 
