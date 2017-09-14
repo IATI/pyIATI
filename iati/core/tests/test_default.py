@@ -98,7 +98,8 @@ class TestDefaultCodelist(object):
         codelists = iati.core.default.codelists(*standard_version_optional)
 
         assert isinstance(codelists, dict)
-        for _, codelist in codelists.items():
+        assert len(codelists.values()) == 62
+        for codelist in codelists.values():
             assert isinstance(codelist, iati.core.Codelist)
 
     def test_codelist_mapping_condition(self):
@@ -153,7 +154,10 @@ class TestDefaultSchemas(object):
         """
         schema = iati.core.default.activity_schema(*standard_version_optional)
 
-        assert isinstance(schema, iati.core.ActivitySchema)
+        assert isinstance(schemas, dict)
+        assert len(schemas) == 1
+        for schema in schemas.values():
+            assert isinstance(schema, iati.core.ActivitySchema)
 
     def test_default_organisation_schemas(self, standard_version_optional):
         """Check that the default ActivitySchemas are correct.
@@ -163,7 +167,10 @@ class TestDefaultSchemas(object):
         """
         schema = iati.core.default.organisation_schema(*standard_version_optional)
 
-        assert isinstance(schema, iati.core.OrganisationSchema)
+        assert isinstance(schemas, dict)
+        assert len(schemas) == 1
+        for schema in schemas.values():
+            assert isinstance(schema, iati.core.OrganisationSchema)
 
     @pytest.mark.parametrize("population_status", [[], [True]])
     @pytest.mark.parametrize("schema_func", [
