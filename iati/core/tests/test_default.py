@@ -89,16 +89,16 @@ class TestDefaultCodelist(object):
 
         assert 'There is no default Codelist in version' in str(excinfo.value)
 
-    def test_default_codelists_type(self, standard_version_optional):
+    def test_default_codelists_type(self, codelist_lengths_by_version):
         """Check that the default Codelists are of the correct type.
 
         Todo:
             Check internal values beyond the codelists being the correct type.
         """
-        codelists = iati.core.default.codelists(*standard_version_optional)
+        codelists = iati.core.default.codelists(codelist_lengths_by_version.version)
 
         assert isinstance(codelists, dict)
-        assert len(codelists.values()) == 62
+        assert len(codelists.values()) == codelist_lengths_by_version.expected_length
         for codelist in codelists.values():
             assert isinstance(codelist, iati.core.Codelist)
 
@@ -154,10 +154,7 @@ class TestDefaultSchemas(object):
         """
         schema = iati.core.default.activity_schema(*standard_version_optional)
 
-        assert isinstance(schemas, dict)
-        assert len(schemas) == 1
-        for schema in schemas.values():
-            assert isinstance(schema, iati.core.ActivitySchema)
+        assert isinstance(schema, iati.core.ActivitySchema)
 
     def test_default_organisation_schemas(self, standard_version_optional):
         """Check that the default ActivitySchemas are correct.
@@ -167,10 +164,7 @@ class TestDefaultSchemas(object):
         """
         schema = iati.core.default.organisation_schema(*standard_version_optional)
 
-        assert isinstance(schemas, dict)
-        assert len(schemas) == 1
-        for schema in schemas.values():
-            assert isinstance(schema, iati.core.OrganisationSchema)
+        assert isinstance(schema, iati.core.OrganisationSchema)
 
     @pytest.mark.parametrize("population_status", [[], [True]])
     @pytest.mark.parametrize("schema_func", [
