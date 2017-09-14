@@ -147,7 +147,7 @@ class TestResources(object):
             _ = iati.core.resources.load_as_dataset(path_test_data)
 
     def test_load_as_string(self):
-        """Test that resources.load_as_string returns a string (python3) or unicode (python2) object with the expected content."""
+        """Test that `resources.load_as_string()` returns a string (python3) or unicode (python2) object with the expected content."""
         path_test_data = iati.core.resources.get_test_data_path('invalid')
 
         result = iati.core.resources.load_as_string(path_test_data)
@@ -157,7 +157,7 @@ class TestResources(object):
 
     @pytest.mark.parametrize("load_method", [iati.core.resources.load_as_bytes, iati.core.resources.load_as_dataset, iati.core.resources.load_as_string])
     def test_load_as_x_non_existing_file(self, load_method):
-        """Test that resources.load_as_bytes returns a bytes object with the expected content."""
+        """Test that `resources.load_as_bytes()` returns a bytes object with the expected content."""
         path_test_data = iati.core.resources.get_test_data_path('this-file-does-not-exist')
 
         # python 2/3 compatibility - FileNotFoundError introduced at Python 3
