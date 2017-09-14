@@ -1,4 +1,5 @@
 """A module containing tests for data validation."""
+# pylint: disable=no-value-for-parameter,unexpected-keyword-arg
 import pytest
 import iati.core.data
 import iati.core.default

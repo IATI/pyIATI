@@ -1,4 +1,5 @@
 """A module containing tests for the library representation of Schemas."""
+# pylint: disable=protected-access
 from lxml import etree
 import pytest
 import iati.core.codelists
