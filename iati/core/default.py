@@ -39,7 +39,7 @@ def get_versions_by_integer():
     """Returns a dictionary containing versions grouped by the integer version that they fall within.
 
     Returns:
-        dict: Containing the interger version (as keys) and the versions contained within these (as values).
+        dict: Containing the integer version (as keys) and the versions contained within these (as values).
     """
     dict_major_versions = dict()
     for major_version in iati.core.constants.STANDARD_VERSIONS_MAJOR:

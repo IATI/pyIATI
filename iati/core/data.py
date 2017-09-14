@@ -156,10 +156,10 @@ class Dataset(object):
 
     @property
     def version(self):
-        """Finds the version that this Dataset is specified against.
+        """The version that this Dataset is specified against.
 
         Returns:
-            str or None: The version of this Dataset. None if the version cannot be detected.
+            str / None: The version of this Dataset. None if the version cannot be detected.
 
         Todo:
             Consider if this should raise an error if the Dataset is specified at a version that does not exist.
@@ -167,22 +167,22 @@ class Dataset(object):
         """
         root_tree = self.xml_tree.getroot()
         assumed_version_if_no_version_stated = '1.01'
-        version_iati_activities = root_tree.get('version', assumed_version_if_no_version_stated)
+        version_iati_root = root_tree.get('version', assumed_version_if_no_version_stated)
 
-        if version_iati_activities.startswith('1'):
+        if version_iati_root.startswith('1'):
             # Version 1 data, so need to check that all child `iati-activity` elements are at the same version
-            versions_in_activities = list()
-            for activity_tree in root_tree.findall('iati-activity'):
-                activity_version = activity_tree.get('version', assumed_version_if_no_version_stated)
-                versions_in_activities.append(activity_version)
+            versions_in_children = list()
+            for child_tree in root_tree.findall('iati-activity'):
+                activity_version = child_tree.get('version', assumed_version_if_no_version_stated)
+                versions_in_children.append(activity_version)
 
-            if len(set(versions_in_activities)) == 1 and versions_in_activities[0] == version_iati_activities:
-                return version_iati_activities
+            if len(set(versions_in_children)) == 1 and versions_in_children[0] == version_iati_root:
+                return version_iati_root
             else:
                 return None
         else:
             # Not version 1 data, so can return the version specified in `iati-activities/@version`
-            return version_iati_activities
+            return version_iati_root
 
     def source_at_line(self, line_number):
         """Return the value of the XML source at the specified line.
