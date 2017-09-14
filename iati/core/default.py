@@ -134,16 +134,14 @@ def codelists(version=None):
     """Locate the default Codelists for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelist is returned.
-
-    Raises:
-        ValueError: When a specified version is not a valid version of the IATI Standard.
+    version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelist is returned.
 
     Returns:
-        dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.core.Codelist() instances.
+    dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.core.Codelist() instances.
 
     """
     return _codelists(version)
+
 
 def codelist_mapping(version=None):
     """Define the mapping process which states where in a Dataset you should find values on a given Codelist.
@@ -192,13 +190,8 @@ def ruleset(version=None):
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
 
-    Todo:
-        Actually handle versions, including errors.
-
     """
-    name = 'standard_ruleset'
-
-    path = iati.core.resources.get_ruleset_path(name, version)
+    path = iati.core.resources.get_ruleset_path(iati.core.resources.FILE_RULESET_STANDARD_NAME, version)
     ruleset_str = iati.core.resources.load_as_string(path)
 
     return iati.core.Ruleset(ruleset_str)
@@ -206,15 +199,13 @@ def ruleset(version=None):
 
 def ruleset_schema(version=None):
     """Return the specified Ruleset schema."""
-    name = 'ruleset_schema'
-
-    path = iati.core.resources.get_ruleset_path(name, version)
+    path = iati.core.resources.get_ruleset_path(iati.core.resources.FILE_RULESET_SCHEMA_NAME, version)
     schema_str = iati.core.resources.load_as_string(path)
-    schema = json.loads(schema_str)
-    return schema
+
+    return json.loads(schema_str)
 
 
-_SCHEMAS = defaultdict(lambda : defaultdict(dict))
+_SCHEMAS = defaultdict(lambda: defaultdict(dict))
 """A cache of loaded Schemas.
 
 This removes the need to repeatedly load a Schema from disk each time it is accessed.
@@ -264,8 +255,8 @@ def _populate_schema(schema, version=None):
     version = get_default_version_if_none(version)
 
     codelists_to_add = codelists(version)
-    for codelist in codelists_to_add.values():
-        schema.codelists.add(codelist)
+    for codelist_to_add in codelists_to_add.values():
+        schema.codelists.add(codelist_to_add)
 
     return schema
 

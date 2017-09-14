@@ -169,7 +169,7 @@ class Schema(object):
         # remove nested schema elements
         schema_xpath = (iati.core.constants.NAMESPACE + 'schema')
         for nested_schema_el in tree.getroot().findall(schema_xpath):
-            if isinstance(nested_schema_el, etree._Element):
+            if isinstance(nested_schema_el, etree._Element):  # pylint: disable=protected-access
                 # move contents of nested schema elements up a level
                 for elem in nested_schema_el[:]:
                     # do not duplicate an import statement

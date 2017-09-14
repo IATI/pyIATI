@@ -1,4 +1,5 @@
 """A module containing tests for the library representation of Schemas."""
+# pylint: disable=protected-access
 from lxml import etree
 import pytest
 import iati.core.codelists
@@ -7,7 +8,6 @@ import iati.core.exceptions
 import iati.core.resources
 import iati.core.schemas
 import iati.core.tests.utilities
-from iati.core.tests.utilities import standard_version_optional
 
 
 class TestSchemas(object):
@@ -56,7 +56,7 @@ class TestSchemas(object):
         iati.core.default.activity_schema,
         iati.core.default.organisation_schema
     ])
-    @pytest.mark.parametrize('version', ['1.04']) # iati.core.constants.STANDARD_VERSIONS)
+    @pytest.mark.parametrize('version', iati.core.constants.STANDARD_VERSIONS)
     def test_schema_get_version(self, schema_func, version):
         """Check that the correct version number is returned by the base classes of iati.core.schemas.schema._get_version()."""
         schema = schema_func(version)
@@ -195,7 +195,12 @@ class TestSchemas(object):
         assert len(schema_initialised.codelists) == 1
 
     def test_schema_rulesets_add(self, schema_initialised):
-        """Check that it is possible to add Rulesets to the Schema."""
+        """Check that it is possible to add Rulesets to the Schema.
+
+        Todo:
+            Consider if this test should test against a versioned Ruleset.
+
+        """
         ruleset = iati.core.default.ruleset()
 
         schema_initialised.rulesets.add(ruleset)

@@ -65,6 +65,10 @@ FILE_DATA_EXTENSION = '.xml'
 FILE_RULESET_EXTENSION = '.json'
 """The extension of a file containing a Ruleset."""
 
+FILE_RULESET_SCHEMA_NAME = 'ruleset_schema'
+"""The name of a file containing the Ruleset schema."""
+FILE_RULESET_STANDARD_NAME = 'standard_ruleset'
+"""The name of a file containing the Standard Ruleset."""
 FILE_SCHEMA_ACTIVITY_NAME = 'iati-activities-schema'
 """The name of a file containing an Activity Schema."""
 FILE_SCHEMA_ORGANISATION_NAME = 'iati-organisations-schema'
@@ -249,6 +253,11 @@ def get_schema_path(name, version=None):
     Warning:
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
+    Todo:
+        Handle versions of the standard other than 2.02.
+
+        Test this.
+
     """
     return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
@@ -333,7 +342,7 @@ def get_test_ruleset_path(name, version=None):
         Needs to handle a more complex file structure than a single flat directory.
 
     Todo:
-        Test this.
+        Might need removing. What is using it now?
 
     """
     return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), 'rulesets/{0}'.format(name) + FILE_RULESET_EXTENSION)
@@ -444,15 +453,15 @@ def load_as_bytes(path):
 
     Args:
         path (str): The path to the file that is to be read in.
+
     Returns:
         bytes: The contents of the file at the specified location.
 
     Raises:
         FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
-        ValueError: When a file at the specified path does not contain valid XML.
 
     Todo:
-        Should raise Exceptions when there are problems loading the requested data.
+        Ensure all reasonably possible OSErrors are documented here and in functions that call this.
         Add error handling for when the specified file does not exist.
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
     """
@@ -469,6 +478,7 @@ def load_as_dataset(path):
 
     Raises:
         FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+        ValueError: When a file at the specified path does not contain valid XML.
 
     Todo:
         Ensure all reasonably possible OSErrors are documented here and in functions that call this.
@@ -514,18 +524,23 @@ def load_as_string(path):
 
 def load_as_tree(path):
     """Load a schema with the specified name into an ElementTree.
+
     Args:
-        path (str): The path to the file that is to be converted to an ElementTree.
-            The file at the specified location must contain valid XML.
+        path (str): The path to the file that is to be converted to an ElementTree. The file at the specified location must contain valid XML.
+
     Returns:
         etree._ElementTree: An ElementTree representing the parsed XML.
+
     Raises:
         OSError: An error occurred accessing the specified file.
+
     Warning:
         There should be errors raised when the request is to load something that is not valid XML.
         Does not fully hide the lxml internal workings. This includes making reference to a private lxml type.
+
     Todo:
         Handle when the specified file can be accessed without issue, but it does not contain valid XML.
+
     """
     path_filename = resource_filename(path)
     try:
