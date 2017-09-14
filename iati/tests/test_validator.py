@@ -330,7 +330,7 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_org_type(self):
-        """Rturn an Activity Schema with the OrganisationType Codelist added."""
+        """Return an Activity Schema with the OrganisationType Codelist added."""
         schema = iati.core.default.activity_schema(None, False)
         codelist = iati.core.default.codelists()['OrganisationType']
 
