@@ -4,7 +4,7 @@ import pytest
 import six
 import iati.core.constants
 import iati.core.resources
-from iati.core.tests.utilities import codelist_lengths_by_version, standard_version_optional
+
 
 class TestResources(object):
     """A container for tests relating to resources."""
@@ -158,7 +158,7 @@ class TestResources(object):
         try:
             FileNotFoundError
         except NameError:
-            FileNotFoundError = IOError
+            FileNotFoundError = IOError  # pylint: disable=redefined-builtin,invalid-name
 
         with pytest.raises(FileNotFoundError):
             _ = load_method(path_test_data)
