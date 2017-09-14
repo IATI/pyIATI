@@ -56,7 +56,7 @@ class TestSchemas(object):
         iati.core.default.activity_schema,
         iati.core.default.organisation_schema
     ])
-    @pytest.mark.parametrize('version', ['1.04']) # iati.core.constants.STANDARD_VERSIONS)
+    @pytest.mark.parametrize('version', iati.core.constants.STANDARD_VERSIONS)
     def test_schema_get_version(self, schema_func, version):
         """Check that the correct version number is returned by the base classes of iati.core.schemas.schema._get_version()."""
         schema = schema_func(version)

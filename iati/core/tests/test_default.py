@@ -10,7 +10,6 @@ from iati.core.tests.utilities import codelist_lengths_by_version, standard_vers
 class TestDefault(object):
     """A container for tests relating to Default data."""
 
-
     @pytest.mark.parametrize("invalid_version", iati.core.tests.utilities.generate_test_types(['none'], True))
     @pytest.mark.parametrize("func_to_check", [
         iati.core.default.get_default_version_if_none,
@@ -26,7 +25,6 @@ class TestDefault(object):
 
 class TestDefaultCodelist(object):
     """A container for tests relating to default Codelists."""
-
 
     @pytest.fixture
     def codelist_name(self):
@@ -155,7 +153,6 @@ class TestDefaultSchemas(object):
 
 class TestDefaultModifications(object):
     """A container for tests relating to the ability to modify defaults."""
-
 
     @pytest.fixture
     def codelist_name(self):

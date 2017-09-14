@@ -145,7 +145,7 @@ def codelists(version=None):
     return _codelists(version)
 
 
-_SCHEMAS = defaultdict(lambda : defaultdict(dict))
+_SCHEMAS = defaultdict(lambda: defaultdict(dict))
 """A cache of loaded Schemas.
 
 This removes the need to repeatedly load a Schema from disk each time it is accessed.
