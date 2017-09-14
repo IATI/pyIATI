@@ -639,11 +639,11 @@ class RuleRegexMatches(Rule):
 
         super(RuleRegexMatches, self).__init__(context, case)
 
+        if self.regex == '':
+            raise ValueError
         try:
             re.compile(self.regex)
         except sre_constants.error:
-            raise ValueError
-        if self.regex == '':
             raise ValueError
 
     def __str__(self):
@@ -687,11 +687,11 @@ class RuleRegexNoMatches(Rule):
 
         super(RuleRegexNoMatches, self).__init__(context, case)
 
+        if self.regex == '':
+            raise ValueError
         try:
             re.compile(self.regex)
         except sre_constants.error:
-            raise ValueError
-        if self.regex == '':
             raise ValueError
 
     def __str__(self):
