@@ -170,7 +170,7 @@ def ruleset_schema(version=None):
     return json.loads(schema_str)
 
 
-_SCHEMAS = defaultdict(lambda : defaultdict(dict))
+_SCHEMAS = defaultdict(lambda: defaultdict(dict))
 """A cache of loaded Schemas.
 
 This removes the need to repeatedly load a Schema from disk each time it is accessed.
@@ -217,8 +217,8 @@ def _populate_schema(schema, version=None):
     version = get_default_version_if_none(version)
 
     codelists_to_add = codelists(version)
-    for codelist in codelists_to_add.values():
-        schema.codelists.add(codelist)
+    for codelist_to_add in codelists_to_add.values():
+        schema.codelists.add(codelist_to_add)
 
     schema.rulesets.add(ruleset(version))
 

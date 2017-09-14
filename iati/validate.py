@@ -3,6 +3,7 @@
 Warning:
     It is planned to change from Schema-based to Data-based Codelist validation. As such, this module will change significantly.
 """
+# pylint: disable=unused-argument
 
 
 def is_valid(dataset, schema):
