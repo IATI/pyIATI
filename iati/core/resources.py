@@ -358,14 +358,17 @@ def load_as_bytes(path):
         Ensure all reasonably possible OSErrors are documented here and in functions that call this.
         Add error handling for when the specified file does not exist.
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
+
     """
     return pkg_resources.resource_string(PACKAGE, path)
 
 
 def load_as_dataset(path):
     """Load a resource at the specified path into a dataset.
+
     Args:
         path (str): The path to the file that is to be read in.
+
     Returns:
         dataset: A Dataset object with the contents of the file at the specified location.
 
