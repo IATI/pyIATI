@@ -488,7 +488,6 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         """Return valid dataset for this Rule."""
         return iati.core.tests.utilities.load_as_dataset('valid_atleastone')
 
-
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
         assert 'must be present' in str(rule_instantiating)

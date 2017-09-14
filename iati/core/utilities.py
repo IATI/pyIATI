@@ -146,9 +146,9 @@ def dict_raise_on_duplicates(ordered_pairs):
     duplicate_free_dict = {}
     for key, value in ordered_pairs:
         if key in duplicate_free_dict:
-           raise ValueError("duplicate key: %r" % (key,))
+            raise ValueError("duplicate key: %r" % (key,))
         else:
-           duplicate_free_dict[key] = value
+            duplicate_free_dict[key] = value
     return duplicate_free_dict
 
 
