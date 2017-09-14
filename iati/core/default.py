@@ -197,7 +197,6 @@ def ruleset(version=None):
     return iati.core.Ruleset(ruleset_str)
 
 
-
 def ruleset_schema(version=None):
     """Return the specified Ruleset schema."""
     path = iati.core.resources.get_ruleset_path(iati.core.resources.FILE_RULESET_SCHEMA_NAME, version)

@@ -116,9 +116,6 @@ def get_all_schema_paths(version=None):
     Returns:
         list: A list of paths to all of the Schemas at the specified version of the Standard.
 
-    Warning:
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
-
     Todo:
         Add tests for version parameters that are invalid.
 
@@ -140,9 +137,6 @@ def get_all_activity_schema_paths(version=None):
     Returns:
         list of str: A list of paths to all of the activity Schemas at the specified version of the Standard.
 
-    Warning:
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
-
     Todo:
         Add tests for version parameters that are invalid.
 
@@ -163,9 +157,6 @@ def get_all_org_schema_paths(version=None):
 
     Returns:
         list: A list of paths to all of the organisation Schemas at the specified version of the Standard.
-
-    Warning:
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
     Todo:
         Add tests for version parameters that are invalid.
@@ -190,8 +181,6 @@ def get_codelist_path(codelist_name, version=None):
         Does not check whether the specified codelist actually exists.
 
     Warning:
-        Further exploration needs to be undertaken on how to handle pre-1.04 versions of the Standard.
-
         It needs to be determined how best to locate a user-defined Codelist that is available at a URL that needs fetching.
 
     """
@@ -249,14 +238,6 @@ def get_schema_path(name, version=None):
 
     Note:
         Does not check whether the specified schema actually exists.
-
-    Warning:
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
-
-    Todo:
-        Handle versions of the standard other than 2.02.
-
-        Test this.
 
     """
     return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
@@ -476,14 +457,12 @@ def load_as_dataset(path):
     Returns:
         dataset: A Dataset object with the contents of the file at the specified location.
 
-    Warning:
-        Should raise Exceptions when there are problems loading the requested data.
-
     Raises:
         FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
         ValueError: When a file at the specified path does not contain valid XML.
 
     Todo:
+        Ensure all reasonably possible OSErrors are documented here and in functions that call this.
         Add error handling for when the specified file does not exist.
 
     """

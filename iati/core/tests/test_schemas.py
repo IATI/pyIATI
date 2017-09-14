@@ -24,11 +24,12 @@ class TestSchemas(object):
         }
     ])
     def schema_initialised(self, request, standard_version_optional):
-        """Create and return a single ActivitySchema or OrganisaionSchema object.
-        For use where both ActivitySchema and OrganisaionSchema must produce the same result.
+        """Create and return a single ActivitySchema or OrganisationSchema object.
+
+        For use where both ActivitySchema and OrganisationSchema must produce the same result.
 
         Returns:
-            iati.core.Schema: An activity or organisaion Schema that has been initialised.
+            iati.core.Schema: An activity or organisation Schema that has been initialised.
 
         """
         schema_path = request.param['path_func'](*standard_version_optional)[0]
@@ -209,7 +210,7 @@ class TestSchemas(object):
 
     @pytest.mark.skip(reason='Not implemented')
     def test_schema_rulesets_add_twice(self, schema_initialised):
-        """Check that it is not possible to add the sameRulesets to a Schema multiple times.
+        """Check that it is not possible to add the same Rulesets to a Schema multiple times.
 
         Todo:
             Consider if this test should test against a versioned Ruleset.

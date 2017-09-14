@@ -95,7 +95,7 @@ class TestDefaultCodelist(object):
         codelists = iati.core.default.codelists(codelist_lengths_by_version.version)
 
         assert isinstance(codelists, dict)
-        assert len(codelists) == codelist_lengths_by_version.expected_length
+        assert len(codelists.values()) == codelist_lengths_by_version.expected_length
         for codelist in codelists.values():
             assert isinstance(codelist, iati.core.Codelist)
 
