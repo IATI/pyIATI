@@ -152,7 +152,9 @@ class ValidationErrorLog(object):
             bool: Whether there are errors within this error log.
 
         """
-        return len(self.get_errors()) > 0
+        errors = self.get_errors()
+
+        return len(errors) > 0
 
     def contains_warnings(self):
         """Determine whether there are warnings contained within the ErrorLog.
@@ -164,7 +166,9 @@ class ValidationErrorLog(object):
             bool: Whether there are warnings within this error log.
 
         """
-        return len(self.get_warnings()) > 0
+        warnings = self.get_warnings()
+
+        return len(warnings) > 0
 
     def extend(self, values):
         """Extend the ErrorLog with ValidationErrors from an iterable.
