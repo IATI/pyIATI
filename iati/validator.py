@@ -352,7 +352,7 @@ def _check_is_iati_xml(dataset, schema):
         validator.assertValid(dataset.xml_tree)
     except etree.DocumentInvalid as doc_invalid:
         for log_entry in doc_invalid.error_log:
-            error = _parse_lxml_log_entry(log_entry)
+            error = _create_error_for_lxml_log_entry(log_entry)
             error_log.add(error)
 
     return error_log
@@ -381,7 +381,7 @@ def _check_is_xml(maybe_xml):
         _ = etree.fromstring(maybe_xml.strip(), parser)
     except etree.XMLSyntaxError:
         for log_entry in parser.error_log:
-            error = _parse_lxml_log_entry(log_entry)
+            error = _create_error_for_lxml_log_entry(log_entry)
             error_log.add(error)
     except (AttributeError, TypeError, ValueError):
         problem_var_type = type(maybe_xml)
@@ -420,7 +420,7 @@ def _check_rules(dataset, ruleset):
             error_log.add(error)
         elif validation_status is False:
             # A result of `False` signifies that a rule did not pass.
-            error = _parse_ruleset_fail(rule)
+            error = _create_error_for_rule(rule)
             error_log.add(error)
             error_found = True
 
@@ -483,7 +483,7 @@ def _correct_codelist_values(dataset, schema):
     return not error_log.contains_errors()
 
 
-def _parse_lxml_log_entry(log_entry):
+def _create_error_for_lxml_log_entry(log_entry):
     """Parse a log entry from an lxml error log and convert it to a IATI ValidationError.
 
     Args:
@@ -531,7 +531,7 @@ def _parse_lxml_log_entry(log_entry):
     return error
 
 
-def _parse_ruleset_fail(rule):
+def _create_error_for_rule(rule):
     """Parse a Rule skip or failure and convert it into an IATI ValidationError.
 
     Args:
