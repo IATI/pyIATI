@@ -120,7 +120,7 @@ class TestDefaultCodelists(object):
         mapping = iati.core.default.codelist_mapping()
 
         assert mapping['Version'][0]['xpath'] == '//iati-activities/@version'
-        assert len(mapping['InvalidCodelistName']) == 0
+        assert mapping['InvalidCodelistName'] == list()
         for mapping_list in mapping.values():
             assert isinstance(mapping_list, list)
 
@@ -168,7 +168,7 @@ class TestDefaultRulesets(object):
         (
             'err-rule-regex-matches-conformance-fail',
             'invalid_std_ruleset_bad_identifier',
-            'Each instance of `reporting-org/@ref` and `iati-identifier` and `participating-org/@ref` and `transaction/provider-org/@ref` and `transaction/receiver-org/@ref` within each `//iati-activity` must match the regular expression `[^\\/\\&\\|\\?]+`.'  # noqa: disable=E501
+            'Each instance of `reporting-org/@ref` and `iati-identifier` and `participating-org/@ref` and `transaction/provider-org/@ref` and `transaction/receiver-org/@ref` within each `//iati-activity` must match the regular expression `[^\\/\\&\\|\\?]+`.'  # noqa: disable=E501 # pylint: disable=line-too-long
         ),
         (
             'err-rule-sum-conformance-fail',
