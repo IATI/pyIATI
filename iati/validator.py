@@ -87,7 +87,7 @@ class ValidationErrorLog(object):
         return iter(self._values)
 
     def __len__(self):
-        """The number of items in the ErrorLog."""
+        """Return the number of items in the ErrorLog."""
         return len(self._values)
 
     def __getitem__(self, key):
@@ -701,11 +701,11 @@ def is_xml(maybe_xml):
 def validate_is_iati_xml(dataset, schema):
     """Check whether a Dataset contains valid IATI XML.
 
-     Args:
-         dataset (iati.core.Dataset): The Dataset to check validity of.
+    Args:
+        dataset (iati.core.Dataset): The Dataset to check validity of.
 
-     Returns:
-         iati.validator.ValidationErrorLog: A log of the errors that occurred.
+    Returns:
+        iati.validator.ValidationErrorLog: A log of the errors that occurred.
 
     """
     return _check_is_iati_xml(dataset, schema)

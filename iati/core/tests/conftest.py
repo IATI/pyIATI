@@ -23,7 +23,7 @@ def codelist_lengths_by_version(request):
 
 @pytest.fixture
 def schema_ruleset():
-    """A schema with the Standard Ruleset added.
+    """Return a schema with the Standard Ruleset added.
 
     Returns:
         A valid Activity Schema with the Standard Ruleset added.

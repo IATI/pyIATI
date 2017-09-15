@@ -182,7 +182,7 @@ class Schema(object):
         return tree
 
     def validator(self):
-        """A schema that can be used for validation.
+        """Return a schema that can be used for validation.
 
         Takes the base schema and converts it into an object that lxml can deal with.
 
