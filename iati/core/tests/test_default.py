@@ -164,10 +164,14 @@ class TestDefaultRulesets(object):
     def test_default_ruleset_validation_rules_invalid(self, schema_ruleset, rule_error, invalid_dataset_name, info_text):
         """Check that the expected rule error is detected when validating files containing invalid data for that rule.
 
+        Note:
+            The fixed strings being checked here may be a tad annoying to maintain. `test_rule_string_output_general` and `test_rule_string_output_specific` in `test_rulesets.py` do something related for Rules. As such, something more generic may work better in the future.
+
         Todo:
             Consider whether this test should remove all warnings and assert that there is only the expected warning contained within the test file.
 
             Check that the expected missing elements appear the the help text for the given element.
+
         """
         data = iati.core.tests.utilities.load_as_dataset(invalid_dataset_name)
         result = iati.validator.full_validation(data, schema_ruleset)
