@@ -24,10 +24,13 @@ class TestRuleset(object):
         with pytest.raises(TypeError):
             iati.core.Ruleset()  # pylint: disable=no-value-for-parameter
 
-    def test_ruleset_init_ruleset_str_valid(self):
-        """Check that a Ruleset is created when given a JSON Ruleset in string format."""
-        ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": []}}}'
-
+    @pytest.mark.parametrize("ruleset_str", [
+        '{"CONTEXT": {"atleast_one": {"cases": []}}}',  # JSON string that has no Rules
+        ' ',  # whitespace only
+        ''  # empty string
+    ])
+    def test_ruleset_init_ruleset_valid_no_rules(self, ruleset_str):
+        """Check that a Ruleset is created when given a JSON Ruleset in string format even if it contains no Rules."""
         ruleset = iati.core.Ruleset(ruleset_str)
 
         assert isinstance(ruleset, iati.core.Ruleset)
@@ -142,6 +145,22 @@ class TestRuleset(object):
         """Check that a Dataset can be invalidated against the Standard Ruleset."""
         ruleset = iati.core.tests.utilities.RULESET_FOR_TESTING
         assert not ruleset.is_valid_for(invalid_dataset)
+
+    @pytest.mark.parametrize("dataset_name, rule_type, case", [
+        ('invalid_format_dateorder', 'date_order', {'less': 'element1', 'more': 'element2'}),
+        ('invalid_startswith', 'startswith', {'start': 'duplicateprefix', 'paths': ['element12']}),
+        ('invalid_sum', 'sum', {'paths': ['element42'], 'sum': 50}),
+    ])
+    def test_ruleset_is_invalid_for_valueerror(self, dataset_name, rule_type, case):
+        """Check that ValueErrors are correctly handled when checking a Ruleset."""
+        invalid_dataset = iati.core.tests.utilities.load_as_dataset(dataset_name)
+        rule_constructor = iati.core.rulesets.constructor_for_rule_type(rule_type)
+        rule = rule_constructor('//root_element', case)
+        ruleset = iati.core.Ruleset('')
+        ruleset.rules.add(rule)
+
+        with pytest.raises(ValueError):
+            ruleset.is_valid_for(invalid_dataset)
 
 
 class TestRule(object):
