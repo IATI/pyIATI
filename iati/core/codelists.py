@@ -122,7 +122,7 @@ class Codelist(object):
             etree.Element: An XSD simpleType representing this Codelist.
 
         Warning:
-            It is planned to change from Schema-based to Data-based Codelist validation. As such, this function may be removed.
+            It is planned to change from Schema-based to Data-based Codelist validation. As such, this property may be removed.
 
             The name attribute of the generated type is not good and needs changing.
 
@@ -219,7 +219,7 @@ class Code(object):
         """Output the Code as an etree enumeration element.
 
         Warning:
-            It is planned to change from Schema-based to Data-based Codelist validation. As such, this function may be removed.
+            It is planned to change from Schema-based to Data-based Codelist validation. As such, this property may be removed.
 
             Does not fully hide the lxml internal workings.
 
