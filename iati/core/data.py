@@ -159,7 +159,7 @@ class Dataset(object):
         """The version that this Dataset is specified against.
 
         Returns:
-            str / None: The version of this Dataset. None if the version cannot be detected.
+            str or None: The version of this Dataset. None if the version cannot be detected.
 
         Todo:
             Consider if this should raise an error if the Dataset is specified at a version that does not exist.
