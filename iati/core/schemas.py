@@ -8,10 +8,11 @@ import iati.core.utilities
 
 
 class Schema(object):
-    """Represenation of a Schema as defined within the IATI SSOT. This is used as a base class for ActivitySchema and OrganisationSchema and should not be instantiated directly.
+    """Representation of a Schema as defined within the IATI SSOT. This is used as a base class for ActivitySchema and OrganisationSchema and should not be instantiated directly.
 
     Attributes:
-        codelists (set): The Codelists asspciated with this Schema. This is a read-only attribute.
+        codelists (set): The Codelists associated with this Schema.
+        rulesets (set): The Rulesets associated with this Schema.
         ROOT_ELEMENT_NAME (str): The name of the root element within the XML Schema that the class represents.
 
     Warning:
@@ -19,8 +20,6 @@ class Schema(object):
 
     Todo:
         Determine a good API for accessing the XMLSchema that the iati.core.Schema represents.
-
-        Determine how to distinguish and handle the different types of Schema - activity, organisation, codelist, other.
 
     """
 
@@ -43,8 +42,6 @@ class Schema(object):
             Need to define a good API for accessing public and private attributes. Requiring something along the lines of `schema.schema` is likely not ideal. An improved understanding of use cases will be required for this.
 
         Todo:
-            Allow for generation of schemas outside the IATI SSOT.
-
             Better use the try-except pattern.
 
             Allow the base schema to be modified after initialisation.
@@ -183,12 +180,12 @@ class Schema(object):
 
 
 class ActivitySchema(Schema):
-    """Represenation of an IATI Activity Schema as defined within the IATI SSOT."""
+    """Representation of an IATI Activity Schema as defined within the IATI SSOT."""
 
     ROOT_ELEMENT_NAME = 'iati-activities'
 
 
 class OrganisationSchema(Schema):
-    """Represenation of an IATI Organisation Schema as defined within the IATI SSOT."""
+    """Representation of an IATI Organisation Schema as defined within the IATI SSOT."""
 
     ROOT_ELEMENT_NAME = 'iati-organisations'
