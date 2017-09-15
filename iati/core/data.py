@@ -170,9 +170,9 @@ class Dataset(object):
         version_iati_root = root_tree.get('version', assumed_version_if_no_version_stated)
 
         if version_iati_root.startswith('1'):
-            # Version 1 data, so need to check that all child `iati-activity` elements are at the same version
+            # Version 1 data, so need to check that all child `iati-activity` or `iati-organisation` elements are at the same version
             versions_in_children = list()
-            for child_tree in root_tree.findall('iati-activity'):
+            for child_tree in root_tree.getchildren():  # This is expected to return a list of `iati-activity` or `iati-organisation` elements.
                 activity_version = child_tree.get('version', assumed_version_if_no_version_stated)
                 versions_in_children.append(activity_version)
 

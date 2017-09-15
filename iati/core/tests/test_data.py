@@ -3,6 +3,7 @@
 Todo:
     Implement tests for strict checking once validation work is underway.
 """
+import collections
 import math
 from future.standard_library import install_aliases
 from lxml import etree
@@ -412,90 +413,99 @@ class TestDatasetSourceFinding(object):
 class TestDatasetVersionDetection(object):
     """A container for tests relating to detecting the version of a Dataset."""
 
+    @pytest.fixture(params=[
+        ('iati-activities', 'iati-activity'),
+        ('iati-organisations', 'iati-organisation')
+    ])
+    def iati_tag_names(self, request):
+        """Return the tag names for an activity or organisaion dataset."""
+        output = collections.namedtuple('output', 'root_element child_element')
+        return output(root_element=request.param[0], child_element=request.param[1])
+
     @pytest.mark.parametrize("version", iati.core.default.get_versions_by_integer()[1])
-    def test_detect_version_v1_simple(self, version):
+    def test_detect_version_v1_simple(self, iati_tag_names, version):
         """Check that a version 1 dataset is detected correctly."""
         data = iati.core.Dataset("""
-        <iati-activities version="{0}">
-            <iati-activity version="{0}"></iati-activity>
-            <iati-activity version="{0}"></iati-activity>
-            <iati-activity version="{0}"></iati-activity>
-        </iati-activities>
-        """.format(version))
+        <{0} version="{1}">
+            <{2} version="{1}"></{2}>
+            <{2} version="{1}"></{2}>
+            <{2} version="{1}"></{2}>
+        </{0}>
+        """.format(iati_tag_names.root_element, version, iati_tag_names.child_element))
         result = data.version
 
         assert result == version
 
-    def test_detect_version_explicit_iati_activities_mismatch_explicit_iati_activity(self):
+    def test_detect_version_explicit_parent_mismatch_explicit_child(self, iati_tag_names):
         data = iati.core.Dataset("""
-        <iati-activities version="1.02">
-            <iati-activity version="1.02"></iati-activity>
-            <iati-activity version="1.02"></iati-activity>
-            <iati-activity version="1.03"></iati-activity>
-        </iati-activities>
-        """)
+        <{0} version="1.02">
+            <{1} version="1.02"></{1}>
+            <{1} version="1.02"></{1}>
+            <{1} version="1.03"></{1}>
+        </{0}>
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element))
         result = data.version
 
         assert result is None
 
-    def test_detect_version_implicit_iati_activities_matches_implicit_iati_activity(self):
+    def test_detect_version_implicit_parent_matches_implicit_child(self, iati_tag_names):
         data = iati.core.Dataset("""
-        <iati-activities>
-            <iati-activity></iati-activity>
-            <iati-activity></iati-activity>
-            <iati-activity></iati-activity>
-        </iati-activities>
-        """)
+        <{0}>
+            <{1}></{1}>
+            <{1}></{1}>
+            <{1}></{1}>
+        </{0}>
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element))
         result = data.version
 
         assert result == '1.01'
 
-    def test_detect_version_explicit_iati_activities_matches_implicit_iati_activity(self):
+    def test_detect_version_explicit_parent_matches_implicit_child(self, iati_tag_names):
         data = iati.core.Dataset("""
-        <iati-activities version='1.01'>
-            <iati-activity></iati-activity>
-            <iati-activity></iati-activity>
-            <iati-activity></iati-activity>
-        </iati-activities>
-        """)
+        <{0} version='1.01'>
+            <{1}></{1}>
+            <{1}></{1}>
+            <{1}></{1}>
+        </{0}>
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element))
         result = data.version
 
         assert result == '1.01'
 
-    def test_detect_version_explicit_iati_activities_mismatch_implicit_iati_activity(self):
+    def test_detect_version_explicit_parent_mismatch_implicit_child(self, iati_tag_names):
         data = iati.core.Dataset("""
-        <iati-activities version='1.02'>
-            <iati-activity></iati-activity>
-            <iati-activity></iati-activity>
-            <iati-activity></iati-activity>
-        </iati-activities>
-        """)
+        <{0} version='1.02'>
+            <{1}></{1}>
+            <{1}></{1}>
+            <{1}></{1}>
+        </{0}>
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element))
         result = data.version
 
         assert result is None
 
-    def test_detect_version_imlicit_iati_activities_mismatch_explicit_iati_activity(self):
+    def test_detect_version_imlicit_parent_mismatch_explicit_child(self, iati_tag_names):
         data = iati.core.Dataset("""
-        <iati-activities>
-            <iati-activity version="1.02"></iati-activity>
-            <iati-activity></iati-activity>
-            <iati-activity></iati-activity>
-        </iati-activities>
-        """)
+        <{0}>
+            <{1} version="1.02"></{1}>
+            <{1}></{1}>
+            <{1}></{1}>
+        </{0}>
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element))
         result = data.version
 
         assert result is None
 
     @pytest.mark.parametrize("version", iati.core.default.get_versions_by_integer()[2])
-    def test_detect_version_v2_simple(self, version):
+    def test_detect_version_v2_simple(self, iati_tag_names, version):
         """Check that a version 2 dataset is detected correctly."""
         data = iati.core.Dataset("""
-        <iati-activities version="{0}">
-            <iati-activity></iati-activity>
-            <iati-activity></iati-activity>
-            <iati-activity></iati-activity>
-        </iati-activities>
-        """.format(version))
+        <{0} version="{1}">
+            <{2}></{2}>
+            <{2}></{2}>
+            <{2}></{2}>
+        </{0}>
+        """.format(iati_tag_names.root_element, version, iati_tag_names.child_element))
         result = data.version
 
         assert result == version
