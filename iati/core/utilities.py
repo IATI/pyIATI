@@ -35,7 +35,7 @@ def add_namespace(tree, new_ns_name, new_ns_uri):
         Tidy this up.
 
     """
-    if not isinstance(tree, etree._ElementTree):
+    if not isinstance(tree, etree._ElementTree):  # pylint: disable=protected-access
         msg = "The `tree` parameter must be of type `etree._ElementTree` - it was of type {0}".format(type(tree))
         iati.core.utilities.log_error(msg)
         raise TypeError(msg)
@@ -143,13 +143,13 @@ def dict_raise_on_duplicates(ordered_pairs):
         dict: A dictionary constructed from `ordered_pairs`.
 
     """
-    d = {}
-    for k, v in ordered_pairs:
-        if k in d:
-           raise ValueError("duplicate key: %r" % (k,))
+    duplicate_free_dict = {}
+    for key, value in ordered_pairs:
+        if key in duplicate_free_dict:
+            raise ValueError("duplicate key: %r" % (key,))
         else:
-           d[k] = v
-    return d
+            duplicate_free_dict[key] = value
+    return duplicate_free_dict
 
 
 def log(lvl, msg, *args, **kwargs):

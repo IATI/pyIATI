@@ -25,7 +25,7 @@ It is planned that different sections of the library, such as `validate` are spl
 General Installation for System Use
 ===================================
 
-```
+```shell
 # install software dependencies
 apt-get install python-pip libxml2-dev libxslt-dev python-dev
 
@@ -38,7 +38,7 @@ Documentation
 
 At present, an HTML documentation site can be generated using the following commands:
 
-```
+```shell
 # to build the documentation
 sphinx-apidoc -f -o docs/source/ iati/
 sphinx-build -b html docs/source/ docs/build/
@@ -60,7 +60,7 @@ A number of default IATI `.xsd` schema files are included as part of the library
 
 The following example loads the default IATI v2.02 `iati-activities-schema.xsd` schema:
 
-```
+```python
 import iati.core.default
 schema = iati.core.default.schema('iati-activities-schema')
 ```
@@ -71,16 +71,16 @@ Helper functions will be written in due course to return all xpaths within a sch
 
 A given IATI codelist can be added to the schema. Example using the [Country](http://iatistandard.org/codelists/Country/) codelist.
 
-```
+```python
 import iati.core.default
 schema.codelists.add(iati.core.default.codelist('Country'))
 ```
 
 The default collection of IATI codelists can be added using:
 
-```
+```python
 import iati.core.default
-for _, codelist in iati.core.default.codelists().items():
+for codelist in iati.core.default.codelists().values():
     schema.codelists.add(codelist)
 ```
 
@@ -116,7 +116,7 @@ To be added.
 
 #### Loading a dataset
 
-```
+```python
 import iati.core.data
 
 # Load a local file
@@ -135,7 +135,7 @@ dataset = iati.core.Dataset(dataset_as_string)
 
 The `Dataset` object contains an `xml_tree` attribute (itself an `lxml.etree` object). [XPath expessions](https://www.w3schools.com/xml/xpath_intro.asp) can be used to extract desired information from the dataset.  For example:
 
-```
+```python
 # WARNING: The following examples assume the source dataset file is produced in IATI v2.x format
 
 # Show the activities contained within the dataset
@@ -161,7 +161,7 @@ This code supports Python 2.7 and 3.4+. We advise use of Python 3.5 (or above) a
 Dev Installation
 ================
 
-```
+```shell
 # install software development dependencies
 apt-get install python-pip python-virtualenv
 
@@ -177,7 +177,7 @@ pip install -r requirements-dev.txt
 Tests
 =====
 
-```
+```shell
 # to run the tests
 py.test iati/
 
