@@ -6,7 +6,6 @@ Todo:
     Handle multiple versions of the Standard rather than limiting to the latest.
     Implement more than Codelists.
 """
-import math
 import os
 from collections import defaultdict
 from copy import deepcopy
@@ -33,23 +32,6 @@ def get_default_version_if_none(version):
     elif version not in iati.core.constants.STANDARD_VERSIONS:
         raise ValueError("Version {0} is not a valid version of the IATI Standard.".format(version))
     return version
-
-
-def get_versions_by_integer():
-    """Returns a dictionary containing versions grouped by the integer version that they fall within.
-
-    Returns:
-        dict: Containing the integer version (as keys) and the versions contained within these (as values).
-    """
-    dict_major_versions = dict()
-    for major_version in iati.core.constants.STANDARD_VERSIONS_MAJOR:
-        dict_major_versions[major_version] = []
-
-    for version in iati.core.constants.STANDARD_VERSIONS:
-        major_version_group = int(math.floor(float(version)))
-        dict_major_versions[major_version_group].append(version)
-
-    return dict_major_versions
 
 
 _CODELISTS = defaultdict(dict)

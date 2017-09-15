@@ -1,5 +1,6 @@
 """A module containing utility functions."""
 import logging
+import math
 import os
 from io import StringIO
 from lxml import etree
@@ -122,6 +123,23 @@ def convert_xml_to_tree(xml):
         msg = "To parse XML into a tree, the XML must be a string, not a {0}.".format(type(xml))
         iati.core.utilities.log_error(msg)
         raise ValueError(msg)
+
+
+def get_versions_by_integer():
+    """Returns a dictionary containing versions grouped by the integer version that they fall within.
+
+    Returns:
+        dict: Containing the integer version (as keys) and the versions contained within these (as values).
+    """
+    dict_major_versions = dict()
+    for major_version in iati.core.constants.STANDARD_VERSIONS_MAJOR:
+        dict_major_versions[major_version] = []
+
+    for version in iati.core.constants.STANDARD_VERSIONS:
+        major_version_group = int(math.floor(float(version)))
+        dict_major_versions[major_version_group].append(version)
+
+    return dict_major_versions
 
 
 def log(lvl, msg, *args, **kwargs):

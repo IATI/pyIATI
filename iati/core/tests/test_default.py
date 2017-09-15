@@ -1,5 +1,4 @@
 """A module containing tests for the library representation of default values."""
-import itertools
 import pytest
 import iati.core.codelists
 import iati.core.constants
@@ -240,17 +239,3 @@ class TestDefaultModifications(object):
 
         assert len(default_schema.codelists) == base_codelist_count + 1
         assert len(unmodified_schema.codelists) == base_codelist_count
-
-
-class TestDefaultVersions(object):
-    """A container for tests relating to default versions."""
-
-    def test_get_versions_by_integer(self):
-        result = iati.core.default.get_versions_by_integer()
-        all_versions = list(itertools.chain.from_iterable(result.values()))
-
-        assert sorted(result.keys()) == sorted(iati.core.constants.STANDARD_VERSIONS_MAJOR)
-        assert sorted(all_versions) == sorted(iati.core.constants.STANDARD_VERSIONS)
-        for integer_version, versions_in_integer in result.items():
-            for version in versions_in_integer:
-                assert version.startswith(str(integer_version))
