@@ -413,13 +413,12 @@ def _check_rules(dataset, ruleset):
     error_found = False
 
     for rule in ruleset.rules:
-        result_rule_validation = rule.is_valid_for(dataset)
-        if result_rule_validation is None:
+        validation_status = rule.is_valid_for(dataset)
+        if validation_status is None:
             # A result of `None` signifies that a rule was skipped.
             error = ValidationError('warn-rule-skipped', locals())
             error_log.add(error)
-
-        elif result_rule_validation is False:
+        elif validation_status is False:
             # A result of `False` signifies that a rule did not pass.
             error = _parse_ruleset_fail(rule)
             error_log.add(error)
