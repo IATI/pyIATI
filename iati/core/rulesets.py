@@ -61,7 +61,7 @@ class Ruleset(object):
 
     """
 
-    def __init__(self, ruleset_str):
+    def __init__(self, ruleset_str=None):
         """Initialise a Ruleset.
 
         Args:
@@ -72,6 +72,9 @@ class Ruleset(object):
             ValueError: When a `ruleset_str` does not validate against the Ruleset Schema or cannot be correctly decoded.
 
         """
+        if ruleset_str is None:
+            ruleset_str = ''
+
         try:
             self.ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
         except TypeError:

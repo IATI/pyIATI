@@ -20,9 +20,12 @@ class TestRuleset(object):
     """A container for tests relating to Rulesets."""
 
     def test_ruleset_init_no_parameters(self):
-        """Check that a Ruleset cannot be created when no parameters are given."""
-        with pytest.raises(TypeError):
-            iati.core.Ruleset()  # pylint: disable=no-value-for-parameter
+        """Check that an empty Ruleset can be created when no parameters are given."""
+        ruleset = iati.core.Ruleset()
+
+        assert isinstance(ruleset, iati.core.Ruleset)
+        assert isinstance(ruleset.rules, set)
+        assert ruleset.rules == set()
 
     @pytest.mark.parametrize("ruleset_str", [
         '{"CONTEXT": {"atleast_one": {"cases": []}}}',  # JSON string that has no Rules
@@ -37,7 +40,7 @@ class TestRuleset(object):
         assert isinstance(ruleset.rules, set)
         assert ruleset.rules == set()
 
-    @pytest.mark.parametrize("not_a_ruleset", iati.core.tests.utilities.generate_test_types(['str', 'bytearray'], True))
+    @pytest.mark.parametrize("not_a_ruleset", iati.core.tests.utilities.generate_test_types(['str', 'bytearray', 'none'], True))
     def test_ruleset_init_ruleset_str_not_str(self, not_a_ruleset):
         """Check that a Ruleset cannot be created when given at least one Rule in a non-string format."""
         with pytest.raises(ValueError):
