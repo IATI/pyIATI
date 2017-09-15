@@ -78,13 +78,14 @@ class Codelist(object):
         self.codes = set()
         self.name = name
 
-        self.name_prose = None
-        self.description = None
-        self.language = None
-        self.url = None
-        self.ref = None
-        self.category_codelist = None
-        self.complete = None
+        # a number of placeholder attributes that Codelists have, though are not yet implemented
+        self._name_prose = None
+        self._description = None
+        self._language = None
+        self._url = None
+        self._ref = None
+        self._category_codelist = None
+        self._complete = None
 
         if xml:
             parse_from_xml(xml)
@@ -183,13 +184,14 @@ class Code(object):
         self.name = name
         self.value = value
 
-        self.description = None
-        self.category = None
-        self.url = None
-        self.public_database = False
-        self.status = None
-        self.activation_date = None
-        self.withdrawal_date = None
+        # a number of placeholder attributes that Codelists have, though are not yet implemented
+        self._description = None
+        self._category = None
+        self._url = None
+        self._public_database = False
+        self._status = None
+        self._activation_date = None
+        self._withdrawal_date = None
 
     def __eq__(self, other):
         """Check Code equality.
