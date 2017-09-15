@@ -65,7 +65,8 @@ class ValidationError(object):
 
 class ValidationErrorLog(object):
     """A container to keep track of a set of ValidationErrors.
-    This acts and an iterable, so that ValidationErrors can be looped over.
+
+    This acts as an iterable that ValidationErrors can be looped over.
 
     ValidationErrors may be added to the log.
 
