@@ -1177,7 +1177,8 @@ class TestRuleSum(RuleSubclassTestBase):
         {'paths': ['element35/@attribute', 'element36/@attribute'], 'sum': 2.99792458e6},
         {'paths': ['element37'], 'sum': 50},  # duplicate elements in data **
         {'paths': ['element42', 'element43'], 'sum': 0.3},  # sum to value that cannot be represented using standard binary representation
-        {'paths': ['element44/@attribute', 'element45/@attribute'], 'sum': 0.3}
+        {'paths': ['element44/@attribute', 'element45/@attribute'], 'sum': 0.3},
+        {'paths': ['element46'], 'sum': 50}  # whitespace around numeric value
     ]
 
     uninstantiating_cases = [
@@ -1216,8 +1217,7 @@ class TestRuleSum(RuleSubclassTestBase):
         {'paths': ['element33/@attribute', 'element34/@attribute'], 'sum': float(-10**100)},
         {'paths': ['element17', 'element18'], 'sum': 2.99792458e6},  # exponential sum
         {'paths': ['element35/@attribute', 'element36/@attribute'], 'sum': 2.99792458e6},
-        {'paths': ['element37'], 'sum': 50},  # duplicate elements in data **,
-        {'paths': ['element42'], 'sum': 50}  # non-numeric value
+        {'paths': ['element37'], 'sum': 50}  # duplicate elements in data **
     ]
 
     nest_cases = [
@@ -1273,6 +1273,15 @@ class TestRuleSum(RuleSubclassTestBase):
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
         assert 'sum of values' in str(rule_instantiating)
+
+    @pytest.mark.parametrize("test_case", [
+        {'paths': ['element42'], 'sum': 50}  # non-numeric value
+    ])
+    def test_non_numeric_value_raise_error(self, valid_single_context, rule_constructor, test_case, invalid_dataset):
+        """Check that an error is raised when the specified XPath for `start` returns multiple elements."""
+        rule = rule_constructor(valid_single_context, test_case)
+        with pytest.raises(ValueError):
+            rule.is_valid_for(invalid_dataset)
 
     def test_no_values_to_sum_skips(self, valid_single_context, rule_constructor, valid_dataset):
         """Check that the Rule is skipped if no values are found to compare to the value of `sum`."""

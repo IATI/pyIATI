@@ -10,6 +10,7 @@ Todo:
 
 """
 # no-member errors are due to using `setattr()` # pylint: disable=no-member
+import decimal
 import json
 import re
 import sre_constants
@@ -362,6 +363,7 @@ class Rule(object):
 
         Raises:
             TypeError: When a Dataset is not given as an argument.
+            ValueError: When a check encounters a completely incorrect value that it is unable to recover from within the definition of the Rule.
 
         Note:
             May be overridden in child class that does not have the same return structure for boolean results.
@@ -799,6 +801,9 @@ class RuleSum(Rule):
                   Return `False` when the `path` values do not total to the `sum` value.
             None: When no elements are found for the specified `paths`.
 
+        Raises:
+            ValueError: When the `path` value is not numeric.
+
         """
         unique_paths = set(self.paths)
         values_in_context = list()
@@ -806,7 +811,10 @@ class RuleSum(Rule):
         for path in unique_paths:
             values_to_sum = self._extract_text_from_element_or_attribute(context_element, path)
             for value in values_to_sum:
-                values_in_context.append(Decimal(value))
+                try:
+                    values_in_context.append(Decimal(value))
+                except decimal.InvalidOperation:
+                    raise ValueError
 
         if values_in_context == list():
             return None
