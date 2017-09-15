@@ -70,6 +70,12 @@ class ValidationErrorLog(object):
 
     ValidationErrors may be added to the log.
 
+    Warning:
+        It is highly likely that the methods available on a `ValidationErrorLog` will change name. At present the mix of errors, warnings and the combination of the two is confusing. This needs rectifying.
+
+    Todo:
+        Make the mix of errors, warnings and both returned by functions clearer, while not being hugely long-winded (`errors_and_warnings`-esque).
+
     """
 
     def __init__(self):
