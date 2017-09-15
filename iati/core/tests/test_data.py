@@ -468,6 +468,16 @@ class TestDatasetVersionDetection(object):
         <{0} version='1.01'>
             <{1}></{1}>
             <{1}></{1}>
+        </{0}>
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element))
+        result = data.version
+
+        assert result == '1.01'
+
+    def test_detect_version_implicit_parent_matches_explicit_and_implicit_child(self, iati_tag_names):
+        data = iati.core.Dataset("""
+        <{0}>
+            <{1} version='1.01'></{1}>
             <{1}></{1}>
         </{0}>
         """.format(iati_tag_names.root_element, iati_tag_names.child_element))
