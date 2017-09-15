@@ -428,13 +428,13 @@ class TestDatasetVersionDetection(object):
         Also checks that version numbers containing whitespace do not affect version detection.
         """
         data = iati.core.Dataset("""
-        <{0} version="{1}">
-            <{2} version="{1}"></{2}>
-            <{2} version="{1}  "></{2}>
-            <{2} version="   {1}"></{2}>
-            <{2} version="   {1}   "></{2}>
+        <{0} version="{2}">
+            <{1} version="{2}"></{1}>
+            <{1} version="{2}  "></{1}>
+            <{1} version="   {2}"></{1}>
+            <{1} version="   {2}   "></{1}>
         </{0}>
-        """.format(iati_tag_names.root_element, version, iati_tag_names.child_element))
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element, version))
         result = data.version
 
         assert result == version
@@ -509,11 +509,11 @@ class TestDatasetVersionDetection(object):
     def test_detect_version_v2_simple(self, iati_tag_names, version):
         """Check that a version 2 dataset is detected correctly."""
         data = iati.core.Dataset("""
-        <{0} version="{1}">
-            <{2}></{2}>
-            <{2}></{2}>
+        <{0} version="{2}">
+            <{1}></{1}>
+            <{1}></{1}>
         </{0}>
-        """.format(iati_tag_names.root_element, version, iati_tag_names.child_element))
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element, version))
         result = data.version
 
         assert result == version
