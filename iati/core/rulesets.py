@@ -9,6 +9,7 @@ Todo:
     Remove references to `case`.
 
 """
+# no-member errors are due to using `setattr()` # pylint: disable=no-member
 import json
 import re
 import sre_constants
