@@ -6,48 +6,49 @@ import iati.core.utilities
 
 
 class Dataset(object):
-    """Representation of an IATI XML file that may be validated against a schema.
+    """Representation of an IATI XML file that may be validated against a Schema.
 
     Attributes:
-        xml_str (str): A string representation of the XML being represented.
-        xml_tree (ElementTree): A tree representation of the XML being represented.
+        xml_str (str): An XML string representation of the Dataset.
+        xml_tree (ElementTree): A tree representation of the Dataset.
 
     Note:
-        The current content of the dataset is deemed to be that which was last asigned to either `self.xml_str` or `self.xml_tree`.
+        Should it be modified after initialisation, the current content of the Dataset is deemed to be that which was last asigned to either `self.xml_str` or `self.xml_tree`.
 
     Warning:
         The behaviour of simultaneous assignment to both `self.xml_str` and `self.xml_tree` is undefined.
 
-        `xml_str` and `xml_tree` are not great names. They are also too tied together. It should be determined whether this close relationship is really desired.
-
         Does not fully hide the lxml internal workings.
 
     Todo:
+        `xml_str` and `xml_tree` are not great names. They are also too tied together. It should be determined whether this close relationship is really desired.
+
+        Implement a number of helper functions for common operations.
+
         Implement getters and setters for attributes.
 
-        Implement an addition override to allow for combation of datasets.
+        Implement an addition override to allow for combation of Datasets.
 
     """
 
     def __init__(self, xml):
-        """Initialise a dataset.
+        """Initialise a Dataset.
 
         Args:
-            xml (str/ElementTree): A representation of the XML to encapsulate.
-                May be either a string or an ElementTree.
+            xml (str or ElementTree): A representation of the XML to encapsulate.
+                May be either a string or a lxml ElementTree.
 
         Raises:
             TypeError: If an attempt to pass something that is not a string or ElementTree is made.
             ValueError: If a provided XML string is not valid XML.
-            iati.core.exceptions.ValidationError:
-                If the provided XML should conform to the IATI standard, but does not.
 
         Warning:
-            It should be possible to create a dataset from a file. In this situation, having `xml` as a required parameter does not seem sensible. Need to better consider this situation.
+            The required parameters to create a Dataset may change. See the TODO.
 
         Todo:
-            Undertake validation.
-            Add a way to determine whether a dataset fully conforms to the IATI standard and / or modify the dataset so that it does.
+            It should be possible to create a Dataset from a file. In this situation, having `xml` as a required parameter does not seem sensible. Need to better consider this situation.
+
+            Add a way to determine whether a Dataset fully conforms to the IATI Standard and / or modify the Dataset so that it does.
 
         """
         self._xml_str = None
@@ -60,15 +61,16 @@ class Dataset(object):
 
     @property
     def xml_str(self):
-        """Return a string representation of the XML being represented.
+        """str: An XML string representation of the Dataset.
 
         Raises:
             ValueError: If a value that is being assigned is not a valid XML string.
-            TypeError: If a value that is being assigned is not a string at all.
+            TypeError: If a value that is being assigned is not a string.
 
         Todo:
             Clarify error messages, for example when a mismatched encoding is used.
-            Perhaps pass on the original lxml error message instead of trying to intrepret what might have gone wrong when running etree.fromstring.
+
+            Perhaps pass on the original lxml error message instead of trying to intrepret what might have gone wrong when running `etree.fromstring()`.
 
         """
         return self._xml_str
@@ -103,7 +105,7 @@ class Dataset(object):
 
     @property
     def xml_tree(self):
-        """Return a tree representation of the XML being represented.
+        """ElementTree: A tree representation of the Dataset.
 
         Raises:
             TypeError: If a value that is being assigned is not an ElementTree.
