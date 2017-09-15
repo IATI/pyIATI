@@ -19,7 +19,7 @@ class TestSchemas(object):
             "schema_class": iati.core.ActivitySchema
         },
         {
-            "path_func": iati.core.resources.get_all_org_schema_paths,
+            "path_func": iati.core.resources.get_all_organisation_schema_paths,
             "schema_class": iati.core.OrganisationSchema
         }
     ])

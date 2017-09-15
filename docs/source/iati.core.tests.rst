@@ -1,83 +1,91 @@
-iati\.core\.tests package
-=========================
+iati.core.tests package
+=======================
 
 Submodules
 ----------
 
-iati\.core\.tests\.test\_codelists module
------------------------------------------
+iati.core.tests.conftest module
+-------------------------------
+
+.. automodule:: iati.core.tests.conftest
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+iati.core.tests.test_codelists module
+-------------------------------------
 
 .. automodule:: iati.core.tests.test_codelists
     :members:
     :undoc-members:
     :show-inheritance:
 
-iati\.core\.tests\.test\_constants module
------------------------------------------
+iati.core.tests.test_constants module
+-------------------------------------
 
 .. automodule:: iati.core.tests.test_constants
     :members:
     :undoc-members:
     :show-inheritance:
 
-iati\.core\.tests\.test\_data module
-------------------------------------
+iati.core.tests.test_data module
+--------------------------------
 
 .. automodule:: iati.core.tests.test_data
     :members:
     :undoc-members:
     :show-inheritance:
 
-iati\.core\.tests\.test\_default module
----------------------------------------
+iati.core.tests.test_default module
+-----------------------------------
 
 .. automodule:: iati.core.tests.test_default
     :members:
     :undoc-members:
     :show-inheritance:
 
-iati\.core\.tests\.test\_resources module
------------------------------------------
+iati.core.tests.test_resources module
+-------------------------------------
 
 .. automodule:: iati.core.tests.test_resources
     :members:
     :undoc-members:
     :show-inheritance:
 
-iati\.core\.tests\.test\_rulesets module
-----------------------------------------
+iati.core.tests.test_rulesets module
+------------------------------------
 
 .. automodule:: iati.core.tests.test_rulesets
     :members:
     :undoc-members:
     :show-inheritance:
 
-iati\.core\.tests\.test\_schemas module
----------------------------------------
+iati.core.tests.test_schemas module
+-----------------------------------
 
 .. automodule:: iati.core.tests.test_schemas
     :members:
     :undoc-members:
     :show-inheritance:
 
-iati\.core\.tests\.test\_test module
-------------------------------------
+iati.core.tests.test_test module
+--------------------------------
 
 .. automodule:: iati.core.tests.test_test
     :members:
     :undoc-members:
     :show-inheritance:
 
-iati\.core\.tests\.test\_utilities module
------------------------------------------
+iati.core.tests.test_utilities module
+-------------------------------------
 
 .. automodule:: iati.core.tests.test_utilities
     :members:
     :undoc-members:
     :show-inheritance:
 
-iati\.core\.tests\.utilities module
------------------------------------
+iati.core.tests.utilities module
+--------------------------------
 
 .. automodule:: iati.core.tests.utilities
     :members:
