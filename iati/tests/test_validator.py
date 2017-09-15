@@ -825,7 +825,7 @@ class TestValidateRulesets(object):
     """A container for tests relating to validation of Rulesets."""
 
     def test_basic_validation_ruleset_valid(self, schema_ruleset):
-        """Perform data validation against valid IATI XML that has valid Codelist values."""
+        """Perform data validation against valid IATI XML that is valid against the Standard Ruleset."""
         data = iati.core.tests.utilities.load_as_dataset('valid_std_ruleset')
 
         assert iati.validator.is_xml(data.xml_str)
@@ -834,7 +834,7 @@ class TestValidateRulesets(object):
 
     @pytest.mark.parametrize("invalid_xml_file", ['invalid_std_ruleset_bad_date_order', 'invalid_std_ruleset_bad_identifier', 'invalid_std_ruleset_does_not_sum_100', 'invalid_std_ruleset_missing_sector_element'])
     def test_basic_validation_ruleset_invalid(self, schema_ruleset, invalid_xml_file):
-        """Perform data validation against valid IATI XML that does not conform to the default Ruleset."""
+        """Perform data validation against valid IATI XML that does not conform to the Standard Ruleset."""
         data = iati.core.tests.utilities.load_as_dataset(invalid_xml_file)
 
         assert iati.validator.is_xml(data.xml_str)
@@ -842,7 +842,7 @@ class TestValidateRulesets(object):
         assert not iati.validator.is_valid(data, schema_ruleset)
 
     def test_one_ruleset_error_added_for_multiple_rule_errors(self, schema_ruleset):
-        """Check that a dataset containing multiple rule errors produces an error log containing only one ruleset error."""
+        """Check that a Dataset containing multiple Rule errors produces an error log containing only one Ruleset error."""
         data_with_multiple_rule_errors = iati.core.tests.utilities.load_as_dataset('invalid_std_ruleset_multiple_rule_errors')
         result = iati.validator.full_validation(data_with_multiple_rule_errors, schema_ruleset)
 
@@ -850,7 +850,7 @@ class TestValidateRulesets(object):
         assert len(result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')) == 1
 
     def test_no_ruleset_errors_added_for_rule_warnings(self, schema_ruleset):
-        """Check that a dataset containing only rule warnings does not result in a ruleset error being added."""
+        """Check that a Dataset containing only Rule warnings does not result in a Ruleset error being added."""
         data_with_rule_warnings_only = iati.core.tests.utilities.load_as_dataset('valid_std_ruleset')
         result = iati.validator.full_validation(data_with_rule_warnings_only, schema_ruleset)
 
