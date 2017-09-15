@@ -22,7 +22,7 @@ STANDARD_VERSION_LATEST = max(STANDARD_VERSIONS)
 """The latest version of the IATI Standard."""
 
 STANDARD_VERSIONS_MAJOR = list(set([
-    int(math.floor(float(v))) for v in STANDARD_VERSIONS
+    int(version.split('.', 1)[0]) for version in STANDARD_VERSIONS
 ]))
 """The major versions of the IATI Standard."""
 
