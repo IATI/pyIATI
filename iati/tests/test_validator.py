@@ -931,3 +931,10 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
         assert len(result) == 1
         assert result.contains_error_called('err-not-xml-empty-document')
 
+    def test_full_validation_avoid_parent_problems(self):
+        """Check that a fully populated Schema against a Dataset with various problems."""
+        data_with_multiple_rule_errors = iati.core.tests.utilities.load_as_dataset('invalid_std_ruleset_multiple_rule_errors')
+        schema = iati.core.default.activity_schema()
+        result = iati.validator.full_validation(data_with_multiple_rule_errors, schema)
+
+        assert not result.contains_errors()
