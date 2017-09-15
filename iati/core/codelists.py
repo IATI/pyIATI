@@ -112,7 +112,8 @@ class Codelist(object):
         """
         return hash((self.name, tuple(self.codes)))
 
-    def xsd_tree(self):
+    @property
+    def xsd_enumeration(self):
         """Output the Codelist as an XSD etree type.
 
         This tree may be used to specify the type of given elements, allowing insertion and validation within a schema.
@@ -132,8 +133,6 @@ class Codelist(object):
 
             Improve naming of the type to reduce potential of clashes.
 
-            Rename this function, potentially making it a property.
-
         """
         type_base_el = etree.Element(
             iati.core.constants.NAMESPACE + 'simpleType',
@@ -147,7 +146,7 @@ class Codelist(object):
         )
 
         for code in self.codes:
-            restriction_base_el.append(code.xsd_tree())
+            restriction_base_el.append(code.xsd_enumeration)
 
         type_base_el.append(restriction_base_el)
 
@@ -215,16 +214,14 @@ class Code(object):
         """
         return hash((self.name, self.value))
 
-    def xsd_tree(self):
+    @property
+    def xsd_enumeration(self):
         """Output the Code as an etree enumeration element.
 
         Warning:
             It is planned to change from Schema-based to Data-based Codelist validation. As such, this function may be removed.
 
             Does not fully hide the lxml internal workings.
-
-        Todo:
-            Rename this function, potentially making it a property.
 
         """
         return etree.Element(
