@@ -17,7 +17,6 @@ Todo:
 """
 import decimal
 from lxml import etree
-import pytest
 import iati.core.constants
 import iati.core.resources
 

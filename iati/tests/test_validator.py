@@ -216,7 +216,6 @@ class TestValidationErrorLog(object):
 class TestValidationAuxiliaryData(object):
     """A container for tests relating to auxiliary validation data."""
 
-
     def test_error_code_names(self):
         """Check that the names of error codes are all in the correct format."""
         for err_code_name in iati.validator.get_error_codes().keys():
@@ -281,15 +280,15 @@ class ValidationTestBase(object):
         return ''
 
     @pytest.fixture(params=[
-         iati.core.tests.utilities.load_as_dataset('valid_iati'),
-         iati.core.tests.utilities.load_as_dataset('valid_iati_invalid_code')
+        iati.core.tests.utilities.load_as_dataset('valid_iati'),
+        iati.core.tests.utilities.load_as_dataset('valid_iati_invalid_code')
     ])
     def iati_dataset(self, request):
         """A Dataset that is valid against the IATI Schema."""
         return request.param
 
     @pytest.fixture(params=[
-         iati.core.tests.utilities.load_as_dataset('valid_not_iati')
+        iati.core.tests.utilities.load_as_dataset('valid_not_iati')
     ])
     def not_iati_dataset(self, request):
         """A Dataset that is not valid against the IATI Schema."""
@@ -307,7 +306,6 @@ class ValidationTestBase(object):
     def iati_dataset_valid_from_ssot(self, request):
         """A `should-pass` Dataset from the SSOT."""
         return iati.core.resources.load_as_dataset(request.param)
-        return iati.core.Dataset(xml_str)
 
     @pytest.fixture(params=iati.core.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail'))
     def iati_dataset_invalid_from_ssot(self, request):
@@ -426,7 +424,6 @@ class TestValidationTruthyIATI(ValidationTestBase):
 
 class TestValidateIsXML(ValidationTestBase):
     """A container for tests checking whether a value is valid XML."""
-
 
     def test_xml_check_valid_xml(self, xml_str):
         """Perform check to see whether a parameter is valid XML. The parameter is valid XML."""
@@ -588,7 +585,6 @@ class TestValidateIsXML(ValidationTestBase):
 class TestIsValidIATIXML(ValidationTestBase):
     """A container for tests checking whether a value is valid IATI XML."""
 
-
     def test_iati_xml_check_valid_xml(self, iati_dataset, schema_basic):
         """Perform check to see whether a parameter is valid IATI XML. The parameter is valid IATI XML."""
         result = iati.validator.validate_is_iati_xml(iati_dataset, schema_basic)
@@ -633,7 +629,6 @@ class TestIsValidIATIXML(ValidationTestBase):
 
 class TestValidationCodelist(ValidateCodelistsBase):
     """A container for tests relating to validation of Codelists."""
-
 
     def test_basic_validation_codelist_valid(self, schema_version):
         """Perform data validation against valid IATI XML that has valid Codelist values."""
@@ -709,7 +704,6 @@ class TestValidationCodelist(ValidateCodelistsBase):
 
 class TestValidationVocabularies(ValidateCodelistsBase):
     """A container for tests relating to validation of vocabularies and associated Codelists."""
-
 
     def test_validation_codelist_vocab_default_implicit(self, schema_sectors):
         """Perform data validation against valid IATI XML with a vocabulary that has been implicitly set."""

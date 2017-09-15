@@ -35,7 +35,7 @@ class ValidationError(object):
         for key, val in err_detail.items():
             setattr(self, key, val)
 
-        self.status = 'error' if err_name.split('-')[0] =='err' else 'warning'
+        self.status = 'error' if err_name.split('-')[0] == 'err' else 'warning'
 
         # format error messages with context-specific info
         try:
@@ -100,7 +100,7 @@ class ValidationErrorLog(object):
             return False
 
         for val in self._values:
-            if not val in other._values:
+            if val not in other._values:
                 return False
 
         return True
@@ -191,7 +191,7 @@ class ValidationErrorLog(object):
         """
         for value in values:
             try:
-               self.add(value)
+                self.add(value)
             except TypeError:
                 pass
 
@@ -620,7 +620,7 @@ def get_error_codes():
     err_codes_str = iati.core.resources.load_as_string(iati.core.resources.get_lib_data_path('validation_err_codes.yaml'))
     err_codes_list_of_dict = yaml.safe_load(err_codes_str)
     # yaml parses the values into a list of dicts, so they need combining into one
-    err_codes_dict = { k: v for code in err_codes_list_of_dict for k, v in code.items() }
+    err_codes_dict = {k: v for code in err_codes_list_of_dict for k, v in code.items()}
 
     # convert name of exception into reference to the relevant class
     for err in err_codes_dict.values():

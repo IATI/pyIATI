@@ -155,17 +155,34 @@ class TestDefaultRulesets(object):
         assert not result.contains_errors()
 
     @pytest.mark.parametrize("rule_error, invalid_dataset_name, info_text", [
-        ('err-rule-at-least-one-conformance-fail', 'invalid_std_ruleset_missing_sector_element', 'At least one of `sector` or `transaction/sector` must be present within each `//iati-activity`.'),
-        ('err-rule-date-order-conformance-fail', 'invalid_std_ruleset_bad_date_order', '`activity-date[@type=\'1\']/@iso-date` must be chronologically before `activity-date[@type=\'3\']/@iso-date` within each `//iati-activity`.'),
-        ('err-rule-regex-matches-conformance-fail', 'invalid_std_ruleset_bad_identifier', 'Each instance of `reporting-org/@ref` and `iati-identifier` and `participating-org/@ref` and `transaction/provider-org/@ref` and `transaction/receiver-org/@ref` within each `//iati-activity` must match the regular expression `[^\\/\\&\\|\\?]+`.'),
-        ('err-rule-sum-conformance-fail', 'invalid_std_ruleset_does_not_sum_100', 'Within each `//iati-activity`, the sum of values matched at `recipient-country/@percentage` and `recipient-region/@percentage` must be `100`.')
+        (
+            'err-rule-at-least-one-conformance-fail',
+            'invalid_std_ruleset_missing_sector_element',
+            'At least one of `sector` or `transaction/sector` must be present within each `//iati-activity`.'
+        ),
+        (
+            'err-rule-date-order-conformance-fail',
+            'invalid_std_ruleset_bad_date_order',
+            '`activity-date[@type=\'1\']/@iso-date` must be chronologically before `activity-date[@type=\'3\']/@iso-date` within each `//iati-activity`.'
+        ),
+        (
+            'err-rule-regex-matches-conformance-fail',
+            'invalid_std_ruleset_bad_identifier',
+            'Each instance of `reporting-org/@ref` and `iati-identifier` and `participating-org/@ref` and `transaction/provider-org/@ref` and `transaction/receiver-org/@ref` within each `//iati-activity` must match the regular expression `[^\\/\\&\\|\\?]+`.'  # noqa: disable=E501
+        ),
+        (
+            'err-rule-sum-conformance-fail',
+            'invalid_std_ruleset_does_not_sum_100',
+            'Within each `//iati-activity`, the sum of values matched at `recipient-country/@percentage` and `recipient-region/@percentage` must be `100`.'
+        )
         # Note the Rules relating to 'dependent', 'no_more_than_one', 'regex_no_matches', 'startswith' and 'unique' are not used in the Standard Ruleset.
     ])
     def test_default_ruleset_validation_rules_invalid(self, schema_ruleset, rule_error, invalid_dataset_name, info_text):
         """Check that the expected rule error is detected when validating files containing invalid data for that rule.
 
         Note:
-            The fixed strings being checked here may be a tad annoying to maintain. `test_rule_string_output_general` and `test_rule_string_output_specific` in `test_rulesets.py` do something related for Rules. As such, something more generic may work better in the future.
+            The fixed strings being checked here may be a tad annoying to maintain.
+            `test_rule_string_output_general` and `test_rule_string_output_specific` in `test_rulesets.py` do something related for Rules. As such, something more generic may work better in the future.
 
         Todo:
             Consider whether this test should remove all warnings and assert that there is only the expected warning contained within the test file.

@@ -226,23 +226,6 @@ def get_lib_data_path(name):
     return os.path.join(BASE_PATH_LIB_DATA, name)
 
 
-def get_schema_path(name, version=None):
-    """Determine the path of a schema with the given name.
-
-    Args:
-        name (str): The name of the schema to locate.
-        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
-
-    Returns:
-        str: The path to a file containing the specified schema.
-
-    Note:
-        Does not check whether the specified schema actually exists.
-
-    """
-    return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
-
-
 def get_test_data_path(name, version=None):
     """Determine the path of an IATI data file with the given filename.
 

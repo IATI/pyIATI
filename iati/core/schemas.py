@@ -199,6 +199,7 @@ class Schema(object):
             iati.core.utilities.log_error(err)
             raise iati.core.exceptions.SchemaError('Problem parsing Schema')
 
+
 class ActivitySchema(Schema):
     """Represenation of an IATI Activity Schema as defined within the IATI SSOT."""
 
