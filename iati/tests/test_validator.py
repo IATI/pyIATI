@@ -849,6 +849,19 @@ class TestValidateRulesets(object):
         assert len(result.get_errors_or_warnings_by_category('rule')) > 1
         assert len(result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')) == 1
 
+    def test_multiple_ruleset_error_added_for_multiple_rulesets(self):
+        """Check that a Schema containing multiple Rulesets produces an error log containing multiple Ruleset errors when each errors."""
+        data_with_multiple_rule_errors = iati.core.tests.utilities.load_as_dataset('invalid_std_ruleset_multiple_rule_errors')
+        ruleset_1 = iati.core.default.ruleset()
+        ruleset_2 = iati.core.default.ruleset()
+        schema = iati.core.default.activity_schema(None, False)
+        schema.rulesets.add(ruleset_1)
+        schema.rulesets.add(ruleset_2)
+        result = iati.validator.full_validation(data_with_multiple_rule_errors, schema)
+
+        assert len(result.get_errors_or_warnings_by_category('rule')) > 1
+        assert len(result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')) == 2
+
     def test_no_ruleset_errors_added_for_rule_warnings(self, schema_ruleset):
         """Check that a Dataset containing only Rule warnings does not result in a Ruleset error being added."""
         data_with_rule_warnings_only = iati.core.tests.utilities.load_as_dataset('valid_std_ruleset')
@@ -862,13 +875,13 @@ class TestValidateRulesets(object):
 class TestValidatorFullValidation(ValidateCodelistsBase):
     """A container for tests relating to detailed error output from validation."""
 
-    def test_basic_validation_codelist_valid_detailed_output(self, schema_version):
+    def test_full_validation_codelist_valid_detailed_output(self, schema_version):
         """Perform data validation against valid IATI XML that has valid Codelist values.  Obtain detailed error output."""
         data = iati.core.tests.utilities.load_as_dataset('valid_iati')
 
         assert iati.validator.full_validation(data, schema_version) == iati.validator.ValidationErrorLog()
 
-    def test_basic_validation_codelist_invalid_detailed_output(self, schema_version):
+    def test_full_validation_codelist_invalid_detailed_output(self, schema_version):
         """Perform data validation against valid IATI XML that has invalid Codelist values."""
         xml_str = iati.core.tests.utilities.load_as_string('valid_iati_invalid_code')
         data = iati.core.Dataset(xml_str)
@@ -883,7 +896,7 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
         assert 'Version' in result.info
         assert 'Version' in result.help
 
-    def test_basic_validation_codelist_incomplete_present_detailed_output(self, schema_incomplete_codelist):
+    def test_full_validation_codelist_incomplete_present_detailed_output(self, schema_incomplete_codelist):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested refers to an incomplete Codelist. The value is on the list.
         Obtain detailed error output.
         """
@@ -893,7 +906,7 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
 
         assert len(result) == 0
 
-    def test_basic_validation_codelist_incomplete_not_present_detailed_output(self, schema_incomplete_codelist):
+    def test_full_validation_codelist_incomplete_not_present_detailed_output(self, schema_incomplete_codelist):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested refers to an incomplete Codelist. The value is not on the list.
         Obtain detailed error output.
         """
@@ -909,7 +922,7 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
         assert 'Country' in result.info
         assert 'Country' in result.help
 
-    def test_basic_validation_not_xml_detailed_output(self, schema_basic):
+    def test_full_validation_not_xml_detailed_output(self, schema_basic):
         """Perform full validation against a string that is not XML."""
         not_xml = 'This is not XML.'
 
@@ -917,3 +930,4 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
 
         assert len(result) == 1
         assert result.contains_error_called('err-not-xml-empty-document')
+
