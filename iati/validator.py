@@ -290,8 +290,10 @@ def _check_codes(dataset, codelist):
             parent_el_xpath = parent_el_xpath + '[@' + attr_name + ']'
         else:
             parent_el_xpath = parent_el_xpath + '[' + condition + ' and @' + attr_name + ']'
-
+        # try:
         parents_to_check = dataset.xml_tree.xpath(parent_el_xpath)
+        # except etree.XPathEvalError:
+        #     import pdb;pdb.set_trace()
 
         for parent in parents_to_check:
             code = parent.attrib[attr_name]

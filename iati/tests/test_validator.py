@@ -349,6 +349,16 @@ class ValidateCodelistsBase(ValidationTestBase):
         return schema
 
     @pytest.fixture
+    def schema_short_mapping_codelist(self):
+        """Return an Activity Schema with a Codelist that has a short `path` in the mapping file."""
+        schema = iati.core.default.activity_schema(None, False)
+        codelist = iati.core.default.codelists()['Language']
+
+        schema.codelists.add(codelist)
+
+        return schema
+
+    @pytest.fixture
     def schema_sectors(self):
         """Return an Activity Schema with the DAC Sector Codelists and appropriate vocabulary added."""
         schema = iati.core.default.activity_schema(None, False)
@@ -688,6 +698,14 @@ class TestValidationCodelist(ValidateCodelistsBase):
         assert iati.validator.is_iati_xml(data, schema_incomplete_codelist)
         assert iati.validator.is_valid(data, schema_incomplete_codelist)
 
+    def test_basic_validation_short_mapping_xpath(self, schema_short_mapping_codelist):
+        """Perform data validation against valid IATI XML. The attribute being tested refers to a Codelist with an abnormally short mapping file path. The data has no attributes mapped to by the Codelist."""
+        data = iati.core.tests.utilities.load_as_dataset('valid_iati')
+
+        assert iati.validator.is_xml(data.xml_str)
+        assert iati.validator.is_iati_xml(data, schema_short_mapping_codelist)
+        assert iati.validator.is_valid(data, schema_short_mapping_codelist)
+
 
 class TestValidationVocabularies(ValidateCodelistsBase):
     """A container for tests relating to validation of vocabularies and associated Codelists."""
@@ -930,11 +948,3 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
 
         assert len(result) == 1
         assert result.contains_error_called('err-not-xml-empty-document')
-
-    def test_full_validation_avoid_parent_problems(self):
-        """Check that a fully populated Schema against a Dataset with various problems."""
-        data_with_multiple_rule_errors = iati.core.tests.utilities.load_as_dataset('invalid_std_ruleset_multiple_rule_errors')
-        schema = iati.core.default.activity_schema()
-        result = iati.validator.full_validation(data_with_multiple_rule_errors, schema)
-
-        assert not result.contains_errors()
