@@ -31,7 +31,7 @@ class TestDatasets(object):
     def test_dataset_empty_string(self):
         """Test Dataset creation with a valid XML string that is not IATI data."""
         with pytest.raises(ValueError):
-            data = iati.core.Dataset('')
+            _ = iati.core.Dataset('')
 
     def test_dataset_valid_xml_string(self):
         """Test Dataset creation with a valid XML string that is not IATI data."""
@@ -105,7 +105,7 @@ class TestDatasets(object):
         data = dataset_initialised
 
         with pytest.raises(iati.core.exceptions.ValidationError) as excinfo:
-            data.xml_str = iati.core.tests.utilities.load_as_string('invalid')
+            data.xml_str = xml_str
 
         excinfo.value.error_log.contains_error_called('err-not-xml-empty-document')
 

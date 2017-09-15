@@ -10,11 +10,11 @@ Todo:
 
 """
 # no-member errors are due to using `setattr()` # pylint: disable=no-member
+import decimal
 import json
 import re
 import sre_constants
 from datetime import datetime
-from decimal import Decimal
 import jsonschema
 import six
 import iati.core.default
@@ -60,7 +60,7 @@ class Ruleset(object):
 
     """
 
-    def __init__(self, ruleset_str):
+    def __init__(self, ruleset_str=None):
         """Initialise a Ruleset.
 
         Args:
@@ -71,10 +71,18 @@ class Ruleset(object):
             ValueError: When a `ruleset_str` does not validate against the Ruleset Schema or cannot be correctly decoded.
 
         """
+        if ruleset_str is None:
+            ruleset_str = ''
+
         try:
             self.ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
         except TypeError:
             raise ValueError
+        except ValueError:  # python2/3 - should be json.decoder.JSONDecodeError at python 3.5+
+            if ruleset_str.strip() == '':
+                self.ruleset = {}
+            else:
+                raise ValueError
         self.validate_ruleset()
         self.rules = set()
         self._set_rules()
@@ -89,9 +97,15 @@ class Ruleset(object):
             bool: Return `True` when the Dataset is valid against the Ruleset.
                   Return `False` when a part of the Dataset is not valid against the Ruleset.
 
+        Todo:
+            Better design how Skips and ValueErrors are treated. The current True/False/Skip/Error thing is a bit clunky.
+
         """
         for rule in self.rules:
-            if rule.is_valid_for(dataset) is False:
+            try:
+                if rule.is_valid_for(dataset) is False:
+                    return False
+            except ValueError:
                 return False
 
         return True
@@ -209,14 +223,6 @@ class Rule(object):
         """
         self.normalized_paths = [self._normalize_xpath(path) for path in self.paths]
         self._normalize_condition()
-
-    def is_valid_for(self, dataset):
-        """Check whether a dataset conforms with the Rule.
-
-        Args:
-            dataset (iati.core.Dataset): The Dataset to check conformance with.
-        """
-        pass
 
     def _valid_rule_configuration(self, case):
         """Check that a configuration being passed into a Rule is valid for the given type of Rule.
@@ -370,9 +376,13 @@ class Rule(object):
 
         Raises:
             TypeError: When a Dataset is not given as an argument.
+            ValueError: When a check encounters a completely incorrect value that it is unable to recover from within the definition of the Rule.
 
         Note:
             May be overridden in child class that does not have the same return structure for boolean results.
+
+        Todo:
+            Better design how Skips and ValueErrors are treated. The current True/False/Skip/Error thing is a bit clunky.
 
         """
         try:
@@ -807,6 +817,9 @@ class RuleSum(Rule):
                   Return `False` when the `path` values do not total to the `sum` value.
             None: When no elements are found for the specified `paths`.
 
+        Raises:
+            ValueError: When the `path` value is not numeric.
+
         """
         unique_paths = set(self.paths)
         values_in_context = list()
@@ -814,12 +827,15 @@ class RuleSum(Rule):
         for path in unique_paths:
             values_to_sum = self._extract_text_from_element_or_attribute(context_element, path)
             for value in values_to_sum:
-                values_in_context.append(Decimal(value))
+                try:
+                    values_in_context.append(decimal.Decimal(value))
+                except decimal.InvalidOperation:
+                    raise ValueError
 
         if values_in_context == list():
             return None
 
-        if sum(values_in_context) != Decimal(str(self.sum)):
+        if sum(values_in_context) != decimal.Decimal(str(self.sum)):
             return False
         return True
 

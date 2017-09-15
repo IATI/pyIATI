@@ -35,7 +35,7 @@ class ValidationError(object):
         for key, val in err_detail.items():
             setattr(self, key, val)
 
-        self.status = 'error' if err_name.split('-')[0] =='err' else 'warning'
+        self.status = 'error' if err_name.split('-')[0] == 'err' else 'warning'
 
         # format error messages with context-specific info
         try:
@@ -65,9 +65,16 @@ class ValidationError(object):
 
 class ValidationErrorLog(object):
     """A container to keep track of a set of ValidationErrors.
-    This acts and an iterable, so that ValidationErrors can be looped over.
+
+    This acts as an iterable that ValidationErrors can be looped over.
 
     ValidationErrors may be added to the log.
+
+    Warning:
+        It is highly likely that the methods available on a `ValidationErrorLog` will change name. At present the mix of errors, warnings and the combination of the two is confusing. This needs rectifying.
+
+    Todo:
+        Make the mix of errors, warnings and both returned by functions clearer, while not being hugely long-winded (`errors_and_warnings`-esque).
 
     """
 
@@ -80,7 +87,7 @@ class ValidationErrorLog(object):
         return iter(self._values)
 
     def __len__(self):
-        """The number of items in the ErrorLog."""
+        """Return the number of items in the ErrorLog."""
         return len(self._values)
 
     def __getitem__(self, key):
@@ -93,7 +100,7 @@ class ValidationErrorLog(object):
             return False
 
         for val in self._values:
-            if not val in other._values:
+            if val not in other._values:
                 return False
 
         return True
@@ -151,7 +158,9 @@ class ValidationErrorLog(object):
             bool: Whether there are errors within this error log.
 
         """
-        return len(self.get_errors()) > 0
+        errors = self.get_errors()
+
+        return len(errors) > 0
 
     def contains_warnings(self):
         """Determine whether there are warnings contained within the ErrorLog.
@@ -163,7 +172,9 @@ class ValidationErrorLog(object):
             bool: Whether there are warnings within this error log.
 
         """
-        return len(self.get_warnings()) > 0
+        warnings = self.get_warnings()
+
+        return len(warnings) > 0
 
     def extend(self, values):
         """Extend the ErrorLog with ValidationErrors from an iterable.
@@ -180,7 +191,7 @@ class ValidationErrorLog(object):
         """
         for value in values:
             try:
-               self.add(value)
+                self.add(value)
             except TypeError:
                 pass
 
@@ -188,10 +199,11 @@ class ValidationErrorLog(object):
         """Return a list of errors contained.
 
         Returns:
-            list: Containing errors only.
+            list(ValidationError): A list of all errors (but not warnings) that are present within the log.
 
         Todo:
             Add explicit tests.
+
         """
         return [err for err in self if err.status == 'error']
 
@@ -202,7 +214,7 @@ class ValidationErrorLog(object):
             err_category (str): The category of the error to look for.
 
         Returns:
-            list: Containing the error/s or warning/s of the specified category that are present within the log.
+            list(ValidationError): A list of errors and warnings of the specified category that are present within the log.
 
         Todo:
             Add explicit tests.
@@ -217,7 +229,7 @@ class ValidationErrorLog(object):
             err_name (str): The name of the error to look for.
 
         Returns:
-            list: Containing the error/s or warning/s with the specified name that are present within the log.
+            list(ValidationError): A list of errors and warnings with the specified name that are present within the log.
 
         Todo:
             Add explicit tests.
@@ -232,7 +244,7 @@ class ValidationErrorLog(object):
             err_type (type): The type of the error to look for.
 
         Returns:
-            list: Containing the error/s or warning/s of the specified type that are present within the log.
+            list(ValidationError): A list of errors and warnings of the specified type that are present within the log.
 
         Todo:
             Add explicit tests.
@@ -244,7 +256,7 @@ class ValidationErrorLog(object):
         """Return a list of warnings contained.
 
         Returns:
-            list: Containing warnings only.
+            list(ValidationError): A list of all warnings (but not errors) that are present within the log.
 
         Todo:
             Add explicit tests.
@@ -278,6 +290,12 @@ def _check_codes(dataset, codelist):
             parent_el_xpath = parent_el_xpath + '[@' + attr_name + ']'
         else:
             parent_el_xpath = parent_el_xpath + '[' + condition + ' and @' + attr_name + ']'
+
+        # some nastly string manipulation to make the `//@xml:lang` mapping work
+        while not parent_el_xpath.startswith('//'):
+            parent_el_xpath = '/' + parent_el_xpath
+        if parent_el_xpath.startswith('//['):
+            parent_el_xpath = '//*[' + parent_el_xpath[3:]
 
         parents_to_check = dataset.xml_tree.xpath(parent_el_xpath)
 
@@ -346,7 +364,7 @@ def _check_is_iati_xml(dataset, schema):
         validator.assertValid(dataset.xml_tree)
     except etree.DocumentInvalid as doc_invalid:
         for log_entry in doc_invalid.error_log:
-            error = _parse_lxml_log_entry(log_entry)
+            error = _create_error_for_lxml_log_entry(log_entry)
             error_log.add(error)
 
     return error_log
@@ -375,7 +393,7 @@ def _check_is_xml(maybe_xml):
         _ = etree.fromstring(maybe_xml.strip(), parser)
     except etree.XMLSyntaxError:
         for log_entry in parser.error_log:
-            error = _parse_lxml_log_entry(log_entry)
+            error = _create_error_for_lxml_log_entry(log_entry)
             error_log.add(error)
     except (AttributeError, TypeError, ValueError):
         problem_var_type = type(maybe_xml)
@@ -407,15 +425,14 @@ def _check_rules(dataset, ruleset):
     error_found = False
 
     for rule in ruleset.rules:
-        result_rule_validation = rule.is_valid_for(dataset)
-        if result_rule_validation is None:
+        validation_status = rule.is_valid_for(dataset)
+        if validation_status is None:
             # A result of `None` signifies that a rule was skipped.
             error = ValidationError('warn-rule-skipped', locals())
             error_log.add(error)
-
-        elif result_rule_validation is False:
+        elif validation_status is False:
             # A result of `False` signifies that a rule did not pass.
-            error = _parse_ruleset_fail(rule)
+            error = _create_error_for_rule(rule)
             error_log.add(error)
             error_found = True
 
@@ -478,7 +495,7 @@ def _correct_codelist_values(dataset, schema):
     return not error_log.contains_errors()
 
 
-def _parse_lxml_log_entry(log_entry):
+def _create_error_for_lxml_log_entry(log_entry):
     """Parse a log entry from an lxml error log and convert it to a IATI ValidationError.
 
     Args:
@@ -526,7 +543,7 @@ def _parse_lxml_log_entry(log_entry):
     return error
 
 
-def _parse_ruleset_fail(rule):
+def _create_error_for_rule(rule):
     """Parse a Rule skip or failure and convert it into an IATI ValidationError.
 
     Args:
@@ -603,7 +620,7 @@ def get_error_codes():
     err_codes_str = iati.core.resources.load_as_string(iati.core.resources.get_lib_data_path('validation_err_codes.yaml'))
     err_codes_list_of_dict = yaml.safe_load(err_codes_str)
     # yaml parses the values into a list of dicts, so they need combining into one
-    err_codes_dict = { k: v for code in err_codes_list_of_dict for k, v in code.items() }
+    err_codes_dict = {k: v for code in err_codes_list_of_dict for k, v in code.items()}
 
     # convert name of exception into reference to the relevant class
     for err in err_codes_dict.values():
@@ -684,11 +701,11 @@ def is_xml(maybe_xml):
 def validate_is_iati_xml(dataset, schema):
     """Check whether a Dataset contains valid IATI XML.
 
-     Args:
-         dataset (iati.core.Dataset): The Dataset to check validity of.
+    Args:
+        dataset (iati.core.Dataset): The Dataset to check validity of.
 
-     Returns:
-         iati.validator.ValidationErrorLog: A log of the errors that occurred.
+    Returns:
+        iati.validator.ValidationErrorLog: A log of the errors that occurred.
 
     """
     return _check_is_iati_xml(dataset, schema)
