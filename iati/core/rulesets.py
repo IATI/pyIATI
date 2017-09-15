@@ -79,7 +79,7 @@ class Ruleset(object):
             self.ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
         except TypeError:
             raise ValueError
-        except json.decoder.JSONDecodeError:
+        except ValueError:
             if ruleset_str.strip() == '':
                 self.ruleset = {}
             else:
