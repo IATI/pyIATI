@@ -20,26 +20,26 @@ stages:
 jobs:
     include:
         - stage: lax lint and other checks
-          python: 3.6
+          python: 3.5
           script:
             - make lint
             - make complexity
             - make docs
           if: branch=dev
         - stage: strict lint
-          python: 3.6
+          python: 3.5
           install: pip install pylint
           env: LINTER=pylint
           script: make pylint
           if: branch=master
         - stage: strict lint
-          python: 3.6
+          python: 3.5
           install: pip install flake8
           env: LINTER=flake8
           script: make flake8
           if: branch=master
         - stage: strict lint
-          python: 3.6
+          python: 3.5
           install: pip install pydocstyle
           env: LINTER=pydocstyle
           script: make pydocstyle
