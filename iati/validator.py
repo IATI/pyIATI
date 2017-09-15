@@ -193,10 +193,11 @@ class ValidationErrorLog(object):
         """Return a list of errors contained.
 
         Returns:
-            list: Containing errors only.
+            list(ValidationError): A list of all errors (but not warnings) that are present within the log.
 
         Todo:
             Add explicit tests.
+
         """
         return [err for err in self if err.status == 'error']
 
@@ -207,7 +208,7 @@ class ValidationErrorLog(object):
             err_category (str): The category of the error to look for.
 
         Returns:
-            list: Containing the error/s or warning/s of the specified category that are present within the log.
+            list(ValidationError): A list of errors and warnings of the specified category that are present within the log.
 
         Todo:
             Add explicit tests.
@@ -222,7 +223,7 @@ class ValidationErrorLog(object):
             err_name (str): The name of the error to look for.
 
         Returns:
-            list: Containing the error/s or warning/s with the specified name that are present within the log.
+            list(ValidationError): A list of errors and warnings with the specified name that are present within the log.
 
         Todo:
             Add explicit tests.
@@ -237,7 +238,7 @@ class ValidationErrorLog(object):
             err_type (type): The type of the error to look for.
 
         Returns:
-            list: Containing the error/s or warning/s of the specified type that are present within the log.
+            list(ValidationError): A list of errors and warnings of the specified type that are present within the log.
 
         Todo:
             Add explicit tests.
@@ -249,7 +250,7 @@ class ValidationErrorLog(object):
         """Return a list of warnings contained.
 
         Returns:
-            list: Containing warnings only.
+            list(ValidationError): A list of all warnings (but not errors) that are present within the log.
 
         Todo:
             Add explicit tests.
