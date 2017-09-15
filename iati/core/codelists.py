@@ -113,10 +113,10 @@ class Codelist(object):
         return hash((self.name, tuple(self.codes)))
 
     @property
-    def xsd_enumeration(self):
-        """Output the Codelist as an XSD etree type.
+    def xsd_restriction(self):
+        """Output the Codelist as an XSD simpleType restriction.
 
-        This tree may be used to specify the type of given elements, allowing insertion and validation within a schema.
+        This tree may be used to specify the type of given elements, allowing insertion and validation within a Schema.
 
         Returns:
             etree.Element: An XSD simpleType representing this Codelist.
@@ -217,6 +217,9 @@ class Code(object):
     @property
     def xsd_enumeration(self):
         """Output the Code as an etree enumeration element.
+
+        Returns:
+            etree.Element: An XSD enumeration representing this Codelist.
 
         Warning:
             It is planned to change from Schema-based to Data-based Codelist validation. As such, this property may be removed.
