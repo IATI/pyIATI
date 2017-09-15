@@ -98,6 +98,9 @@ class Ruleset(object):
             bool: Return `True` when the Dataset is valid against the Ruleset.
                   Return `False` when a part of the Dataset is not valid against the Ruleset.
 
+        Todo:
+            Better design how Skips and ValueErrors are treated. The current True/False/Skip/Error thing is a bit clunky.
+
         """
         for rule in self.rules:
             try:
@@ -378,6 +381,9 @@ class Rule(object):
 
         Note:
             May be overridden in child class that does not have the same return structure for boolean results.
+
+        Todo:
+            Better design how Skips and ValueErrors are treated. The current True/False/Skip/Error thing is a bit clunky.
 
         """
         try:
