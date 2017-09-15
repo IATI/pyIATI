@@ -125,23 +125,6 @@ def convert_xml_to_tree(xml):
         raise ValueError(msg)
 
 
-def get_versions_by_integer():
-    """Returns a dictionary containing versions grouped by the integer version that they fall within.
-
-    Returns:
-        dict: Containing the integer version (as keys) and the versions contained within these (as values).
-    """
-    dict_major_versions = dict()
-    for major_version in iati.core.constants.STANDARD_VERSIONS_MAJOR:
-        dict_major_versions[major_version] = []
-
-    for version in iati.core.constants.STANDARD_VERSIONS:
-        major_version_group = int(math.floor(float(version)))
-        dict_major_versions[major_version_group].append(version)
-
-    return dict_major_versions
-
-
 def log(lvl, msg, *args, **kwargs):
     """Log a message of some level.
 
@@ -215,3 +198,19 @@ def log_warning(msg, *args, **kwargs):
 
     """
     log(logging.WARN, msg, *args, **kwargs)
+
+
+def versions_for_integer(integer):
+    """Returns a list containing the supported versions for the input integer version.
+
+    Args:
+        integer (int): The integer version to find the supported version for.
+
+    Returns:
+        list or str: Containing the supported versions for the input integer.
+    """
+    output = list()
+    for version in iati.core.constants.STANDARD_VERSIONS:
+        output.append(version) if version.startswith(str(integer)) else None
+
+    return output

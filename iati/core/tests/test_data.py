@@ -422,7 +422,7 @@ class TestDatasetVersionDetection(object):
         output = collections.namedtuple('output', 'root_element child_element')
         return output(root_element=request.param[0], child_element=request.param[1])
 
-    @pytest.mark.parametrize("version", iati.core.utilities.get_versions_by_integer()[1])
+    @pytest.mark.parametrize("version", iati.core.utilities.versions_for_integer(1))
     def test_detect_version_v1_simple(self, iati_tag_names, version):
         """Check that a version 1 dataset is detected correctly."""
         data = iati.core.Dataset("""
@@ -496,7 +496,7 @@ class TestDatasetVersionDetection(object):
 
         assert result is None
 
-    @pytest.mark.parametrize("version", iati.core.utilities.get_versions_by_integer()[2])
+    @pytest.mark.parametrize("version", iati.core.utilities.versions_for_integer(2))
     def test_detect_version_v2_simple(self, iati_tag_names, version):
         """Check that a version 2 dataset is detected correctly."""
         data = iati.core.Dataset("""

@@ -197,12 +197,9 @@ class TestUtilities(object):
 class TestDefaultVersions(object):
     """A container for tests relating to default versions."""
 
-    def test_get_versions_by_integer(self):
-        result = iati.core.utilities.get_versions_by_integer()
-        all_versions = list(itertools.chain.from_iterable(result.values()))
+    @pytest.mark.parametrize("integer", iati.core.constants.STANDARD_VERSIONS_MAJOR)
+    def test_versions_for_integer(self, integer):
+        result = iati.core.utilities.versions_for_integer(integer)
 
-        assert sorted(result.keys()) == sorted(iati.core.constants.STANDARD_VERSIONS_MAJOR)
-        assert sorted(all_versions) == sorted(iati.core.constants.STANDARD_VERSIONS)
-        for integer_version, versions_in_integer in result.items():
-            for version in versions_in_integer:
-                assert version.startswith(str(integer_version))
+        for version in result:
+            assert version.startswith(str(integer))
