@@ -20,6 +20,7 @@
 # * codelist
 # * file
 # * iati-xml
+# * rule
 # * ruleset
 # * tool-lxml
 # * xml
@@ -232,7 +233,7 @@
         Rulesets specify a number of Rules that a valid IATI Dataset must meet.
         For more information about Rulesets, see http://iatistandard.org/rulesets/
     info: |-
-        The way in which the Dataset does not conform is unknown.
+        This error is usually matched with errors of category `rule` which provide more information about what caused the error.
 
 - err-rule-at-least-one-conformance-fail:
     base_exception: ValueError
@@ -240,9 +241,10 @@
     description: |-
         A Dataset does not conform with an 'atleast_one' Rule.
     help: |-
-        {rule}
+        None of the required elements or attributes are present within a context.
+        For more information about Rules, see http://iatistandard.org/rulesets/
     info: |-
-        The way in which the Dataset does not conform is unknown.
+        {rule}
 
 - err-rule-date-order-conformance-fail:
     base_exception: ValueError
@@ -250,9 +252,10 @@
     description: |-
         A Dataset does not conform with a 'date_order' Rule.
     help: |-
-        {rule}
+        The specific way in which the Dataset does not conform is unknown.
+        For more information about Rules, see http://iatistandard.org/rulesets/
     info: |-
-        The way in which the Dataset does not conform is unknown.
+        {rule}
 
 - err-rule-dependent-conformance-fail:
     base_exception: ValueError
@@ -260,9 +263,10 @@
     description: |-
         A Dataset does not conform with a 'dependent' Rule.
     help: |-
-        {rule}
+        Some, but not all, of the required elements or attributes are present within a context - either none of them must be present, or all of them must be.
+        For more information about Rules, see http://iatistandard.org/rulesets/
     info: |-
-        The way in which the Dataset does not conform is unknown.
+        {rule}
 
 - err-rule-no-more-than-one-conformance-fail:
     base_exception: ValueError
@@ -270,9 +274,10 @@
     description: |-
         A Dataset does not conform with a 'no_more_than_one' Rule.
     help: |-
-        {rule}
+        There were multiple elements or attributes matched within a context - there must only be zero or one.
+        For more information about Rules, see http://iatistandard.org/rulesets/
     info: |-
-        The way in which the Dataset does not conform is unknown.
+        {rule}
 
 - err-rule-regex-matches-conformance-fail:
     base_exception: ValueError
@@ -280,9 +285,11 @@
     description: |-
         A Dataset does not conform with a 'regex_matches' Rule.
     help: |-
-        {rule}
+        A present element or attribute within a context does not match the specified regular expression when it must.
+        For more information about regular expressions, see https://en.wikipedia.org/wiki/Regular_expression#Standards
+        For more information about Rules, see http://iatistandard.org/rulesets/
     info: |-
-        The way in which the Dataset does not conform is unknown.
+        {rule}
 
 - err-rule-regex-no-matches-conformance-fail:
     base_exception: ValueError
@@ -290,9 +297,11 @@
     description: |-
         A Dataset does not conform with a 'regex_no_matches' Rule.
     help: |-
-        {rule}
+        A present element or attribute within a context matches the specified regular expression when it must not.
+        For more information about regular expressions, see https://en.wikipedia.org/wiki/Regular_expression#Standards
+        For more information about Rules, see http://iatistandard.org/rulesets/
     info: |-
-        The way in which the Dataset does not conform is unknown.
+        {rule}
 
 - err-rule-starts-with-conformance-fail:
     base_exception: ValueError
@@ -300,9 +309,10 @@
     description: |-
         A Dataset does not conform with a 'startswith' Rule.
     help: |-
-        {rule}
+        The specific way in which the Dataset does not conform is unknown.
+        For more information about Rules, see http://iatistandard.org/rulesets/
     info: |-
-        The way in which the Dataset does not conform is unknown.
+        {rule}
 
 - err-rule-sum-conformance-fail:
     base_exception: ValueError
@@ -310,9 +320,10 @@
     description: |-
         A Dataset does not conform with a 'sum' Rule.
     help: |-
-        {rule}
+        The values within matched elements and attributes in a context do not add up to the required total.
+        For more information about Rules, see http://iatistandard.org/rulesets/
     info: |-
-        The way in which the Dataset does not conform is unknown.
+        {rule}
 
 - err-rule-unique-conformance-fail:
     base_exception: ValueError
@@ -320,9 +331,10 @@
     description: |-
         A Dataset does not conform with a 'unique' Rule.
     help: |-
-        {rule}
+        There are multiple matched elements or attributes in a context that contain the same text.
+        For more information about Rules, see http://iatistandard.org/rulesets/
     info: |-
-        The way in which the Dataset does not conform is unknown.
+        {rule}
 
 - err-rule-uncategorised-conformance-fail:
     base_exception: Exception

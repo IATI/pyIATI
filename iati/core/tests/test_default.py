@@ -23,7 +23,7 @@ class TestDefault(object):
             func_to_check(invalid_version)
 
 
-class TestDefaultCodelist(object):
+class TestDefaultCodelists(object):
     """A container for tests relating to default Codelists."""
 
     @pytest.fixture
@@ -154,14 +154,14 @@ class TestDefaultRulesets(object):
         assert iati.validator.is_iati_xml(data, schema_ruleset)
         assert not result.contains_errors()
 
-    @pytest.mark.parametrize("rule_error, invalid_dataset_name, help_text", [
+    @pytest.mark.parametrize("rule_error, invalid_dataset_name, info_text", [
         ('err-rule-at-least-one-conformance-fail', 'invalid_std_ruleset_missing_sector_element', 'At least one of `sector` or `transaction/sector` must be present within each `//iati-activity`.'),
         ('err-rule-date-order-conformance-fail', 'invalid_std_ruleset_bad_date_order', '`activity-date[@type=\'1\']/@iso-date` must be chronologically before `activity-date[@type=\'3\']/@iso-date` within each `//iati-activity`.'),
         ('err-rule-regex-matches-conformance-fail', 'invalid_std_ruleset_bad_identifier', 'Each instance of `reporting-org/@ref` and `iati-identifier` and `participating-org/@ref` and `transaction/provider-org/@ref` and `transaction/receiver-org/@ref` within each `//iati-activity` must match the regular expression `[^\\/\\&\\|\\?]+`.'),
         ('err-rule-sum-conformance-fail', 'invalid_std_ruleset_does_not_sum_100', 'Within each `//iati-activity`, the sum of values matched at `recipient-country/@percentage` and `recipient-region/@percentage` must be `100`.')
         # Note the Rules relating to 'dependent', 'no_more_than_one', 'regex_no_matches', 'startswith' and 'unique' are not used in the Standard Ruleset.
     ])
-    def test_default_ruleset_validation_rules_invalid(self, schema_ruleset, rule_error, invalid_dataset_name, help_text):
+    def test_default_ruleset_validation_rules_invalid(self, schema_ruleset, rule_error, invalid_dataset_name, info_text):
         """Check that the expected rule error is detected when validating files containing invalid data for that rule.
 
         Todo:
@@ -179,7 +179,7 @@ class TestDefaultRulesets(object):
         assert not iati.validator.is_valid(data, schema_ruleset)
         assert len(errors_for_rule_error) == 1
         assert len(errors_for_ruleset) == 1
-        assert help_text in errors_for_rule_error[0].help
+        assert info_text in errors_for_rule_error[0].info
 
 
 class TestDefaultSchemas(object):
