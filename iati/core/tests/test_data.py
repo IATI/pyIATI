@@ -3,11 +3,13 @@
 Todo:
     Implement tests for strict checking once validation work is underway.
 """
+import collections
 import math
 from future.standard_library import install_aliases
 from lxml import etree
 import pytest
 import iati.core.data
+import iati.core.default
 import iati.core.tests.utilities
 
 install_aliases()
@@ -406,3 +408,121 @@ class TestDatasetSourceFinding(object):
         for line_num in range(0, num_lines_xml):
             with pytest.raises(TypeError):
                 data.source_around_line(line_num, invalid_value)
+
+
+class TestDatasetVersionDetection(object):
+    """A container for tests relating to detecting the version of a Dataset."""
+
+    @pytest.fixture(params=[
+        ('iati-activities', 'iati-activity'),
+        ('iati-organisations', 'iati-organisation')
+    ])
+    def iati_tag_names(self, request):
+        """Return the tag names for an activity or organisaion dataset."""
+        output = collections.namedtuple('output', 'root_element child_element')
+        return output(root_element=request.param[0], child_element=request.param[1])
+
+    @pytest.mark.parametrize("version", iati.core.utilities.versions_for_integer(1))
+    def test_detect_version_v1_simple(self, iati_tag_names, version):
+        """Check that a version 1 dataset is detected correctly.
+        Also checks that version numbers containing whitespace do not affect version detection.
+        """
+        data = iati.core.Dataset("""
+        <{0} version="{2}">
+            <{1} version="{2}"></{1}>
+            <{1} version="{2}  "></{1}>
+            <{1} version="   {2}"></{1}>
+            <{1} version="   {2}   "></{1}>
+        </{0}>
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element, version))
+        result = data.version
+
+        assert result == version
+
+    def test_detect_version_explicit_parent_mismatch_explicit_child(self, iati_tag_names):
+        data = iati.core.Dataset("""
+        <{0} version="1.02">
+            <{1} version="1.02"></{1}>
+            <{1} version="1.03"></{1}>
+        </{0}>
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element))
+        result = data.version
+
+        assert result is None
+
+    def test_detect_version_implicit_parent_matches_implicit_child(self, iati_tag_names):
+        data = iati.core.Dataset("""
+        <{0}>
+            <{1}></{1}>
+            <{1}></{1}>
+        </{0}>
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element))
+        result = data.version
+
+        assert result == '1.01'
+
+    def test_detect_version_explicit_parent_matches_implicit_child(self, iati_tag_names):
+        data = iati.core.Dataset("""
+        <{0} version='1.01'>
+            <{1}></{1}>
+            <{1}></{1}>
+        </{0}>
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element))
+        result = data.version
+
+        assert result == '1.01'
+
+    def test_detect_version_implicit_parent_matches_explicit_and_implicit_child(self, iati_tag_names):
+        data = iati.core.Dataset("""
+        <{0}>
+            <{1} version='1.01'></{1}>
+            <{1}></{1}>
+        </{0}>
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element))
+        result = data.version
+
+        assert result == '1.01'
+
+    def test_detect_version_explicit_parent_mismatch_implicit_child(self, iati_tag_names):
+        data = iati.core.Dataset("""
+        <{0} version='1.02'>
+            <{1}></{1}>
+            <{1}></{1}>
+        </{0}>
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element))
+        result = data.version
+
+        assert result is None
+
+    def test_detect_version_imlicit_parent_mismatch_explicit_child(self, iati_tag_names):
+        data = iati.core.Dataset("""
+        <{0}>
+            <{1} version="1.02"></{1}>
+            <{1}></{1}>
+        </{0}>
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element))
+        result = data.version
+
+        assert result is None
+
+    @pytest.mark.parametrize("version", iati.core.utilities.versions_for_integer(2))
+    def test_detect_version_v2_simple(self, iati_tag_names, version):
+        """Check that a version 2 dataset is detected correctly."""
+        data = iati.core.Dataset("""
+        <{0} version="{2}">
+            <{1}></{1}>
+            <{1}></{1}>
+        </{0}>
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element, version))
+        result = data.version
+
+        assert result == version
+
+    def test_cannot_assign_to_version_property(self):
+        """Check that it is not possible to assign to the `version` property."""
+        data = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('valid_iati'))
+
+        with pytest.raises(AttributeError) as excinfo:
+            data.version = 'test'
+
+        assert "can't set attribute" in str(excinfo.value)

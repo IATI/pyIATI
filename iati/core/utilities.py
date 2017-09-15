@@ -1,5 +1,6 @@
 """A module containing utility functions."""
 import logging
+import math
 import os
 from io import StringIO
 from lxml import etree
@@ -227,3 +228,19 @@ def log_warning(msg, *args, **kwargs):
 
     """
     log(logging.WARN, msg, *args, **kwargs)
+
+
+def versions_for_integer(integer):
+    """Returns a list containing the supported versions for the input integer version.
+
+    Args:
+        integer (int): The integer version to find the supported version for.
+
+    Returns:
+        list or str: Containing the supported versions for the input integer.
+    """
+    output = list()
+    for version in iati.core.constants.STANDARD_VERSIONS:
+        output.append(version) if version.startswith(str(integer)) else None
+
+    return output

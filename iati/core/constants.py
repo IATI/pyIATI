@@ -9,6 +9,7 @@ Todo:
     Allow logging constants to be user-definable.
 
 """
+import math
 
 STANDARD_VERSIONS = ['1.04', '1.05', '2.01', '2.02']
 """Define all versions of the Standard.
@@ -22,6 +23,11 @@ Todo:
 
 STANDARD_VERSION_LATEST = max(STANDARD_VERSIONS)
 """The latest version of the IATI Standard."""
+
+STANDARD_VERSIONS_MAJOR = list(set([
+    int(version.split('.', 1)[0]) for version in STANDARD_VERSIONS
+]))
+"""The major versions of the IATI Standard."""
 
 LOG_FILE_NAME = 'iatilib.log'
 """The location of the primary IATI log file.
