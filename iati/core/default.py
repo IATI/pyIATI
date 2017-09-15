@@ -302,4 +302,4 @@ def organisation_schema(version=None, populate=True):
         iati.core.OrganisationSchema: An instantiated IATI Schema for the specified version of the Standard.
 
     """
-    return _schema(iati.core.resources.get_all_org_schema_paths, iati.core.OrganisationSchema, version, populate)
+    return _schema(iati.core.resources.get_all_organisation_schema_paths, iati.core.OrganisationSchema, version, populate)
