@@ -166,13 +166,13 @@ def ruleset(version=None):
 
 
 def ruleset_schema(version=None):
-    """Return the Ruleset Schema for the specified version of the Standard.
+    """Return the Ruleset schema for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that the latest Ruleset Schema is returned.
+        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that the latest Ruleset schema is returned.
 
     Returns:
-        json: A JSON representation of the Ruleset Schema for the specified version of the Standard.
+        json: A JSON representation of the Ruleset schema for the specified version of the Standard.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
