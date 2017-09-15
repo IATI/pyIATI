@@ -72,7 +72,7 @@ class Schema(object):
 
         This changes instances of the former to the latter.
 
-        Params:
+        Args:
             tree (etree._ElementTree): The tree within which xsd:include is to be changed to xi:include.
 
         Returns:
@@ -143,7 +143,7 @@ class Schema(object):
 
         Identify the contents of files defined as `<xsd:include schemaLocation="NAME.xsd" />` and bring in the contents.
 
-        Params:
+        Args:
             tree (etree._ElementTree): The tree to flatten.
 
         Returns:

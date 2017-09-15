@@ -9,16 +9,18 @@ import iati.core.constants
 def add_namespace(tree, new_ns_name, new_ns_uri):
     """Add a namespace to a Schema.
 
-    Params:
+    Args:
         tree (etree._ElementTree): The ElementTree to add a namespace to.
+
         new_ns_name (str): The name of the new namespace. Must be valid against https://www.w3.org/TR/REC-xml-names/#NT-NSAttName
+
         new_ns_uri (str): The URI for the new namespace. Must be non-empty and valid against https://www.ietf.org/rfc/rfc2396.txt
 
     Returns:
-        iati.core.Schema: The provided Schema, modified to include the specified namespace.
+        etree.ElementTree: A copy of the provided `tree`, modified to include the specified namespace.
 
     Raises:
-        TypeError: If an attempt is made to add a namespace to something other than a Schema.
+        TypeError: If an attempt is made to add a namespace to something other than a ElementTree.
         ValueError: If the namespace name or URI are invalid values.
         ValueError: If the namespace name already exists.
 
@@ -72,7 +74,7 @@ def add_namespace(tree, new_ns_name, new_ns_uri):
 
 
 def convert_tree_to_schema(tree):
-    """Convert an etree to a schema.
+    """Convert an etree to a Schema.
 
     Args:
         tree (etree._ElementTree): An XML element tree representing an XML Schema.
@@ -134,7 +136,7 @@ def dict_raise_on_duplicates(ordered_pairs):
     Algorithm from https://stackoverflow.com/a/14902564
 
     Args:
-        ordered_pairs (list of tuples): A list of (key, value) pairs.
+        ordered_pairs (list(tuple)): A list of (key, value) pairs.
 
     Raises:
         ValueError: When there are duplicate keys.
