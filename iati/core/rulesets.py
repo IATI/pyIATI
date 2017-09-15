@@ -1,11 +1,8 @@
 """A module containing a core representation of IATI Rulesets.
 
-Note:
-    Rulesets are under-implemented since it is expected that their implementation will be similar to that of Codelists, which is currently unstable. Once Codelist stability has been increased, Rulesets may be fully-implemented.
-
 Todo:
-    Review for edge cases.
     Consider how we should handle lxml errors.
+
     Remove references to `case`.
 
 """
@@ -53,12 +50,7 @@ def constructor_for_rule_type(rule_type):
 
 
 class Ruleset(object):
-    """Representation of a Ruleset as defined within the IATI SSOT.
-
-    Warning:
-        Rulesets have not yet been implemented. They will likely have a similar API to Codelists, although this is yet to be determined.
-
-    """
+    """Representation of a Ruleset as defined within the IATI SSOT."""
 
     def __init__(self, ruleset_str):
         """Initialise a Ruleset.
@@ -67,8 +59,8 @@ class Ruleset(object):
             ruleset_str (str): A string that represents a Ruleset.
 
         Raises:
-            TypeError: When a `ruleset_str` is not a string.
-            ValueError: When a `ruleset_str` does not validate against the Ruleset Schema or cannot be correctly decoded.
+            TypeError: When `ruleset_str` is not a string.
+            ValueError: When `ruleset_str` does not validate against the Ruleset Schema or cannot be correctly decoded.
 
         """
         try:
@@ -86,8 +78,10 @@ class Ruleset(object):
             Dataset (iati.core.Dataset): A Dataset to be checked for validity against the Ruleset.
 
         Returns:
-            bool: Return `True` when the Dataset is valid against the Ruleset.
-                  Return `False` when a part of the Dataset is not valid against the Ruleset.
+            bool:
+                `True` when the Dataset is valid against the Ruleset.
+
+                `False` when part or all of the Dataset is not valid against the Ruleset.
 
         """
         for rule in self.rules:
@@ -127,6 +121,11 @@ class Rule(object):
 
     Acts as a base class for specific types of Rule that actually check the content of the data.
 
+    Attributes:
+        name (str): The type of Rule, as specified in a JSON Ruleset.
+        context (str): An XPath expression to locate the elements that the Rule is to be checked against.
+        case (dict): Specific configuration for this instance of the Rule.
+
     Todo:
         Determine whether this should be an Abstract Base Class.
 
@@ -136,7 +135,7 @@ class Rule(object):
         """Initialise a Rule.
 
         Args:
-            context (str): The base of the XPath that the Rule will act upon.
+            context (str): An XPath expression to locate the elements that the Rule is to be checked against.
             case (dict): Specific configuration for this instance of the Rule.
 
         Raises:
@@ -350,15 +349,18 @@ class Rule(object):
         return False
 
     def is_valid_for(self, dataset):
-        """Check Dataset is valid against the Rule.
+        """Check whether a Dataset is valid against the Rule.
 
         Args:
             dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            bool: Return `True` when the Dataset is valid against the Rule.
-                  Return `False` when the Dataset is not valid against the Rule.
-            None: When a condition is met to skip validation.
+            bool or None:
+                `True` when the Dataset is valid against the Rule.
+
+                `False` when the Dataset is not valid against the Rule.
+
+                `None` when a condition is met to skip validation.
 
         Raises:
             TypeError: When a Dataset is not given as an argument.
@@ -389,7 +391,12 @@ class Rule(object):
 
 
 class RuleAtLeastOne(Rule):
-    """Representation of a Rule that checks that there is at least one Element matching a given XPath."""
+    """Representation of a Rule that checks that there is at least one Element matching a given XPath.
+
+    Attributes:
+        paths (list of str): A list of XPath expressions. These are evaluated to locate the elements that the Rule is to operate on.
+
+    """
 
     def __init__(self, context, case):
         """Initialise an `atleast_one` rule."""
@@ -420,15 +427,18 @@ class RuleAtLeastOne(Rule):
         return True
 
     def is_valid_for(self, dataset):
-        """Check Dataset is valid against the Rule.
+        """Check whether a Dataset is valid against the Rule.
 
         Args:
             dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
-            bool: Return `True` when the Dataset is valid against the Rule.
-                  Return `False` when the Dataset is not valid against the Rule.
-            None: When a condition is met to skip validation.
+            bool or None:
+                `True` when the Dataset is valid against the Rule.
+
+                `False` when the Dataset is not valid against the Rule.
+
+                `None` when a condition is met to skip validation.
 
         Raises:
             TypeError: When a Dataset is not given as an argument.
@@ -444,7 +454,14 @@ class RuleAtLeastOne(Rule):
 
 
 class RuleDateOrder(Rule):
-    """Representation of a Rule that checks that the date value of `more` is the most recent value in comparison to the date value of `less`."""
+    """Representation of a Rule that checks that the date value of `more` is the most recent value in comparison to the date value of `less`.
+
+    Attributes:
+        less (str): An XPath expression to locate the element containing the date that should be in the past.
+        more (str): An XPath expression to locate the element containing the date that should be in the future.
+        special_case (str): A value that will be treated as the present when provided as the `less` or `more` value.
+
+    """
 
     def __init__(self, context, case):
         """Initialise a `date_order` rule."""
@@ -550,7 +567,12 @@ class RuleDateOrder(Rule):
 
 
 class RuleDependent(Rule):
-    """Representation of a Rule that checks that if one of the Elements or Attributes in a given `path` exists then all its dependent Elements or Attributes must also exist."""
+    """Representation of a Rule that checks that if one of the Elements or Attributes in a given `path` exists then all its dependent Elements or Attributes must also exist.
+
+    Attributes:
+        paths (list of str): A list of XPath expressions. These are evaluated to locate the elements that the Rule is to operate on.
+
+    """
 
     def __init__(self, context, case):
         """Initialise a `dependent` rule."""
@@ -588,7 +610,12 @@ class RuleDependent(Rule):
 
 
 class RuleNoMoreThanOne(Rule):
-    """Representation of a Rule that checks that there is no more than one Element or Attribute matching a given XPath."""
+    """Representation of a Rule that checks that there is no more than one Element or Attribute matching a given XPath.
+
+    Attributes:
+        paths (list of str): A list of XPath expressions. These are evaluated to locate the elements that the Rule is to operate on.
+
+    """
 
     def __init__(self, context, case):
         """Initialise a `no_more_than_one` rule."""
@@ -627,7 +654,13 @@ class RuleNoMoreThanOne(Rule):
 
 
 class RuleRegexMatches(Rule):
-    """Representation of a Rule that checks that the text of the given `paths` must match the regex value."""
+    """Representation of a Rule that checks that the text of the given paths must match the regex value.
+
+    Attributes:
+        paths (list of str): A list of XPath expressions. These are evaluated to locate the elements that the Rule is to operate on.
+        regex (str): A Perl-style regular expression.
+
+    """
 
     def __init__(self, context, case):
         """Initialise a `regex_matches` Rule.
@@ -675,7 +708,13 @@ class RuleRegexMatches(Rule):
 
 
 class RuleRegexNoMatches(Rule):
-    """Representation of a Rule that checks that the text of the given `paths` must not match the regex value."""
+    """Representation of a Rule that checks that the text of the given `paths` must not match the regex value.
+
+    Attributes:
+        paths (list of str): A list of XPath expressions. These are evaluated to locate the elements that the Rule is to operate on.
+        regex (str): A Perl-style regular expression.
+
+    """
 
     def __init__(self, context, case):
         """Initialise a `regex_no_matches` Rule.
@@ -723,7 +762,13 @@ class RuleRegexNoMatches(Rule):
 
 
 class RuleStartsWith(Rule):
-    """Representation of a Rule that checks that the prefixing text of each text value for `path` matches the `start` text value."""
+    """Representation of a Rule that checks that the prefixing text of each text value for `path` matches the `start` text value.
+
+    Attributes:
+        paths (list of str): A list of XPath expressions. These are evaluated to locate the elements that the Rule is to operate on.
+        start (str): An XPath expression to locate a single element. The text of this element is used as the prefix value for the Rule.
+
+    """
 
     def __init__(self, context, case):
         """Initialise a `startswith` Rule."""
@@ -776,7 +821,13 @@ class RuleStartsWith(Rule):
 
 
 class RuleSum(Rule):
-    """Representation of a Rule that checks that the values in given `path` attributes must sum to the given `sum` value."""
+    """Representation of a Rule that checks that the values in given `path` attributes must sum to the given `sum` value.
+
+    Attributes:
+        paths (list of str): A list of XPath expressions. These are evaluated to locate the elements that the Rule is to operate on.
+        sum (float): The value that the contents of the located elements and attributes must sum to.
+
+    """
 
     def __init__(self, context, case):
         """Initialise a `sum` rule."""
@@ -817,7 +868,12 @@ class RuleSum(Rule):
 
 
 class RuleUnique(Rule):
-    """Representation of a Rule that checks that the text of each given path must be unique."""
+    """Representation of a Rule that checks that the text of each given path must be unique.
+
+    Attributes:
+        paths (list of str): A list of XPath expressions. These are evaluated to locate the elements that the Rule is to operate on.
+
+    """
 
     def __init__(self, context, case):
         """Initialise a `unique` rule."""
