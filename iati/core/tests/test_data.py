@@ -424,12 +424,15 @@ class TestDatasetVersionDetection(object):
 
     @pytest.mark.parametrize("version", iati.core.utilities.versions_for_integer(1))
     def test_detect_version_v1_simple(self, iati_tag_names, version):
-        """Check that a version 1 dataset is detected correctly."""
+        """Check that a version 1 dataset is detected correctly.
+        Also checks that version numbers containing whitespace do not affect version detection.
+        """
         data = iati.core.Dataset("""
         <{0} version="{1}">
             <{2} version="{1}"></{2}>
-            <{2} version="{1}"></{2}>
-            <{2} version="{1}"></{2}>
+            <{2} version="{1}  "></{2}>
+            <{2} version="   {1}"></{2}>
+            <{2} version="   {1}   "></{2}>
         </{0}>
         """.format(iati_tag_names.root_element, version, iati_tag_names.child_element))
         result = data.version
