@@ -443,7 +443,6 @@ class TestDatasetVersionDetection(object):
         data = iati.core.Dataset("""
         <{0} version="1.02">
             <{1} version="1.02"></{1}>
-            <{1} version="1.02"></{1}>
             <{1} version="1.03"></{1}>
         </{0}>
         """.format(iati_tag_names.root_element, iati_tag_names.child_element))
@@ -454,7 +453,6 @@ class TestDatasetVersionDetection(object):
     def test_detect_version_implicit_parent_matches_implicit_child(self, iati_tag_names):
         data = iati.core.Dataset("""
         <{0}>
-            <{1}></{1}>
             <{1}></{1}>
             <{1}></{1}>
         </{0}>
@@ -490,7 +488,6 @@ class TestDatasetVersionDetection(object):
         <{0} version='1.02'>
             <{1}></{1}>
             <{1}></{1}>
-            <{1}></{1}>
         </{0}>
         """.format(iati_tag_names.root_element, iati_tag_names.child_element))
         result = data.version
@@ -501,7 +498,6 @@ class TestDatasetVersionDetection(object):
         data = iati.core.Dataset("""
         <{0}>
             <{1} version="1.02"></{1}>
-            <{1}></{1}>
             <{1}></{1}>
         </{0}>
         """.format(iati_tag_names.root_element, iati_tag_names.child_element))
@@ -514,7 +510,6 @@ class TestDatasetVersionDetection(object):
         """Check that a version 2 dataset is detected correctly."""
         data = iati.core.Dataset("""
         <{0} version="{1}">
-            <{2}></{2}>
             <{2}></{2}>
             <{2}></{2}>
         </{0}>
