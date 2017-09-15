@@ -155,15 +155,18 @@ class TestRuleset(object):
         ('invalid_sum', 'sum', {'paths': ['element42'], 'sum': 50}),
     ])
     def test_ruleset_is_invalid_for_valueerror(self, dataset_name, rule_type, case):
-        """Check that ValueErrors are correctly handled when checking a Ruleset."""
+        """Check that `ValueError`s are correctly handled when checking a Ruleset.
+
+        Rulesets should absorb them and return `False` rather than passing them on to the caller.
+
+        """
         invalid_dataset = iati.core.tests.utilities.load_as_dataset(dataset_name)
         rule_constructor = iati.core.rulesets.constructor_for_rule_type(rule_type)
         rule = rule_constructor('//root_element', case)
         ruleset = iati.core.Ruleset('')
         ruleset.rules.add(rule)
 
-        with pytest.raises(ValueError):
-            ruleset.is_valid_for(invalid_dataset)
+        assert not ruleset.is_valid_for(invalid_dataset)
 
 
 class TestRule(object):

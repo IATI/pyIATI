@@ -100,7 +100,10 @@ class Ruleset(object):
 
         """
         for rule in self.rules:
-            if rule.is_valid_for(dataset) is False:
+            try:
+                if rule.is_valid_for(dataset) is False:
+                    return False
+            except ValueError:
                 return False
 
         return True
