@@ -78,12 +78,12 @@ class Ruleset(object):
         try:
             self.ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
         except TypeError:
-            raise ValueError
+            raise ValueError('Provided Ruleset string is not a string.')
         except ValueError:  # python2/3 - should be json.decoder.JSONDecodeError at python 3.5+
             if ruleset_str.strip() == '':
                 self.ruleset = {}
             else:
-                raise ValueError
+                raise ValueError('Provided Ruleset string is not valid JSON.')
         self.validate_ruleset()
         self.rules = set()
         self._set_rules()
