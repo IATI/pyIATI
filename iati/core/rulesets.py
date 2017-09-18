@@ -7,6 +7,7 @@ Todo:
 
 """
 # no-member errors are due to using `setattr()` # pylint: disable=no-member
+import decimal
 import json
 import re
 import sre_constants
@@ -52,7 +53,7 @@ def constructor_for_rule_type(rule_type):
 class Ruleset(object):
     """Representation of a Ruleset as defined within the IATI SSOT."""
 
-    def __init__(self, ruleset_str):
+    def __init__(self, ruleset_str=None):
         """Initialise a Ruleset.
 
         Args:
@@ -63,10 +64,18 @@ class Ruleset(object):
             ValueError: When `ruleset_str` does not validate against the Ruleset Schema or cannot be correctly decoded.
 
         """
+        if ruleset_str is None:
+            ruleset_str = ''
+
         try:
             self.ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
         except TypeError:
-            raise ValueError
+            raise ValueError('Provided Ruleset string is not a string.')
+        except ValueError:  # python2/3 - should be json.decoder.JSONDecodeError at python 3.5+
+            if ruleset_str.strip() == '':
+                self.ruleset = {}
+            else:
+                raise ValueError('Provided Ruleset string is not valid JSON.')
         self.validate_ruleset()
         self.rules = set()
         self._set_rules()
@@ -83,9 +92,15 @@ class Ruleset(object):
 
                 `False` when part or all of the Dataset is not valid against the Ruleset.
 
+        Todo:
+            Better design how Skips and ValueErrors are treated. The current True/False/Skip/Error thing is a bit clunky.
+
         """
         for rule in self.rules:
-            if rule.is_valid_for(dataset) is False:
+            try:
+                if rule.is_valid_for(dataset) is False:
+                    return False
+            except ValueError:
                 return False
 
         return True
@@ -364,9 +379,13 @@ class Rule(object):
 
         Raises:
             TypeError: When a Dataset is not given as an argument.
+            ValueError: When a check encounters a completely incorrect value that it is unable to recover from within the definition of the Rule.
 
         Note:
             May be overridden in child class that does not have the same return structure for boolean results.
+
+        Todo:
+            Better design how Skips and ValueErrors are treated. The current True/False/Skip/Error thing is a bit clunky.
 
         """
         try:
@@ -850,6 +869,9 @@ class RuleSum(Rule):
                   Return `False` when the `path` values do not total to the `sum` value.
             None: When no elements are found for the specified `paths`.
 
+        Raises:
+            ValueError: When the `path` value is not numeric.
+
         """
         unique_paths = set(self.paths)
         values_in_context = list()
@@ -857,7 +879,10 @@ class RuleSum(Rule):
         for path in unique_paths:
             values_to_sum = self._extract_text_from_element_or_attribute(context_element, path)
             for value in values_to_sum:
-                values_in_context.append(Decimal(value))
+                try:
+                    values_in_context.append(Decimal(value))
+                except decimal.InvalidOperation:
+                    raise ValueError
 
         if values_in_context == list():
             return None
