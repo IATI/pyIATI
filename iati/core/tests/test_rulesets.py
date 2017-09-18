@@ -30,7 +30,8 @@ class TestRuleset(object):
     @pytest.mark.parametrize("ruleset_str", [
         '{"CONTEXT": {"atleast_one": {"cases": []}}}',  # JSON string that has no Rules
         ' ',  # whitespace only
-        ''  # empty string
+        '',  # empty string
+        None  # none
     ])
     def test_ruleset_init_ruleset_valid_no_rules(self, ruleset_str):
         """Check that a Ruleset is created when given a JSON Ruleset in string format even if it contains no Rules."""
