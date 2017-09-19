@@ -53,7 +53,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Rulesets] Rulesets may be created from a string conforming to the Ruleset Schema.
 - [Rulesets] Rulesets contain a set of Rules.
 - [Rulesets] A Dataset may have truthy conformance checked against a Ruleset.
-- [Rulesets] Rules may be created from a `context` and a `case.
+- [Rulesets] Rules may be created from a `context` and a `case`.
 - [Rulesets] Each of the Rules in the Ruleset Schema have been implemented for instantiation and truthy conformance. These are: atleast_one, date_order, dependent, no_more_than_one, regex_matches, regex_no_matches, startswith, sum, unique
 - [Rulesets] A Rule base class exists to allow the creation of custom types of Rule.
 - [Rulesets] The string representation of a Rule details what must occur for a Dataset to be conformant.
