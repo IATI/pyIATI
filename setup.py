@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'iati.core',
-    version = '0.1dev',
+    version = '0.1.0',
     description = 'Python library representing the IATI Schemas, Codelists and Rulesets',
     author = 'IATI Technical Team and other authors',
     author_email = 'code@iatistandard.org',
