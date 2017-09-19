@@ -72,6 +72,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Utility] There is very rudimentary logging functionality.
 - [Utility] Various functionality to access Version Numbers is present.
 
+- [Compatibility] Compatible with Python 2.7, 3.4, 3.5 and 3.6.
+
+- [Tests] Comprehensively unit test all code.
+- [Tests] Datasets, Rulesets, and other components permitting user-defined input tested with range of valid and invalid data.
+- [Tests] Variety of never-before-seen edge-cases tested for correct behavior.
+- [Tests] Rudimentary custom fuzzing used to ensure expected errors are raised.
+
+- [Tools] Documentation is generated with Sphinx, based on Google-style docstrings.
+- [Tools] Documentation is presented using the Sphinx Read the Docs theme.
+- [Tools] Linting performed with pylint, flake8 and pydocstyle.
+- [Tools] Linters are configured to generally follow PEP8 and PEP257, with a few custom modifications such as line length.
+- [Tools] Code complexity is assessed using radon.
+- [Tools] Unit testing is performed with pytest.
+- [Tools] Full testing is performed by Travis.
+- [Tools] Python 2.7 compatibility is provided by both `future` and `six`. Where a custom workaround is used rather than one of these, `python2/3` is present in a comment.
+
+- [XML] lxml utilised for XML functionality.
+- [XML] Support XML 1.0.
+- [XML] Support XMLSchema 1.0.
+- [XML] Support XPath 1.0.
+
 ### Changed
 
 ### Deprecated
@@ -81,5 +102,3 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Fixed
 
 ### Security
-
-
