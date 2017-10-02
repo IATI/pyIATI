@@ -15,12 +15,9 @@ Todo:
     Add versions of constants that are valid for differing schema versions.
 
 """
-import collections
 import decimal
 from lxml import etree
-import pytest
 import iati.core.constants
-import iati.core.resources
 
 
 def load_as_dataset(file_path):
@@ -52,79 +49,9 @@ def load_as_string(file_path):
     return iati.core.resources.load_as_string(iati.core.resources.get_test_data_path(file_path))
 
 
-DATASET_FOR_ATLEASTONE_RULE_VALID = load_as_dataset('valid_atleastone')
-"""A Dataset that is permitted by `RuleAtLeastOne`."""
-DATASET_FOR_ATLEASTONE_RULE_INVALID = load_as_dataset('invalid_atleastone')
-"""A Dataset that is not permitted by `RuleAtLeastOne`."""
-
-DATASET_FOR_DATEORDER_RULE_VALID = load_as_dataset('valid_dateorder')
-"""A Dataset that is permitted by `RuleDateOrder`."""
-DATASET_FOR_DATEORDER_RULE_INVALID = load_as_dataset('invalid_dateorder')
-"""A Dataset that is not permitted by `RuleDateOrder`."""
-DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT = load_as_dataset('invalid_format_dateorder')
-"""A Dataset that contains dates that are formatted incorrectly according to RuleDateOrder."""
-
-DATASET_FOR_DEPENDENT_RULE_VALID = load_as_dataset('valid_dependent')
-"""A Dataset that is permitted by `RuleDependent`."""
-DATASET_FOR_DEPENDENT_RULE_INVALID = load_as_dataset('invalid_dependent')
-"""A Dataset that is not permitted by `RuleDependent`."""
-
-DATASET_FOR_NOMORETHANONE_RULE_VALID = load_as_dataset('valid_nomorethanone')
-"""A Dataset that is permitted by `RuleNoMoreThanOne`."""
-DATASET_FOR_NOMORETHANONE_RULE_INVALID = load_as_dataset('invalid_nomorethanone')
-"""A Dataset that is not permitted by `RuleNoMoreThanOne`."""
-
-DATASET_FOR_REGEXMATCHES_RULE_VALID = load_as_dataset('valid_regexmatches')
-"""A Dataset that is permitted by `RuleRegexMatches`."""
-DATASET_FOR_REGEXMATCHES_RULE_INVALID = load_as_dataset('invalid_regexmatches')
-"""A Dataset that is not permitted by `RuleRegexMatches`."""
-
-DATASET_FOR_REGEXNOMATCHES_RULE_VALID = load_as_dataset('valid_regexnomatches')
-"""A Dataset that is permitted by `RuleRegexNoMatches`."""
-DATASET_FOR_REGEXNOMATCHES_RULE_INVALID = load_as_dataset('invalid_regexnomatches')
-"""A Dataset that is not permitted by `RuleRegexNoMatches`."""
-
-DATASET_FOR_STARTSWITH_RULE_VALID = load_as_dataset('valid_startswith')
-"""A Dataset that is permitted by `RuleStartsWith`."""
-DATASET_FOR_STARTSWITH_RULE_INVALID = load_as_dataset('invalid_startswith')
-"""A Dataset that is not permitted by `RuleStartsWith`."""
-
-DATASET_FOR_SUM_RULE_VALID = load_as_dataset('valid_sum')
-"""A Dataset that is permitted by `RuleSum`."""
-DATASET_FOR_SUM_RULE_INVALID = load_as_dataset('invalid_sum')
-"""A Dataset that is not permitted by `RuleSum`."""
-
-DATASET_FOR_UNIQUE_RULE_VALID = load_as_dataset('valid_unique')
-"""A Dataset that is permitted by `RuleUnique`."""
-DATASET_FOR_UNIQUE_RULE_INVALID = load_as_dataset('invalid_unique')
-"""A Dataset that is not permitted by `RuleUnique`."""
-
-DATASET_FOR_STANDARD_RULESET_VALID = load_as_dataset('valid_std_ruleset')
-"""A Dataset that meets the IATI Standard ruleset."""
-
-DATASET_FOR_STANDARD_RULESET_INVALID_BAD_DATE_ORDER = load_as_dataset('invalid_std_ruleset_bad_date_order')
-"""A Dataset that does not meet the IATI Standard ruleset (on account of a bad date order)."""
-DATASET_FOR_STANDARD_RULESET_INVALID_BAD_IDENTIFIER = load_as_dataset('invalid_std_ruleset_bad_identifier')
-"""A Dataset that does not meet the IATI Standard ruleset (on account of a bad IATI identifier)."""
-DATASET_FOR_STANDARD_RULESET_INVALID_DOES_NOT_SUM_100 = load_as_dataset('invalid_std_ruleset_does_not_sum_100')
-"""A Dataset that does not meet the IATI Standard ruleset (on account of a sums not adding to 100%)."""
-DATASET_FOR_STANDARD_RULESET_INVALID_MISSING_SECTOR_ELEMENT = load_as_dataset('invalid_std_ruleset_missing_sector_element')
-"""A Dataset that does not meet the IATI Standard ruleset (on account of a missing sector element)."""
-
 # This will need updating once test data forcing XML format is fixed
 RULESET_FOR_TESTING = iati.core.Ruleset(iati.core.resources.load_as_string(iati.core.resources.get_ruleset_path('ruleset_for_tests')))
 """A working Ruleset based on the Standard Ruleset."""
-
-
-@pytest.fixture(params=[
-    ('2.02', 62),  # There are 38 embedded codelists at v2.02, plus 24 non-embedded codelists (which are valid for any version)
-    ('2.01', 61),  # There are 37 embedded codelists at v2.01, plus 24 non-embedded codelists (which are valid for any version)
-    ('1.05', 59),  # There are 35 embedded codelists at v1.05, plus 24 non-embedded codelists (which are valid for any version)
-    ('1.04', 59)  # There are 35 embedded codelists at v1.04, plus 24 non-embedded codelists (which are valid for any version)
-])
-def codelist_lengths_by_version(request):
-    output = collections.namedtuple('output', 'version expected_length')
-    return output(version=request.param[0], expected_length=request.param[1])
 
 
 SCHEMA_ACTIVITY_NAME_VALID = 'iati-activities-schema'
@@ -159,7 +86,7 @@ TYPE_TEST_DATA = {
     'other': [NotImplemented],
     'range': [range(3, 4)],
     'set': [set(range(20)), set(['hello', 23]), frozenset(range(20)), frozenset(['hello', 23])],
-    'str': [b'\x80abc', b'\x80abc', '\N{GREEK CAPITAL LETTER DELTA}', '\u0394', '\U00000394'],
+    'str': [b'\x80abc', b'\x80abc', '\N{GREEK CAPITAL LETTER DELTA}', '\u0394', '\U00000394'],  # python2.7 warning # pylint: disable=anomalous-unicode-escape-in-string
     'tuple': [(), (1, 2)],
     'type': [type(1), type('string')],
     'unicode': [],  # counts as a string, so moved there
@@ -193,19 +120,3 @@ def generate_test_types(types, invert_types=False):
         results = results + TYPE_TEST_DATA[key]
 
     return results
-
-
-@pytest.fixture(params=['no_arguments', None] + iati.core.constants.STANDARD_VERSIONS)
-def standard_version_optional(request):
-    """Return a list that can be passed to a function using the argument list unpacking functionality - see https://docs.python.org/3.6/tutorial/controlflow.html#unpacking-argument-lists
-    For example, the returned list can be used to test functions (such as `get_all_codelist_paths`) which has an optional parameter for the version, or can expect version=None.,
-    In this case test usage would be `get_all_codelist_paths(*standard_version_optional)`.
-
-    Returns:
-        list: Either i) an empty list, ii) a list containing None, or iii) a string which corresponds to a version of the Standard.
-
-    """
-    if request.param == 'no_arguments':
-        return []
-    else:
-        return [request.param]

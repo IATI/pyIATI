@@ -4,7 +4,6 @@ import pytest
 import six
 import iati.core.constants
 import iati.core.resources
-from iati.core.tests.utilities import codelist_lengths_by_version, standard_version_optional  # shorthand import provided for fixtures
 
 
 class TestResources(object):
@@ -70,14 +69,14 @@ class TestResources(object):
 
         assert len(activity_paths) == 1
 
-    def test_get_all_org_schema_paths(self, standard_version_optional):
+    def test_get_all_organisation_schema_paths(self, standard_version_optional):
         """Check that all organisation schema paths are found.
 
         Todo:
             Handle all paths to schemas being found correctly.
 
         """
-        organisation_paths = iati.core.resources.get_all_org_schema_paths(*standard_version_optional)
+        organisation_paths = iati.core.resources.get_all_organisation_schema_paths(*standard_version_optional)
 
         assert len(organisation_paths) == 1
 
@@ -95,7 +94,7 @@ class TestResources(object):
     @pytest.mark.parametrize('get_schema_path_function', [
         iati.core.resources.get_all_schema_paths,
         iati.core.resources.get_all_activity_schema_paths,
-        iati.core.resources.get_all_org_schema_paths
+        iati.core.resources.get_all_organisation_schema_paths
     ])
     def test_find_schema_paths_file_extension(self, standard_version_optional, get_schema_path_function):
         """Check that the correct file extension is present within file paths returned by get_all_*schema_paths functions."""
@@ -134,14 +133,35 @@ class TestResources(object):
         assert isinstance(result, iati.core.Dataset)
         assert '<?xml version="1.0"?>\n\n<iati-activities version="2.02">' in result.xml_str
 
+    def test_load_as_dataset_invalid(self):
+        """Test that resources.load_as_dataset raises an error when the provided path does not lead to a file containing valid XML."""
+        path_test_data = iati.core.resources.get_test_data_path('invalid')
+
+        with pytest.raises(ValueError):
+            _ = iati.core.resources.load_as_dataset(path_test_data)
+
     def test_load_as_string(self):
-        """Test that resources.load_as_string returns a string (python3) or unicode (python2) object with the expected content."""
+        """Test that `resources.load_as_string()` returns a string (python3) or unicode (python2) object with the expected content."""
         path_test_data = iati.core.resources.get_test_data_path('invalid')
 
         result = iati.core.resources.load_as_string(path_test_data)
 
         assert isinstance(result, six.string_types)
         assert result == 'This is a string that is not valid XML\n'
+
+    @pytest.mark.parametrize("load_method", [iati.core.resources.load_as_bytes, iati.core.resources.load_as_dataset, iati.core.resources.load_as_string])
+    def test_load_as_x_non_existing_file(self, load_method):
+        """Test that `resources.load_as_bytes()` returns a bytes object with the expected content."""
+        path_test_data = iati.core.resources.get_test_data_path('this-file-does-not-exist')
+
+        # python 2/3 compatibility - FileNotFoundError introduced at Python 3
+        try:
+            FileNotFoundError
+        except NameError:
+            FileNotFoundError = IOError  # pylint: disable=redefined-builtin,invalid-name
+
+        with pytest.raises(FileNotFoundError):
+            _ = load_method(path_test_data)
 
     def test_resource_filename(self):
         """Check that resource file names are found correctly.

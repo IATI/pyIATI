@@ -7,6 +7,7 @@ Todo:
     Try to standardise Rule arrays for extraction.
 
 """
+# pylint: disable=protected-access,too-many-lines
 from copy import deepcopy
 import pytest
 import iati.core.default
@@ -19,21 +20,28 @@ class TestRuleset(object):
     """A container for tests relating to Rulesets."""
 
     def test_ruleset_init_no_parameters(self):
-        """Check that a Ruleset cannot be created when no parameters are given."""
-        with pytest.raises(TypeError):
-            iati.core.Ruleset()
+        """Check that an empty Ruleset can be created when no parameters are given."""
+        ruleset = iati.core.Ruleset()
 
-    def test_ruleset_init_ruleset_str_valid(self):
-        """Check that a Ruleset is created when given a JSON Ruleset in string format."""
-        ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": []}}}'
+        assert isinstance(ruleset, iati.core.Ruleset)
+        assert isinstance(ruleset.rules, set)
+        assert ruleset.rules == set()
 
+    @pytest.mark.parametrize("ruleset_str", [
+        '{"CONTEXT": {"atleast_one": {"cases": []}}}',  # JSON string that has no Rules
+        ' ',  # whitespace only
+        '',  # empty string
+        None  # none
+    ])
+    def test_ruleset_init_ruleset_valid_no_rules(self, ruleset_str):
+        """Check that a Ruleset is created when given a JSON Ruleset in string format even if it contains no Rules."""
         ruleset = iati.core.Ruleset(ruleset_str)
 
         assert isinstance(ruleset, iati.core.Ruleset)
         assert isinstance(ruleset.rules, set)
         assert ruleset.rules == set()
 
-    @pytest.mark.parametrize("not_a_ruleset", iati.core.tests.utilities.generate_test_types(['str', 'bytearray'], True))
+    @pytest.mark.parametrize("not_a_ruleset", iati.core.tests.utilities.generate_test_types(['str', 'bytearray', 'none'], True))
     def test_ruleset_init_ruleset_str_not_str(self, not_a_ruleset):
         """Check that a Ruleset cannot be created when given at least one Rule in a non-string format."""
         with pytest.raises(ValueError):
@@ -128,18 +136,37 @@ class TestRuleset(object):
     def test_ruleset_is_valid_for_valid_dataset(self):
         """Check that a Dataset can be validated against the Standard Ruleset."""
         ruleset = iati.core.tests.utilities.RULESET_FOR_TESTING
-        valid_dataset = iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_VALID
+        valid_dataset = iati.core.tests.utilities.load_as_dataset('valid_std_ruleset')
         assert ruleset.is_valid_for(valid_dataset)
 
     @pytest.mark.parametrize("invalid_dataset", [
-        iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_BAD_DATE_ORDER,
-        iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_BAD_IDENTIFIER,
-        iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_DOES_NOT_SUM_100,
-        iati.core.tests.utilities.DATASET_FOR_STANDARD_RULESET_INVALID_MISSING_SECTOR_ELEMENT
+        iati.core.tests.utilities.load_as_dataset('invalid_std_ruleset_bad_date_order'),
+        iati.core.tests.utilities.load_as_dataset('invalid_std_ruleset_bad_identifier'),
+        iati.core.tests.utilities.load_as_dataset('invalid_std_ruleset_does_not_sum_100'),
+        iati.core.tests.utilities.load_as_dataset('invalid_std_ruleset_missing_sector_element')
     ])
     def test_ruleset_is_invalid_for_invalid_dataset(self, invalid_dataset):
         """Check that a Dataset can be invalidated against the Standard Ruleset."""
         ruleset = iati.core.tests.utilities.RULESET_FOR_TESTING
+        assert not ruleset.is_valid_for(invalid_dataset)
+
+    @pytest.mark.parametrize("dataset_name, rule_type, case", [
+        ('invalid_format_dateorder', 'date_order', {'less': 'element1', 'more': 'element2'}),
+        ('invalid_startswith', 'startswith', {'start': 'duplicateprefix', 'paths': ['element12']}),
+        ('invalid_sum', 'sum', {'paths': ['element42'], 'sum': 50}),
+    ])
+    def test_ruleset_is_invalid_for_valueerror(self, dataset_name, rule_type, case):
+        """Check that `ValueError`s are correctly handled when checking a Ruleset.
+
+        Rulesets should absorb them and return `False` rather than passing them on to the caller.
+
+        """
+        invalid_dataset = iati.core.tests.utilities.load_as_dataset(dataset_name)
+        rule_constructor = iati.core.rulesets.constructor_for_rule_type(rule_type)
+        rule = rule_constructor('//root_element', case)
+        ruleset = iati.core.Ruleset('')
+        ruleset.rules.add(rule)
+
         assert not ruleset.is_valid_for(invalid_dataset)
 
 
@@ -161,7 +188,7 @@ class TestRule(object):
         case = {'paths': ['path_1', 'path_2']}
 
         with pytest.raises(TypeError):
-            iati.core.Rule(name, context, case)
+            iati.core.Rule(name, context, case)  # pylint: disable=too-many-function-args
 
 
 class TestRuleSubclasses(object):
@@ -201,7 +228,7 @@ class TestRuleSubclasses(object):
             rule_constructor(context, case)
 
 
-class RuleSubclassTestBase(object):
+class RuleSubclassTestBase(object):  # pylint: disable=too-many-public-methods
     """A base class for Rule subclass tests."""
 
     @pytest.fixture
@@ -479,14 +506,14 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         return {'paths': ['element2', 'element10/@attribute']}
 
     @pytest.fixture
-    def valid_dataset(self):
-        """Return valid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_ATLEASTONE_RULE_VALID
-
-    @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_ATLEASTONE_RULE_INVALID
+        return iati.core.tests.utilities.load_as_dataset('invalid_atleastone')
+
+    @pytest.fixture
+    def valid_dataset(self):
+        """Return valid dataset for this Rule."""
+        return iati.core.tests.utilities.load_as_dataset('valid_atleastone')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
@@ -537,7 +564,11 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element35/@attribute', 'more': 'element36/@attribute'},
         {'less': 'nOw', 'more': 'noW'},  # not special case, should treat as regular path value
         {'less': 'now/@attribute', 'more': 'Now/@attribute'},
-        {'less': 'element37', 'more': 'element38'}  # multiple identical elements
+        {'less': 'element37', 'more': 'element38'},  # multiple identical elements
+        {'less': 'element47', 'more': 'element48'},  # dates have identical values
+        {'less': 'element49/@attribute', 'more': 'element50/@attribute'},
+        {'less': 'element51', 'more': 'element51'},  # `less` and `more` reference the same date
+        {'less': 'element52/@attribute', 'more': 'element52/@attribute'}
     ]
 
     all_valid_cases = instatiating_cases + validating_cases
@@ -556,16 +587,12 @@ class TestRuleDateOrder(RuleSubclassTestBase):
     invalidating_cases = [
         {'less': 'element1', 'more': 'element2'},  # dates not in chronological order
         {'less': 'element14/@attribute', 'more': 'element15/@attribute'},
-        {'less': 'element3', 'more': 'element4'},  # dates have identical values
-        {'less': 'element16/@attribute', 'more': 'element17/@attribute'},
         {'less': 'NOW', 'more': 'element5'},  # `more` is chronologically before NOW
         {'less': 'NOW', 'more': 'element18/@attribute'},
         {'less': 'element6', 'more': 'NOW'},  # `less` is chronologically after NOW
         {'less': 'element19/@attribute', 'more': 'NOW'},
         {'less': '//element7', 'more': '//element8'},  # nested dates not in chronological order
         {'less': '//element20/@attribute', 'more': '//element21/@attribute'},
-        {'less': 'element9', 'more': 'element9'},  # `less` and `more` reference the same date
-        {'less': 'element22/@attribute', 'more': 'element22/@attribute'},
         {'less': 'element10', 'more': 'element11'},  # multiple identical `less` dates that are chronologically after `more`
         {'less': 'element23/@attribute', 'more': 'element24/@attribute'},
         {'less': 'element12', 'more': 'element13'},  # multiple identical `more` dates that are chronologically before `less`
@@ -619,12 +646,12 @@ class TestRuleDateOrder(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for instatiating this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID
+        return iati.core.tests.utilities.load_as_dataset('invalid_dateorder')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_VALID
+        return iati.core.tests.utilities.load_as_dataset('valid_dateorder')
 
     @pytest.mark.parametrize("case", [
         {'less': 'element1', 'more': 'element2'},  # Euro-date format
@@ -660,7 +687,7 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         """Check that a dataset with dates in an incorrect format raise expected error."""
         rule = rule_constructor(valid_single_context, case)
         with pytest.raises(ValueError):
-            rule.is_valid_for(iati.core.tests.utilities.DATASET_FOR_DATEORDER_RULE_INVALID_DATE_FORMAT)
+            rule.is_valid_for(iati.core.tests.utilities.load_as_dataset('invalid_format_dateorder'))
 
     @pytest.mark.parametrize("case", [
         {'less': 'element39', 'more': 'element40'},  # `less` date missing
@@ -753,12 +780,12 @@ class TestRuleDependent(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for instatiating this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_DEPENDENT_RULE_INVALID
+        return iati.core.tests.utilities.load_as_dataset('invalid_dependent')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_DEPENDENT_RULE_VALID
+        return iati.core.tests.utilities.load_as_dataset('valid_dependent')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
@@ -838,12 +865,12 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_NOMORETHANONE_RULE_INVALID
+        return iati.core.tests.utilities.load_as_dataset('invalid_nomorethanone')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_NOMORETHANONE_RULE_VALID
+        return iati.core.tests.utilities.load_as_dataset('valid_nomorethanone')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
@@ -860,7 +887,9 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         {'regex': r'\btest\b', 'paths': ['element6/@attribute', 'element7/@attribute']},
         {'regex': r'\btest\b', 'paths': ['element4', 'element4']},  # duplicate paths with regex
         {'regex': r'\btest\b', 'paths': ['element8/@attribute', 'element8/@attribute']},
-        {'regex': r'\btest\b', 'paths': ['element11']}  # duplicate element
+        {'regex': r'\btest\b', 'paths': ['element11']},  # duplicate element
+        {'regex': r'\btest\b', 'paths': ['element12']},  # no such element exists
+        {'regex': r'\btest\b', 'paths': ['element13/@attribute']}  # no such attribute exists
     ]
 
     uninstantiating_cases = [
@@ -929,12 +958,12 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_REGEXMATCHES_RULE_INVALID
+        return iati.core.tests.utilities.load_as_dataset('invalid_regexmatches')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_REGEXMATCHES_RULE_VALID
+        return iati.core.tests.utilities.load_as_dataset('valid_regexmatches')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
@@ -951,7 +980,9 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         {'regex': r'\btest\b', 'paths': ['element6/@attribute', 'element7/@attribute']},
         {'regex': r'\btest\b', 'paths': ['element4', 'element4']},  # duplicate paths with regex
         {'regex': r'\btest\b', 'paths': ['element8/@attribute', 'element8/@attribute']},
-        {'regex': r'\btest\b', 'paths': ['element11']}  # duplicate element
+        {'regex': r'\btest\b', 'paths': ['element11']},  # duplicate element
+        {'regex': r'\btest\b', 'paths': ['element12']},  # no such element exists
+        {'regex': r'\btest\b', 'paths': ['element13/@attribute']}  # no such attribute exists
     ]
 
     uninstantiating_cases = [
@@ -1020,12 +1051,12 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_REGEXNOMATCHES_RULE_INVALID
+        return iati.core.tests.utilities.load_as_dataset('invalid_regexnomatches')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_REGEXNOMATCHES_RULE_VALID
+        return iati.core.tests.utilities.load_as_dataset('valid_regexnomatches')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
@@ -1042,7 +1073,9 @@ class TestRuleStartsWith(RuleSubclassTestBase):
         {'start': 'prefix', 'paths': ['element6/@attribute', 'element7/@attribute']},
         {'start': 'prefix', 'paths': ['element4', 'element4']},  # duplicate paths with valid prefix string
         {'start': 'prefix', 'paths': ['element8/@attribute', 'element8/@attribute']},
-        {'start': 'prefix', 'paths': ['element11']}  # duplicate element
+        {'start': 'prefix', 'paths': ['element11']},  # duplicate element
+        {'start': 'prefix', 'paths': ['element12']},  # no such element exists
+        {'start': 'prefix', 'paths': ['element13/@attribute']}  # no such attribute exists
     ]
 
     uninstantiating_cases = [
@@ -1110,16 +1143,33 @@ class TestRuleStartsWith(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_STARTSWITH_RULE_INVALID
+        return iati.core.tests.utilities.load_as_dataset('invalid_startswith')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_STARTSWITH_RULE_VALID
+        return iati.core.tests.utilities.load_as_dataset('valid_startswith')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
         assert 'must start with' in str(rule_instantiating)
+
+    @pytest.mark.parametrize("test_case", [
+        {'start': 'duplicateprefix', 'paths': ['element12']},  # `start` matches multiple elements with the same text value
+        {'start': 'multiprefix', 'paths': ['element13']}  # `start` matches multiple elements with different text values
+    ])
+    def test_multiple_matching_start_elements_raise_error(self, valid_single_context, rule_constructor, test_case, invalid_dataset):
+        """Check that an error is raised when the specified XPath for `start` returns multiple elements."""
+        rule = rule_constructor(valid_single_context, test_case)
+        with pytest.raises(ValueError):
+            rule.is_valid_for(invalid_dataset)
+
+    def test_missing_start_value_raises_error(self, valid_single_context, rule_constructor, invalid_dataset):
+        """Check that if no prefix value is found the rule returns None which is considered equivalent to skipping."""
+        missing_value_case = {'start': 'missingprefix', 'paths': ['element14']}
+        rule = rule_constructor(valid_single_context, missing_value_case)
+        with pytest.raises(ValueError):
+            rule.is_valid_for(invalid_dataset)
 
 
 class TestRuleSum(RuleSubclassTestBase):
@@ -1153,7 +1203,8 @@ class TestRuleSum(RuleSubclassTestBase):
         {'paths': ['element35/@attribute', 'element36/@attribute'], 'sum': 2.99792458e6},
         {'paths': ['element37'], 'sum': 50},  # duplicate elements in data **
         {'paths': ['element42', 'element43'], 'sum': 0.3},  # sum to value that cannot be represented using standard binary representation
-        {'paths': ['element44/@attribute', 'element45/@attribute'], 'sum': 0.3}
+        {'paths': ['element44/@attribute', 'element45/@attribute'], 'sum': 0.3},
+        {'paths': ['element46'], 'sum': 50}  # whitespace around numeric value
     ]
 
     uninstantiating_cases = [
@@ -1238,16 +1289,31 @@ class TestRuleSum(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_SUM_RULE_INVALID
+        return iati.core.tests.utilities.load_as_dataset('invalid_sum')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_SUM_RULE_VALID
+        return iati.core.tests.utilities.load_as_dataset('valid_sum')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
         assert 'sum of values' in str(rule_instantiating)
+
+    @pytest.mark.parametrize("test_case", [
+        {'paths': ['element42'], 'sum': 50}  # non-numeric value
+    ])
+    def test_non_numeric_value_raise_error(self, valid_single_context, rule_constructor, test_case, invalid_dataset):
+        """Check that an error is raised when the specified XPath for `start` returns multiple elements."""
+        rule = rule_constructor(valid_single_context, test_case)
+        with pytest.raises(ValueError):
+            rule.is_valid_for(invalid_dataset)
+
+    def test_no_values_to_sum_skips(self, valid_single_context, rule_constructor, valid_dataset):
+        """Check that the Rule is skipped if no values are found to compare to the value of `sum`."""
+        no_values_case = {'paths': ['this_element_does_not_exist', 'neither_does_this_one'], 'sum': 100}
+        rule = rule_constructor(valid_single_context, no_values_case)
+        assert rule.is_valid_for(valid_dataset) is None
 
 
 class TestRuleUnique(RuleSubclassTestBase):
@@ -1260,7 +1326,9 @@ class TestRuleUnique(RuleSubclassTestBase):
         {'paths': ['element6/@attribute', 'element7/@attribute']},
         {'paths': ['element4', 'element4']},  # duplicate paths
         {'paths': ['element8/@attribute', 'element8/@attribute']},
-        {'paths': ['element13']}  # duplicate elements exist for path
+        {'paths': ['element13']},  # duplicate elements exist for path
+        {'paths': ['element14']},  # no such element exists
+        {'paths': ['element15/@attribute']}  # no such attribute exists
     ]
 
     uninstantiating_cases = [
@@ -1322,12 +1390,12 @@ class TestRuleUnique(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_UNIQUE_RULE_INVALID
+        return iati.core.tests.utilities.load_as_dataset('invalid_unique')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.core.tests.utilities.DATASET_FOR_UNIQUE_RULE_VALID
+        return iati.core.tests.utilities.load_as_dataset('valid_unique')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""

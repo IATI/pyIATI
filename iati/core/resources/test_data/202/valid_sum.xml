@@ -55,4 +55,5 @@
   <element43>0.1</element43>
   <element44 attribute="0.2"></element44><!--sum to value that cannot be represented using standard binary representation-->
   <element45 attribute="0.1"></element45>
+  <element46>  50 </element46><!--whitespace around numeric value-->
 </root_element>

@@ -78,13 +78,14 @@ class Codelist(object):
         self.codes = set()
         self.name = name
 
-        self.name_prose = None
-        self.description = None
-        self.language = None
-        self.url = None
-        self.ref = None
-        self.category_codelist = None
-        self.complete = None
+        # a number of placeholder attributes that Codelists have, though are not yet implemented
+        self._name_prose = None
+        self._description = None
+        self._language = None
+        self._url = None
+        self._ref = None
+        self._category_codelist = None
+        self._complete = None
 
         if xml:
             parse_from_xml(xml)
@@ -111,16 +112,17 @@ class Codelist(object):
         """
         return hash((self.name, tuple(self.codes)))
 
-    def xsd_tree(self):
-        """Output the Codelist as an XSD etree type.
+    @property
+    def xsd_restriction(self):
+        """Output the Codelist as an XSD simpleType restriction.
 
-        This tree may be used to specify the type of given elements, allowing insertion and validation within a schema.
+        This tree may be used to specify the type of given elements, allowing insertion and validation within a Schema.
 
         Returns:
             etree.Element: An XSD simpleType representing this Codelist.
 
         Warning:
-            It is planned to change from Schema-based to Data-based Codelist validation. As such, this function may be removed.
+            It is planned to change from Schema-based to Data-based Codelist validation. As such, this property may be removed.
 
             The name attribute of the generated type is not good and needs changing.
 
@@ -130,8 +132,6 @@ class Codelist(object):
             See whether there are only Codelists of a type other than string.
 
             Improve naming of the type to reduce potential of clashes.
-
-            Rename this function, potentially making it a property.
 
         """
         type_base_el = etree.Element(
@@ -146,7 +146,7 @@ class Codelist(object):
         )
 
         for code in self.codes:
-            restriction_base_el.append(code.xsd_tree())
+            restriction_base_el.append(code.xsd_enumeration)
 
         type_base_el.append(restriction_base_el)
 
@@ -183,13 +183,14 @@ class Code(object):
         self.name = name
         self.value = value
 
-        self.description = None
-        self.category = None
-        self.url = None
-        self.public_database = False
-        self.status = None
-        self.activation_date = None
-        self.withdrawal_date = None
+        # a number of placeholder attributes that Codelists have, though are not yet implemented
+        self._description = None
+        self._category = None
+        self._url = None
+        self._public_database = False
+        self._status = None
+        self._activation_date = None
+        self._withdrawal_date = None
 
     def __eq__(self, other):
         """Check Code equality.
@@ -213,16 +214,17 @@ class Code(object):
         """
         return hash((self.name, self.value))
 
-    def xsd_tree(self):
+    @property
+    def xsd_enumeration(self):
         """Output the Code as an etree enumeration element.
 
+        Returns:
+            etree.Element: An XSD enumeration representing this Codelist.
+
         Warning:
-            It is planned to change from Schema-based to Data-based Codelist validation. As such, this function may be removed.
+            It is planned to change from Schema-based to Data-based Codelist validation. As such, this property may be removed.
 
             Does not fully hide the lxml internal workings.
-
-        Todo:
-            Rename this function, potentially making it a property.
 
         """
         return etree.Element(
