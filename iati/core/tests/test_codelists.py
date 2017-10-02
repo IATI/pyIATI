@@ -102,7 +102,7 @@ class TestCodelists(object):
         code = iati.core.Code(code_value_to_set)
         codelist.codes.add(code)
 
-        type_tree = codelist.xsd_tree()
+        type_tree = codelist.xsd_restriction
 
         assert isinstance(type_tree, etree._Element)  # pylint: disable=protected-access
         assert type_tree.tag == iati.core.constants.NAMESPACE + 'simpleType'
@@ -156,7 +156,7 @@ class TestCodes(object):
         value_to_set = "test Code value"
         code = iati.core.Code(value_to_set)
 
-        enum_el = code.xsd_tree()
+        enum_el = code.xsd_enumeration
 
         assert isinstance(enum_el, etree._Element)  # pylint: disable=protected-access
         assert enum_el.tag == iati.core.constants.NAMESPACE + 'enumeration'
