@@ -19,13 +19,16 @@ def get_default_version_if_none(version):
     """Return the default version number if the input version is None. Otherwise returns the input version as is.
 
     Args:
-        version (str / None): The version to test against.
+        version (str or None): The version to test against.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
 
     Returns:
         str: The default version if the input version is None. Otherwise returns the input version.
+
+    Note:
+        The default version of the Standard is deemed to be the latest version.
 
     """
     if version is None:
@@ -61,18 +64,18 @@ Warning:
 
 
 def codelist(name, version=None):
-    """Locate the default Codelist with the specified name for the specified version of the Standard.
+    """Return the default Codelist with the specified name for the specified version of the Standard.
 
     Args:
-        name (str): The name of the Codelist to locate.
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelist is returned.
+        name (str): The name of the Codelist to return.
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the specified Codelist is returned.
 
     Raises:
-        ValueError: When a specified name is not a valid Codelist.
-        ValueError: When a specified version is not a valid version of the IATI Standard.
+        ValueError: When a specified name is not a Codelist at the specified version of the Standard.
+        ValueError: When a specified version is not a valid version of the Standard.
 
     Returns:
-        iati.core.Codelist: A Codelist with the specified name.
+        iati.core.Codelist: A Codelist with the specified name from the specified version of the Standard. It is populated with all the Codes on the Codelist.
 
     Warning:
         A name may not be sufficient to act as a UID.
@@ -98,7 +101,7 @@ def _codelists(version=None, use_cache=False):
     """Locate the default Codelists for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelist is returned.
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelists are returned.
         use_cache (bool): Whether the cache should be used rather than loading the Codelists from disk again. If used, a `deepcopy()` should be performed on any returned Codelist before it is modified.
 
     Raises:
@@ -131,13 +134,13 @@ def _codelists(version=None, use_cache=False):
 
 
 def codelists(version=None):
-    """Locate the default Codelists for the specified version of the Standard.
+    """Return the default Codelists for the specified version of the Standard.
 
     Args:
-    version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelist is returned.
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelists are returned.
 
     Returns:
-    dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.core.Codelist() instances.
+        dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.core.Codelist() instances, populated with the relevant Codes.
 
     """
     return _codelists(version)
@@ -179,13 +182,13 @@ def codelist_mapping(version=None):
 
 
 def ruleset(version=None):
-    """Locate the default Ruleset for the specified version of the Standard.
+    """Return the Standard Ruleset for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that the latest version of the Ruleset is returned.
+        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that the latest Standard Ruleset is returned.
 
     Returns:
-        iati.core.ruleset.Ruleset: The default Ruleset for the specified version of the Standard.
+        iati.core.Ruleset: The default Ruleset for the specified version of the Standard.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -198,7 +201,18 @@ def ruleset(version=None):
 
 
 def ruleset_schema(version=None):
-    """Return the specified Ruleset schema."""
+    """Return the Ruleset schema for the specified version of the Standard.
+
+    Args:
+        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that the latest Ruleset schema is returned.
+
+    Returns:
+        json: A JSON representation of the Ruleset schema for the specified version of the Standard.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    """
     path = iati.core.resources.get_ruleset_path(iati.core.resources.FILE_RULESET_SCHEMA_NAME, version)
     schema_str = iati.core.resources.load_as_string(path)
 
@@ -293,7 +307,7 @@ def _schema(path_func, schema_class, version=None, populate=True, use_cache=Fals
 
 
 def activity_schema(version=None, populate=True):
-    """Return the default ActivitySchema objects for the specified version of the Standard.
+    """Return the default Activity Schema for the specified version of the Standard.
 
     Args:
         version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
@@ -303,14 +317,14 @@ def activity_schema(version=None, populate=True):
         ValueError: When a specified version is not a valid version of the IATI Standard.
 
     Returns:
-        iati.core.ActivitySchema: An instantiated IATI Schema for the specified version.
+        iati.core.ActivitySchema: An instantiated IATI Schema for the specified version of the Standard.
 
     """
     return _schema(iati.core.resources.get_all_activity_schema_paths, iati.core.ActivitySchema, version, populate)
 
 
 def organisation_schema(version=None, populate=True):
-    """Return the default OrganisationSchema objects for the specified version of the Standard.
+    """Return the default Organisation Schema for the specified version of the Standard.
 
     Args:
         version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
@@ -320,7 +334,7 @@ def organisation_schema(version=None, populate=True):
         ValueError: When a specified version is not a valid version of the IATI Standard.
 
     Returns:
-        iati.core.OrganisationSchema: An instantiated IATI Schema for the specified version.
+        iati.core.OrganisationSchema: An instantiated IATI Schema for the specified version of the Standard.
 
     """
-    return _schema(iati.core.resources.get_all_org_schema_paths, iati.core.OrganisationSchema, version, populate)
+    return _schema(iati.core.resources.get_all_organisation_schema_paths, iati.core.OrganisationSchema, version, populate)

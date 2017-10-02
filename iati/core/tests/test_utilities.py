@@ -1,4 +1,5 @@
 """A module containing tests for the library implementation of accessing utilities."""
+import itertools
 from lxml import etree
 import pytest
 import iati.core.resources
@@ -191,3 +192,14 @@ class TestUtilities(object):
     def test_log_warning(self):
         """TODO: Implement testing for logging."""
         pass
+
+
+class TestDefaultVersions(object):
+    """A container for tests relating to default versions."""
+
+    @pytest.mark.parametrize("major_version", iati.core.constants.STANDARD_VERSIONS_MAJOR)
+    def test_versions_for_integer(self, major_version):
+        result = iati.core.utilities.versions_for_integer(major_version)
+
+        for version in result:
+            assert version.startswith(str(major_version))

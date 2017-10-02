@@ -51,4 +51,5 @@
     <element40 attribute="1"></element40><!--nested attributes-->
     <element41 attribute="1"></element41>
   </nest>
+  <element42>fifty</element42><!--non-numeric value-->
 </root_element>
