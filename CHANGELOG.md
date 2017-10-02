@@ -74,7 +74,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Compatibility] Compatible with Python 2.7, 3.4, 3.5 and 3.6.
 
-- [Tests] Comprehensively unit test all code.
+- [Tests] All code is comprehensively unit tested.
 - [Tests] Datasets, Rulesets, and other components permitting user-defined input tested with range of valid and invalid data.
 - [Tests] Variety of never-before-seen edge-cases tested for correct behavior.
 - [Tests] Rudimentary custom fuzzing used to ensure expected errors are raised.
