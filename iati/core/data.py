@@ -158,7 +158,7 @@ class Dataset(object):
 
     @property
     def version(self):
-        """The version that this Dataset is specified against.
+        """Return the version that this Dataset is specified against.
 
         Returns:
             str or None: The version of this Dataset. None if the version cannot be detected.

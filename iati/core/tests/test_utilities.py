@@ -1,5 +1,4 @@
 """A module containing tests for the library implementation of accessing utilities."""
-import itertools
 from lxml import etree
 import pytest
 import iati.core.resources
