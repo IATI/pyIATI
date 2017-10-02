@@ -564,7 +564,11 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         {'less': 'element35/@attribute', 'more': 'element36/@attribute'},
         {'less': 'nOw', 'more': 'noW'},  # not special case, should treat as regular path value
         {'less': 'now/@attribute', 'more': 'Now/@attribute'},
-        {'less': 'element37', 'more': 'element38'}  # multiple identical elements
+        {'less': 'element37', 'more': 'element38'},  # multiple identical elements
+        {'less': 'element47', 'more': 'element48'},  # dates have identical values
+        {'less': 'element49/@attribute', 'more': 'element50/@attribute'},
+        {'less': 'element51', 'more': 'element51'},  # `less` and `more` reference the same date
+        {'less': 'element52/@attribute', 'more': 'element52/@attribute'}
     ]
 
     all_valid_cases = instatiating_cases + validating_cases
@@ -583,16 +587,12 @@ class TestRuleDateOrder(RuleSubclassTestBase):
     invalidating_cases = [
         {'less': 'element1', 'more': 'element2'},  # dates not in chronological order
         {'less': 'element14/@attribute', 'more': 'element15/@attribute'},
-        {'less': 'element3', 'more': 'element4'},  # dates have identical values
-        {'less': 'element16/@attribute', 'more': 'element17/@attribute'},
         {'less': 'NOW', 'more': 'element5'},  # `more` is chronologically before NOW
         {'less': 'NOW', 'more': 'element18/@attribute'},
         {'less': 'element6', 'more': 'NOW'},  # `less` is chronologically after NOW
         {'less': 'element19/@attribute', 'more': 'NOW'},
         {'less': '//element7', 'more': '//element8'},  # nested dates not in chronological order
         {'less': '//element20/@attribute', 'more': '//element21/@attribute'},
-        {'less': 'element9', 'more': 'element9'},  # `less` and `more` reference the same date
-        {'less': 'element22/@attribute', 'more': 'element22/@attribute'},
         {'less': 'element10', 'more': 'element11'},  # multiple identical `less` dates that are chronologically after `more`
         {'less': 'element23/@attribute', 'more': 'element24/@attribute'},
         {'less': 'element12', 'more': 'element13'},  # multiple identical `more` dates that are chronologically before `less`

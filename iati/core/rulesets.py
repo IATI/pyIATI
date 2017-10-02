@@ -577,7 +577,7 @@ class RuleDateOrder(Rule):
             if early_date is None or later_date is None:
                 return None
 
-            if early_date >= later_date:
+            if early_date > later_date:
                 return False
         except TypeError:
             # a TypeError is raised in python3 if either of the dates is None

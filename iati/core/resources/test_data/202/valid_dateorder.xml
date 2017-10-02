@@ -62,4 +62,10 @@
   <element44 attribute="2017-08-25"></element44>
   <element45 attribute="2016-08-25"></element45><!--more date missing-->
   <element46 attribute=""></element46>
+  <element47>2017-08-16</element47><!--elements have identical values-->
+  <element48>2017-08-16</element48>
+  <element49 attribute="2017-08-16"></element49><!--attributes have identical values-->
+  <element50 attribute="2017-08-16"></element50>
+  <element51>2017-08-16</element51><!--element is used by `less` and `more`-->
+  <element52 attribute="2017-08-16"></element52>
 </root_element>
