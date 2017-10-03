@@ -320,7 +320,7 @@ class ValidateCodelistsBase(ValidationTestBase):
     def schema_version(self):
         """Return an Activity Schema with the Version Codelist added."""
         schema = iati.core.default.activity_schema(None, False)
-        codelist = iati.core.default.codelists()['Version']
+        codelist = iati.core.default.codelists('Version')
 
         schema.codelists.add(codelist)
 
@@ -330,7 +330,7 @@ class ValidateCodelistsBase(ValidationTestBase):
     def schema_org_type(self):
         """Return an Activity Schema with the OrganisationType Codelist added."""
         schema = iati.core.default.activity_schema(None, False)
-        codelist = iati.core.default.codelists()['OrganisationType']
+        codelist = iati.core.default.codelists('OrganisationType')
 
         schema.codelists.add(codelist)
 
@@ -340,7 +340,7 @@ class ValidateCodelistsBase(ValidationTestBase):
     def schema_incomplete_codelist(self):
         """Return an Activity Schema with an incomplete Codelist added."""
         schema = iati.core.default.activity_schema(None, False)
-        codelist = iati.core.default.codelists()['Country']
+        codelist = iati.core.default.codelists('Country')
 
         schema.codelists.add(codelist)
 
@@ -350,7 +350,7 @@ class ValidateCodelistsBase(ValidationTestBase):
     def schema_short_mapping_codelist(self):
         """Return an Activity Schema with a Codelist that has a short `path` in the mapping file."""
         schema = iati.core.default.activity_schema(None, False)
-        codelist = iati.core.default.codelists()['Language']
+        codelist = iati.core.default.codelists('Language')
 
         schema.codelists.add(codelist)
 
@@ -361,9 +361,9 @@ class ValidateCodelistsBase(ValidationTestBase):
         """Return an Activity Schema with the DAC Sector Codelists and appropriate vocabulary added."""
         schema = iati.core.default.activity_schema(None, False)
 
-        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
-        codelist_2 = iati.core.default.codelists()['Sector']
-        codelist_3 = iati.core.default.codelists()['SectorCategory']
+        codelist_1 = iati.core.default.codelists('SectorVocabulary')
+        codelist_2 = iati.core.default.codelists('Sector')
+        codelist_3 = iati.core.default.codelists('SectorCategory')
 
         schema.codelists.add(codelist_1)
         schema.codelists.add(codelist_2)
