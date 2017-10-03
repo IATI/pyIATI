@@ -18,6 +18,7 @@ Todo:
 import decimal
 from lxml import etree
 import iati.core.constants
+import iati.core.resources
 
 
 def load_as_dataset(file_path):

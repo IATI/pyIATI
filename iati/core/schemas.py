@@ -179,7 +179,7 @@ class Schema(object):
         return tree
 
     def validator(self):
-        """A schema that can be used for validation.
+        """Return a schema that can be used for validation.
 
         Takes the base schema and converts it into an object that lxml can deal with.
 
@@ -195,6 +195,7 @@ class Schema(object):
         except etree.XMLSchemaParseError as err:
             iati.core.utilities.log_error(err)
             raise iati.core.exceptions.SchemaError('Problem parsing Schema')
+
 
 class ActivitySchema(Schema):
     """Representation of an IATI Activity Schema as defined within the IATI SSOT."""

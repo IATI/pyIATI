@@ -149,7 +149,7 @@ def codelists(version=None):
 def codelist_mapping(version=None):
     """Define the mapping process which states where in a Dataset you should find values on a given Codelist.
 
-    version (str): The version of the Standard to return the data files for. Defaults to None. This means that the mapping file is returned for the latest version of the Standard.
+    version (str): The version of the Standard to return the mapping file for. Defaults to None. This means that the mapping file is returned for the latest version of the Standard.
 
     Returns:
         dict of dict: A dictionary containing mapping information. Keys in the first dictionary are Codelist names. Keys in the second dictionary are `xpath` and `condition`. The condition is `None` if there is no condition.
@@ -157,6 +157,7 @@ def codelist_mapping(version=None):
     Todo:
         Test this.
         Stop filtering out filters for org files.
+        Utilise the `version` parameter.
 
     """
     path = iati.core.resources.get_codelist_mapping_path()

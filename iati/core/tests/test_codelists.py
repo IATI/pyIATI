@@ -84,7 +84,7 @@ class TestCodelists(object):
         xml_str = iati.core.resources.load_as_string(path)
         codelist = iati.core.Codelist(codelist_name, xml=xml_str)
 
-        assert codelist.complete == True
+        assert codelist.complete is True
 
     def test_codelist_incomplete(self):
         """Check that a Codelist can be generated from an XML codelist definition."""
@@ -93,7 +93,7 @@ class TestCodelists(object):
         xml_str = iati.core.resources.load_as_string(path)
         codelist = iati.core.Codelist(codelist_name, xml=xml_str)
 
-        assert codelist.complete == False
+        assert codelist.complete is False
 
     def test_codelist_type_xsd(self, name_to_set):
         """Check that a Codelist can turn itself into a type to use for validation."""

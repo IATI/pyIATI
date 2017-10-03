@@ -23,7 +23,7 @@ class TestDefault(object):
             func_to_check(invalid_version)
 
 
-class TestDefaultCodelist(object):
+class TestDefaultCodelists(object):
     """A container for tests relating to default Codelists."""
 
     @pytest.fixture
@@ -120,7 +120,7 @@ class TestDefaultCodelist(object):
         mapping = iati.core.default.codelist_mapping()
 
         assert mapping['Version'][0]['xpath'] == '//iati-activities/@version'
-        assert len(mapping['InvalidCodelistName']) == 0
+        assert mapping['InvalidCodelistName'] == list()
         for mapping_list in mapping.values():
             assert isinstance(mapping_list, list)
 
@@ -144,6 +144,63 @@ class TestDefaultRulesets(object):
         ruleset = iati.core.default.ruleset(*standard_version_optional)
 
         assert isinstance(ruleset, iati.core.Ruleset)
+
+    def test_default_ruleset_validation_rules_valid(self, schema_ruleset):
+        """Check that a fully valid IATI file does not raise any type of error (including rules/rulesets)."""
+        data = iati.core.tests.utilities.load_as_dataset('valid_std_ruleset')
+        result = iati.validator.full_validation(data, schema_ruleset)
+
+        assert iati.validator.is_xml(data.xml_str)
+        assert iati.validator.is_iati_xml(data, schema_ruleset)
+        assert not result.contains_errors()
+
+    @pytest.mark.parametrize("rule_error, invalid_dataset_name, info_text", [
+        (
+            'err-rule-at-least-one-conformance-fail',
+            'invalid_std_ruleset_missing_sector_element',
+            'At least one of `sector` or `transaction/sector` must be present within each `//iati-activity`.'
+        ),
+        (
+            'err-rule-date-order-conformance-fail',
+            'invalid_std_ruleset_bad_date_order',
+            '`activity-date[@type=\'1\']/@iso-date` must be chronologically before `activity-date[@type=\'3\']/@iso-date` within each `//iati-activity`.'
+        ),
+        (
+            'err-rule-regex-matches-conformance-fail',
+            'invalid_std_ruleset_bad_identifier',
+            'Each instance of `reporting-org/@ref` and `iati-identifier` and `participating-org/@ref` and `transaction/provider-org/@ref` and `transaction/receiver-org/@ref` within each `//iati-activity` must match the regular expression `[^\\/\\&\\|\\?]+`.'  # noqa: disable=E501 # pylint: disable=line-too-long
+        ),
+        (
+            'err-rule-sum-conformance-fail',
+            'invalid_std_ruleset_does_not_sum_100',
+            'Within each `//iati-activity`, the sum of values matched at `recipient-country/@percentage` and `recipient-region/@percentage` must be `100`.'
+        )
+        # Note the Rules relating to 'dependent', 'no_more_than_one', 'regex_no_matches', 'startswith' and 'unique' are not used in the Standard Ruleset.
+    ])
+    def test_default_ruleset_validation_rules_invalid(self, schema_ruleset, rule_error, invalid_dataset_name, info_text):
+        """Check that the expected rule error is detected when validating files containing invalid data for that rule.
+
+        Note:
+            The fixed strings being checked here may be a tad annoying to maintain.
+            `test_rule_string_output_general` and `test_rule_string_output_specific` in `test_rulesets.py` do something related for Rules. As such, something more generic may work better in the future.
+
+        Todo:
+            Consider whether this test should remove all warnings and assert that there is only the expected warning contained within the test file.
+
+            Check that the expected missing elements appear the the help text for the given element.
+
+        """
+        data = iati.core.tests.utilities.load_as_dataset(invalid_dataset_name)
+        result = iati.validator.full_validation(data, schema_ruleset)
+        errors_for_rule_error = result.get_errors_or_warnings_by_name(rule_error)
+        errors_for_ruleset = result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')
+
+        assert iati.validator.is_xml(data.xml_str)
+        assert iati.validator.is_iati_xml(data, schema_ruleset)
+        assert not iati.validator.is_valid(data, schema_ruleset)
+        assert len(errors_for_rule_error) == 1
+        assert len(errors_for_ruleset) == 1
+        assert info_text in errors_for_rule_error[0].info
 
 
 class TestDefaultSchemas(object):
