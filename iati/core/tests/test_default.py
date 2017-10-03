@@ -101,7 +101,7 @@ class TestDefaultCodelists(object):
             assert isinstance(codelist, iati.core.Codelist)
 
     def test_codelist_mapping_condition(self):
-        """Check that the Codelist mapping file is being read correctly.
+        """Check that the Codelist mapping file is having conditions read.
 
         Todo:
             Split into multiple tests.
@@ -112,17 +112,17 @@ class TestDefaultCodelists(object):
         assert mapping['Version'][0]['condition'] is None
 
     def test_codelist_mapping_xpath(self):
-        """Check that the Codelist mapping file is being read correctly.
+        """Check that the Codelist mapping file is being read for both org and activity mappings.
 
         Todo:
             Split into multiple tests.
         """
         mapping = iati.core.default.codelist_mapping()
+        version_xpaths = [mapping['Version'][0]['xpath'], mapping['Version'][1]['xpath']]
 
-        assert mapping['Version'][0]['xpath'] == '//iati-activities/@version'
-        assert mapping['InvalidCodelistName'] == list()
-        for mapping_list in mapping.values():
-            assert isinstance(mapping_list, list)
+        assert '//iati-activities/@version' in version_xpaths
+        assert '//iati-organisations/@version' in version_xpaths
+        assert len(mapping['InvalidCodelistName']) == 0
 
     def test_default_codelists_length(self, codelist_lengths_by_version):
         """Check that the default Codelists for each version contain the expected number of Codelists."""
