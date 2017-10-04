@@ -291,7 +291,7 @@ def _check_codes(dataset, codelist):
         else:
             parent_el_xpath = parent_el_xpath + '[' + condition + ' and @' + attr_name + ']'
 
-        # some nastly string manipulation to make the `//@xml:lang` mapping work
+        # some nasty string manipulation to make the `//@xml:lang` mapping work
         while not parent_el_xpath.startswith('//'):
             parent_el_xpath = '/' + parent_el_xpath
         if parent_el_xpath.startswith('//['):
