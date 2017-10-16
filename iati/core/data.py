@@ -168,14 +168,14 @@ class Dataset(object):
 
         """
         root_tree = self.xml_tree.getroot()
-        assumed_version_if_no_version_stated = '1.01'
-        version_iati_root = root_tree.get('version', assumed_version_if_no_version_stated).strip()
+        default_version = '1.01'
+        version_iati_root = root_tree.get('version', default_version).strip()
 
         if version_iati_root.startswith('1'):
             # Version 1 data, so need to check that all child `iati-activity` or `iati-organisation` elements are at the same version
             versions_in_children = list()
             for child_tree in root_tree.getchildren():  # This is expected to return a list of `iati-activity` or `iati-organisation` elements.
-                activity_version = child_tree.get('version', assumed_version_if_no_version_stated).strip()
+                activity_version = child_tree.get('version', default_version).strip()
                 versions_in_children.append(activity_version)
 
             if len(set(versions_in_children)) == 1 and versions_in_children[0] == version_iati_root:
