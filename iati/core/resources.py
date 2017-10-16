@@ -139,7 +139,7 @@ def get_all_activity_schema_paths(version=None):
     return [get_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version)]
 
 
-def get_all_organisation_schema_paths(version=None):
+def get_all_organisation_schema_paths(version=None):  # pylint: disable=invalid-name
     """Find the paths for all Organisation Schemas at the specified version of the Standard.
 
     Args:
