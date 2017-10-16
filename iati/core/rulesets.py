@@ -12,7 +12,6 @@ import json
 import re
 import sre_constants
 from datetime import datetime
-from decimal import Decimal
 import jsonschema
 import six
 import iati.core.default
@@ -880,14 +879,14 @@ class RuleSum(Rule):
             values_to_sum = self._extract_text_from_element_or_attribute(context_element, path)
             for value in values_to_sum:
                 try:
-                    values_in_context.append(Decimal(value))
+                    values_in_context.append(decimal.Decimal(value))
                 except decimal.InvalidOperation:
                     raise ValueError
 
         if values_in_context == list():
             return None
 
-        if sum(values_in_context) != Decimal(str(self.sum)):
+        if sum(values_in_context) != decimal.Decimal(str(self.sum)):
             return False
         return True
 
