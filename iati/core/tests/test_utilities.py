@@ -198,6 +198,7 @@ class TestDefaultVersions(object):
 
     @pytest.mark.parametrize("major_version", iati.core.constants.STANDARD_VERSIONS_MAJOR)
     def test_versions_for_integer(self, major_version):
+        """Check that the each of the decimal versions returned by versions_for_integer starts with the input major version."""
         result = iati.core.utilities.versions_for_integer(major_version)
 
         for version in result:

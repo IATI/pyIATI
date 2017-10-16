@@ -236,7 +236,7 @@ def versions_for_integer(integer):
         integer (int): The integer version to find the supported version for.
 
     Returns:
-        list or str: Containing the supported versions for the input integer.
+        list of str: Containing the supported versions for the input integer.
 
     """
     output = list()
