@@ -179,12 +179,14 @@ class Dataset(object):
                 versions_in_children.append(activity_version)
 
             if len(set(versions_in_children)) == 1 and versions_in_children[0] == version_iati_root:
-                return version_iati_root
+                version = version_iati_root
             else:
-                return None
+                version = None
         else:
             # Not version 1 data, so can return the version specified in `iati-activities/@version`
-            return version_iati_root
+            version = version_iati_root
+
+        return version
 
     def source_at_line(self, line_number):
         """Return the value of the XML source at the specified line.
