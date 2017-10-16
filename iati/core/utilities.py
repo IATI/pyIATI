@@ -241,6 +241,7 @@ def versions_for_integer(integer):
     """
     output = list()
     for version in iati.core.constants.STANDARD_VERSIONS:
-        output.append(version) if version.startswith(str(integer)) else None
+        if version.startswith(str(integer)):
+            output.append(version)
 
     return output
