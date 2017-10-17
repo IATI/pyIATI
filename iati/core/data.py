@@ -78,7 +78,7 @@ class Dataset(object):
     @xml_str.setter
     def xml_str(self, value):
         if isinstance(value, etree._Element):  # pylint: disable=W0212
-            msg = "If setting a dataset with an ElementTree, use the xml_tree property, not the xml_str property."
+            msg = "If setting a Dataset with an ElementTree, use the xml_tree property, not the xml_str property."
             iati.core.utilities.log_error(msg)
             raise TypeError(msg)
         else:
@@ -125,7 +125,7 @@ class Dataset(object):
             self._xml_tree = value
             self._xml_str = etree.tostring(value, pretty_print=True)
         else:
-            msg = "If setting a dataset with the xml_property, an ElementTree should be provided, not a {0}.".format(type(value))
+            msg = "If setting a Dataset with the xml_property, an ElementTree should be provided, not a {0}.".format(type(value))
             iati.core.utilities.log_error(msg)
             raise TypeError(msg)
 
