@@ -7,7 +7,7 @@ setup(
     author = 'IATI Technical Team and other authors',
     author_email = 'code@iatistandard.org',
     url='http://iatistandard.org/',
-    packages = find_packages(exclude='iati/core/tests'),
+    packages = find_packages(exclude='iati/tests'),
     install_requires = [
         # JSON schema parsing validation
         'jsonschema==2.6.0',
