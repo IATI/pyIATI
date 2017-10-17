@@ -20,7 +20,7 @@ class TestDatasets(object):
 
     @pytest.fixture
     def dataset_initialised(self):
-        """Return an initialised dataset to work from in other tests."""
+        """Return an initialised Dataset to work from in other tests."""
         return iati.core.tests.utilities.load_as_dataset('valid_not_iati')
 
     def test_dataset_no_params(self):
@@ -115,7 +115,7 @@ class TestDatasets(object):
         with pytest.raises(TypeError) as excinfo:
             data.xml_str = iati.core.tests.utilities.XML_TREE_VALID
 
-        assert str(excinfo.value) == 'If setting a dataset with an ElementTree, use the xml_tree property, not the xml_str property.'
+        assert str(excinfo.value) == 'If setting a Dataset with an ElementTree, use the xml_tree property, not the xml_str property.'
 
     @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_dataset_xml_str_assignment_invalid_value(self, dataset_initialised, invalid_value):
@@ -156,7 +156,7 @@ class TestDatasets(object):
         with pytest.raises(TypeError) as excinfo:
             data.xml_tree = xml_str
 
-        assert 'If setting a dataset with the xml_property, an ElementTree should be provided, not a' in str(excinfo.value)
+        assert 'If setting a Dataset with the xml_property, an ElementTree should be provided, not a' in str(excinfo.value)
 
     @pytest.mark.parametrize("invalid_value", iati.core.tests.utilities.generate_test_types(['str'], True))
     def test_dataset_xml_tree_assignment_invalid_value(self, dataset_initialised, invalid_value):
@@ -166,10 +166,10 @@ class TestDatasets(object):
         with pytest.raises(TypeError) as excinfo:
             data.xml_tree = invalid_value
 
-        assert 'If setting a dataset with the xml_property, an ElementTree should be provided, not a' in str(excinfo.value)
+        assert 'If setting a Dataset with the xml_property, an ElementTree should be provided, not a' in str(excinfo.value)
 
     def test_instantiation_dataset_from_string(self):
-        """Test that a dataset instantiated directly from a string (rather than a file) correctly creates an iati.core.data.Dataset and the input data is contained within the object."""
+        """Test that a Dataset instantiated directly from a string (rather than a file) correctly creates an iati.core.data.Dataset and the input data is contained within the object."""
         xml_str = """<?xml version="1.0"?>
         <iati-activities version="xx">
           <iati-activity>
@@ -186,7 +186,7 @@ class TestDatasets(object):
                                           "ASCII", "ISO-8859-1", "ISO-8859-2",
                                           "BIG5", "EUC-JP"])
     def test_instantiation_dataset_from_string_with_encoding(self, encoding):
-        """Test that an encoded dataset instantiated directly from a string (rather than a file) correctly creates an iati.core.data.Dataset and the input data is contained within the object.
+        """Test that an encoded Dataset instantiated directly from a string (rather than a file) correctly creates an iati.core.data.Dataset and the input data is contained within the object.
 
         Note:
             The use of UTF-8 and UTF-16 is strongly recommended for IATI datasets, however other encodings are specificed here to demonstrate compatibility.
@@ -217,7 +217,7 @@ class TestDatasets(object):
         ("BIG5", "UTF-16"),
         ("EUC-JP", "UTF-16")])
     def test_instantiation_dataset_from_string_with_encoding_mismatch(self, encoding_declared, encoding_used):
-        """Test that an error is raised when attempting to create a dataset where a string is encoded significantly differently from what is defined within the XML encoding declaration.
+        """Test that an error is raised when attempting to create a Dataset where a string is encoded significantly differently from what is defined within the XML encoding declaration.
 
         Todo:
             Amend error message, when the todo in iati.core.data.Dataset.xml_str() has been resolved.
@@ -424,7 +424,7 @@ class TestDatasetVersionDetection(object):
 
     @pytest.mark.parametrize("version", iati.core.utilities.versions_for_integer(1))
     def test_detect_version_v1_simple(self, iati_tag_names, version):
-        """Check that a version 1 dataset is detected correctly.
+        """Check that a version 1 Dataset is detected correctly.
         Also checks that version numbers containing whitespace do not affect version detection.
         """
         data = iati.core.Dataset("""
@@ -440,7 +440,7 @@ class TestDatasetVersionDetection(object):
         assert result == version
 
     def test_detect_version_explicit_parent_mismatch_explicit_child(self, iati_tag_names):
-        """Check that no version is detected for a v1 dataset where a version within the `iati-activities` element does not match the versions specified within all `iati-activity` child elements."""
+        """Check that no version is detected for a v1 Dataset where a version within the `iati-activities` element does not match the versions specified within all `iati-activity` child elements."""
         data = iati.core.Dataset("""
         <{0} version="1.02">
             <{1} version="1.02"></{1}>
@@ -452,7 +452,7 @@ class TestDatasetVersionDetection(object):
         assert result is None
 
     def test_detect_version_implicit_parent_matches_implicit_child(self, iati_tag_names):
-        """Check that the default version is detected for a dataset where no versions are declared (i.e. the default version is assumed for all `iati-activities` and `iati-activity` child elements)."""
+        """Check that the default version is detected for a Dataset where no versions are declared (i.e. the default version is assumed for all `iati-activities` and `iati-activity` child elements)."""
         data = iati.core.Dataset("""
         <{0}>
             <{1}></{1}>
@@ -464,7 +464,7 @@ class TestDatasetVersionDetection(object):
         assert result == '1.01'
 
     def test_detect_version_explicit_parent_matches_implicit_child(self, iati_tag_names):
-        """Check that the default version is detected for a dataset with the default version explicitly defined at `iati-activities` level, but where all `iati-activity` child elements are not defined (i.e. the default version is assumed)."""
+        """Check that the default version is detected for a Dataset with the default version explicitly defined at `iati-activities` level, but where all `iati-activity` child elements are not defined (i.e. the default version is assumed)."""
         data = iati.core.Dataset("""
         <{0} version="1.01">
             <{1}></{1}>
@@ -476,7 +476,7 @@ class TestDatasetVersionDetection(object):
         assert result == '1.01'
 
     def test_detect_version_implicit_parent_matches_explicit_and_implicit_child(self, iati_tag_names):
-        """Check that the default version is detected for a dataset with no version not defined at `iati-activities` level (i.e. the default version is assumed), but where at least one `iati-activity` child element has the default version defined."""
+        """Check that the default version is detected for a Dataset with no version not defined at `iati-activities` level (i.e. the default version is assumed), but where at least one `iati-activity` child element has the default version defined."""
         data = iati.core.Dataset("""
         <{0}>
             <{1} version="1.01"></{1}>
@@ -488,7 +488,7 @@ class TestDatasetVersionDetection(object):
         assert result == '1.01'
 
     def test_detect_version_explicit_parent_mismatch_implicit_child(self, iati_tag_names):
-        """Check that no version is detected for a dataset that has a non-default version defined at the `iati-activities` level, but no version is defined in any `iati-activity` child element (i.e. the default version is assumed)."""
+        """Check that no version is detected for a Dataset that has a non-default version defined at the `iati-activities` level, but no version is defined in any `iati-activity` child element (i.e. the default version is assumed)."""
         data = iati.core.Dataset("""
         <{0} version="1.02">
             <{1}></{1}>
@@ -500,7 +500,7 @@ class TestDatasetVersionDetection(object):
         assert result is None
 
     def test_detect_version_imlicit_parent_mismatch_explicit_child(self, iati_tag_names):
-        """Check that no version is detected for a dataset that has no version defined at the `iati-activities` level (i.e. the default version is assumed), but at least one non-default version is defined in any `iati-activity` child element."""
+        """Check that no version is detected for a Dataset that has no version defined at the `iati-activities` level (i.e. the default version is assumed), but at least one non-default version is defined in any `iati-activity` child element."""
         data = iati.core.Dataset("""
         <{0}>
             <{1} version="1.02"></{1}>
@@ -513,7 +513,7 @@ class TestDatasetVersionDetection(object):
 
     @pytest.mark.parametrize("version", iati.core.utilities.versions_for_integer(2))
     def test_detect_version_v2_simple(self, iati_tag_names, version):
-        """Check that a version 2 dataset is detected correctly."""
+        """Check that a version 2 Dataset is detected correctly."""
         data = iati.core.Dataset("""
         <{0} version="{2}">
             <{1}></{1}>
