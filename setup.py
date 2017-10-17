@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = 'iati.core',
+    name = 'pyIATI',
     version = '0.1.0',
     description = 'Python library representing the IATI Schemas, Codelists and Rulesets',
     author = 'IATI Technical Team and other authors',
