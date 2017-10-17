@@ -466,7 +466,7 @@ class TestDatasetVersionDetection(object):
     def test_detect_version_explicit_parent_matches_implicit_child(self, iati_tag_names):
         """Check that the default version is detected for a dataset with the default version explicitly defined at `iati-activities` level, but where all `iati-activity` child elements are not defined (i.e. the default version is assumed)."""
         data = iati.core.Dataset("""
-        <{0} version='1.01'>
+        <{0} version="1.01">
             <{1}></{1}>
             <{1}></{1}>
         </{0}>
@@ -479,7 +479,7 @@ class TestDatasetVersionDetection(object):
         """Check that the default version is detected for a dataset with no version not defined at `iati-activities` level (i.e. the default version is assumed), but where at least one `iati-activity` child element has the default version defined."""
         data = iati.core.Dataset("""
         <{0}>
-            <{1} version='1.01'></{1}>
+            <{1} version="1.01"></{1}>
             <{1}></{1}>
         </{0}>
         """.format(iati_tag_names.root_element, iati_tag_names.child_element))
@@ -490,7 +490,7 @@ class TestDatasetVersionDetection(object):
     def test_detect_version_explicit_parent_mismatch_implicit_child(self, iati_tag_names):
         """Check that no version is detected for a dataset that has a non-default version defined at the `iati-activities` level, but no version is defined in any `iati-activity` child element (i.e. the default version is assumed)."""
         data = iati.core.Dataset("""
-        <{0} version='1.02'>
+        <{0} version="1.02">
             <{1}></{1}>
             <{1}></{1}>
         </{0}>
