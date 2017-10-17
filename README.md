@@ -1,6 +1,6 @@
-# iati.core
+# pyIATI
 
-The iati.core Python module.
+A developers’ toolkit for IATI.
 
 [![Build Status](https://travis-ci.org/IATI/iati.core.svg?branch=master)](https://travis-ci.com/IATI/iati.core) [![Requirements Status](https://requires.io/github/IATI/iati.core/requirements.svg?branch=master)](https://requires.io/github/IATI/iati.core/requirements/?branch=master)
 
