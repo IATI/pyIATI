@@ -88,7 +88,7 @@ for codelist in iati.core.default.codelists().values():
 
 The default IATI Ruleset can be loaded by using:
 
-```
+```python
 import iati.core.default
 
 iati.core.default.ruleset()
@@ -96,11 +96,13 @@ iati.core.default.ruleset()
 
 If you wish to load your own Ruleset you can do this using:
 
-```
-import iati.core.resources
+```python
 import iati.core.Rulesets
 
-ruleset_str = iati.core.resources.load_as_string(filepath)
+# Load a local Ruleset
+with open('path/to/ruleset.json', 'r') as json_file_object:
+    ruleset_str = json_file_object.read()
+
 # To create a Ruleset object from your ruleset_str:
 iati.core.Ruleset(ruleset_str)
 ```
