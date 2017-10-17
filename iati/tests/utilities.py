@@ -17,7 +17,7 @@ Todo:
 """
 import decimal
 from lxml import etree
-import iati.core.constants
+import iati.constants
 
 
 def load_as_dataset(file_path):
@@ -30,10 +30,10 @@ def load_as_dataset(file_path):
         dataset: A Dataset containing the contents of the file at the specified location.
 
     Raises:
-        iati.core.exceptions.ValidationError: If the provided XML does not conform to the IATI standard.
+        iati.exceptions.ValidationError: If the provided XML does not conform to the IATI standard.
 
     """
-    return iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path(file_path))
+    return iati.resources.load_as_dataset(iati.resources.get_test_data_path(file_path))
 
 
 def load_as_string(file_path):
@@ -46,11 +46,11 @@ def load_as_string(file_path):
         str (python3) / unicode (python2): The contents of the file at the specified location.
 
     """
-    return iati.core.resources.load_as_string(iati.core.resources.get_test_data_path(file_path))
+    return iati.resources.load_as_string(iati.resources.get_test_data_path(file_path))
 
 
 # This will need updating once test data forcing XML format is fixed
-RULESET_FOR_TESTING = iati.core.Ruleset(iati.core.resources.load_as_string(iati.core.resources.get_ruleset_path('ruleset_for_tests')))
+RULESET_FOR_TESTING = iati.Ruleset(iati.resources.load_as_string(iati.resources.get_ruleset_path('ruleset_for_tests')))
 """A working Ruleset based on the Standard Ruleset."""
 
 

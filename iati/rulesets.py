@@ -15,8 +15,8 @@ from datetime import datetime
 from decimal import Decimal
 import jsonschema
 import six
-import iati.core.default
-import iati.core.utilities
+import iati.default
+import iati.utilities
 
 
 _VALID_RULE_TYPES = ["atleast_one", "dependent", "sum", "date_order", "no_more_than_one", "regex_matches", "regex_no_matches", "startswith", "unique"]
@@ -68,7 +68,7 @@ class Ruleset(object):
             ruleset_str = ''
 
         try:
-            self.ruleset = json.loads(ruleset_str, object_pairs_hook=iati.core.utilities.dict_raise_on_duplicates)
+            self.ruleset = json.loads(ruleset_str, object_pairs_hook=iati.utilities.dict_raise_on_duplicates)
         except TypeError:
             raise ValueError('Provided Ruleset string is not a string.')
         except ValueError:  # python2/3 - should be json.decoder.JSONDecodeError at python 3.5+
@@ -84,7 +84,7 @@ class Ruleset(object):
         """Validate a Dataset against the Ruleset.
 
         Args:
-            Dataset (iati.core.Dataset): A Dataset to be checked for validity against the Ruleset.
+            Dataset (iati.Dataset): A Dataset to be checked for validity against the Ruleset.
 
         Returns:
             bool:
@@ -113,7 +113,7 @@ class Ruleset(object):
 
         """
         try:
-            jsonschema.validate(self.ruleset, iati.core.default.ruleset_schema())
+            jsonschema.validate(self.ruleset, iati.default.ruleset_schema())
         except jsonschema.ValidationError:
             raise ValueError
 
@@ -291,7 +291,7 @@ class Rule(object):
             AttributeError: When the Rule name is unset or does not have the required attributes.
 
         """
-        ruleset_schema = iati.core.default.ruleset_schema()
+        ruleset_schema = iati.default.ruleset_schema()
         partial_schema = ruleset_schema['patternProperties']['.+']['properties'][self.name]['properties']['cases']['items']  # pylint: disable=E1101
         # make all attributes other than 'condition' in the partial schema required
         partial_schema['required'] = self._case_attributes(partial_schema)
@@ -305,7 +305,7 @@ class Rule(object):
         """Find the specific elements in context for the Rule.
 
         Args:
-            dataset (iati.core.Dataset): The Dataset to be chacked for validity against the Rule.
+            dataset (iati.Dataset): The Dataset to be chacked for validity against the Rule.
 
         Returns:
             list of elements: Results of XPath query.
@@ -339,7 +339,7 @@ class Rule(object):
         """Check for condtions of a given case.
 
         Args:
-            dataset (iati.core.Dataset): The Dataset to be checked for validity against a Rule.
+            dataset (iati.Dataset): The Dataset to be checked for validity against a Rule.
 
         Returns:
             bool: Returns `False` when condition not met.
@@ -367,7 +367,7 @@ class Rule(object):
         """Check whether a Dataset is valid against the Rule.
 
         Args:
-            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+            dataset (iati.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
             bool or None:
@@ -449,7 +449,7 @@ class RuleAtLeastOne(Rule):
         """Check whether a Dataset is valid against the Rule.
 
         Args:
-            dataset (iati.core.Dataset): The Dataset to be checked for validity against the Rule.
+            dataset (iati.Dataset): The Dataset to be checked for validity against the Rule.
 
         Returns:
             bool or None:
