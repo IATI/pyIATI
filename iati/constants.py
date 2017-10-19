@@ -9,7 +9,6 @@ Todo:
     Allow logging constants to be user-definable.
 
 """
-import math
 
 STANDARD_VERSIONS = ['1.04', '1.05', '2.01', '2.02']
 """Define all versions of the Standard.

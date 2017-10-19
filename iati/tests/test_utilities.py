@@ -1,5 +1,4 @@
 """A module containing tests for the library implementation of accessing utilities."""
-import itertools
 from lxml import etree
 import pytest
 import iati.resources
@@ -199,6 +198,7 @@ class TestDefaultVersions(object):
 
     @pytest.mark.parametrize("major_version", iati.constants.STANDARD_VERSIONS_MAJOR)
     def test_versions_for_integer(self, major_version):
+        """Check that the each of the decimal versions returned by versions_for_integer starts with the input major version."""
         result = iati.utilities.versions_for_integer(major_version)
 
         for version in result:
