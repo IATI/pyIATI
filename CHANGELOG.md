@@ -8,6 +8,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [0.1.0] - 2017-10-19
+
+### Added
+
 - [Codelists] Blank Codelists may be created and given a name.
 - [Codelists] Codelists may be created from a string conforming to the Codelist Schema.
 - [Codelists] Codelists contain a set of Codes.
@@ -92,13 +106,3 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [XML] Support XML 1.0.
 - [XML] Support XMLSchema 1.0.
 - [XML] Support XPath 1.0.
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
