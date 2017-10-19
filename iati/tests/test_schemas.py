@@ -2,12 +2,12 @@
 # pylint: disable=protected-access
 from lxml import etree
 import pytest
-import iati.core.codelists
-import iati.core.default
-import iati.core.exceptions
-import iati.core.resources
-import iati.core.schemas
-import iati.core.tests.utilities
+import iati.codelists
+import iati.default
+import iati.exceptions
+import iati.resources
+import iati.schemas
+import iati.tests.utilities
 
 
 class TestSchemas(object):
@@ -15,12 +15,12 @@ class TestSchemas(object):
 
     @pytest.fixture(params=[
         {
-            "path_func": iati.core.resources.get_all_activity_schema_paths,
-            "schema_class": iati.core.ActivitySchema
+            "path_func": iati.resources.get_all_activity_schema_paths,
+            "schema_class": iati.ActivitySchema
         },
         {
-            "path_func": iati.core.resources.get_all_organisation_schema_paths,
-            "schema_class": iati.core.OrganisationSchema
+            "path_func": iati.resources.get_all_organisation_schema_paths,
+            "schema_class": iati.OrganisationSchema
         }
     ])
     def schema_initialised(self, request, standard_version_optional):
@@ -29,15 +29,15 @@ class TestSchemas(object):
         For use where both ActivitySchema and OrganisationSchema must produce the same result.
 
         Returns:
-            iati.core.Schema: An activity or organisation Schema that has been initialised.
+            iati.Schema: An activity or organisation Schema that has been initialised.
 
         """
         schema_path = request.param['path_func'](*standard_version_optional)[0]
         return request.param['schema_class'](schema_path)
 
     @pytest.mark.parametrize("schema_func, expected_root_element_name", [
-        (iati.core.default.activity_schema, 'iati-activities'),
-        (iati.core.default.organisation_schema, 'iati-organisations')
+        (iati.default.activity_schema, 'iati-activities'),
+        (iati.default.organisation_schema, 'iati-organisations')
     ])
     def test_schema_default_attributes(self, standard_version_optional, schema_func, expected_root_element_name):
         """Check a Schema's default attributes are correct."""
@@ -54,12 +54,12 @@ class TestSchemas(object):
         assert not schema_initialised.rulesets
 
     @pytest.mark.parametrize("schema_func", [
-        iati.core.default.activity_schema,
-        iati.core.default.organisation_schema
+        iati.default.activity_schema,
+        iati.default.organisation_schema
     ])
-    @pytest.mark.parametrize('version', iati.core.constants.STANDARD_VERSIONS)
+    @pytest.mark.parametrize('version', iati.constants.STANDARD_VERSIONS)
     def test_schema_get_version(self, schema_func, version):
-        """Check that the correct version number is returned by the base classes of iati.core.schemas.schema._get_version()."""
+        """Check that the correct version number is returned by the base classes of iati.schemas.schema._get_version()."""
         schema = schema_func(version)
         result = schema._get_version()
 
@@ -81,9 +81,9 @@ class TestSchemas(object):
         local_element = schema.ROOT_ELEMENT_NAME
         included_element = 'reporting-org'
 
-        include_location_xpath = (iati.core.constants.NAMESPACE + 'include')
-        local_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + local_element + '"]')
-        included_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
+        include_location_xpath = (iati.constants.NAMESPACE + 'include')
+        local_xpath = (iati.constants.NAMESPACE + 'element[@name="' + local_element + '"]')
+        included_xpath = (iati.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
 
         assert schema._schema_base_tree.getroot().find(include_location_xpath).attrib['schemaLocation'] == 'iati-common.xsd'
         assert isinstance(schema._schema_base_tree.getroot().find(local_xpath), etree._Element)
@@ -106,10 +106,10 @@ class TestSchemas(object):
         local_element = schema.ROOT_ELEMENT_NAME
         included_element = 'reporting-org'
 
-        include_location_xpath = (iati.core.constants.NAMESPACE + 'include')
+        include_location_xpath = (iati.constants.NAMESPACE + 'include')
         xi_location_xpath = ('{http://www.w3.org/2001/XInclude}include')
-        local_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + local_element + '"]')
-        included_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
+        local_xpath = (iati.constants.NAMESPACE + 'element[@name="' + local_element + '"]')
+        included_xpath = (iati.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
 
         include_location = schema._schema_base_tree.getroot().find(include_location_xpath).attrib['schemaLocation']
         tree = schema._change_include_to_xinclude(schema._schema_base_tree)
@@ -144,10 +144,10 @@ class TestSchemas(object):
         local_element = schema.ROOT_ELEMENT_NAME
         included_element = 'reporting-org'
 
-        include_location_xpath = (iati.core.constants.NAMESPACE + 'include')
+        include_location_xpath = (iati.constants.NAMESPACE + 'include')
         xi_location_xpath = ('{http://www.w3.org/2001/XInclude}include')
-        local_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + local_element + '"]')
-        included_xpath = (iati.core.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
+        local_xpath = (iati.constants.NAMESPACE + 'element[@name="' + local_element + '"]')
+        included_xpath = (iati.constants.NAMESPACE + 'element[@name="' + included_element + '"]')
 
         tree = schema.flatten_includes(schema._schema_base_tree)
 
@@ -155,12 +155,12 @@ class TestSchemas(object):
         assert tree.getroot().find(xi_location_xpath) is None
         assert isinstance(tree.getroot().find(local_xpath), etree._Element)
         assert isinstance(tree.getroot().find(included_xpath), etree._Element)
-        assert iati.core.utilities.convert_tree_to_schema(tree)
+        assert iati.utilities.convert_tree_to_schema(tree)
 
     def test_schema_codelists_add(self, schema_initialised):
         """Check that it is possible to add Codelists to the Schema."""
         codelist_name = "a test Codelist name"
-        codelist = iati.core.Codelist(codelist_name)
+        codelist = iati.Codelist(codelist_name)
 
         schema_initialised.codelists.add(codelist)
 
@@ -173,7 +173,7 @@ class TestSchemas(object):
             Consider if this test should test against a versioned Codelist.
         """
         codelist_name = "a test Codelist name"
-        codelist = iati.core.Codelist(codelist_name)
+        codelist = iati.Codelist(codelist_name)
 
         schema_initialised.codelists.add(codelist)
         schema_initialised.codelists.add(codelist)
@@ -187,8 +187,8 @@ class TestSchemas(object):
             Consider if this test should test against a versioned Codelist.
         """
         codelist_name = "a test Codelist name"
-        codelist = iati.core.Codelist(codelist_name)
-        codelist2 = iati.core.Codelist(codelist_name)
+        codelist = iati.Codelist(codelist_name)
+        codelist2 = iati.Codelist(codelist_name)
 
         schema_initialised.codelists.add(codelist)
         schema_initialised.codelists.add(codelist2)
@@ -202,7 +202,7 @@ class TestSchemas(object):
             Consider if this test should test against a versioned Ruleset.
 
         """
-        ruleset = iati.core.default.ruleset()
+        ruleset = iati.default.ruleset()
 
         schema_initialised.rulesets.add(ruleset)
 

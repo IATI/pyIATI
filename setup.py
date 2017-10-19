@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = 'iati.core',
+    name = 'pyIATI',
     version = '0.1.0',
     description = 'Python library representing the IATI Schemas, Codelists and Rulesets',
     author = 'IATI Technical Team and other authors',
     author_email = 'code@iatistandard.org',
     url='http://iatistandard.org/',
-    packages = find_packages(exclude='iati/core/tests'),
+    packages = find_packages(exclude='iati/tests'),
     install_requires = [
         # JSON schema parsing validation
         'jsonschema==2.6.0',
