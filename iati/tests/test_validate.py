@@ -1,10 +1,10 @@
 """A module containing tests for data validation."""
 # pylint: disable=no-value-for-parameter,unexpected-keyword-arg
 import pytest
-import iati.core.data
-import iati.core.default
-import iati.core.schemas
-import iati.core.tests.utilities
+import iati.data
+import iati.default
+import iati.schemas
+import iati.tests.utilities
 import iati.validate
 
 
@@ -14,37 +14,37 @@ class TestValidate(object):
 
     def test_basic_validation_valid(self):
         """Perform a super simple data validation against a valid activity Dataset."""
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_iati'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        data = iati.Dataset(iati.tests.utilities.load_as_string('valid_iati'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
 
         assert iati.validate.is_valid(data, schema)
 
     def test_basic_validation_invalid(self):
         """Perform a super simple data validation against an invalid activity Dataset."""
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_not_iati'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        data = iati.Dataset(iati.tests.utilities.load_as_string('valid_not_iati'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
 
         assert not iati.validate.is_valid(data, schema)
 
     def test_basic_validation_invalid_missing_required_element(self):
         """Perform a super simple data validation against an activity Dataset that is invalid due to a missing required element."""
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('invalid_iati_missing_required_element'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        data = iati.Dataset(iati.tests.utilities.load_as_string('invalid_iati_missing_required_element'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
 
         assert not iati.validate.is_valid(data, schema)
 
     def test_basic_validation_invalid_missing_required_element_from_common(self):
         """Perform a super simple data validation against an activity Dataset that is invalid due to a missing required element that is defined in iati-common.xsd."""
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('invalid_iati_missing_required_element_from_common'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        data = iati.Dataset(iati.tests.utilities.load_as_string('invalid_iati_missing_required_element_from_common'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
 
         assert not iati.validate.is_valid(data, schema)
 
     def test_basic_validation_codelist_valid(self):
         """Perform data validation against valid IATI activity XML that has valid Codelist values."""
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_iati'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
-        codelist = iati.core.default.codelists()['Version']
+        data = iati.Dataset(iati.tests.utilities.load_as_string('valid_iati'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        codelist = iati.default.codelists()['Version']
 
         schema.codelists.add(codelist)
 
@@ -52,9 +52,9 @@ class TestValidate(object):
 
     def test_basic_validation_codelist_invalid(self):
         """Perform data validation against valid IATI activity XML that has invalid Codelist values."""
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_iati_invalid_code'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
-        codelist = iati.core.default.codelists()['Version']
+        data = iati.Dataset(iati.tests.utilities.load_as_string('valid_iati_invalid_code'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        codelist = iati.default.codelists()['Version']
 
         schema.codelists.add(codelist)
 
@@ -62,9 +62,9 @@ class TestValidate(object):
 
     def test_basic_validation_codelist_valid_from_common(self):
         """Perform data validation against valid IATI activity XML that has valid Codelist values. The attribute being tested is on an element defined in common.xsd."""
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_iati_valid_code_from_common'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
-        codelist = iati.core.default.codelists()['OrganisationType']
+        data = iati.Dataset(iati.tests.utilities.load_as_string('valid_iati_valid_code_from_common'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        codelist = iati.default.codelists()['OrganisationType']
 
         schema.codelists.add(codelist)
 
@@ -72,9 +72,9 @@ class TestValidate(object):
 
     def test_basic_validation_codelist_invalid_from_common(self):
         """Perform data validation against valid IATI activity XML that has invalid Codelist values. The attribute being tested is on an element defined in common.xsd."""
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_iati_invalid_code_from_common'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
-        codelist = iati.core.default.codelists()['OrganisationType']
+        data = iati.Dataset(iati.tests.utilities.load_as_string('valid_iati_invalid_code_from_common'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        codelist = iati.default.codelists()['OrganisationType']
 
         schema.codelists.add(codelist)
 
@@ -82,11 +82,11 @@ class TestValidate(object):
 
     def test_validation_codelist_vocab_default_implicit(self):
         """Perform data validation against valid IATI activity XML with a vocabulary that has been implicitly set."""
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_iati_vocab_default_explicit'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
-        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
-        codelist_2 = iati.core.default.codelists()['Sector']
-        codelist_3 = iati.core.default.codelists()['SectorCategory']
+        data = iati.Dataset(iati.tests.utilities.load_as_string('valid_iati_vocab_default_explicit'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        codelist_1 = iati.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.default.codelists()['Sector']
+        codelist_3 = iati.default.codelists()['SectorCategory']
 
         schema.codelists.add(codelist_1)
         schema.codelists.add(codelist_2)
@@ -96,11 +96,11 @@ class TestValidate(object):
 
     def test_validation_codelist_vocab_default_implicit_invalid_code(self):
         """Perform data validation against valid IATI activity XML with a vocabulary that has been implicitly set. The code is invalid."""
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_iati_vocab_default_implicit'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
-        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
-        codelist_2 = iati.core.default.codelists()['Sector']
-        codelist_3 = iati.core.default.codelists()['SectorCategory']
+        data = iati.Dataset(iati.tests.utilities.load_as_string('valid_iati_vocab_default_implicit'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        codelist_1 = iati.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.default.codelists()['Sector']
+        codelist_3 = iati.default.codelists()['SectorCategory']
 
         schema.codelists.add(codelist_1)
         schema.codelists.add(codelist_2)
@@ -110,11 +110,11 @@ class TestValidate(object):
 
     def test_validation_codelist_vocab_default_explicit(self):
         """Perform data validation against valid IATI activity XML with a vocabulary that has been explicitly set as the default value."""
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_iati_vocab_default_explicit'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
-        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
-        codelist_2 = iati.core.default.codelists()['Sector']
-        codelist_3 = iati.core.default.codelists()['SectorCategory']
+        data = iati.Dataset(iati.tests.utilities.load_as_string('valid_iati_vocab_default_explicit'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        codelist_1 = iati.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.default.codelists()['Sector']
+        codelist_3 = iati.default.codelists()['SectorCategory']
 
         schema.codelists.add(codelist_1)
         schema.codelists.add(codelist_2)
@@ -124,11 +124,11 @@ class TestValidate(object):
 
     def test_validation_codelist_vocab_non_default(self):
         """Perform data validation against valid IATI activity XML with a vocabulary that has been explicitly set as a valid non-default value. The code is valid against this non-default vocabulary."""
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_iati_vocab_non_default'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
-        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
-        codelist_2 = iati.core.default.codelists()['Sector']
-        codelist_3 = iati.core.default.codelists()['SectorCategory']
+        data = iati.Dataset(iati.tests.utilities.load_as_string('valid_iati_vocab_non_default'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        codelist_1 = iati.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.default.codelists()['Sector']
+        codelist_3 = iati.default.codelists()['SectorCategory']
 
         schema.codelists.add(codelist_1)
         schema.codelists.add(codelist_2)
@@ -138,11 +138,11 @@ class TestValidate(object):
 
     def test_validation_codelist_vocab_user_defined(self):
         """Perform data validation against valid IATI activity XML with a user-defined vocabulary. No URI is defined, so the code cannot be checked."""
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_iati_vocab_user_defined'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
-        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
-        codelist_2 = iati.core.default.codelists()['Sector']
-        codelist_3 = iati.core.default.codelists()['SectorCategory']
+        data = iati.Dataset(iati.tests.utilities.load_as_string('valid_iati_vocab_user_defined'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        codelist_1 = iati.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.default.codelists()['Sector']
+        codelist_3 = iati.default.codelists()['SectorCategory']
 
         schema.codelists.add(codelist_1)
         schema.codelists.add(codelist_2)
@@ -152,11 +152,11 @@ class TestValidate(object):
 
     def test_validation_codelist_vocab_user_defined_with_uri_readable(self):
         """Perform data validation against valid IATI activity XML with a user-defined vocabulary. A URI is defined, and points to a machine-readable codelist. As such, the code can be checked. The @code is valid."""
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_iati_vocab_user_defined_with_uri_readable'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
-        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
-        codelist_2 = iati.core.default.codelists()['Sector']
-        codelist_3 = iati.core.default.codelists()['SectorCategory']
+        data = iati.Dataset(iati.tests.utilities.load_as_string('valid_iati_vocab_user_defined_with_uri_readable'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        codelist_1 = iati.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.default.codelists()['Sector']
+        codelist_3 = iati.default.codelists()['SectorCategory']
 
         schema.codelists.add(codelist_1)
         schema.codelists.add(codelist_2)
@@ -170,11 +170,11 @@ class TestValidate(object):
         Todo:
             Check that this is a legitimate check to be performed, given the contents and guidance given in the Standard.
         """
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_iati_vocab_user_defined_with_uri_readable_bad_code'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
-        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
-        codelist_2 = iati.core.default.codelists()['Sector']
-        codelist_3 = iati.core.default.codelists()['SectorCategory']
+        data = iati.Dataset(iati.tests.utilities.load_as_string('valid_iati_vocab_user_defined_with_uri_readable_bad_code'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        codelist_1 = iati.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.default.codelists()['Sector']
+        codelist_3 = iati.default.codelists()['SectorCategory']
 
         schema.codelists.add(codelist_1)
         schema.codelists.add(codelist_2)
@@ -188,11 +188,11 @@ class TestValidate(object):
         Todo:
             Remove xfail and work on functionality to fully fetch and parse user-defined codelists after higher priority functionality is finished.
         """
-        data = iati.core.Dataset(iati.core.tests.utilities.load_as_string('valid_iati_vocab_user_defined_with_uri_unreadable'))
-        schema = iati.core.ActivitySchema(name=iati.core.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
-        codelist_1 = iati.core.default.codelists()['SectorVocabulary']
-        codelist_2 = iati.core.default.codelists()['Sector']
-        codelist_3 = iati.core.default.codelists()['SectorCategory']
+        data = iati.Dataset(iati.tests.utilities.load_as_string('valid_iati_vocab_user_defined_with_uri_unreadable'))
+        schema = iati.ActivitySchema(name=iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID)
+        codelist_1 = iati.default.codelists()['SectorVocabulary']
+        codelist_2 = iati.default.codelists()['Sector']
+        codelist_3 = iati.default.codelists()['SectorCategory']
 
         schema.codelists.add(codelist_1)
         schema.codelists.add(codelist_2)

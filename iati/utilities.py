@@ -3,7 +3,7 @@ import logging
 import os
 from io import StringIO
 from lxml import etree
-import iati.core.constants
+import iati.constants
 
 
 def add_namespace(tree, new_ns_name, new_ns_uri):
@@ -39,15 +39,15 @@ def add_namespace(tree, new_ns_name, new_ns_uri):
     """
     if not isinstance(tree, etree._ElementTree):  # pylint: disable=protected-access
         msg = "The `tree` parameter must be of type `etree._ElementTree` - it was of type {0}".format(type(tree))
-        iati.core.utilities.log_error(msg)
+        iati.utilities.log_error(msg)
         raise TypeError(msg)
     if not isinstance(new_ns_name, str) or not new_ns_name:
         msg = "The `new_ns_name` parameter must be a non-empty string."
-        iati.core.utilities.log_error(msg)
+        iati.utilities.log_error(msg)
         raise ValueError(msg)
     if not isinstance(new_ns_uri, str) or not new_ns_uri:
         msg = "The `new_ns_uri` parameter must be a valid URI."
-        iati.core.utilities.log_error(msg)
+        iati.utilities.log_error(msg)
         raise ValueError(msg)
 
     initial_nsmap = tree.getroot().nsmap
@@ -57,7 +57,7 @@ def add_namespace(tree, new_ns_name, new_ns_uri):
             return tree
         else:
             msg = "There is already a namespace called {0}.".format(new_ns_name)
-            iati.core.utilities.log_error(msg)
+            iati.utilities.log_error(msg)
             raise ValueError(msg)
 
     # to add new namespace, use algorithm from http://stackoverflow.com/a/11350061
@@ -85,7 +85,7 @@ def convert_tree_to_schema(tree):
     Warning:
         Should raise exceptions when there are errors during execution.
 
-        Needs to better distinguish between an `etree.XMLSchema`, an `iati.core.Schema`, an `iati.core.ActivitySchema` and an `iati.core.OrganisationSchema`.
+        Needs to better distinguish between an `etree.XMLSchema`, an `iati.Schema`, an `iati.ActivitySchema` and an `iati.OrganisationSchema`.
 
         Does not fully hide the lxml internal workings.
 
@@ -118,11 +118,11 @@ def convert_xml_to_tree(xml):
         return tree
     except etree.XMLSyntaxError as xml_syntax_err:
         msg = "There was a problem with the provided XML, and it could therefore not be turned into a tree."
-        iati.core.utilities.log_error(msg)
+        iati.utilities.log_error(msg)
         raise xml_syntax_err
     except ValueError:
         msg = "To parse XML into a tree, the XML must be a string, not a {0}.".format(type(xml))
-        iati.core.utilities.log_error(msg)
+        iati.utilities.log_error(msg)
         raise ValueError(msg)
 
 
@@ -174,11 +174,11 @@ def log(lvl, msg, *args, **kwargs):
 
     """
     logging.basicConfig(
-        filename=os.path.join(iati.core.constants.LOG_FILE_NAME),
+        filename=os.path.join(iati.constants.LOG_FILE_NAME),
         format='%(asctime)s %(levelname)s:%(name)s: %(message)s %(stack_info)s',
         level=logging.DEBUG
     )
-    logger = logging.getLogger(iati.core.constants.LOGGER_NAME)
+    logger = logging.getLogger(iati.constants.LOGGER_NAME)
     logger.log(lvl, msg, *args, **kwargs)
 
 
@@ -240,7 +240,7 @@ def versions_for_integer(integer):
 
     """
     output = list()
-    for version in iati.core.constants.STANDARD_VERSIONS:
+    for version in iati.constants.STANDARD_VERSIONS:
         if version.startswith(str(integer)):
             output.append(version)
 

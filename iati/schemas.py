@@ -1,10 +1,10 @@
 """A module containing a core representation of IATI Schemas."""
 from lxml import etree
-import iati.core.codelists
-import iati.core.constants
-import iati.core.exceptions
-import iati.core.resources
-import iati.core.utilities
+import iati.codelists
+import iati.constants
+import iati.exceptions
+import iati.resources
+import iati.utilities
 
 
 class Schema(object):
@@ -19,7 +19,7 @@ class Schema(object):
         The private attribute allowing access to the base Schema Tree is likely to change in determining a good way of accessing the contained schema content.
 
     Todo:
-        Determine a good API for accessing the XMLSchema that the iati.core.Schema represents.
+        Determine a good API for accessing the XMLSchema that the iati.Schema represents.
 
     """
 
@@ -32,7 +32,7 @@ class Schema(object):
             path (str): The path to the Schema that is being initialised.
 
         Raises:
-            iati.core.exceptions.SchemaError: An error occurred during the creation of the Schema.
+            iati.exceptions.SchemaError: An error occurred during the creation of the Schema.
 
         Warning:
             The format of the constructor is likely to change. It needs to be less reliant on the name acting as a UID, and allow for other attributes to be provided at this point.
@@ -55,11 +55,11 @@ class Schema(object):
         self.rulesets = set()
 
         try:
-            loaded_tree = iati.core.resources.load_as_tree(path)
+            loaded_tree = iati.resources.load_as_tree(path)
         except OSError:
             msg = "Failed to load tree at '{0}' when creating Schema.".format(path)
-            iati.core.utilities.log_error(msg)
-            raise iati.core.exceptions.SchemaError
+            iati.utilities.log_error(msg)
+            raise iati.exceptions.SchemaError
         else:
             self._schema_base_tree = loaded_tree
 
@@ -93,7 +93,7 @@ class Schema(object):
 
         """
         # identify the old info
-        include_xpath = (iati.core.constants.NAMESPACE + 'include')
+        include_xpath = (iati.constants.NAMESPACE + 'include')
         include_el = tree.getroot().find(include_xpath)
         if include_el is None:
             return
@@ -102,24 +102,24 @@ class Schema(object):
         # add namespace for XInclude
         xi_name = 'xi'
         xi_uri = 'http://www.w3.org/2001/XInclude'
-        iati.core.utilities.add_namespace(tree, xi_name, xi_uri)
+        iati.utilities.add_namespace(tree, xi_name, xi_uri)
         new_nsmap = {}
-        for key, value in iati.core.constants.NSMAP.items():
+        for key, value in iati.constants.NSMAP.items():
             new_nsmap[key] = value
         new_nsmap[xi_name] = xi_uri
 
         # create a new element
         xinclude_el = etree.Element(
             '{' + xi_uri + '}include',
-            href=iati.core.resources.resource_filename(iati.core.resources.get_schema_path(include_location[:-4], self._get_version())),
+            href=iati.resources.resource_filename(iati.resources.get_schema_path(include_location[:-4], self._get_version())),
             parse='xml',
             nsmap=new_nsmap
         )
 
         # make the path to `xml.xsd` reference the correct file
-        import_xpath = (iati.core.constants.NAMESPACE + 'import')
+        import_xpath = (iati.constants.NAMESPACE + 'import')
         import_el = tree.getroot().find(import_xpath)
-        import_el.attrib['schemaLocation'] = iati.core.resources.resource_filename(iati.core.resources.get_schema_path('xml', self._get_version()))
+        import_el.attrib['schemaLocation'] = iati.resources.resource_filename(iati.resources.get_schema_path('xml', self._get_version()))
 
         # insert the new element
         tree.getroot().insert(import_el.getparent().index(import_el) + 1, xinclude_el)
@@ -164,7 +164,7 @@ class Schema(object):
         tree.xinclude()
 
         # remove nested schema elements
-        schema_xpath = (iati.core.constants.NAMESPACE + 'schema')
+        schema_xpath = (iati.constants.NAMESPACE + 'schema')
         for nested_schema_el in tree.getroot().findall(schema_xpath):
             if isinstance(nested_schema_el, etree._Element):  # pylint: disable=protected-access
                 # move contents of nested schema elements up a level

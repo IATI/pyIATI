@@ -1,7 +1,7 @@
 """Configuration to exist in the global scope for pytest."""
 import collections
 import pytest
-import iati.core.resources
+import iati.resources
 
 
 @pytest.fixture(params=[
@@ -20,15 +20,15 @@ def codelist_lengths_by_version(request):
     return output(version=request.param[0], expected_length=request.param[1])
 
 
-@pytest.fixture(params=iati.core.constants.STANDARD_VERSIONS)
+@pytest.fixture(params=iati.constants.STANDARD_VERSIONS)
 def standard_version_mandatory(request):
     """Return a list that can be passed to a function using the argument list unpacking functionality.
 
     For more information about unpacking argument lists, see https://docs.python.org/3.6/tutorial/controlflow.html#unpacking-argument-lists
 
     Example:
-        The returned list can be used to test functions (such as `iati.core.default.codelists`) which has an optional parameter for the version, or can expect `version=None`. It has an optional parameter after the version.
-        In this case test usage would be `iati.core.default.codelists(*standard_version_mandatory)`.
+        The returned list can be used to test functions (such as `iati.default.codelists`) which has an optional parameter for the version, or can expect `version=None`. It has an optional parameter after the version.
+        In this case test usage would be `iati.default.codelists(*standard_version_mandatory)`.
 
     Returns:
         list: A string which corresponds to a version of the Standard.
@@ -37,7 +37,7 @@ def standard_version_mandatory(request):
     return [request.param]
 
 
-@pytest.fixture(params=['no_arguments', None] + iati.core.constants.STANDARD_VERSIONS)
+@pytest.fixture(params=['no_arguments', None] + iati.constants.STANDARD_VERSIONS)
 def standard_version_optional(request):
     """Return a list that can be passed to a function using the argument list unpacking functionality.
 
