@@ -158,13 +158,13 @@ class Dataset(object):
 
     @property
     def version(self):
-        """Return the version that this Dataset is specified against.
+        """Return the version of the Standard that this Dataset is specified against.
 
         Returns:
-            str or None: The version of this Dataset. None if the version cannot be detected.
+            str or None: The version of the Standard that this Dataset specified against. None if the version cannot be detected.
 
         Todo:
-            Consider if this should raise an error if the Dataset is specified at a version that does not exist.
+            Consider if this should raise an error if the Dataset is specified at a version of the Standard that does not exist.
 
         """
         root_tree = self.xml_tree.getroot()
