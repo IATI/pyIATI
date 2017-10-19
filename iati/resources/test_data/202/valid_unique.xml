@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--element and attribute text is unique-->
+<root_element>
+  <condition></condition><!--condition case-->
+  <element1>a</element1><!--single path-->
+  <element2>b</element2><!--multiple paths-->
+  <element3>c</element3>
+  <element4>d</element4><!--duplicate paths-->
+  <element5 attribute="e"></element5><!--single path-->
+  <element6 attribute="f"></element6><!--multiple paths-->
+  <element7 attribute="g"></element7>
+  <element8 attribute="h"></element8><!--duplicate paths-->
+  <nest>
+    <element9>i</element9><!--nested element-->
+    <element10>j</element10>
+  </nest>
+  <nest>
+    <element11 attribute="k"></element11><!--nested attribute-->
+    <element12 attribute="l"></element12>
+  </nest>
+  <element13>m</element13><!--identical elements with unique text values-->
+  <element13>n</element13>
+  <element13>o</element13>
+</root_element>

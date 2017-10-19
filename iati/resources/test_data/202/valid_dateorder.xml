@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<!--dates in correct order and correctly formatted-->
+<root_element>
+  <condition></condition><!--condition case-->
+  <element1>2016-08-16</element1><!--first element is in the correct date order-->
+  <element2>2017-08-16</element2>
+  <element3>2016-08-16</element3><!--more is NOW-->
+  <element4>9999-12-01</element4><!--less is NOW-->
+  <element5>2016-08-16</element5><!--multiple identical `less` values-->
+  <element5>2016-08-16</element5>
+  <element6>2017-08-16</element6>
+  <element7>2016-08-16</element7><!-- multiple identical `more` values-->
+  <element8>2017-08-05</element8>
+  <element8>2017-08-05</element8>
+  <nest>
+    <element9>2016-08-16</element9><!--nested elements-->
+    <element10>2017-08-16</element10>
+  </nest>
+  <nOw>2016-08-16</nOw><!--element value rather than special case-->
+  <noW>2017-08-16</noW>
+  <element11 attribute="2014-01-01"></element11><!--Attribute dates are in the correct order-->
+  <element12 attribute="2014-12-31"></element12>
+  <element13 attribute="2017-01-01"></element13><!--more attribute is NOW-->
+  <element14 attribute="9999-12-01"></element14><!--less attribute is NOW-->
+  <element15 attribute="2016-08-16"></element15><!--multiple identical `less` values-->
+  <element15 attribute="2016-08-16"></element15>
+  <element16 attribute="2017-08-16"></element16>
+  <element17 attribute="2016-08-16"></element17><!--multiple identical `more` values-->
+  <element18 attribute="2017-08-16"></element18>
+  <element18 attribute="2017-08-16"></element18>
+  <nest>
+    <element19 attribute="2016-08-16"></element19><!--nested attributes-->
+    <element20 attribute="2017-08-16"></element20>
+  </nest>
+  <element21>2016-08-17+05:00</element21><!--valid + timezone-->
+  <element22>2017-08-17+05:00</element22>
+  <element23>2016-08-17-05:00</element23><!--valid - timezone-->
+  <element24>2017-08-17-05:00</element24>
+  <element25>2016-08-17-05:25</element25><!--valid timezone not on the hour-->
+  <element26>2017-08-17-05:25</element26>
+  <element27>2016-08-16Z</element27><!--valid UTC timezone-->
+  <element28>2017-08-17Z</element28>
+  <element29 attribute="2016-08-17+05:00"></element29><!--valid + timezone-->
+  <element30 attribute="2017-08-17+05:00"></element30>
+  <element31 attribute="2016-08-17-05:00"></element31><!--valid - timezone-->
+  <element32 attribute="2017-08-17-05:00"></element32>
+  <element33 attribute="2016-08-17-05:25"></element33><!--valid timezone not on the hour-->
+  <element34 attribute="2017-08-17-05:25"></element34>
+  <element35 attribute="2016-08-16Z"></element35><!--valid UTC timezone-->
+  <element36 attribute="2017-08-17Z"></element36>
+  <now attribute="2016-08-16"></now><!--attribute value rather than special case-->
+  <Now attribute="2017-08-16"></Now>
+  <element37>2016-08-25</element37><!--multiple identical elements in correct order with duplicated values-->
+  <element37>2016-08-25</element37>
+  <element38>2017-08-25</element38>
+  <element38>2017-08-25</element38>
+  <element39></element39><!--less date missing-->
+  <element40>2017-08-25</element40>
+  <element41>2016-08-25</element41><!--more date missing-->
+  <element42></element42>
+  <element43 attribute=""></element43><!--less date missing-->
+  <element44 attribute="2017-08-25"></element44>
+  <element45 attribute="2016-08-25"></element45><!--more date missing-->
+  <element46 attribute=""></element46>
+  <element47>2017-08-16</element47><!--elements have identical values-->
+  <element48>2017-08-16</element48>
+  <element49 attribute="2017-08-16"></element49><!--attributes have identical values-->
+  <element50 attribute="2017-08-16"></element50>
+  <element51>2017-08-16</element51><!--element is used by `less` and `more`-->
+  <element52 attribute="2017-08-16"></element52>
+</root_element>

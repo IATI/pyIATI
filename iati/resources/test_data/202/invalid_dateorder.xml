@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!--dates in incorrect order-->
+<root_element>
+  <condition></condition><!--condition case-->
+  <element1>2017-08-16</element1><!--elements in wrong chronological order-->
+  <element2>2016-08-16</element2>
+  <element5>2016-08-16</element5><!--`more` as chronologically before NOW-->
+  <element6>9999-12-01</element6><!--`less` as chronologically after NOW-->
+  <nest>
+    <element7>2017-08-16</element7><!--elements in wrong chronological order when elements are nested-->
+    <element8>2016-08-16</element8>
+  </nest>
+  <element10>2017-08-16</element10><!--multiple `less` elements that are identical but chronologically after `more`-->
+  <element10>2017-08-16</element10>
+  <element11>2016-08-16</element11>
+  <element12>2017-08-16</element12><!--multiple `more` elements that are identical but chronologically after `less`-->
+  <element13>2016-08-16</element13>
+  <element13>2016-08-16</element13>
+  <element14 attribute="2017-08-16"></element14><!--attributes in wrong chronological order-->
+  <element15 attribute="2016-08-16"></element15>
+  <element18 attribute="2016-08-16"></element18><!--attribute in wrong chronological order when `less` is NOW-->
+  <element19 attribute="9999-12-01"></element19><!--attribute in wrong chronological order when `more` is NOW-->
+  <nest>
+    <element20 attribute="2017-08-16"></element20><!--attributes in wrong chronological order when attributes are nested-->
+    <element21 attribute="2016-08-16"></element21>
+  </nest>
+  <element23 attribute="2017-08-16"></element23><!--multiple 'less' attributes that are chronologically after 'more'-->
+  <element23 attribute="2017-08-16"></element23>
+  <element24 attribute="2016-08-16"></element24>
+  <element25 attribute="2017-08-16"></element25><!--multiple 'more' attributes that are chronologically before 'less'-->
+  <element26 attribute="2016-08-16"></element26>
+  <element26 attribute="2016-08-16"></element26>
+  <!--data for multiple elements with non-permissable values can be found in test file 'invalid_format_dateorder'-->
+  <element27>2017-08-25</element27><!--duplicate elements in incorrect order-->
+  <element27>2017-08-25</element27>
+  <element28>2016-08-25</element28>
+  <element28>2016-08-25</element28>
+  <element29>2017-08-25</element29><!--the partner element does not exist-->
+</root_element>

@@ -1,8 +1,8 @@
-# iati.core
+# pyIATI
 
-The iati.core Python module.
+A developers’ toolkit for IATI.
 
-[![Build Status](https://travis-ci.org/IATI/iati.core.svg?branch=master)](https://travis-ci.com/IATI/iati.core) [![Requirements Status](https://requires.io/github/IATI/iati.core/requirements.svg?branch=master)](https://requires.io/github/IATI/iati.core/requirements/?branch=master)
+[![Build Status](https://travis-ci.org/IATI/iati.svg?branch=master)](https://travis-ci.com/IATI/iati.core) [![Requirements Status](https://requires.io/github/IATI/iati.core/requirements.svg?branch=master)](https://requires.io/github/IATI/iati.core/requirements/?branch=master)
 
 Varying between: [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges) and [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges) (see docstrings)
 
@@ -25,7 +25,7 @@ It is planned that different sections of the library, such as `validate` are spl
 General Installation for System Use
 ===================================
 
-```
+```shell
 # install software dependencies
 apt-get install python-pip libxml2-dev libxslt-dev python-dev
 
@@ -38,7 +38,7 @@ Documentation
 
 At present, an HTML documentation site can be generated using the following commands:
 
-```
+```shell
 # to build the documentation
 sphinx-apidoc -f -o docs/source/ iati/
 sphinx-build -b html docs/source/ docs/build/
@@ -60,9 +60,9 @@ A number of default IATI `.xsd` schema files are included as part of the library
 
 The following example loads the default IATI v2.02 `iati-activities-schema.xsd` schema:
 
-```
-import iati.core.default
-schema = iati.core.default.schema('iati-activities-schema')
+```python
+import iati.default
+schema = iati.default.schema('iati-activities-schema')
 ```
 
 Helper functions will be written in due course to return all xpaths within a schema, as well as documentation for each element.
@@ -71,30 +71,53 @@ Helper functions will be written in due course to return all xpaths within a sch
 
 A given IATI codelist can be added to the schema. Example using the [Country](http://iatistandard.org/codelists/Country/) codelist.
 
-```
-import iati.core.default
-schema.codelists.add(iati.core.default.codelist('Country'))
+```python
+import iati.default
+schema.codelists.add(iati.default.codelist('Country'))
 ```
 
 The default collection of IATI codelists can be added using:
 
-```
-import iati.core.default
-for _, codelist in iati.core.default.codelists().items():
+```python
+import iati.default
+for codelist in iati.default.codelists().values():
     schema.codelists.add(codelist)
 ```
 
 ### Loading Rulesets
 
-**Note:** This functionality is not yet implemented.
+The default IATI Ruleset can be loaded by using:
+
+```python
+import iati.default
+
+iati.default.ruleset()
+```
+
+If you wish to load your own Ruleset you can do this using:
+
+```python
+import iati.Rulesets
+
+# Load a local Ruleset
+with open('path/to/ruleset.json', 'r') as json_file_object:
+    ruleset_str = json_file_object.read()
+
+# To create a Ruleset object from your ruleset_str:
+iati.Ruleset(ruleset_str)
+```
+
+Validate an IATI Dataset against the Standard Ruleset:
+
+To be added.
 
 
 ### Working with IATI datasets
 
 #### Loading a dataset
 
-```
-import iati.core.data
+```python
+import iati.data
 
 # Load a local file
 with open('path/to/iati-activites.xml', 'r') as xml_file_object:
@@ -105,14 +128,14 @@ with open('path/to/iati-activites.xml', 'r') as xml_file_object:
 import requests
 dataset_as_string = requests.get('http://XML_FILE_URL_HERE').text
 
-dataset = iati.core.Dataset(dataset_as_string)
+dataset = iati.Dataset(dataset_as_string)
 ```
 
 #### Accessing data
 
 The `Dataset` object contains an `xml_tree` attribute (itself an `lxml.etree` object). [XPath expessions](https://www.w3schools.com/xml/xpath_intro.asp) can be used to extract desired information from the dataset.  For example:
 
-```
+```python
 # WARNING: The following examples assume the source dataset file is produced in IATI v2.x format
 
 # Show the activities contained within the dataset
@@ -138,7 +161,7 @@ This code supports Python 2.7 and 3.4+. We advise use of Python 3.5 (or above) a
 Dev Installation
 ================
 
-```
+```shell
 # install software development dependencies
 apt-get install python-pip python-virtualenv
 
@@ -154,7 +177,7 @@ pip install -r requirements-dev.txt
 Tests
 =====
 
-```
+```shell
 # to run the tests
 py.test iati/
 
