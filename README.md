@@ -107,8 +107,6 @@ with open('path/to/ruleset.json', 'r') as json_file_object:
 iati.Ruleset(ruleset_str)
 ```
 
-**Note:** This functionality is not yet implemented.
-
 Validate an IATI Dataset against the Standard Ruleset:
 
 To be added.
