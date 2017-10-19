@@ -28,7 +28,9 @@ jobs:
           if: branch=dev
         - stage: strict lint
           python: 3.5
-          install: pip install pylint lxml
+          install:
+            - pip install -U pip wheel
+            - pip install -r requirements-dev.txt
           env: LINTER=pylint
           script: make pylint
           if: branch=master
