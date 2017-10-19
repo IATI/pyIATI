@@ -9,7 +9,7 @@ The `load_as_*(path)` functions load the contents of a file at the specified pat
 Example:
     To load a test XML file located in `my_test_file` and use it to create a `Dataset`::
 
-        dataset = iati.core.resources.load_as_dataset(iati.core.resources.get_test_data_path('my_test_file'))
+        dataset = iati.resources.load_as_dataset(iati.resources.get_test_data_path('my_test_file'))
 
 Note:
     `pkg_resources` is used to allow resources to be located however the package is distributed. If using the standard `os` functionality, resources may not be locatable if, for example, the package is distributed as an egg.
@@ -28,7 +28,7 @@ Todo:
 import os
 import pkg_resources
 from lxml import etree
-import iati.core.constants
+import iati.constants
 
 
 PACKAGE = __name__
@@ -248,9 +248,9 @@ def get_folder_name_for_version(version=None):
 
     """
     if version is None:
-        version = iati.core.constants.STANDARD_VERSION_LATEST
+        version = iati.constants.STANDARD_VERSION_LATEST
 
-    if version in iati.core.constants.STANDARD_VERSIONS:
+    if version in iati.constants.STANDARD_VERSIONS:
         return version.replace('.', '')
     else:
         raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
@@ -362,7 +362,7 @@ def load_as_dataset(path):
         path (str): The path to the file that is to be read in.
 
     Returns:
-        iati.core.Dataset: A Dataset object representing the contents of the file at the specified location.
+        iati.Dataset: A Dataset object representing the contents of the file at the specified location.
 
     Warning:
         Should raise Exceptions when there are problems loading the requested data.
@@ -378,7 +378,7 @@ def load_as_dataset(path):
     """
     dataset_str = load_as_string(path)
 
-    return iati.core.Dataset(dataset_str)
+    return iati.Dataset(dataset_str)
 
 
 def load_as_string(path):

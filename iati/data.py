@@ -1,8 +1,8 @@
 """A module containing a core representation of an IATI Dataset."""
 import sys
 from lxml import etree
-import iati.core.exceptions
-import iati.core.utilities
+import iati.exceptions
+import iati.utilities
 
 
 class Dataset(object):
@@ -79,7 +79,7 @@ class Dataset(object):
     def xml_str(self, value):
         if isinstance(value, etree._Element):  # pylint: disable=W0212
             msg = "If setting a dataset with an ElementTree, use the xml_tree property, not the xml_str property."
-            iati.core.utilities.log_error(msg)
+            iati.utilities.log_error(msg)
             raise TypeError(msg)
         else:
             try:
@@ -96,11 +96,11 @@ class Dataset(object):
                 self._xml_str = value_stripped
             except etree.XMLSyntaxError:
                 msg = "The string provided to create a Dataset from is not valid XML."
-                iati.core.utilities.log_error(msg)
+                iati.utilities.log_error(msg)
                 raise ValueError(msg)
             except (AttributeError, TypeError, ValueError):
                 msg = "Datasets can only be ElementTrees or strings containing valid XML, using the xml_tree and xml_str attributes respectively. Actual type: {0}".format(type(value))
-                iati.core.utilities.log_error(msg)
+                iati.utilities.log_error(msg)
                 raise TypeError(msg)
 
     @property
@@ -126,7 +126,7 @@ class Dataset(object):
             self._xml_str = etree.tostring(value, pretty_print=True)
         else:
             msg = "If setting a dataset with the xml_property, an ElementTree should be provided, not a {0}.".format(type(value))
-            iati.core.utilities.log_error(msg)
+            iati.utilities.log_error(msg)
             raise TypeError(msg)
 
     def _raw_source_at_line(self, line_number):
