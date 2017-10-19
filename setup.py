@@ -12,7 +12,7 @@ setup(
         # JSON schema parsing validation
         'jsonschema==2.6.0',
         # XML handling library
-        'lxml==4.0.0',
+        'lxml==4.1.0',
         # python2/python3 compatibility library
         'six==1.11.0'
         ],
