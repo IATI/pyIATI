@@ -209,25 +209,6 @@ make all
 ```
 
 
-Overall TODOs
-=============
-
-- Clearer Configuration
-- Docs
-  - Examples
-  - Formalise Stability
-  - Getting Started Guides
-  - Tutorial - example usage
-- Error Handling
-- Licensing
-- Add IATI Standard Rulesets / Rules
-- Stablise API
-- Add versions of the Standard other than the latest (v2.02)
-- Add further tests
-- Add error cases
-- Potentially look at proper fuzzing
-
-
 Licensing
 =========
 
