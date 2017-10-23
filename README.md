@@ -15,11 +15,9 @@ This is a Python module containing IATI functionality that would otherwise be re
 
 **Feedback, suggestions, use-case descriptions, bug reports and so on are much appreciated** - it's far better to know of issues earlier in the development cycle. Please use [Github Issues](https://github.com/IATI/iati.core/issues) for this.
 
-At present the library (`core`) represents the contents of the [IATI Single Source of Truth (SSOT)](https://github.com/iati/iati-standard-ssot). It is able to handle a single version of the Standard (2.02 by default, although it is possible to change data files). Some placeholder work has been undertaken to deal with multiple standard versions. It is planned that this work will be completed once surrounding APIs are nearer a stable state.
+At present the library (`core`) represents much of the contents of the [IATI Single Source of Truth (SSOT)](https://github.com/iati/iati-standard-ssot).
 
 More pleasant API naming, better hiding of underlying `lxml`, full documentation, improved error handling, and a greater number of tests for edge-cases are known key areas for improvement.
-
-It is planned that different sections of the library, such as `validate` are split into their own repositories. They exist within this repository at present to help speed up the iteration process.
 
 
 General Installation for System Use
@@ -46,7 +44,7 @@ sphinx-build -b html docs/source/ docs/build/
 
 The file `docs/build/index.html` serves as the documentation home page.
 
-Note: These are a work-in-progress. The `edit-docs` branch works to provide an improved docs site.
+**Note:** These are a work-in-progress. The `edit-docs` branch works to provide an improved docs site.
 
 
 Usage
@@ -54,36 +52,45 @@ Usage
 
 **WARNING:** This `iati.core` library is currently in active development. **All usage examples are subject to change**, as we iteratively improve functionality. Therefore, the following examples are provided for illustrative purposes only. As the library matures, this message and other documentation will be updated accordingly!
 
-Once installed, the library provides functionality to represent IATI Schemas, Codelists and publisher datasets as Python objects. The IATI Standard schemas and codelists are provided out of the box, however this can be manipulated if bespoke versions of the Schemas/Codelists are required.
+Once installed, the library provides functionality to represent IATI Schemas, Codelists and publisher datasets as Python objects. The IATI Standard schemas and codelists are provided out of the box (using `iati.default`), however this can be manipulated if bespoke versions of the Schemas/Codelists are required.
 
 ### Loading an XSD Schema
 
-A number of default IATI `.xsd` schema files are included as part of the library. They are stored in the folder: `iati.core/iati/core/resources/schemas/202/`
+A number of default IATI `.xsd` schema files are included as part of the library. They are stored in the folder: `iati.core/iati/core/resources/schemas/`
 
-The following example loads the default IATI v2.02 `iati-activities-schema.xsd` schema:
+The following example loads the latest IATI Activity Schema:
 
 ```python
 import iati.default
-schema = iati.default.schema('iati-activities-schema')
+schema = iati.default.activity_schema()
 ```
 
-Helper functions will be written in due course to return all xpaths within a schema, as well as documentation for each element.
+By default, the default Schema will be populated with other information such as Codelists and Rulesets for the specified version of the Standard.
 
-### Loading codelists
-
-A given IATI codelist can be added to the schema. Example using the [Country](http://iatistandard.org/codelists/Country/) codelist.
+To access an Organisation Schema for version 1.05, with no additional information added:
 
 ```python
 import iati.default
-schema.codelists.add(iati.default.codelist('Country'))
+schema = iati.default.organisation_schema('1.05', False)
 ```
 
-The default collection of IATI codelists can be added using:
+Helper functions will be written in due course to return all XPaths within a Schema, as well as documentation for each element. Work in this area can be seen in the `get-data-from-schema` branch.
+
+### Loading Codelists
+
+A given IATI Codelist can be added to a Schema. Example using the [Country](http://iatistandard.org/codelists/Country/) codelist.
 
 ```python
 import iati.default
-for codelist in iati.default.codelists().values():
-    schema.codelists.add(codelist)
+country_codelist = iati.default.codelist('Country')
+schema.codelists.add(country_codelist)
+```
+
+All Codelists for the latest version of the Standard can be accessed with:
+
+```python
+import iati.default
+all_latest_codelists = iati.default.codelists():
 ```
 
 ### Loading Rulesets
@@ -92,14 +99,13 @@ The default IATI Ruleset can be loaded by using:
 
 ```python
 import iati.default
-
 iati.default.ruleset()
 ```
 
 If you wish to load your own Ruleset you can do this using:
 
 ```python
-import iati.Rulesets
+import iati.rulesets
 
 # Load a local Ruleset
 with open('path/to/ruleset.json', 'r') as json_file_object:
@@ -109,12 +115,7 @@ with open('path/to/ruleset.json', 'r') as json_file_object:
 iati.Ruleset(ruleset_str)
 ```
 
-Validate an IATI Dataset against the Standard Ruleset:
-
-To be added.
-
-
-### Working with IATI datasets
+### Working with IATI Datasets
 
 #### Loading a dataset
 
