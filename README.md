@@ -46,6 +46,8 @@ sphinx-build -b html docs/source/ docs/build/
 
 The file `docs/build/index.html` serves as the documentation home page.
 
+Note: These are a work-in-progress. The `edit-docs` branch works to provide an improved docs site.
+
 
 Usage
 =====
