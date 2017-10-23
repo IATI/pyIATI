@@ -30,7 +30,7 @@ General Installation for System Use
 apt-get install python-pip libxml2-dev libxslt-dev python-dev
 
 # install this package
-python setup.py install
+pip install pyIATI
 ```
 
 Documentation
