@@ -52,7 +52,7 @@ The file `docs/build/index.html` serves as the documentation home page.
 Usage
 =====
 
-**WARNING:** This `iati.core` library is currently in active development. **All usage examples are subject to change**, as we iteratively improve functionality. Therefore, the following examples are provided for illustrative purposes only. As the library matures, this message and other documentation will be updated accordingly!
+**WARNING:** This library is currently in active development. **All usage examples are subject to change**, as we iteratively improve functionality. Therefore, the following examples are provided for illustrative purposes only. As the library matures, this message and other documentation will be updated accordingly.
 
 Once installed, the library provides functionality to represent IATI Schemas, Codelists and publisher datasets as Python objects. The IATI Standard schemas and codelists are provided out of the box (using `iati.default`), however this can be manipulated if bespoke versions of the Schemas/Codelists are required.
 
