@@ -1,8 +1,8 @@
 """A module containing a core representation of an IATI Dataset."""
 import sys
 from lxml import etree
-import iati.core.exceptions
-import iati.core.utilities
+import iati.exceptions
+import iati.utilities
 
 
 class Dataset(object):
@@ -78,8 +78,8 @@ class Dataset(object):
     @xml_str.setter
     def xml_str(self, value):
         if isinstance(value, etree._Element):  # pylint: disable=W0212
-            msg = "If setting a dataset with an ElementTree, use the xml_tree property, not the xml_str property."
-            iati.core.utilities.log_error(msg)
+            msg = "If setting a Dataset with an ElementTree, use the xml_tree property, not the xml_str property."
+            iati.utilities.log_error(msg)
             raise TypeError(msg)
         else:
             try:
@@ -96,11 +96,11 @@ class Dataset(object):
                 self._xml_str = value_stripped
             except etree.XMLSyntaxError:
                 msg = "The string provided to create a Dataset from is not valid XML."
-                iati.core.utilities.log_error(msg)
+                iati.utilities.log_error(msg)
                 raise ValueError(msg)
             except (AttributeError, TypeError, ValueError):
                 msg = "Datasets can only be ElementTrees or strings containing valid XML, using the xml_tree and xml_str attributes respectively. Actual type: {0}".format(type(value))
-                iati.core.utilities.log_error(msg)
+                iati.utilities.log_error(msg)
                 raise TypeError(msg)
 
     @property
@@ -125,8 +125,8 @@ class Dataset(object):
             self._xml_tree = value
             self._xml_str = etree.tostring(value, pretty_print=True)
         else:
-            msg = "If setting a dataset with the xml_property, an ElementTree should be provided, not a {0}.".format(type(value))
-            iati.core.utilities.log_error(msg)
+            msg = "If setting a Dataset with the xml_property, an ElementTree should be provided, not a {0}.".format(type(value))
+            iati.utilities.log_error(msg)
             raise TypeError(msg)
 
     def _raw_source_at_line(self, line_number):
@@ -158,33 +158,35 @@ class Dataset(object):
 
     @property
     def version(self):
-        """The version that this Dataset is specified against.
+        """Return the version of the Standard that this Dataset is specified against.
 
         Returns:
-            str or None: The version of this Dataset. None if the version cannot be detected.
+            str or None: The version of the Standard that this Dataset is specified against. None if the version cannot be detected.
 
         Todo:
-            Consider if this should raise an error if the Dataset is specified at a version that does not exist.
+            Consider if this should raise an error if the Dataset is specified at a version of the Standard that does not exist.
 
         """
         root_tree = self.xml_tree.getroot()
-        assumed_version_if_no_version_stated = '1.01'
-        version_iati_root = root_tree.get('version', assumed_version_if_no_version_stated).strip()
+        default_version = '1.01'
+        version_iati_root = root_tree.get('version', default_version).strip()
 
         if version_iati_root.startswith('1'):
             # Version 1 data, so need to check that all child `iati-activity` or `iati-organisation` elements are at the same version
             versions_in_children = list()
             for child_tree in root_tree.getchildren():  # This is expected to return a list of `iati-activity` or `iati-organisation` elements.
-                activity_version = child_tree.get('version', assumed_version_if_no_version_stated).strip()
+                activity_version = child_tree.get('version', default_version).strip()
                 versions_in_children.append(activity_version)
 
             if len(set(versions_in_children)) == 1 and versions_in_children[0] == version_iati_root:
-                return version_iati_root
+                version = version_iati_root
             else:
-                return None
+                version = None
         else:
             # Not version 1 data, so can return the version specified in `iati-activities/@version`
-            return version_iati_root
+            version = version_iati_root
+
+        return version
 
     def source_at_line(self, line_number):
         """Return the value of the XML source at the specified line.

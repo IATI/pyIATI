@@ -8,6 +8,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+- [Deployment] Include resource data in package distribution [#195].
+
+### Security
+
+## [0.1.0] - 2017-10-19
+
+### Added
+
 - [Codelists] Blank Codelists may be created and given a name.
 - [Codelists] Codelists may be created from a string conforming to the Codelist Schema.
 - [Codelists] Codelists contain a set of Codes.
@@ -30,7 +46,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Defaults] Specific Codelists from the SSOT may be accessed by name.
 - [Defaults] All Codelists from the SSOT may be accessed at once. No differentiation is made between Embedded and Non-Embedded Codelists.
 - [Defaults] The Standard Ruleset may be accessed.
-- [Defaults] The Ruleset Schema may be accessed. *NOTE:* This is a JSON (dict) object, not an `iati.core.Schema`.
+- [Defaults] The Ruleset Schema may be accessed. *NOTE:* This is a JSON (dict) object, not an `iati.Schema`.
 - [Defaults] The Activity Schema may be accessed.
 - [Defaults] The Organisation Schema may be accessed.
 - [Defaults] By default, the Activity and Organisation Schemas will be populated with all the Codelists and Rulesets at the desired version of the Standard.
@@ -92,13 +108,3 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [XML] Support XML 1.0.
 - [XML] Support XMLSchema 1.0.
 - [XML] Support XPath 1.0.
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
