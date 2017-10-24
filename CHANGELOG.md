@@ -16,6 +16,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Fixed
 
+- [Deployment] Include resource data in package distribution [#195].
+
 ### Security
 
 ## [0.1.0] - 2017-10-19
