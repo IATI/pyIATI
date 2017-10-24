@@ -18,6 +18,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Deployment] Include resource data in package distribution [#195].
 
+- [Docs] The README is up-to-date, and so better matches the code. [#198].
+
 ### Security
 
 ## [0.1.0] - 2017-10-19
