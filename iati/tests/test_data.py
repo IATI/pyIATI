@@ -238,13 +238,8 @@ class TestDatasetWithEncoding(object):
         ("UTF-16", "ISO-8859-1"),
         ("UTF-16", "ASCII"),
         ("UTF-16", "BIG5"),
-        ("UTF-16", "EUC-JP"),
-        ("UTF-32", "UTF-16"),
-        ("ASCII", "UTF-16"),
-        ("ISO-8859-1", "UTF-16"),
-        ("ISO-8859-2", "UTF-16"),
-        ("BIG5", "UTF-16"),
-        ("EUC-JP", "UTF-16")])
+        ("UTF-16", "EUC-JP")
+    ])
     def test_instantiation_dataset_from_string_with_encoding_mismatch(self, xml_needing_encoding, encoding_declared, encoding_used):
         """Test that an error is raised when attempting to create a Dataset where a string is encoded significantly differently from what is defined within the XML encoding declaration.
 
