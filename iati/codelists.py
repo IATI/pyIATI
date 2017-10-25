@@ -1,15 +1,15 @@
 """A module containing a core representation of IATI Codelists."""
 import collections
 from lxml import etree
-import iati.core.resources
-import iati.core.utilities
+import iati.resources
+import iati.utilities
 
 
 class Codelist(object):
     """Representation of a Codelist as defined within the IATI SSOT.
 
     Attributes:
-        codes (:obj:`set` of :obj:`iati.core.Code`): The codes demonstrating the range of values that the Codelist may represent.
+        codes (:obj:`set` of :obj:`iati.Code`): The codes demonstrating the range of values that the Codelist may represent.
         name (str): The name of the Codelist.
 
     Warning:
@@ -58,7 +58,7 @@ class Codelist(object):
                 Better document side-effects.
 
             """
-            tree = iati.core.utilities.convert_xml_to_tree(xml)
+            tree = iati.utilities.convert_xml_to_tree(xml)
 
             self.name = tree.attrib['name']
             for code_el in tree.findall('codelist-items/codelist-item'):
@@ -67,13 +67,13 @@ class Codelist(object):
 
                 if (value is None) and (name is None):
                     msg = "The provided Codelist ({0}) has a Code that does not contain a name or value.".format(self.name)
-                    iati.core.utilities.log_warning(msg)
+                    iati.utilities.log_warning(msg)
 
                 if value is None:
                     value = ''
                 if name is None:
                     name = ''
-                self.codes.add(iati.core.Code(value, name))
+                self.codes.add(iati.Code(value, name))
 
             try:
                 self.complete = True if tree.attrib['complete'] == '1' else False
@@ -105,6 +105,15 @@ class Codelist(object):
 
         """
         return ((self.name) == (other.name)) and (collections.Counter(self.codes) == collections.Counter(other.codes))
+
+    def __ne__(self, other):
+        """Check Codelist inequality.
+
+        Note:
+            This is required since there are no implicit relationships when comparing objects. https://docs.python.org/2/reference/datamodel.html#object.__ne__
+
+        """
+        return not self == other
 
     def __hash__(self):
         """Hash the Codelist.
@@ -140,14 +149,14 @@ class Codelist(object):
 
         """
         type_base_el = etree.Element(
-            iati.core.constants.NAMESPACE + 'simpleType',
+            iati.constants.NAMESPACE + 'simpleType',
             name='{0}-type'.format(self.name),
-            nsmap=iati.core.constants.NSMAP
+            nsmap=iati.constants.NSMAP
         )
         restriction_base_el = etree.Element(
-            iati.core.constants.NAMESPACE + 'restriction',
+            iati.constants.NAMESPACE + 'restriction',
             base='xsd:string',
-            nsmap=iati.core.constants.NSMAP
+            nsmap=iati.constants.NSMAP
         )
 
         for code in self.codes:
@@ -213,6 +222,15 @@ class Code(object):
         elif isinstance(other, str):
             return self.value == other
 
+    def __ne__(self, other):
+        """Check Code inequality.
+
+        Note:
+            This is required since there are no implicit relationships when comparing objects. https://docs.python.org/2/reference/datamodel.html#object.__ne__
+
+        """
+        return not self == other
+
     def __hash__(self):
         """Hash the Code.
 
@@ -240,7 +258,7 @@ class Code(object):
 
         """
         return etree.Element(
-            iati.core.constants.NAMESPACE + 'enumeration',
+            iati.constants.NAMESPACE + 'enumeration',
             value=self.value,
-            nsmap=iati.core.constants.NSMAP
+            nsmap=iati.constants.NSMAP
         )
