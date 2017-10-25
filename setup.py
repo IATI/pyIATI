@@ -15,13 +15,9 @@ setup(
         # JSON schema parsing validation
         'jsonschema==2.6.0',
         # XML handling library
-<<<<<<< HEAD
-        'lxml==3.8.0',
+        'lxml==4.1.0',
         # YAML parsing for validation error codes
         'PyYAML==3.12',
-=======
-        'lxml==4.1.0',
->>>>>>> dev
         # python2/python3 compatibility library
         'six==1.11.0'
         ],
