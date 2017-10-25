@@ -18,6 +18,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Security
 
+
+## [0.1.1] - 2017-10-25
+
+### Fixed
+
+- [Deployment] Include resource data in package distribution [#195].
+
+- [Docs] The README is up-to-date, and so better matches the code. [#198].
+
+### Removed
+
+- [Deployment] Remove attempt at excluding test files from deployed package [#202].
+
+
 ## [0.1.0] - 2017-10-19
 
 ### Added
