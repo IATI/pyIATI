@@ -156,8 +156,8 @@ def codelist_mapping(version=None):
         dict of dict: A dictionary containing mapping information. Keys in the first dictionary are Codelist names. Keys in the second dictionary are `xpath` and `condition`. The condition is `None` if there is no condition.
 
     """
-    path = iati.core.resources.get_codelist_mapping_path()
-    mapping_tree = iati.core.resources.load_as_tree(path)
+    path = iati.resources.get_codelist_mapping_path()
+    mapping_tree = iati.resources.load_as_tree(path)
     mappings = defaultdict(list)
 
     for mapping in mapping_tree.getroot().xpath('//mapping'):
