@@ -218,7 +218,7 @@ class TestDatasetWithEncoding(object):
         "BIG5",
         "EUC-JP"
     ])
-    def test_instantiation_dataset_from_string_with_encoding(self, encoding):
+    def test_instantiation_dataset_from_string_with_encoding(self, xml_needing_encoding, encoding):
         """Test that an encoded Dataset instantiated directly from a string (rather than a file) correctly creates an iati.data.Dataset and the input data is contained within the object.
 
         Note:
