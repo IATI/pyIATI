@@ -93,12 +93,12 @@ class TestDefaultCodelists(object):
         Todo:
             Check internal values beyond the codelists being the correct type.
         """
-        codelists = iati.core.default.codelists(codelist_lengths_by_version.version)
+        codelists = iati.default.codelists(codelist_lengths_by_version.version)
 
         assert isinstance(codelists, dict)
         assert len(codelists.values()) == codelist_lengths_by_version.expected_length
         for codelist in codelists.values():
-            assert isinstance(codelist, iati.core.Codelist)
+            assert isinstance(codelist, iati.Codelist)
 
     def test_codelist_mapping_condition(self):
         """Check that the Codelist mapping file is having conditions read.
@@ -106,7 +106,7 @@ class TestDefaultCodelists(object):
         Todo:
             Split into multiple tests.
         """
-        mapping = iati.core.default.codelist_mapping()
+        mapping = iati.default.codelist_mapping()
 
         assert mapping['Sector'][0]['condition'] == "@vocabulary = '1' or not(@vocabulary)"
         assert mapping['Version'][0]['condition'] is None
@@ -117,7 +117,7 @@ class TestDefaultCodelists(object):
         Todo:
             Split into multiple tests.
         """
-        mapping = iati.core.default.codelist_mapping()
+        mapping = iati.default.codelist_mapping()
         version_xpaths = [mapping['Version'][0]['xpath'], mapping['Version'][1]['xpath']]
 
         assert '//iati-activities/@version' in version_xpaths
@@ -147,7 +147,7 @@ class TestDefaultRulesets(object):
 
     def test_default_ruleset_validation_rules_valid(self, schema_ruleset):
         """Check that a fully valid IATI file does not raise any type of error (including rules/rulesets)."""
-        data = iati.core.tests.utilities.load_as_dataset('valid_std_ruleset')
+        data = iati.tests.utilities.load_as_dataset('valid_std_ruleset')
         result = iati.validator.full_validation(data, schema_ruleset)
 
         assert iati.validator.is_xml(data.xml_str)
@@ -190,7 +190,7 @@ class TestDefaultRulesets(object):
             Check that the expected missing elements appear the the help text for the given element.
 
         """
-        data = iati.core.tests.utilities.load_as_dataset(invalid_dataset_name)
+        data = iati.tests.utilities.load_as_dataset(invalid_dataset_name)
         result = iati.validator.full_validation(data, schema_ruleset)
         errors_for_rule_error = result.get_errors_or_warnings_by_name(rule_error)
         errors_for_ruleset = result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')

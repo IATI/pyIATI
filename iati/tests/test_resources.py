@@ -110,7 +110,7 @@ class TestResources(object):
             Deal with multiple versions.
 
         """
-        paths = iati.core.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail')
+        paths = iati.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail')
 
         assert len(paths) == 237
 

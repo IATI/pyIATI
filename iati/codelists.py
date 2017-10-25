@@ -217,7 +217,7 @@ class Code(object):
             Test comparison with strings.
 
         """
-        if isinstance(other, iati.core.codelists.Code):
+        if isinstance(other, iati.codelists.Code):
             return ((self.name) == (other.name)) and ((self.value) == (other.value))
         elif isinstance(other, str):
             return self.value == other

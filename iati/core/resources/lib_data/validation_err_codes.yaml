@@ -27,11 +27,11 @@
 #
 # The `description`, `help` and `info` will be formatted with local variables from the calling scope. As such, variable names may be used as placeholders for string formatting. Some commonly used variables are:
 #
-# * Instances of `iati.core.Code` will be called `code`
-# * Instances of `iati.core.Codelist` will be called `codelist`
+# * Instances of `iati.Code` will be called `code`
+# * Instances of `iati.Codelist` will be called `codelist`
 # * Any errors passed from lxml will be called `err`.
-# * Instances of `iati.core.Rule` will be called `rule`
-# * Instances of `iati.core.Ruleset` will be called `ruleset`
+# * Instances of `iati.Rule` will be called `rule`
+# * Instances of `iati.Ruleset` will be called `ruleset`
 # * Other variables may be available depending on the specific error.
 ---
 - err-code-not-on-codelist:

@@ -29,8 +29,8 @@ def schema_ruleset():
         A valid Activity Schema with the Standard Ruleset added.
 
     """
-    schema = iati.core.default.activity_schema(None, False)
-    ruleset = iati.core.default.ruleset()
+    schema = iati.default.activity_schema(None, False)
+    ruleset = iati.default.ruleset()
 
     schema.rulesets.add(ruleset)
 

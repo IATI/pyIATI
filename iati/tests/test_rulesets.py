@@ -211,7 +211,7 @@ class TestRuleSubclasses(object):
         with pytest.raises(TypeError):
             rule_constructor()
 
-    @pytest.mark.parametrize("xpath_base", iati.core.tests.utilities.generate_test_types(['str'], True))
+    @pytest.mark.parametrize("xpath_base", iati.tests.utilities.generate_test_types(['str'], True))
     def test_rule_init_invalid_xpath_base(self, rule_constructor, xpath_base):
         """Check that a Rule cannot be created when xpath_base is not a string.
 

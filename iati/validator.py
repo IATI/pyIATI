@@ -3,8 +3,8 @@
 import sys
 from lxml import etree
 import yaml
-import iati.core.default
-import iati.core.resources
+import iati.default
+import iati.resources
 
 
 class ValidationError(object):
@@ -269,15 +269,15 @@ def _check_codes(dataset, codelist):
     """Determine whether a given Dataset has values from the specified Codelist where expected.
 
     Args:
-        dataset (iati.core.data.Dataset): The Dataset to check Codelist values within.
-        codelist (iati.core.codelists.Codelist): The Codelist to check values from.
+        dataset (iati.data.Dataset): The Dataset to check Codelist values within.
+        codelist (iati.codelists.Codelist): The Codelist to check values from.
 
     Returns:
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
 
     """
     error_log = ValidationErrorLog()
-    mappings = iati.core.default.codelist_mapping()
+    mappings = iati.default.codelist_mapping()
 
     for mapping in mappings[codelist.name]:
         base_xpath = mapping['xpath']
@@ -321,8 +321,8 @@ def _check_codelist_values(dataset, schema):
     """Check whether a given Dataset has values from Codelists that have been added to a Schema where expected.
 
     Args:
-        dataset (iati.core.data.Dataset): The Dataset to check Codelist values within.
-        schema (iati.core.schemas.Schema): The Schema to locate Codelists within.
+        dataset (iati.data.Dataset): The Dataset to check Codelist values within.
+        schema (iati.schemas.Schema): The Schema to locate Codelists within.
 
     Returns:
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
@@ -340,14 +340,14 @@ def _check_is_iati_xml(dataset, schema):
     """Check whether a given Dataset contains valid IATI XML.
 
     Args:
-        dataset (iati.core.data.Dataset): The Dataset to check validity of.
-        schema (iati.core.schemas.Schema): The Schema to validate the Dataset against.
+        dataset (iati.data.Dataset): The Dataset to check validity of.
+        schema (iati.schemas.Schema): The Schema to validate the Dataset against.
 
     Returns:
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
 
     Raises:
-        iati.core.exceptions.SchemaError: An error occurred in the parsing of the Schema.
+        iati.exceptions.SchemaError: An error occurred in the parsing of the Schema.
 
     Todo:
         Create test against a bad Schema.
@@ -357,7 +357,7 @@ def _check_is_iati_xml(dataset, schema):
 
     try:
         validator = schema.validator()
-    except iati.core.exceptions.SchemaError as err:
+    except iati.exceptions.SchemaError as err:
         raise err
 
     try:
@@ -385,7 +385,7 @@ def _check_is_xml(maybe_xml):
     """
     error_log = ValidationErrorLog()
 
-    if isinstance(maybe_xml, iati.core.data.Dataset):
+    if isinstance(maybe_xml, iati.data.Dataset):
         maybe_xml = maybe_xml.xml_str
 
     try:
@@ -414,7 +414,7 @@ def _check_rules(dataset, ruleset):
     """Determine whether a given Dataset conforms with a provided Ruleset.
 
     Args:
-        dataset (iati.core.data.Dataset): The Dataset to check Ruleset conformance with.
+        dataset (iati.data.Dataset): The Dataset to check Ruleset conformance with.
         ruleset (iati.code.Ruleset): The Ruleset to check conformance with.
 
     Returns:
@@ -448,8 +448,8 @@ def _check_ruleset_conformance(dataset, schema):
     """Check whether a given Dataset conforms with Rulesets that have been added to a Schema.
 
     Args:
-        dataset (iati.core.data.Dataset): The Dataset to check Ruleset conformance with.
-        schema (iati.core.schemas.Schema): The Schema to locate Rulesets within.
+        dataset (iati.data.Dataset): The Dataset to check Ruleset conformance with.
+        schema (iati.schemas.Schema): The Schema to locate Rulesets within.
 
     Returns:
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
@@ -467,8 +467,8 @@ def _conforms_with_ruleset(dataset, schema):
     """Determine whether a given Dataset conforms with Rulesets that have been added to a Schema.
 
     Args:
-        dataset (iati.core.data.Dataset): The Dataset to check Ruleset conformance with.
-        schema (iati.core.schemas.Schema): The Schema to locate Rulesets within.
+        dataset (iati.data.Dataset): The Dataset to check Ruleset conformance with.
+        schema (iati.schemas.Schema): The Schema to locate Rulesets within.
 
     Returns:
         bool: A boolean indicating whether the given Dataset conforms with Rulesets attached to the given Schema.
@@ -483,8 +483,8 @@ def _correct_codelist_values(dataset, schema):
     """Determine whether a given Dataset has values from Codelists that have been added to a Schema where expected.
 
     Args:
-        dataset (iati.core.data.Dataset): The Dataset to check Codelist values within.
-        schema (iati.core.schemas.Schema): The Schema to locate Codelists within.
+        dataset (iati.data.Dataset): The Dataset to check Codelist values within.
+        schema (iati.schemas.Schema): The Schema to locate Codelists within.
 
     Returns:
         bool: A boolean indicating whether the given Dataset has values from the specified Codelists where they should be.
@@ -547,7 +547,7 @@ def _create_error_for_rule(rule):
     """Parse a Rule skip or failure and convert it into an IATI ValidationError.
 
     Args:
-        rule (iati.core.rulesets.Rule): The Rule which has either skipped or failed.
+        rule (iati.rulesets.Rule): The Rule which has either skipped or failed.
 
     Returns:
         ValidationError: An IATI ValidationError that contains information about the Rule that has failed.
@@ -581,8 +581,8 @@ def full_validation(dataset, schema):
     """Perform full validation on a Dataset.
 
     Args:
-        dataset (iati.core.Dataset): The Dataset to check validity of.
-        schema (iati.core.Schema): The Schema to validate the Dataset against.
+        dataset (iati.Dataset): The Dataset to check validity of.
+        schema (iati.Schema): The Schema to validate the Dataset against.
 
     Warning:
         Parameters are likely to change in some manner.
@@ -617,7 +617,7 @@ def get_error_codes():
         Raise an error when there is a problem with non-base_exception-related errors.
 
     """
-    err_codes_str = iati.core.resources.load_as_string(iati.core.resources.get_lib_data_path('validation_err_codes.yaml'))
+    err_codes_str = iati.resources.load_as_string(iati.resources.get_lib_data_path('validation_err_codes.yaml'))
     err_codes_list_of_dict = yaml.safe_load(err_codes_str)
     # yaml parses the values into a list of dicts, so they need combining into one
     err_codes_dict = {k: v for code in err_codes_list_of_dict for k, v in code.items()}
@@ -637,8 +637,8 @@ def is_iati_xml(dataset, schema):
     """Determine whether a given Dataset's XML is valid against the specified Schema.
 
     Args:
-        dataset (iati.core.data.Dataset): The Dataset to check validity of.
-        schema (iati.core.schemas.Schema): The Schema to validate the Dataset against.
+        dataset (iati.data.Dataset): The Dataset to check validity of.
+        schema (iati.schemas.Schema): The Schema to validate the Dataset against.
 
     Warning:
         Parameters are likely to change in some manner.
@@ -647,7 +647,7 @@ def is_iati_xml(dataset, schema):
         bool: A boolean indicating whether the given Dataset is valid XML against the given Schema.
 
     Raises:
-        iati.core.exceptions.SchemaError: An error occurred in the parsing of the Schema.
+        iati.exceptions.SchemaError: An error occurred in the parsing of the Schema.
 
     Todo:
         Create test against a bad Schema.
@@ -660,8 +660,8 @@ def is_valid(dataset, schema):
     """Determine whether a given Dataset is valid against the specified Schema.
 
     Args:
-        dataset (iati.core.Dataset): The Dataset to check validity of.
-        schema (iati.core.Schema): The Schema to validate the Dataset against.
+        dataset (iati.Dataset): The Dataset to check validity of.
+        schema (iati.Schema): The Schema to validate the Dataset against.
 
     Warning:
         Parameters are likely to change in some manner.
@@ -677,7 +677,7 @@ def is_valid(dataset, schema):
         iati_xml = is_iati_xml(dataset, schema)
         if not iati_xml:
             return False
-    except iati.core.exceptions.SchemaError:
+    except iati.exceptions.SchemaError:
         return False
 
     return _correct_codelist_values(dataset, schema) and _conforms_with_ruleset(dataset, schema)
@@ -702,7 +702,7 @@ def validate_is_iati_xml(dataset, schema):
     """Check whether a Dataset contains valid IATI XML.
 
     Args:
-        dataset (iati.core.Dataset): The Dataset to check validity of.
+        dataset (iati.Dataset): The Dataset to check validity of.
 
     Returns:
         iati.validator.ValidationErrorLog: A log of the errors that occurred.

@@ -80,18 +80,18 @@ class TestCodelists(object):
     def test_codelist_complete(self):
         """Check that a Codelist can be generated from an XML codelist definition."""
         codelist_name = 'BudgetType'
-        path = iati.core.resources.get_codelist_path(codelist_name)
-        xml_str = iati.core.resources.load_as_string(path)
-        codelist = iati.core.Codelist(codelist_name, xml=xml_str)
+        path = iati.resources.get_codelist_path(codelist_name)
+        xml_str = iati.resources.load_as_string(path)
+        codelist = iati.Codelist(codelist_name, xml=xml_str)
 
         assert codelist.complete is True
 
     def test_codelist_incomplete(self):
         """Check that a Codelist can be generated from an XML codelist definition."""
         codelist_name = 'Country'
-        path = iati.core.resources.get_codelist_path(codelist_name)
-        xml_str = iati.core.resources.load_as_string(path)
-        codelist = iati.core.Codelist(codelist_name, xml=xml_str)
+        path = iati.resources.get_codelist_path(codelist_name)
+        xml_str = iati.resources.load_as_string(path)
+        codelist = iati.Codelist(codelist_name, xml=xml_str)
 
         assert codelist.complete is False
 

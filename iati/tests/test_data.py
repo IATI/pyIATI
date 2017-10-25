@@ -33,7 +33,7 @@ class TestDatasets(object):
     def test_dataset_empty_string(self):
         """Test Dataset creation with a valid XML string that is not IATI data."""
         with pytest.raises(ValueError):
-            _ = iati.core.Dataset('')
+            _ = iati.Dataset('')
 
     def test_dataset_valid_xml_string(self):
         """Test Dataset creation with a valid XML string that is not IATI data."""
@@ -58,8 +58,8 @@ class TestDatasets(object):
 
     def test_dataset_invalid_xml_string(self):
         """Test Dataset creation with a string that is not valid XML."""
-        with pytest.raises(iati.core.exceptions.ValidationError) as excinfo:
-            iati.core.Dataset(iati.core.tests.utilities.load_as_string('invalid'))
+        with pytest.raises(iati.exceptions.ValidationError) as excinfo:
+            iati.Dataset(iati.tests.utilities.load_as_string('invalid'))
 
         assert excinfo.value.error_log.contains_error_called('err-not-xml-empty-document')
 
@@ -106,7 +106,7 @@ class TestDatasets(object):
         xml_str = iati.tests.utilities.load_as_string('invalid')
         data = dataset_initialised
 
-        with pytest.raises(iati.core.exceptions.ValidationError) as excinfo:
+        with pytest.raises(iati.exceptions.ValidationError) as excinfo:
             data.xml_str = xml_str
 
         excinfo.value.error_log.contains_error_called('err-not-xml-empty-document')
@@ -263,8 +263,8 @@ class TestDatasetWithEncoding(object):
         xml = xml_needing_encoding.format(encoding_declared)
         xml_encoded = xml.encode(encoding_used)  # Encode the whole string in line with the specified encoding
 
-        with pytest.raises(iati.core.exceptions.ValidationError) as excinfo:
-            _ = iati.core.data.Dataset(xml_encoded)
+        with pytest.raises(iati.exceptions.ValidationError) as excinfo:
+            _ = iati.data.Dataset(xml_encoded)
 
         assert excinfo.value.error_log.contains_error_called('err-encoding-invalid')
 
@@ -273,14 +273,14 @@ class TestDatasetWithEncoding(object):
         """Test that an error is raised when attempting to create a dataset where a string is encoded significantly differently from what is defined within the XML encoding declaration.
 
         Todo:
-            Amend error message, when the todo in iati.core.data.Dataset.xml_str() has been resolved.
+            Amend error message, when the todo in iati.data.Dataset.xml_str() has been resolved.
 
         """
         xml = xml_needing_encoding.format(encoding)
         xml_encoded = xml.encode(encoding)  # Encode the whole string in line with the specified encoding
 
-        with pytest.raises(iati.core.exceptions.ValidationError) as excinfo:
-            _ = iati.core.data.Dataset(xml_encoded)
+        with pytest.raises(iati.exceptions.ValidationError) as excinfo:
+            _ = iati.data.Dataset(xml_encoded)
 
         assert excinfo.value.error_log.contains_error_called('err-encoding-unsupported')
 

@@ -102,7 +102,7 @@ class Dataset(object):
                     if validation_error_log.contains_error_of_type(TypeError):
                         raise TypeError
                     else:
-                        raise iati.core.exceptions.ValidationError(validation_error_log)
+                        raise iati.exceptions.ValidationError(validation_error_log)
             except (AttributeError, TypeError):
                 msg = "Datasets can only be ElementTrees or strings containing valid XML, using the xml_tree and xml_str attributes respectively. Actual type: {0}".format(type(value))
                 iati.utilities.log_error(msg)

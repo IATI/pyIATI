@@ -187,14 +187,14 @@ class Schema(object):
             etree.XMLSchema: A schema that can be used for validation.
 
         Raises:
-            iati.core.exceptions.SchemaError: An error occurred in the creation of the validator.
+            iati.exceptions.SchemaError: An error occurred in the creation of the validator.
 
         """
         try:
-            return iati.core.utilities.convert_tree_to_schema(self._schema_base_tree)
+            return iati.utilities.convert_tree_to_schema(self._schema_base_tree)
         except etree.XMLSchemaParseError as err:
-            iati.core.utilities.log_error(err)
-            raise iati.core.exceptions.SchemaError('Problem parsing Schema')
+            iati.utilities.log_error(err)
+            raise iati.exceptions.SchemaError('Problem parsing Schema')
 
 
 class ActivitySchema(Schema):
