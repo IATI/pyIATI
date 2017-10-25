@@ -27,6 +27,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Docs] The README is up-to-date, and so better matches the code. [#198].
 
+### Removed
+
+- [Deployment] Remove attempt at excluding test files from deployed package [#202].
+
 
 ## [0.1.0] - 2017-10-19
 
