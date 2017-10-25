@@ -8,7 +8,7 @@
 #
 
 # linters
-flake8==3.4.1 # rq.filter: <4.0
+flake8==3.5.0 # rq.filter: <4.0
 pydocstyle==2.1.1 # rq.filter: <3.0
 pylint==1.7.4 # rq.filter: <2.0
 
@@ -28,5 +28,5 @@ future==0.16.0 # rq.filter: <1.0
 #
 
 # documentation
-Sphinx==1.6.4 # rq.filter: <2.0
+Sphinx==1.6.5 # rq.filter: <2.0
 sphinx-rtd-theme==0.2.4 # rq.filter: <1.0
