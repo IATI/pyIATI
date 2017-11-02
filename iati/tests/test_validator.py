@@ -227,11 +227,11 @@ class TestValidationErrorLog(ValidationTestBase):  # pylint: disable=too-many-pu
         assert error_log_mixed_contents.contains_error_of_type(warning_type)
         assert not error_log_mixed_contents.contains_error_of_type(unused_exception_type)
 
-    @pytest.mark.parametrize("not_validatio_error_obj", iati.tests.utilities.generate_test_types([], True))
-    def test_error_log_add_incorrect_type(self, error_log, not_validatio_error_obj):
+    @pytest.mark.parametrize("not_validation_error_obj", iati.tests.utilities.generate_test_types([], True))
+    def test_error_log_add_incorrect_type(self, error_log, not_validation_error_obj):
         """Test that you may only add ValidationErrors to a ValidationErrorLog."""
         with pytest.raises(TypeError):
-            error_log.add(not_validatio_error_obj)
+            error_log.add(not_validation_error_obj)
 
     @pytest.mark.parametrize("potential_validation_error_obj", iati.tests.utilities.generate_test_types([], True) + [iati.validator.ValidationError('err-code-not-on-codelist')])
     def test_error_log_set_index_incorrect_type(self, error_log_with_warning, potential_validation_error_obj):
