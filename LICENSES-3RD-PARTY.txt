@@ -411,6 +411,7 @@ Public License instead of this License.
 -----------------------------------------------------------------------------
                         The MIT License (MIT)
     applies to:
+    - bumpversion, Copyright (C) 2013-2014 Filip Noetzel
     - flake8, Copyright (C) 2011-2013 Tarek Ziade <tarek@ziade.org>
               Copyright (C) 2012-2016 Ian Cordasco <graffatcolmingov@gmail.com>
     - future, Copyright (c) 2013-2016 Python Charmers Pty Ltd, Australia
