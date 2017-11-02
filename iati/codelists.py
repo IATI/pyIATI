@@ -218,9 +218,9 @@ class Code(object):
             Test comparison with strings.
 
         """
-        if isinstance(other, iati.codelists.Code):
+        try:
             return ((self.name) == (other.name)) and ((self.value) == (other.value))
-        elif isinstance(other, str):
+        except AttributeError:
             return self.value == other
 
     def __ne__(self, other):
