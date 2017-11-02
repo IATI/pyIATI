@@ -6,7 +6,6 @@
 pyenv/
 pyenv2/
 
-
 # defined files to ignore
 ignore_*
 
