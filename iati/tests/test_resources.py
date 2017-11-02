@@ -178,7 +178,6 @@ class TestResourceSchemas(object):
         for path in paths:
             assert path[-4:] == iati.resources.FILE_SCHEMA_EXTENSION
 
-
     def test_schema_activity_string(self):
         """Check that the Activity schema file contains content."""
         path = iati.resources.get_schema_path('iati-activities-schema')
@@ -262,7 +261,8 @@ class TestResourceLoading(object):
         str_of_interest = dataset.xml_tree.xpath('//reporting-org/narrative/text()')[0]
 
         # the character of interest is in windows-1252, but is different from ASCII
-        assert str_of_interest == 'Ÿ'
+        # python2/3 compatibility: encode string as UTF-8
+        assert str_of_interest.encode('utf-8') == b'\xc5\xb8'
 
     @pytest.mark.parametrize("file_to_load", [
         'dataset-encoding/valid-UTF-8.xml',
@@ -279,10 +279,11 @@ class TestResourceLoading(object):
         dataset = iati.Dataset(data_str)
         str_of_interest = dataset.xml_tree.xpath('//reporting-org/narrative/text()')[0]
 
-        # the tested characters are all in the code range 004000 – 00FFFF
-        # this means that they are 3-bit atUTF-8, 2 bit as UTF-16 and 4-bit as UTF-32 in 8-bit environments
+        # the tested characters are all in the code range 004000-00FFFF
+        # this means that they are 3-bit at UTF-8, 2 bit as UTF-16 and 4-bit as UTF-32 in 8-bit environments
         # https://en.wikipedia.org/wiki/Comparison_of_Unicode_encodings#Eight-bit_environments
-        assert str_of_interest == '䶌乨伶侗倗傈儈剉唙謜谋䶌乨伶侗倗傈儈剉唙謜谋䶌乨伶侗倗傈儈剉唙謜谋'
+        # python2/3 compatibility: encode string as UTF-8
+        assert str_of_interest.encode('utf-8') == b'\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9'  # noqa: ignore=E501  # pylint: disable=line-too-long
 
     @pytest.mark.parametrize("file_to_load", [
         'dataset-encoding/valid-undetectable-encoding.xml'

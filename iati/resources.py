@@ -480,6 +480,9 @@ def load_as_string(path):
         detected_info = chardet.detect(loaded_bytes[:25000])
         try:
             loaded_str = loaded_bytes.decode(detected_info['encoding'])
+            # in Python 2 it is necessary to strip the BOM when decoding from UTF-16BE
+            if detected_info['encoding'] == 'UTF-16' and loaded_str[:1] == u'\ufeff':
+                loaded_str = loaded_str[1:]
         except TypeError:
             raise ValueError('Could not detect encoding of file')
 
