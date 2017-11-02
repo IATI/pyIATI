@@ -151,9 +151,9 @@ class TestRuleset(object):
         assert not ruleset.is_valid_for(invalid_dataset)
 
     @pytest.mark.parametrize("dataset_name, rule_type, case", [
-        ('invalid_format_dateorder', 'date_order', {'less': 'element1', 'more': 'element2'}),
-        ('invalid_startswith', 'startswith', {'start': 'duplicateprefix', 'paths': ['element12']}),
-        ('invalid_sum', 'sum', {'paths': ['element42'], 'sum': 50}),
+        ('ruleset/invalid_format_dateorder', 'date_order', {'less': 'element1', 'more': 'element2'}),
+        ('ruleset/invalid_startswith', 'startswith', {'start': 'duplicateprefix', 'paths': ['element12']}),
+        ('ruleset/invalid_sum', 'sum', {'paths': ['element42'], 'sum': 50}),
     ])
     def test_ruleset_is_invalid_for_valueerror(self, dataset_name, rule_type, case):
         """Check that `ValueError`s are correctly handled when checking a Ruleset.
@@ -394,7 +394,7 @@ class RuleSubclassTestBase(object):  # pylint: disable=too-many-public-methods
 
         """
         with pytest.raises(TypeError):
-            rule_instantiating.is_valid_for(iati.resources.load_as_tree(iati.resources.get_test_data_path('valid_atleastone')))
+            rule_instantiating.is_valid_for(iati.resources.load_as_tree(iati.resources.get_test_data_path('ruleset/valid_atleastone')))
 
     def test_multiple_valid_context_matches_is_valid_for(self, valid_multiple_context, valid_nest_case, rule_constructor, valid_dataset):
         """Check Rule returns expected result when checking multiple contexts."""
@@ -520,12 +520,12 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('invalid_atleastone')
+        return iati.tests.utilities.load_as_dataset('ruleset/invalid_atleastone')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('valid_atleastone')
+        return iati.tests.utilities.load_as_dataset('ruleset/valid_atleastone')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
@@ -658,12 +658,12 @@ class TestRuleDateOrder(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for instatiating this Rule."""
-        return iati.tests.utilities.load_as_dataset('invalid_dateorder')
+        return iati.tests.utilities.load_as_dataset('ruleset/invalid_dateorder')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('valid_dateorder')
+        return iati.tests.utilities.load_as_dataset('ruleset/valid_dateorder')
 
     @pytest.mark.parametrize("case", [
         {'less': 'element1', 'more': 'element2'},  # Euro-date format
@@ -699,7 +699,7 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         """Check that a dataset with dates in an incorrect format raise expected error."""
         rule = rule_constructor(valid_single_context, case)
         with pytest.raises(ValueError):
-            rule.is_valid_for(iati.tests.utilities.load_as_dataset('invalid_format_dateorder'))
+            rule.is_valid_for(iati.tests.utilities.load_as_dataset('ruleset/invalid_format_dateorder'))
 
     @pytest.mark.parametrize("case", [
         {'less': 'element39', 'more': 'element40'},  # `less` date missing
@@ -792,12 +792,12 @@ class TestRuleDependent(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for instatiating this Rule."""
-        return iati.tests.utilities.load_as_dataset('invalid_dependent')
+        return iati.tests.utilities.load_as_dataset('ruleset/invalid_dependent')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('valid_dependent')
+        return iati.tests.utilities.load_as_dataset('ruleset/valid_dependent')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
@@ -877,12 +877,12 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('invalid_nomorethanone')
+        return iati.tests.utilities.load_as_dataset('ruleset/invalid_nomorethanone')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('valid_nomorethanone')
+        return iati.tests.utilities.load_as_dataset('ruleset/valid_nomorethanone')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
@@ -970,12 +970,12 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('invalid_regexmatches')
+        return iati.tests.utilities.load_as_dataset('ruleset/invalid_regexmatches')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('valid_regexmatches')
+        return iati.tests.utilities.load_as_dataset('ruleset/valid_regexmatches')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
@@ -1063,12 +1063,12 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('invalid_regexnomatches')
+        return iati.tests.utilities.load_as_dataset('ruleset/invalid_regexnomatches')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('valid_regexnomatches')
+        return iati.tests.utilities.load_as_dataset('ruleset/valid_regexnomatches')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
@@ -1155,12 +1155,12 @@ class TestRuleStartsWith(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('invalid_startswith')
+        return iati.tests.utilities.load_as_dataset('ruleset/invalid_startswith')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('valid_startswith')
+        return iati.tests.utilities.load_as_dataset('ruleset/valid_startswith')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
@@ -1301,12 +1301,12 @@ class TestRuleSum(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('invalid_sum')
+        return iati.tests.utilities.load_as_dataset('ruleset/invalid_sum')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('valid_sum')
+        return iati.tests.utilities.load_as_dataset('ruleset/valid_sum')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
@@ -1402,12 +1402,12 @@ class TestRuleUnique(RuleSubclassTestBase):
     @pytest.fixture
     def invalid_dataset(self):
         """Invalid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('invalid_unique')
+        return iati.tests.utilities.load_as_dataset('ruleset/invalid_unique')
 
     @pytest.fixture
     def valid_dataset(self):
         """Return valid dataset for this Rule."""
-        return iati.tests.utilities.load_as_dataset('valid_unique')
+        return iati.tests.utilities.load_as_dataset('ruleset/valid_unique')
 
     def test_rule_string_output_specific(self, rule_instantiating):
         """Check that the string format of the Rule contains some relevant information."""
