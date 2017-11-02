@@ -249,3 +249,51 @@ class TestResourceLoading(object):
 
         with pytest.raises(FileNotFoundError):
             _ = load_method(path_test_data)
+
+    @pytest.mark.parametrize("file_to_load", [
+        'dataset-encoding/valid-windows-1252.xml'
+    ])
+    def test_load_as_string_restricted_charset(self, file_to_load):
+        """Test that Datasets can be loaded from files encoded with a limited charset."""
+        path = iati.resources.get_test_data_path(file_to_load)
+
+        data_str = iati.resources.load_as_string(path)
+        dataset = iati.Dataset(data_str)
+        str_of_interest = dataset.xml_tree.xpath('//reporting-org/narrative/text()')[0]
+
+        # the character of interest is in windows-1252, but is different from ASCII
+        assert str_of_interest == 'Ÿ'
+
+    @pytest.mark.parametrize("file_to_load", [
+        'dataset-encoding/valid-UTF-8.xml',
+        'dataset-encoding/valid-UTF-16LE.xml',
+        'dataset-encoding/valid-UTF-16BE.xml',
+        'dataset-encoding/valid-UTF-16.xml',
+        'dataset-encoding/valid-UTF-32.xml'
+    ])
+    def test_load_as_string_unicode(self, file_to_load):
+        """Test that Datasets can be loaded from files encoded with various unicode encodings."""
+        path = iati.resources.get_test_data_path(file_to_load)
+
+        data_str = iati.resources.load_as_string(path)
+        dataset = iati.Dataset(data_str)
+        str_of_interest = dataset.xml_tree.xpath('//reporting-org/narrative/text()')[0]
+
+        # the tested characters are all in the code range 004000 – 00FFFF
+        # this means that they are 3-bit atUTF-8, 2 bit as UTF-16 and 4-bit as UTF-32 in 8-bit environments
+        # https://en.wikipedia.org/wiki/Comparison_of_Unicode_encodings#Eight-bit_environments
+        assert str_of_interest == '䶌乨伶侗倗傈儈剉唙謜谋䶌乨伶侗倗傈儈剉唙謜谋䶌乨伶侗倗傈儈剉唙謜谋'
+
+    @pytest.mark.parametrize("file_to_load", [
+        'dataset-encoding/valid-undetectable-encoding.xml'
+    ])
+    def test_load_as_string_undetectable_encoding(self, file_to_load):
+        """Test that when an encoding cannot be detected, the correct error is raised.
+
+        The file with an undetectable encoding is a UTF-16LE file without a BOM.
+
+        """
+        path = iati.resources.get_test_data_path(file_to_load)
+
+        with pytest.raises(ValueError):
+            _ = iati.resources.load_as_string(path)

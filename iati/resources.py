@@ -469,8 +469,6 @@ def load_as_string(path):
     Todo:
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
 
-        Add test to load a dataset saved in non-UTF-8 formats. This should include `UTF-16LE`, `UTF-16BE` and `windows-1252` since there are published Datasets using these encodings.
-
     """
     loaded_bytes = load_as_bytes(path)
 
@@ -480,7 +478,10 @@ def load_as_string(path):
         # the file was not UTF-8, so perform a (slow) test to detect encoding
         # only use the first section of the file since this is generally enough and prevents big files taking ages
         detected_info = chardet.detect(loaded_bytes[:25000])
-        loaded_str = loaded_bytes.decode(detected_info['encoding'])
+        try:
+            loaded_str = loaded_bytes.decode(detected_info['encoding'])
+        except TypeError:
+            raise ValueError('Could not detect encoding of file')
 
     return loaded_str
 
