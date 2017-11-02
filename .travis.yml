@@ -14,18 +14,10 @@ script:
 
 stages:
   - test
-  - lax lint
   - strict lint
 
 jobs:
     include:
-        - stage: lax lint and other checks
-          python: 3.5
-          script:
-            - make lint
-            - make complexity
-            - make docs
-          if: branch=dev
         - stage: strict lint
           python: 3.5
           install:
@@ -33,16 +25,16 @@ jobs:
             - pip install -r requirements-dev.txt
           env: LINTER=pylint
           script: make pylint
-          if: branch=master
+          if: branch IN (master, dev)
         - stage: strict lint
           python: 3.5
           install: pip install flake8
           env: LINTER=flake8
           script: make flake8
-          if: branch=master
+          if: branch IN (master, dev)
         - stage: strict lint
           python: 3.5
           install: pip install pydocstyle
           env: LINTER=pydocstyle
           script: make pydocstyle
-          if: branch=master
+          if: branch IN (master, dev)
