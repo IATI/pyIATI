@@ -41,7 +41,7 @@ class ValidationError(object):
         try:
             self.help = self.help.format(**calling_locals)
             self.info = self.info.format(**calling_locals)
-        except KeyError as missing_var_err:
+        except KeyError:  # as missing_var_err:
             # raise NameError('The calling scope must contain a `{missing_var_err.args[0]}` variable for providing information for the error message.'.format(**locals()))
             pass
 
@@ -303,7 +303,7 @@ def _check_codes(dataset, codelist):
             code = parent.attrib[attr_name]
 
             if code not in codelist.codes:
-                line_number = parent.sourceline
+                line_number = parent.sourceline  # used via `locals()` # pylint: disable=unused-variable
 
                 if codelist.complete:
                     error = ValidationError('err-code-not-on-codelist', locals())
@@ -396,14 +396,14 @@ def _check_is_xml(maybe_xml):
             error = _create_error_for_lxml_log_entry(log_entry)
             error_log.add(error)
     except (AttributeError, TypeError, ValueError):
-        problem_var_type = type(maybe_xml)
+        problem_var_type = type(maybe_xml)  # used via `locals()` # pylint: disable=unused-variable
         error = ValidationError('err-not-xml-not-string', locals())
         error_log.add(error)
 
     # the parser does not cause any errors when given an empty string, so this needs handling separately
     if len(error_log) == 0 and len(maybe_xml.strip()) == 0:
         err_name = 'err-not-xml-empty-document'
-        err = 'A file or string containing no data is not XML.'
+        err = 'A file or string containing no data is not XML.'  # used via `locals()` # pylint: disable=unused-variable
         error = ValidationError(err_name, locals())
         error_log.add(error)
 
@@ -512,8 +512,8 @@ def _create_error_for_lxml_log_entry(log_entry):
     err = log_entry
 
     # configure local variables for the creation of the error
-    line_number = err.line
-    column_number = err.column
+    line_number = err.line  # used via `locals()`# pylint: disable=unused-variable
+    column_number = err.column  # used via `locals()`# pylint: disable=unused-variable
 
     # undertake the mapping between error name formats
     lxml_to_iati_error_mapping = {

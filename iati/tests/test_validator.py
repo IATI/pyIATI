@@ -230,7 +230,7 @@ class TestValidationAuxiliaryData(object):
             ('info', str),
             ('help', str)
         ]
-        for err_code_name, err_code in iati.validator.get_error_codes().items():
+        for err_code in iati.validator.get_error_codes().values():
             code_attrs = err_code.keys()
             for (attr_name, attr_type) in expected_attributes:
                 assert attr_name in code_attrs
@@ -552,7 +552,7 @@ class TestValidateIsXML(ValidationTestBase):
         assert result.contains_errors()
         assert result.contains_error_called('err-not-xml-content-at-end')
 
-    def test_xml_check_not_xml_str_xml_after_xml_detailed_output(self, xml_str, str_not_xml):
+    def test_xml_check_not_xml_str_xml_after_xml_detailed_output(self, xml_str):
         """Perform check to locate the XML Syntax Errors in a string.
 
         The string is two concatenated XML strings. Each contains a text declaration.
@@ -567,7 +567,7 @@ class TestValidateIsXML(ValidationTestBase):
         assert result.contains_error_called('err-not-xml-content-at-end')
         assert result.contains_error_called('err-not-xml-xml-text-decl-only-at-doc-start')
 
-    def test_xml_check_not_xml_str_xml_after_xml_no_text_decl_detailed_output(self, xml_str_no_text_decl, str_not_xml):
+    def test_xml_check_not_xml_str_xml_after_xml_no_text_decl_detailed_output(self, xml_str_no_text_decl):
         """Perform check to locate the XML Syntax Errors in a string.
 
         The string is two concatenated XML strings. Each contains a text declaration.

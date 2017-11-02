@@ -147,13 +147,17 @@ def codelists(version=None):
     return _codelists(version)
 
 
-def codelist_mapping(version=None):
+def codelist_mapping(version=None):    # pylint: disable=unused-argument
     """Define the mapping process which states where in a Dataset you should find values on a given Codelist.
 
-    version (str): The version of the Standard to return the mapping file for. Defaults to None. This means that the mapping file is returned for the latest version of the Standard.
+    Args:
+        version (str): The version of the Standard to return the mapping file for. Defaults to None. This means that the mapping file is returned for the latest version of the Standard.
 
     Returns:
         dict of dict: A dictionary containing mapping information. Keys in the first dictionary are Codelist names. Keys in the second dictionary are `xpath` and `condition`. The condition is `None` if there is no condition.
+
+    Todo:
+        Make use of the `version` parameter.
 
     """
     path = iati.resources.get_codelist_mapping_path()
