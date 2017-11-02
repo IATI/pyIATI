@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--required dependent elements and attributes present-->
+<root_element>
+  <condition></condition><!--condition case-->
+  <element1></element1><!--single element given-->
+  <element2></element2><!--two elements given-->
+  <element3></element3>
+  <element4></element4><!--paths refer to same element-->
+  <nest>
+    <element5></element5><!--paths refers to nested elements and attributes-->
+    <element6></element6>
+    <element11 attribute=""></element11><!--paths refers to nested elements and attributes-->
+    <element12 attribute=""></element12>
+  </nest>
+  <nest>
+    <element5></element5><!--paths refers to nested elements and attributes-->
+    <element6></element6>
+    <element11 attribute=""></element11><!--paths refers to nested elements and attributes-->
+    <element12 attribute=""></element12>
+  </nest>
+  <element7 attribute=""></element7><!--single attribute given-->
+  <element8 attribute=""></element8><!--two attributes given-->
+  <element9 attribute=""></element9>
+  <element10 attribute=""></element10><!--paths refer to same attribute-->
+  <element13></element13><!--multiple identical elements-->
+  <element13></element13>
+  <element14></element14>
+  <element14></element14>
+</root_element>

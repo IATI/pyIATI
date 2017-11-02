@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-
-<root_element>
-  <element_that_only_occurs_once></element_that_only_occurs_once><!-- multiple valid paths present -->
-  <element_that_occurs_twice></element_that_occurs_twice>
-  <element_that_occurs_twice></element_that_occurs_twice>
-</root_element>

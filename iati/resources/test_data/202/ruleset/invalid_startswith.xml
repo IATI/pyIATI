@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--no element or attribute contains the specified prefixing string-->
+<root_element>
+  <prefix>prefix</prefix><!--prefix value-->
+  <condition></condition><!--condition case-->
+  <element1>bunnies1234</element1><!--single path-->
+  <element2>bunnies1234</element2><!--multiple paths-->
+  <element3>bunnies1234</element3>
+  <element4>bunnies1234</element4><!--duplicate paths-->
+  <element5 attribute="bunnies1234"></element5><!--single path-->
+  <element6 attribute="bunnies1234"></element6><!--multiple paths-->
+  <element7 attribute="bunnies1234"></element7>
+  <element8 attribute="bunnies1234"></element8><!--duplicate paths-->
+  <nest>
+    <element9>bunnies1234</element9><!--nested path-->
+  </nest>
+  <nest>
+    <element10 attribute="bunnies1234"></element10><!--nested path-->
+  </nest>
+  <element11>bunnies1234</element11><!--duplicate element-->
+  <element11>bunnies1234</element11>
+  <duplicateprefix>duplicateprefix</duplicateprefix><!--duplicate `start` element with duplicate text value-->
+  <duplicateprefix>duplicateprefix</duplicateprefix>
+  <element12>duplicateprefix1234</element12><!--prefix matches but prefix element specified is invalid-->
+  <multiprefix>prefix1</multiprefix><!--duplicate `start` element with differing text value-->
+  <multiprefix>prefix2</multiprefix>
+  <element13>prefix1</element13><!--prefix matches one of the prefixes given but prefix elements specified are invalid-->
+  <element14>missingprefix1234</element14><!--element that would match missing prefix element value-->
+</root_element>

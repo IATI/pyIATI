@@ -411,12 +411,16 @@ Public License instead of this License.
 -----------------------------------------------------------------------------
                         The MIT License (MIT)
     applies to:
+    - bumpversion, Copyright (C) 2013-2014 Filip Noetzel
     - flake8, Copyright (C) 2011-2013 Tarek Ziade <tarek@ziade.org>
               Copyright (C) 2012-2016 Ian Cordasco <graffatcolmingov@gmail.com>
+    - future, Copyright (c) 2013-2016 Python Charmers Pty Ltd, Australia
+    - jsonschema, Copyright (c) 2013 Julian Berman
     - pydocstyle, Copyright (c) 2012 GreenSteam, <http://greensteam.dk/>
                   Copyright (c) 2014-2017 Amir Rachum, <http://amir.rachum.com/>
     - pytest, Copyright (c) 2004-2016 Holger Krekel and others
     - pytest-cov, Copyright (c) 2010 Meme Dough
+    - pytest-xdist
     - radon, Copyright (c) 2012-2014 Michele Lacchia
     - six, Copyright (c) 2010-2015 Benjamin Peterson
     - sphinx_rtd_theme, Copyright (c) 2013 Dave Snider

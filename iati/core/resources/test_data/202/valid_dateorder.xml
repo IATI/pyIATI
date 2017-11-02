@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-
-<root_element>
-  <planned-disbursement type="1">
-   <period-start iso-date="2014-01-01" /><!-- Dates are in the correct order -->
-   <period-end iso-date="2014-12-31" />
-  </planned-disbursement>
-</root_element>

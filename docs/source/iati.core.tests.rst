@@ -4,6 +4,14 @@ iati\.core\.tests package
 Submodules
 ----------
 
+iati\.core\.tests\.conftest module
+----------------------------------
+
+.. automodule:: iati.core.tests.conftest
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 iati\.core\.tests\.test\_codelists module
 -----------------------------------------
 

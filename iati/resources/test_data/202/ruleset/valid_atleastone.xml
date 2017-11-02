@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--required elements present at least once-->
+<root_element>
+  <condition></condition><!--condition case-->
+  <element1></element1><!--single element-->
+  <element2></element2><!--multiple elements-->
+  <element3></element3><!--multiple elements-->
+  <element4></element4><!--duplicate element path-->
+  <nest>
+    <element5></element5><!--nested elements-->
+  </nest>
+  <element6 attribute=""></element6><!--single attribute-->
+  <element7 attribute=""></element7><!--multiple attributes-->
+  <element8 attribute=""></element8><!--multiple attributes-->
+  <element9 attribute=""></element9><!--duplicate attribute path-->
+  <nest>
+    <element10 attribute=""></element10><!--nested attribute-->
+  </nest>
+  <element11></element11><!--duplicate element-->
+  <element11></element11>
+</root_element>

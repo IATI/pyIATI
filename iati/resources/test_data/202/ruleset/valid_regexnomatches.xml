@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--all element and attribute text does not match the specified regex-->
+<root_element>
+  <condition></condition><!--condition case-->
+  <element1>kittens</element1><!--single path-->
+  <element2>kittens</element2><!--multiple paths-->
+  <element3>kittens</element3>
+  <element4>kittens</element4><!--duplicate paths-->
+  <element5 attribute="kittens"></element5><!--single path-->
+  <element6 attribute="kittens"></element6><!--multiple paths-->
+  <element7 attribute="kittens"></element7>
+  <element8 attribute="kittens"></element8><!--duplicate paths-->
+  <nest>
+    <element9>kittens</element9><!--nested element-->
+  </nest>
+  <nest>
+    <element10 attribute="kittens"></element10><!--nested attribute-->
+  </nest>
+  <element11>kittens</element11><!--duplicate element-->
+  <element11>kittens</element11>
+</root_element>

@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-
-<root_element>
-  <iati-identifier>Almost anything is allowed here according to the current standard.</iati-identifier><!-- iati-identifier matches regex -->
-</root_element>

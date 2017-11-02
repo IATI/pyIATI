@@ -23,11 +23,23 @@ docs: $(IATI_FOLDER) $(DOCS_FOLDER_SOURCE)
 
 
 lint: $(IATI_FOLDER)
-	-pylint $(IATI_FOLDER)
+	-make pylint
 	echo $(LINE_SEP)
-	-flake8 $(IATI_FOLDER)
+	-make flake8
 	echo $(LINE_SEP)
-	-pydocstyle $(IATI_FOLDER)
+	-make pydocstyle
+
+
+pylint: $(IATI_FOLDER)
+	pylint $(IATI_FOLDER)
+
+
+flake8: $(IATI_FOLDER)
+	flake8 $(IATI_FOLDER)
+
+
+pydocstyle: $(IATI_FOLDER)
+	pydocstyle $(IATI_FOLDER)
 
 
 test: $(IATI_FOLDER)
