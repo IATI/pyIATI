@@ -9,6 +9,7 @@ class Codelist(object):
     """Representation of a Codelist as defined within the IATI SSOT.
 
     Attributes:
+        complete (bool): Whether the Codelist is complete or not. If complete, attributes making use of this Codelist must only contain values present on the Codelist. If not complete, this is merely strongly advised.
         codes (:obj:`set` of :obj:`iati.Code`): The codes demonstrating the range of values that the Codelist may represent.
         name (str): The name of the Codelist.
 
@@ -80,6 +81,7 @@ class Codelist(object):
             except KeyError:
                 pass
 
+        self.complete = None
         self.codes = set()
         self.name = name
 
@@ -90,7 +92,6 @@ class Codelist(object):
         self._url = None
         self._ref = None
         self._category_codelist = None
-        self._complete = None
 
         if xml:
             parse_from_xml(xml)
