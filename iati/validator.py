@@ -10,7 +10,8 @@ import iati.resources
 class ValidationError(object):
     """A base class to encapsulate information about Validation Errors."""
 
-    def __init__(self, err_name, calling_locals=dict()):
+    # pylint: disable=too-many-instance-attributes
+    def __init__(self, err_name, calling_locals=None):
         """Create a new ValidationError.
 
         Args:
@@ -24,6 +25,10 @@ class ValidationError(object):
             Split message formatting into a child class and raise an error when variables are missing.
 
         """
+        # have to set here to ensure each ValidationError has its own dictionary
+        if calling_locals is None:
+            calling_locals = dict()
+
         try:
             err_detail = get_error_codes()[err_name]
         except (KeyError, TypeError):
@@ -31,6 +36,7 @@ class ValidationError(object):
 
         # set general attributes for this type of error
         self.name = err_name
+        self.actual_value = None
 
         for key, val in err_detail.items():
             setattr(self, key, val)
@@ -46,7 +52,7 @@ class ValidationError(object):
             pass
 
         # set general attributes for this type of error that require context from the calling scope
-        # TODO: Determine what the defaults should be should the appropriate values not be available
+        # TODO: Determine what the defaults should be should the appropriate values not be available  # pylint: disable=fixme
         try:
             self.line_number = calling_locals['line_number']
             self.context = calling_locals['dataset'].source_around_line(self.line_number)
@@ -96,11 +102,11 @@ class ValidationErrorLog(object):
 
     def __eq__(self, other):
         """Test equality with another object."""
-        if len(self._values) != len(other._values):
+        if len(self._values) != len(other):
             return False
 
         for val in self._values:
-            if val not in other._values:
+            if val not in other:
                 return False
 
         return True
@@ -363,7 +369,7 @@ def _check_is_iati_xml(dataset, schema):
     try:
         validator.assertValid(dataset.xml_tree)
     except etree.DocumentInvalid as doc_invalid:
-        for log_entry in doc_invalid.error_log:
+        for log_entry in doc_invalid.error_log:  # pylint: disable=no-member
             error = _create_error_for_lxml_log_entry(log_entry)
             error_log.add(error)
 
@@ -495,7 +501,7 @@ def _correct_codelist_values(dataset, schema):
     return not error_log.contains_errors()
 
 
-def _create_error_for_lxml_log_entry(log_entry):
+def _create_error_for_lxml_log_entry(log_entry):  # pylint: disable=invalid-name
     """Parse a log entry from an lxml error log and convert it to a IATI ValidationError.
 
     Args:
@@ -535,7 +541,7 @@ def _create_error_for_lxml_log_entry(log_entry):
     try:
         err_name = lxml_to_iati_error_mapping[err.type_name]
     except KeyError:
-        # TODO: it may be desired to make there be different uncategorised errors - eg. IATI error vs. XML error
+        # TODO: it may be desired to make there be different uncategorised errors - eg. IATI error vs. XML error  # pylint: disable=fixme
         err_name = 'err-not-xml-uncategorised-xml-syntax-error'
 
     error = ValidationError(err_name, locals())
@@ -569,7 +575,7 @@ def _create_error_for_rule(rule):
     try:
         err_name = rule_to_iati_error_mapping[rule.name]
     except KeyError:
-        # TODO: it may be desired to make different uncategorised Ruleset errors, depending on findings from usage.
+        # TODO: it may be desired to make different uncategorised Ruleset errors, depending on findings from usage  # pylint: disable=fixme
         err_name = 'err-rule-uncategorised-conformance-fail'
 
     error = ValidationError(err_name, locals())

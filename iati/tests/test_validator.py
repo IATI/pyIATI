@@ -13,7 +13,7 @@ class TestValidationError(object):
     def test_validation_error_init_no_name(self):
         """Test that a ValidationError cannot be created with no name provided."""
         with pytest.raises(TypeError):
-            iati.validator.ValidationError()
+            iati.validator.ValidationError()  # pylint: disable=no-value-for-parameter
 
     @pytest.mark.parametrize("invalid_err_name", iati.tests.utilities.generate_test_types([], True))
     def test_validation_error_init_bad_name_type(self, invalid_err_name):
@@ -29,14 +29,15 @@ class TestValidationError(object):
 
         assert isinstance(err, iati.validator.ValidationError)
         assert err.name == err_name
-        assert err.base_exception == ValueError
-        assert err.category == err_detail['category']
-        assert err.description == err_detail['description']
         assert err.info == err_detail['info']
         assert err.help == err_detail['help']
+        # attributes set with `setattr()`, so not picked up by linter
+        assert err.base_exception == ValueError  # pylint: disable=no-member
+        assert err.category == err_detail['category']  # pylint: disable=no-member
+        assert err.description == err_detail['description']  # pylint: disable=no-member
 
 
-class TestValidationErrorLog(object):
+class TestValidationErrorLog(object):  # pylint: disable=too-many-public-methods
     """A container for tests relating to Validation Error Logs."""
 
     @pytest.fixture
@@ -129,6 +130,7 @@ class TestValidationErrorLog(object):
         assert error_log_with_warning.contains_error_called(warning_name)
         assert error_log_with_warning.contains_error_of_type(warning_type)
 
+    # pylint: disable=too-many-arguments
     def test_error_log_add_mixed(self, error_log_mixed_contents, err_name, warning_name, err_type, warning_type, unused_exception_type):
         """Test that a mix of errors and warnings are identified as such when added to the error log."""
         assert len(error_log_mixed_contents) == 2
@@ -140,17 +142,17 @@ class TestValidationErrorLog(object):
         assert error_log_mixed_contents.contains_error_of_type(warning_type)
         assert not error_log_mixed_contents.contains_error_of_type(unused_exception_type)
 
-    @pytest.mark.parametrize("not_ValidationError", iati.tests.utilities.generate_test_types([], True))
-    def test_error_log_add_incorrect_type(self, error_log, not_ValidationError):
+    @pytest.mark.parametrize("not_validatio_error_obj", iati.tests.utilities.generate_test_types([], True))
+    def test_error_log_add_incorrect_type(self, error_log, not_validatio_error_obj):
         """Test that you may only add ValidationErrors to a ValidationErrorLog."""
         with pytest.raises(TypeError):
-            error_log.add(not_ValidationError)
+            error_log.add(not_validatio_error_obj)
 
-    @pytest.mark.parametrize("potential_ValidationError", iati.tests.utilities.generate_test_types([], True) + [iati.validator.ValidationError('err-code-not-on-codelist')])
-    def test_error_log_set_index_incorrect_type(self, error_log_with_warning, potential_ValidationError):
+    @pytest.mark.parametrize("potential_validation_error_obj", iati.tests.utilities.generate_test_types([], True) + [iati.validator.ValidationError('err-code-not-on-codelist')])
+    def test_error_log_set_index_incorrect_type(self, error_log_with_warning, potential_validation_error_obj):
         """Test that you may not add values to an error log via index assignment."""
         with pytest.raises(TypeError):
-            error_log_with_warning[0] = potential_ValidationError
+            error_log_with_warning[0] = potential_validation_error_obj
 
     def test_error_log_equality_single_error(self, error_log_with_error, error_log_with_warning):
         """Test equality between a pair of ValidationErrorLogs.
@@ -600,7 +602,7 @@ class TestIsValidIATIXML(ValidationTestBase):
 
         assert result.contains_errors()
 
-    def test_iati_xml_missing_required_element(self, not_iati_dataset_missing_required_el, schema_basic):
+    def test_iati_xml_missing_required_element(self, not_iati_dataset_missing_required_el, schema_basic):  # pylint: disable=invalid-name
         """Perform check to see whether a parameter is valid IATI XML.
 
         The parameter is not valid IATI XML. It is missing a required element.
