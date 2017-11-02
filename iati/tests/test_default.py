@@ -111,17 +111,30 @@ class TestDefaultCodelists(object):
         assert mapping['Sector'][0]['condition'] == "@vocabulary = '1' or not(@vocabulary)"
         assert mapping['Version'][0]['condition'] is None
 
-    def test_codelist_mapping_xpath(self):
+    def test_codelist_mapping_xpath(self, standard_version_optional):
         """Check that the Codelist mapping file is being read for both org and activity mappings.
 
         Todo:
             Split into multiple tests.
         """
-        mapping = iati.default.codelist_mapping()
-        version_xpaths = [mapping['Version'][0]['xpath'], mapping['Version'][1]['xpath']]
+        mapping = iati.default.codelist_mapping(*standard_version_optional)
+        currency_xpaths = [currency_mapping['xpath'] for currency_mapping in mapping['Currency']]
 
-        assert '//iati-activities/@version' in version_xpaths
-        assert '//iati-organisations/@version' in version_xpaths
+        expected_xpaths = [
+            '//iati-activity/@default-currency',
+            '//iati-activity/budget/value/@currency',
+            '//iati-activity/crs-add/loan-status/@currency',
+            '//iati-activity/fss/forecast/@currency',
+            '//iati-activity/planned-disbursement/value/@currency',
+            '//iati-activity/transaction/value/@currency',
+            '//iati-organisation/@default-currency',
+            '//iati-organisation/total-budget/value/@currency',
+            '//iati-organisation/recipient-org-budget/value/@currency',
+            '//iati-organisation/recipient-country-budget/value/@currency'
+        ]
+
+        for xpath in expected_xpaths:
+            assert xpath in currency_xpaths
         assert mapping['InvalidCodelistName'] == []
 
     def test_default_codelists_length(self, codelist_lengths_by_version):

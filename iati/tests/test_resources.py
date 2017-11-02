@@ -4,6 +4,7 @@ import pytest
 import six
 import iati.constants
 import iati.resources
+import iati.validator
 
 
 class TestResources(object):
@@ -80,6 +81,7 @@ class TestResourceCodelists(object):
         content = iati.resources.load_as_string(path)
 
         assert len(content) > 3200
+        assert iati.validator.is_xml(content)
 
     def test_find_codelist_paths(self, codelist_lengths_by_version):
         """Check that all codelist paths are being found."""
@@ -101,6 +103,15 @@ class TestResourceCodelists(object):
         assert path[-4:] == iati.resources.FILE_CODELIST_EXTENSION
         assert path.count(iati.resources.FILE_CODELIST_EXTENSION) == 1
         assert iati.resources.PATH_CODELISTS in path
+
+    def test_get_codelist_mapping_path(self, standard_version_optional):
+        """Check that the Codelist Mapping File path points to a valid XML file."""
+        path = iati.resources.get_codelist_mapping_path(*standard_version_optional)
+
+        content = iati.resources.load_as_string(path)
+
+        assert len(content) > 5000
+        assert iati.validator.is_xml(content)
 
 
 class TestResourceSchemas(object):

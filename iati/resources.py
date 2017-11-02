@@ -197,9 +197,6 @@ def get_codelist_mapping_path(version=None):
     Returns:
         str: The path to a file containing the mapping file.
 
-    Todo:
-        Test this.
-
     """
     return get_path_for_version(FILE_CODELIST_MAPPING, version)
 
