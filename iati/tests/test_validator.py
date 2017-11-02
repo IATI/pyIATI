@@ -844,7 +844,12 @@ class TestValidateRulesets(object):
         assert iati.validator.is_iati_xml(data, schema_ruleset)
         assert iati.validator.is_valid(data, schema_ruleset)
 
-    @pytest.mark.parametrize("invalid_xml_file", ['ruleset-std/invalid_std_ruleset_bad_date_order', 'ruleset-std/invalid_std_ruleset_bad_identifier', 'ruleset-std/invalid_std_ruleset_does_not_sum_100', 'ruleset-std/invalid_std_ruleset_missing_sector_element'])
+    @pytest.mark.parametrize("invalid_xml_file", [
+        'ruleset-std/invalid_std_ruleset_bad_date_order',
+        'ruleset-std/invalid_std_ruleset_bad_identifier',
+        'ruleset-std/invalid_std_ruleset_does_not_sum_100',
+        'ruleset-std/invalid_std_ruleset_missing_sector_element'
+    ])
     def test_basic_validation_ruleset_invalid(self, schema_ruleset, invalid_xml_file):
         """Perform data validation against valid IATI XML that does not conform to the Standard Ruleset."""
         data = iati.tests.utilities.load_as_dataset(invalid_xml_file)
