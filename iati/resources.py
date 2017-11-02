@@ -215,9 +215,6 @@ def get_lib_data_path(name):
     Note:
         Does not check whether the specified file actually exists.
 
-    Todo:
-        Test this.
-
     """
     return os.path.join(BASE_PATH_LIB_DATA, name)
 

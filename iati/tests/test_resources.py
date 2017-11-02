@@ -71,6 +71,22 @@ class TestResourceFolders(object):
         assert len(paths) == 237
 
 
+class TestResourceLibraryData(object):
+    """A container for tests relating to pyIATI resources."""
+
+    @pytest.mark.parametrize('file_name', [
+        'name',
+        'Name.xml',
+    ])
+    def test_get_lib_data_path(self, file_name):
+        """Check that library data can be located."""
+        path = iati.resources.get_lib_data_path(file_name)
+
+        assert iati.resources.BASE_PATH_LIB_DATA != ''
+        assert iati.resources.BASE_PATH_LIB_DATA in path
+        assert file_name == path[-len(file_name):]
+
+
 class TestResourceCodelists(object):
     """A container for tests relating to Codelist resources."""
 
