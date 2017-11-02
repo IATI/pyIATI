@@ -7,7 +7,24 @@ import iati.resources
 
 
 class TestResources(object):
-    """A container for tests relating to resources."""
+    """A container for tests relating to resources in general."""
+
+    def test_resource_filename(self):
+        """Check that resource file names are found correctly.
+
+        Todo:
+            Implement better assertions.
+
+        """
+        path = iati.resources.PATH_SCHEMAS
+        filename = iati.resources.resource_filename(path)
+
+        assert len(filename) > len(path)
+        assert filename.endswith(path)
+
+
+class TestResourceFolders(object):
+    """A container for tests relating to resource folders."""
 
     @pytest.mark.parametrize('version, expected_version_foldername', [
         ('2.02', '202'),
@@ -41,6 +58,21 @@ class TestResources(object):
         path = iati.resources.get_folder_path_for_version(*standard_version_optional)
         assert path_component in path
 
+    def test_get_test_data_paths_in_folder(self):
+        """Check that test data is being found in specified subfolders.
+
+        Todo:
+            Deal with multiple versions.
+
+        """
+        paths = iati.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail')
+
+        assert len(paths) == 237
+
+
+class TestResourceCodelists(object):
+    """A container for tests relating to Codelist resources."""
+
     def test_codelist_flow_type(self, standard_version_optional):
         """Check that the FlowType codelist is loaded as a string and contains content."""
         path = iati.resources.get_codelist_path('FlowType', *standard_version_optional)
@@ -57,6 +89,22 @@ class TestResources(object):
         for path in paths:
             assert path[-4:] == iati.resources.FILE_CODELIST_EXTENSION
             assert iati.resources.PATH_CODELISTS in path
+
+    @pytest.mark.parametrize('codelist', [
+        'Name',
+        'Name.xml',
+    ])
+    def test_get_codelist_path_name(self, standard_version_optional, codelist):
+        """Check that a codelist path is found from just a name."""
+        path = iati.resources.get_codelist_path(codelist, *standard_version_optional)
+
+        assert path[-4:] == iati.resources.FILE_CODELIST_EXTENSION
+        assert path.count(iati.resources.FILE_CODELIST_EXTENSION) == 1
+        assert iati.resources.PATH_CODELISTS in path
+
+
+class TestResourceSchemas(object):
+    """A container for tests relating to Schema resources."""
 
     def test_get_all_activity_schema_paths(self, standard_version_optional):
         """Check that all activity schema paths are found.
@@ -103,28 +151,29 @@ class TestResources(object):
         for path in paths:
             assert path[-4:] == iati.resources.FILE_SCHEMA_EXTENSION
 
-    def test_get_test_data_paths_in_folder(self):
-        """Check that test data is being found in specified subfolders.
 
-        Todo:
-            Deal with multiple versions.
+    def test_schema_activity_string(self):
+        """Check that the Activity schema file contains content."""
+        path = iati.resources.get_schema_path('iati-activities-schema')
+
+        content = iati.resources.load_as_string(path)
+
+        assert len(content) > 130000
+
+    def test_schema_activity_tree(self):
+        """Check that the Activity schema loads into an XML Tree.
+
+        This additionally involves checking that imported schemas also work.
 
         """
-        paths = iati.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail')
+        path = iati.resources.get_schema_path('iati-activities-schema')
+        schema = iati.resources.load_as_tree(path)
 
-        assert len(paths) == 237
+        assert isinstance(schema, etree._ElementTree)  # pylint: disable=protected-access
 
-    @pytest.mark.parametrize('codelist', [
-        'Name',
-        'Name.xml',
-    ])
-    def test_get_codelist_path_name(self, standard_version_optional, codelist):
-        """Check that a codelist path is found from just a name."""
-        path = iati.resources.get_codelist_path(codelist, *standard_version_optional)
 
-        assert path[-4:] == iati.resources.FILE_CODELIST_EXTENSION
-        assert path.count(iati.resources.FILE_CODELIST_EXTENSION) == 1
-        assert iati.resources.PATH_CODELISTS in path
+class TestResourceLoading(object):
+    """A container for tests relating to loading resources."""
 
     def test_load_as_bytes(self):
         """Test that resources.load_as_bytes returns a bytes object with the expected content."""
@@ -173,35 +222,3 @@ class TestResources(object):
 
         with pytest.raises(FileNotFoundError):
             _ = load_method(path_test_data)
-
-    def test_resource_filename(self):
-        """Check that resource file names are found correctly.
-
-        Todo:
-            Implement better assertions.
-
-        """
-        path = iati.resources.PATH_SCHEMAS
-        filename = iati.resources.resource_filename(path)
-
-        assert len(filename) > len(path)
-        assert filename.endswith(path)
-
-    def test_schema_activity_string(self):
-        """Check that the Activity schema file contains content."""
-        path = iati.resources.get_schema_path('iati-activities-schema')
-
-        content = iati.resources.load_as_string(path)
-
-        assert len(content) > 130000
-
-    def test_schema_activity_tree(self):
-        """Check that the Activity schema loads into an XML Tree.
-
-        This additionally involves checking that imported schemas also work.
-
-        """
-        path = iati.resources.get_schema_path('iati-activities-schema')
-        schema = iati.resources.load_as_tree(path)
-
-        assert isinstance(schema, etree._ElementTree)  # pylint: disable=protected-access
