@@ -157,22 +157,22 @@ class TestDefaultRulesets(object):
     @pytest.mark.parametrize("rule_error, invalid_dataset_name, info_text", [
         (
             'err-rule-at-least-one-conformance-fail',
-            'invalid_std_ruleset_missing_sector_element',
+            'ruleset-std/invalid_std_ruleset_missing_sector_element',
             'At least one of `sector` or `transaction/sector` must be present within each `//iati-activity`.'
         ),
         (
             'err-rule-date-order-conformance-fail',
-            'invalid_std_ruleset_bad_date_order',
+            'ruleset-std/invalid_std_ruleset_bad_date_order',
             '`activity-date[@type=\'1\']/@iso-date` must be chronologically before `activity-date[@type=\'3\']/@iso-date` within each `//iati-activity`.'
         ),
         (
             'err-rule-regex-matches-conformance-fail',
-            'invalid_std_ruleset_bad_identifier',
+            'ruleset-std/invalid_std_ruleset_bad_identifier',
             'Each instance of `reporting-org/@ref` and `iati-identifier` and `participating-org/@ref` and `transaction/provider-org/@ref` and `transaction/receiver-org/@ref` within each `//iati-activity` must match the regular expression `[^\\/\\&\\|\\?]+`.'  # noqa: disable=E501 # pylint: disable=line-too-long
         ),
         (
             'err-rule-sum-conformance-fail',
-            'invalid_std_ruleset_does_not_sum_100',
+            'ruleset-std/invalid_std_ruleset_does_not_sum_100',
             'Within each `//iati-activity`, the sum of values matched at `recipient-country/@percentage` and `recipient-region/@percentage` must be `100`.'
         )
         # Note the Rules relating to 'dependent', 'no_more_than_one', 'regex_no_matches', 'startswith' and 'unique' are not used in the Standard Ruleset.
