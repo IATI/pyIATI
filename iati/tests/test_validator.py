@@ -7,7 +7,6 @@ import iati.tests.utilities
 import iati.validator
 
 
-
 class ValidationTestBase(object):
     """A container for fixtures and other functionality useful among multiple groups of Validation Test."""
 
