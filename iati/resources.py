@@ -486,7 +486,6 @@ def load_as_string(path):
         # the file was not UTF-8, so perform a (slow) test to detect encoding
         # only use the first section of the file since this is generally enough and prevents big files taking ages
         detected_info = chardet.detect(loaded_bytes[:25000])
-        # print(detected_info, detected_info['encoding'], detected_info['confidence'])
         loaded_str = loaded_bytes.decode(detected_info['encoding'])
 
     return loaded_str
