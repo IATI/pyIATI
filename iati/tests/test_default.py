@@ -122,7 +122,7 @@ class TestDefaultCodelists(object):
 
         assert '//iati-activities/@version' in version_xpaths
         assert '//iati-organisations/@version' in version_xpaths
-        assert len(mapping['InvalidCodelistName']) == 0
+        assert mapping['InvalidCodelistName'] == []
 
     def test_default_codelists_length(self, codelist_lengths_by_version):
         """Check that the default Codelists for each version contain the expected number of Codelists."""

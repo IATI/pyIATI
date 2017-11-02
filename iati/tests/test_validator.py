@@ -81,6 +81,15 @@ class TestValidationErrorLog(object):  # pylint: disable=too-many-public-methods
         return iati.validator.ValidationErrorLog()
 
     @pytest.fixture
+    def error_log_empty(self):
+        """An empty error log.
+
+        Note: MUST NOT have any errors added to it.
+
+        """
+        return iati.validator.ValidationErrorLog()
+
+    @pytest.fixture
     def error_log_with_error(self, error):
         """An error log with an error added."""
         error_log = iati.validator.ValidationErrorLog()
@@ -105,10 +114,10 @@ class TestValidationErrorLog(object):  # pylint: disable=too-many-public-methods
 
         return error_log
 
-    def test_error_log_init(self, error_log):
+    def test_error_log_init(self, error_log, error_log_empty):
         """Test that a validator ErrorLog can be created and acts as a set."""
         assert isinstance(error_log, iati.validator.ValidationErrorLog)
-        assert len(error_log) == 0
+        assert error_log == error_log_empty
         assert not error_log.contains_errors()
         assert not error_log.contains_warnings()
 
@@ -197,22 +206,22 @@ class TestValidationErrorLog(object):  # pylint: disable=too-many-public-methods
         assert len(error_log) == 2
 
     @pytest.mark.parametrize("iterable", iati.tests.utilities.generate_test_types(['bytearray', 'iter', 'list', 'mapping', 'memory', 'range', 'set', 'str', 'tuple', 'view']))
-    def test_error_log_extend_from_iterable(self, error_log, iterable):
+    def test_error_log_extend_from_iterable(self, error_log, error_log_empty, iterable):
         """Test extending an error log with a iterable.
 
         None of the iterables contain ValidationErrors.
         """
         error_log.extend(iterable)
 
-        assert len(error_log) == 0
+        assert error_log == error_log_empty
 
     @pytest.mark.parametrize("non_iterable", iati.tests.utilities.generate_test_types(['bytearray', 'iter', 'list', 'mapping', 'memory', 'range', 'set', 'str', 'tuple', 'view'], True))
-    def test_error_log_extend_from_non_iterable(self, error_log, non_iterable):
+    def test_error_log_extend_from_non_iterable(self, error_log, error_log_empty, non_iterable):
         """Test extending an error log with a non-iterable."""
         with pytest.raises(TypeError):
             error_log.extend(non_iterable)
 
-        assert len(error_log) == 0
+        assert error_log == error_log_empty
 
 
 class TestValidationAuxiliaryData(object):
@@ -445,15 +454,15 @@ class TestValidateIsXML(ValidationTestBase):
 
         assert iati.validator.is_xml(data)
 
-    def test_xml_check_valid_xml_detailed_output(self, xml_str):
+    def test_xml_check_valid_xml_detailed_output(self, xml_str, error_log_empty):
         """Perform check to see whether a parameter is valid XML. The parameter is valid XML.
         Obtain detailed error output.
         """
         result = iati.validator.validate_is_xml(xml_str)
 
-        assert len(result) == 0
+        assert result == error_log_empty
 
-    def test_xml_check_valid_xml_comments_after_detailed_output(self, xml_str, str_not_xml):
+    def test_xml_check_valid_xml_comments_after_detailed_output(self, xml_str, str_not_xml, error_log_empty):
         """Perform check to see string a parameter is valid XML.
 
         The string is valid XML.
@@ -465,9 +474,9 @@ class TestValidateIsXML(ValidationTestBase):
 
         result = iati.validator.validate_is_xml(xml_with_comments)
 
-        assert len(result) == 0
+        assert result == error_log_empty
 
-    def test_xml_check_valid_xml_str_comments_before_no_text_decl_detailed_output(self, xml_str_no_text_decl, str_not_xml):
+    def test_xml_check_valid_xml_str_comments_before_no_text_decl_detailed_output(self, xml_str_no_text_decl, str_not_xml, error_log_empty):
         """Perform check to see whether a string is valid XML.
 
         The string is valid XML.
@@ -479,9 +488,9 @@ class TestValidateIsXML(ValidationTestBase):
 
         result = iati.validator.validate_is_xml(xml_prefixed_with_comment)
 
-        assert len(result) == 0
+        assert result == error_log_empty
 
-    def test_xml_check_valid_xml_in_dataset_detailed_output(self, xml_str):
+    def test_xml_check_valid_xml_in_dataset_detailed_output(self, xml_str, error_log_empty):
         """Perform check to see whether a Dataset is valid XML.
 
         Obtain detailed error output.
@@ -490,7 +499,7 @@ class TestValidateIsXML(ValidationTestBase):
 
         result = iati.validator.validate_is_xml(data)
 
-        assert len(result) == 0
+        assert result == error_log_empty
 
     @pytest.mark.parametrize("not_str", iati.tests.utilities.generate_test_types(['str'], True))
     def test_xml_check_not_str_detailed_output(self, not_str):
@@ -587,11 +596,11 @@ class TestValidateIsXML(ValidationTestBase):
 class TestIsValidIATIXML(ValidationTestBase):
     """A container for tests checking whether a value is valid IATI XML."""
 
-    def test_iati_xml_check_valid_xml(self, iati_dataset, schema_basic):
+    def test_iati_xml_check_valid_xml(self, iati_dataset, schema_basic, error_log_empty):
         """Perform check to see whether a parameter is valid IATI XML. The parameter is valid IATI XML."""
         result = iati.validator.validate_is_iati_xml(iati_dataset, schema_basic)
 
-        assert len(result) == 0
+        assert result == error_log_empty
 
     def test_iati_xml_check_not_xml(self, not_iati_dataset, schema_basic):
         """Perform check to see whether a parameter is valid IATI XML.
@@ -612,13 +621,13 @@ class TestIsValidIATIXML(ValidationTestBase):
         assert result.contains_errors()
         assert result.contains_error_called('err-not-iati-xml-missing-required-element')
 
-    def test_iati_xml_from_ssot_valid(self, schema_basic):
+    def test_iati_xml_from_ssot_valid(self, schema_basic, error_log_empty):
         """Perform check to see whether valid XML from the SSOT can be loaded and validated."""
         data = iati.tests.utilities.load_as_dataset('ssot-activity-xml-pass/location/01-generic-location')
 
         result = iati.validator.validate_is_iati_xml(data, schema_basic)
 
-        assert len(result) == 0
+        assert result == error_log_empty
 
     def test_iati_xml_from_ssot_invalid(self, schema_basic):
         """Perform check to see whether invalid XML from the SSOT can be loaded and validated."""
@@ -886,9 +895,9 @@ class TestValidateRulesets(object):
         data_with_rule_warnings_only = iati.tests.utilities.load_as_dataset('valid_std_ruleset')
         result = iati.validator.full_validation(data_with_rule_warnings_only, schema_ruleset)
 
-        assert len(result.get_warnings()) > 0
-        assert len(result.get_errors_or_warnings_by_category('rule')) > 0
-        assert len(result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')) == 0
+        assert len(result.get_warnings()) >= 1
+        assert len(result.get_errors_or_warnings_by_category('rule')) >= 1
+        assert result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail') == []
 
 
 class TestValidatorFullValidation(ValidateCodelistsBase):
@@ -915,7 +924,7 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
         assert 'Version' in result.info
         assert 'Version' in result.help
 
-    def test_full_validation_codelist_incomplete_present_detailed_output(self, schema_incomplete_codelist):
+    def test_full_validation_codelist_incomplete_present_detailed_output(self, schema_incomplete_codelist, error_log_empty):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested refers to an incomplete Codelist. The value is on the list.
         Obtain detailed error output.
         """
@@ -923,7 +932,7 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
 
         result = iati.validator.full_validation(data, schema_incomplete_codelist)
 
-        assert len(result) == 0
+        assert result == error_log_empty
 
     def test_full_validation_codelist_incomplete_not_present_detailed_output(self, schema_incomplete_codelist):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested refers to an incomplete Codelist. The value is not on the list.

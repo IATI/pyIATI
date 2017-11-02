@@ -407,7 +407,7 @@ def _check_is_xml(maybe_xml):
         error_log.add(error)
 
     # the parser does not cause any errors when given an empty string, so this needs handling separately
-    if len(error_log) == 0 and len(maybe_xml.strip()) == 0:
+    if error_log == ValidationErrorLog() and maybe_xml.strip() == '':
         err_name = 'err-not-xml-empty-document'
         err = 'A file or string containing no data is not XML.'  # used via `locals()` # pylint: disable=unused-variable
         error = ValidationError(err_name, locals())
