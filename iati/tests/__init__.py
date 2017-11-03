@@ -1,1 +1,1 @@
-"""A package containing tests for iati.x functionality."""
+"""A package containing tests for iati functionality."""

@@ -1,8 +1,10 @@
-# iati.core
+# pyIATI
 
-The iati.core Python module.
+A developers’ toolkit for IATI.
 
-[![Build Status](https://travis-ci.org/IATI/iati.core.svg?branch=master)](https://travis-ci.com/IATI/iati.core) [![Requirements Status](https://requires.io/github/IATI/iati.core/requirements.svg?branch=master)](https://requires.io/github/IATI/iati.core/requirements/?branch=master)
+[![Build Status](https://travis-ci.org/IATI/pyIATI.svg?branch=master)](https://travis-ci.com/IATI/pyIATI)
+
+`master`: [![Requirements Status](https://requires.io/github/IATI/iati.core/requirements.svg?branch=master)](https://requires.io/github/IATI/iati.core/requirements/?branch=master) `dev`: [![Requirements Status](https://requires.io/github/IATI/iati.core/requirements.svg?branch=dev)](https://requires.io/github/IATI/iati.core/requirements/?branch=dev)
 
 Varying between: [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges) and [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges) (see docstrings)
 
@@ -15,22 +17,20 @@ This is a Python module containing IATI functionality that would otherwise be re
 
 **Feedback, suggestions, use-case descriptions, bug reports and so on are much appreciated** - it's far better to know of issues earlier in the development cycle. Please use [Github Issues](https://github.com/IATI/iati.core/issues) for this.
 
-At present the library (`core`) represents the contents of the [IATI Single Source of Truth (SSOT)](https://github.com/iati/iati-standard-ssot). It is able to handle a single version of the Standard (2.02 by default, although it is possible to change data files). Some placeholder work has been undertaken to deal with multiple standard versions. It is planned that this work will be completed once surrounding APIs are nearer a stable state.
+At present the library (`core`) represents much of the contents of the [IATI Single Source of Truth (SSOT)](https://github.com/iati/iati-standard-ssot).
 
 More pleasant API naming, better hiding of underlying `lxml`, full documentation, improved error handling, and a greater number of tests for edge-cases are known key areas for improvement.
-
-It is planned that different sections of the library, such as `validate` are split into their own repositories. They exist within this repository at present to help speed up the iteration process.
 
 
 General Installation for System Use
 ===================================
 
-```
+```shell
 # install software dependencies
 apt-get install python-pip libxml2-dev libxslt-dev python-dev
 
 # install this package
-python setup.py install
+pip install pyIATI
 ```
 
 Documentation
@@ -38,7 +38,7 @@ Documentation
 
 At present, an HTML documentation site can be generated using the following commands:
 
-```
+```shell
 # to build the documentation
 sphinx-apidoc -f -o docs/source/ iati/
 sphinx-build -b html docs/source/ docs/build/
@@ -46,55 +46,83 @@ sphinx-build -b html docs/source/ docs/build/
 
 The file `docs/build/index.html` serves as the documentation home page.
 
+**Note:** These are a work-in-progress. The `edit-docs` branch works to provide an improved docs site.
+
 
 Usage
 =====
 
-**WARNING:** This `iati.core` library is currently in active development. **All usage examples are subject to change**, as we iteratively improve functionality.  Therefore, the following examples are provided for illustrative purposes only.  As the library matures, this message and other documentation will be updated accordingly!
+**WARNING:** This library is currently in active development. **All usage examples are subject to change**, as we iteratively improve functionality. Therefore, the following examples are provided for illustrative purposes only. As the library matures, this message and other documentation will be updated accordingly.
 
-Once installed, the library provides functionality to represent IATI Schemas, Codelists and publisher datasets as Python objects.  The IATI Standard schemas and codelists are provided out of the box, however this can be manipulated if bespoke versions of the Schemas/Codelists are required.
+Once installed, the library provides functionality to represent IATI Schemas, Codelists and publisher datasets as Python objects. The IATI Standard schemas and codelists are provided out of the box (using `iati.default`), however this can be manipulated if bespoke versions of the Schemas/Codelists are required.
 
 ### Loading an XSD Schema
 
-A number of default IATI `.xsd` schema files are included as part of the library. They are stored in the folder: `iati.core/iati/core/resources/schemas/202/`
+A number of default IATI `.xsd` schema files are included as part of the library. They are stored in the folder: `iati.core/iati/core/resources/schemas/`
 
-The following example loads the default IATI v2.02 `iati-activities-schema.xsd` schema:
+The following example loads the latest IATI Activity Schema:
 
-```
-import iati.core.default
-schema = iati.core.default.schema('iati-activities-schema')
-```
-
-Helper functions will be written in due course to return all xpaths within a schema, as well as documentation for each element.
-
-### Loading codelists
-
-A given IATI codelist can be added to the schema. Example using the [Country](http://iatistandard.org/codelists/Country/) codelist.
-
-```
-import iati.core.default
-schema.codelists.add(iati.core.default.codelist('Country'))
+```python
+import iati.default
+schema = iati.default.activity_schema()
 ```
 
-The default collection of IATI codelists can be added using:
+By default, the default Schema will be populated with other information such as Codelists and Rulesets for the specified version of the Standard.
 
+To access an Organisation Schema for version 1.05, with no additional information added:
+
+```python
+import iati.default
+schema = iati.default.organisation_schema('1.05', False)
 ```
-import iati.core.default
-for _, codelist in iati.core.default.codelists().items():
-    schema.codelists.add(codelist)
+
+Helper functions will be written in due course to return all XPaths within a Schema, as well as documentation for each element. Work in this area can be seen in the `get-data-from-schema` branch.
+
+### Loading Codelists
+
+A given IATI Codelist can be added to a Schema. Example using the [Country](http://iatistandard.org/codelists/Country/) codelist.
+
+```python
+import iati.default
+country_codelist = iati.default.codelist('Country')
+schema.codelists.add(country_codelist)
+```
+
+All Codelists for the latest version of the Standard can be accessed with:
+
+```python
+import iati.default
+all_latest_codelists = iati.default.codelists():
 ```
 
 ### Loading Rulesets
 
-**Note:** This functionality is not yet implemented.
+The default IATI Ruleset can be loaded by using:
 
+```python
+import iati.default
+iati.default.ruleset()
+```
 
-### Working with IATI datasets
+If you wish to load your own Ruleset you can do this using:
+
+```python
+import iati.rulesets
+
+# Load a local Ruleset
+with open('path/to/ruleset.json', 'r') as json_file_object:
+    ruleset_str = json_file_object.read()
+
+# To create a Ruleset object from your ruleset_str:
+iati.Ruleset(ruleset_str)
+```
+
+### Working with IATI Datasets
 
 #### Loading a dataset
 
-```
-import iati.core.data
+```python
+import iati.data
 
 # Load a local file
 with open('path/to/iati-activites.xml', 'r') as xml_file_object:
@@ -105,14 +133,14 @@ with open('path/to/iati-activites.xml', 'r') as xml_file_object:
 import requests
 dataset_as_string = requests.get('http://XML_FILE_URL_HERE').text
 
-dataset = iati.core.Dataset(dataset_as_string)
+dataset = iati.Dataset(dataset_as_string)
 ```
 
 #### Accessing data
 
-The `Dataset` object contains an `xml_tree` attribute (itself an `lxml.etree` object). [XPath expessions](https://www.w3schools.com/xml/xpath_intro.asp) can be used to extract desired information from the dataset.  For example:
+The `Dataset` object contains an `xml_tree` attribute (itself an `lxml.etree` object). [XPath expessions](https://www.w3schools.com/xml/xpath_intro.asp) can be used to extract desired information from the dataset. For example:
 
-```
+```python
 # WARNING: The following examples assume the source dataset file is produced in IATI v2.x format
 
 # Show the activities contained within the dataset
@@ -138,7 +166,7 @@ This code supports Python 2.7 and 3.4+. We advise use of Python 3.5 (or above) a
 Dev Installation
 ================
 
-```
+```shell
 # install software development dependencies
 apt-get install python-pip python-virtualenv
 
@@ -154,7 +182,7 @@ pip install -r requirements-dev.txt
 Tests
 =====
 
-```
+```shell
 # to run the tests
 py.test iati/
 
@@ -182,25 +210,6 @@ make docs
 
 make all
 ```
-
-
-Overall TODOs
-=============
-
-- Clearer Configuration
-- Docs
-  - Examples
-  - Formalise Stability
-  - Getting Started Guides
-  - Tutorial - example usage
-- Error Handling
-- Licensing
-- Add IATI Standard Rulesets / Rules
-- Stablise API
-- Add versions of the Standard other than the latest (v2.02)
-- Add further tests
-- Add error cases
-- Potentially look at proper fuzzing
 
 
 Licensing
