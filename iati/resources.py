@@ -197,9 +197,6 @@ def get_codelist_mapping_path(version=None):
     Returns:
         str: The path to a file containing the mapping file.
 
-    Todo:
-        Test this.
-
     """
     return get_path_for_version(FILE_CODELIST_MAPPING, version)
 
@@ -217,9 +214,6 @@ def get_lib_data_path(name):
 
     Note:
         Does not check whether the specified file actually exists.
-
-    Todo:
-        Test this.
 
     """
     return os.path.join(BASE_PATH_LIB_DATA, name)
@@ -475,8 +469,6 @@ def load_as_string(path):
     Todo:
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
 
-        Add test to load a dataset saved in non-UTF-8 formats. This should include `UTF-16LE`, `UTF-16BE` and `windows-1252` since there are published Datasets using these encodings.
-
     """
     loaded_bytes = load_as_bytes(path)
 
@@ -486,7 +478,13 @@ def load_as_string(path):
         # the file was not UTF-8, so perform a (slow) test to detect encoding
         # only use the first section of the file since this is generally enough and prevents big files taking ages
         detected_info = chardet.detect(loaded_bytes[:25000])
-        loaded_str = loaded_bytes.decode(detected_info['encoding'])
+        try:
+            loaded_str = loaded_bytes.decode(detected_info['encoding'])
+            # in Python 2 it is necessary to strip the BOM when decoding from UTF-16BE
+            if detected_info['encoding'] == 'UTF-16' and loaded_str[:1] == u'\ufeff':
+                loaded_str = loaded_str[1:]
+        except TypeError:
+            raise ValueError('Could not detect encoding of file')
 
     return loaded_str
 

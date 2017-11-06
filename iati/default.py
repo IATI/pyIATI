@@ -147,7 +147,7 @@ def codelists(version=None):
     return _codelists(version)
 
 
-def codelist_mapping(version=None):    # pylint: disable=unused-argument
+def codelist_mapping(version=None):
     """Define the mapping process which states where in a Dataset you should find values on a given Codelist.
 
     Args:
@@ -160,7 +160,7 @@ def codelist_mapping(version=None):    # pylint: disable=unused-argument
         Make use of the `version` parameter.
 
     """
-    path = iati.resources.get_codelist_mapping_path()
+    path = iati.resources.get_codelist_mapping_path(version)
     mapping_tree = iati.resources.load_as_tree(path)
     mappings = defaultdict(list)
 
