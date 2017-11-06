@@ -24,6 +24,8 @@ class ValidationError(object):
         Todo:
             Split message formatting into a child class and raise an error when variables are missing.
 
+            Determine what defaults for attributes should be when the appropriate values are not available.
+
         """
         # have to set here to ensure each ValidationError has its own dictionary
         if calling_locals is None:
@@ -52,7 +54,6 @@ class ValidationError(object):
             pass
 
         # set general attributes for this type of error that require context from the calling scope
-        # TODO: Determine what the defaults should be should the appropriate values not be available  # pylint: disable=fixme
         try:
             self.line_number = calling_locals['line_number']
             self.context = calling_locals['dataset'].source_around_line(self.line_number)
@@ -513,6 +514,8 @@ def _create_error_for_lxml_log_entry(log_entry):  # pylint: disable=invalid-name
     Todo:
         Create a small program to determine the common types of errors so that they can be handled as special cases with detailed help info.
 
+        Determine whether there should be a range of uncategorised errors rather than just 'err-not-xml-uncategorised-xml-syntax-error' eg. IATI error vs. XML error.
+
     """
     # set the `err` variable so it can be used in error string formatting via locals()
     err = log_entry
@@ -541,7 +544,6 @@ def _create_error_for_lxml_log_entry(log_entry):  # pylint: disable=invalid-name
     try:
         err_name = lxml_to_iati_error_mapping[err.type_name]
     except KeyError:
-        # TODO: it may be desired to make there be different uncategorised errors - eg. IATI error vs. XML error  # pylint: disable=fixme
         err_name = 'err-not-xml-uncategorised-xml-syntax-error'
 
     error = ValidationError(err_name, locals())
@@ -557,6 +559,9 @@ def _create_error_for_rule(rule):
 
     Returns:
         ValidationError: An IATI ValidationError that contains information about the Rule that has failed.
+
+    Todo:
+        Determine whether there should be a range of uncategorised errors for various ways Ruleset validation may fail, rather than just 'err-rule-uncategorised-conformance-fail'.
 
     """
     # undertake the mapping between Rule subclass and error name formats
@@ -575,7 +580,6 @@ def _create_error_for_rule(rule):
     try:
         err_name = rule_to_iati_error_mapping[rule.name]
     except KeyError:
-        # TODO: it may be desired to make different uncategorised Ruleset errors, depending on findings from usage  # pylint: disable=fixme
         err_name = 'err-rule-uncategorised-conformance-fail'
 
     error = ValidationError(err_name, locals())
