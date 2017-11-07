@@ -31,16 +31,22 @@ class TestResourceFolders(object):
         ('2.02', '202'),
         ('2.01', '201'),
         ('1.05', '105'),
-        ('1.04', '104')
+        ('1.04', '104'),
+        ('1.03', '103'),
+        ('1.02', '102'),
+        ('1.01', '101'),
+        ('1', '1'),
+        ('2', '2'),
+        (None, 'version-independent')
     ])
-    def test_get_folder_name_for_version(self, version, expected_version_foldername):
+    def test_get_folder_name_for_version(self, expected_version_foldername, version):
         """Check that expected components are present within folder paths."""
         path = iati.resources.get_folder_name_for_version(version)
+
         assert expected_version_foldername == path
 
     @pytest.mark.parametrize('version', [
         '1.00',
-        '1',
         1,
         1.01,  # A version must be specified as a string
         'string'

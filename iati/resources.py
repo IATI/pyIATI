@@ -321,12 +321,17 @@ def get_folder_name_for_version(version=None):
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
 
+    Todo:
+        Extract magic string: 'version-independent'
+
     """
     if version is None:
-        version = iati.constants.STANDARD_VERSION_LATEST
+        return 'version-independent'
 
     if version in iati.constants.STANDARD_VERSIONS:
         return version.replace('.', '')
+    elif version in [str(major_version) for major_version in iati.constants.STANDARD_VERSIONS_MAJOR]:
+        return version
     else:
         raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
 
