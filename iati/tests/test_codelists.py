@@ -63,8 +63,13 @@ class TestCodelists(object):
         assert num_codes == 0
 
     def test_codelist_define_from_xml(self, name_to_set):
-        """Check that a Codelist can be generated from an XML codelist definition."""
-        path = iati.resources.get_codelist_path('FlowType')
+        """Check that a Codelist can be generated from an XML codelist definition.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        path = iati.resources.get_codelist_path('FlowType', '2.02')
         xml_str = iati.resources.load_as_string(path)
         codelist = iati.Codelist(name_to_set, xml=xml_str)
 
@@ -78,18 +83,28 @@ class TestCodelists(object):
             assert code.value in code_values
 
     def test_codelist_complete(self):
-        """Check that a Codelist can be generated from an XML codelist definition."""
+        """Check that a Codelist can be generated from an XML codelist definition.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
         codelist_name = 'BudgetType'
-        path = iati.resources.get_codelist_path(codelist_name)
+        path = iati.resources.get_codelist_path(codelist_name, '2.02')
         xml_str = iati.resources.load_as_string(path)
         codelist = iati.Codelist(codelist_name, xml=xml_str)
 
         assert codelist.complete is True
 
     def test_codelist_incomplete(self):
-        """Check that a Codelist can be generated from an XML codelist definition."""
+        """Check that a Codelist can be generated from an XML codelist definition.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
         codelist_name = 'Country'
-        path = iati.resources.get_codelist_path(codelist_name)
+        path = iati.resources.get_codelist_path(codelist_name, '2.02')
         xml_str = iati.resources.load_as_string(path)
         codelist = iati.Codelist(codelist_name, xml=xml_str)
 

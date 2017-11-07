@@ -284,7 +284,7 @@ def _check_codes(dataset, codelist):
 
     """
     error_log = ValidationErrorLog()
-    mappings = iati.default.codelist_mapping()
+    mappings = iati.default.codelist_mapping(dataset.version)
 
     for mapping in mappings[codelist.name]:
         base_xpath = mapping['xpath']

@@ -57,7 +57,7 @@ class TestSchemas(object):
         iati.default.activity_schema,
         iati.default.organisation_schema
     ])
-    @pytest.mark.parametrize('version', iati.constants.STANDARD_VERSIONS)
+    @pytest.mark.parametrize('version', iati.constants.STANDARD_VERSIONS_SUPPORTED)
     def test_schema_get_version(self, schema_func, version):
         """Check that the correct version number is returned by the base classes of iati.schemas.schema._get_version()."""
         schema = schema_func(version)
@@ -201,8 +201,10 @@ class TestSchemas(object):
         Todo:
             Consider if this test should test against a versioned Ruleset.
 
+            Stop this being fixed to 2.02.
+
         """
-        ruleset = iati.default.ruleset()
+        ruleset = iati.default.ruleset('2.02')
 
         schema_initialised.rulesets.add(ruleset)
 

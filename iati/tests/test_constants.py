@@ -1,9 +1,18 @@
 """A module containing tests for the library representation of IATI constants."""
+import pytest
 import iati.constants
 
 
 class TestConstants(object):
     """A container for tests relating to IATI software constants."""
+
+    @pytest.fixture(params=[
+        iati.constants.STANDARD_VERSIONS,
+        iati.constants.STANDARD_VERSIONS_SUPPORTED
+    ])
+    def standard_versions_list(self, request):
+        """Return a list of Version Numbers."""
+        return request.param
 
     def test_namespace(self):
         """Check that the NAMESPACE constant is a string."""
@@ -14,19 +23,23 @@ class TestConstants(object):
         assert isinstance(iati.constants.NSMAP, dict)
         assert isinstance(iati.constants.NSMAP['xsd'], str)
 
-    def test_standard_versions_all_are_numbers(self):
+    def test_standard_versions_all_are_numbers(self, standard_versions_list):
         """Check that each item in standard versions is a string that can be considered to be a decimal number."""
-        for version in iati.constants.STANDARD_VERSIONS:
+        for version in standard_versions_list:
             assert isinstance(version, str)
             assert float(version)
 
-    def test_standard_versions_correct_format(self):
+    def test_standard_versions_correct_format(self, standard_versions_list):
         """Check that standard versions is in the correct format."""
-        assert isinstance(iati.constants.STANDARD_VERSIONS, list)
+        assert isinstance(standard_versions_list, list)
 
     def test_standard_versions_correct_number(self):
         """Check that standard versions has the expected number of items."""
-        assert len(iati.constants.STANDARD_VERSIONS) == 4
+        assert len(iati.constants.STANDARD_VERSIONS) == 7
+
+    def test_standard_versions_correct_number_supported(self):
+        """Check that supported standard versions has the expected number of items."""
+        assert len(iati.constants.STANDARD_VERSIONS_SUPPORTED) == 4
 
     def test_standard_versions_major_all_are_integers(self):
         """Check that each major version is an integer."""

@@ -28,16 +28,19 @@ def schema_ruleset():
     Returns:
         A valid Activity Schema with the Standard Ruleset added.
 
+    Todo:
+        Stop this being fixed to 2.02.
+
     """
     schema = iati.default.activity_schema(None, False)
-    ruleset = iati.default.ruleset()
+    ruleset = iati.default.ruleset('2.02')
 
     schema.rulesets.add(ruleset)
 
     return schema
 
 
-@pytest.fixture(params=iati.constants.STANDARD_VERSIONS)
+@pytest.fixture(params=iati.constants.STANDARD_VERSIONS_SUPPORTED)
 def standard_version_mandatory(request):
     """Return a list that can be passed to a function using the argument list unpacking functionality.
 

@@ -11,10 +11,14 @@ class TestUtilities(object):
 
     @pytest.fixture
     def schema_base_tree(self):
-        """Return schema_base_tree."""
-        activity_schema_path = iati.resources.get_schema_path(
-            iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID
-        )
+        """Return schema_base_tree.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        activity_schema_path = iati.resources.get_all_activity_schema_paths('2.02')[0]
+
         return iati.ActivitySchema(activity_schema_path)._schema_base_tree  # pylint: disable=protected-access
 
     def test_add_namespace_schema_new(self, schema_base_tree):
@@ -137,8 +141,13 @@ class TestUtilities(object):
         assert 'The `new_ns_uri` parameter must be a valid URI.' in str(excinfo.value)
 
     def test_convert_tree_to_schema(self):
-        """Check that an etree can be converted to a schema."""
-        path = iati.resources.get_schema_path('iati-activities-schema')
+        """Check that an etree can be converted to a schema.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        path = iati.resources.get_all_activity_schema_paths('2.02')[0]
 
         tree = iati.resources.load_as_tree(path)
         if not tree:  # pragma: no cover

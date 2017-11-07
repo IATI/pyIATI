@@ -134,19 +134,29 @@ class TestRuleset(object):
             assert isinstance(rule, iati.RuleAtLeastOne)
 
     def test_ruleset_is_valid_for_valid_dataset(self):
-        """Check that a Dataset can be validated against the Standard Ruleset."""
+        """Check that a Dataset can be validated against the Standard Ruleset.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
         ruleset = iati.tests.utilities.RULESET_FOR_TESTING
-        valid_dataset = iati.tests.utilities.load_as_dataset('valid_std_ruleset')
+        valid_dataset = iati.tests.utilities.load_as_dataset('valid_std_ruleset', '2.02')
         assert ruleset.is_valid_for(valid_dataset)
 
     @pytest.mark.parametrize("invalid_dataset", [
-        iati.tests.utilities.load_as_dataset('ruleset-std/invalid_std_ruleset_bad_date_order'),
-        iati.tests.utilities.load_as_dataset('ruleset-std/invalid_std_ruleset_bad_identifier'),
-        iati.tests.utilities.load_as_dataset('ruleset-std/invalid_std_ruleset_does_not_sum_100'),
-        iati.tests.utilities.load_as_dataset('ruleset-std/invalid_std_ruleset_missing_sector_element')
+        iati.tests.utilities.load_as_dataset('ruleset-std/invalid_std_ruleset_bad_date_order', '2.02'),
+        iati.tests.utilities.load_as_dataset('ruleset-std/invalid_std_ruleset_bad_identifier', '2.02'),
+        iati.tests.utilities.load_as_dataset('ruleset-std/invalid_std_ruleset_does_not_sum_100', '2.02'),
+        iati.tests.utilities.load_as_dataset('ruleset-std/invalid_std_ruleset_missing_sector_element', '2.02')
     ])
     def test_ruleset_is_invalid_for_invalid_dataset(self, invalid_dataset):
-        """Check that a Dataset can be invalidated against the Standard Ruleset."""
+        """Check that a Dataset can be invalidated against the Standard Ruleset.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
         ruleset = iati.tests.utilities.RULESET_FOR_TESTING
         assert not ruleset.is_valid_for(invalid_dataset)
 

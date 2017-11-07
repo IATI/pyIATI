@@ -138,8 +138,11 @@ class TestDefaultCodelists(object):
 
         Todo:
             Split into multiple tests.
+
+            Stop this being fixed to 2.02.
+
         """
-        mapping = iati.default.codelist_mapping()
+        mapping = iati.default.codelist_mapping('2.02')
 
         assert mapping['Sector'][0]['condition'] == "@vocabulary = '1' or not(@vocabulary)"
         assert mapping['Version'][0]['condition'] is None
@@ -149,6 +152,7 @@ class TestDefaultCodelists(object):
 
         Todo:
             Split into multiple tests.
+
         """
         mapping = iati.default.codelist_mapping(*standard_version_optional)
         currency_xpaths = [currency_mapping['xpath'] for currency_mapping in mapping['Currency']]
@@ -192,8 +196,13 @@ class TestDefaultRulesets(object):
         assert isinstance(ruleset, iati.Ruleset)
 
     def test_default_ruleset_validation_rules_valid(self, schema_ruleset):
-        """Check that a fully valid IATI file does not raise any type of error (including rules/rulesets)."""
-        data = iati.tests.utilities.load_as_dataset('valid_std_ruleset')
+        """Check that a fully valid IATI file does not raise any type of error (including rules/rulesets).
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        data = iati.tests.utilities.load_as_dataset('valid_std_ruleset', '2.02')
         result = iati.validator.full_validation(data, schema_ruleset)
 
         assert iati.validator.is_xml(data.xml_str)
@@ -235,8 +244,10 @@ class TestDefaultRulesets(object):
 
             Check that the expected missing elements appear the the help text for the given element.
 
+            Stop this being fixed to 2.02.
+
         """
-        data = iati.tests.utilities.load_as_dataset(invalid_dataset_name)
+        data = iati.tests.utilities.load_as_dataset(invalid_dataset_name, '2.02')
         result = iati.validator.full_validation(data, schema_ruleset)
         errors_for_rule_error = result.get_errors_or_warnings_by_name(rule_error)
         errors_for_ruleset = result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')
