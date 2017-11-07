@@ -27,6 +27,7 @@ Todo:
 """
 import os
 import pkg_resources
+import chardet
 from lxml import etree
 import iati.constants
 
@@ -42,6 +43,8 @@ BASE_PATH = 'resources'
 """The relative location of the resources folder."""
 BASE_PATH_STANDARD = os.path.join(BASE_PATH, 'standard')
 """The relative location of resources related to the IATI Standard."""
+BASE_PATH_LIB_DATA = os.path.join(BASE_PATH, 'lib_data')
+"""The relative location of resources not related to the IATI Standard."""
 PATH_CODELISTS = 'codelists'
 """The location of the folder containing Codelists from the SSOT."""
 PATH_TEST_DATA = os.path.join(BASE_PATH, 'test_data')
@@ -53,6 +56,8 @@ PATH_RULESETS = 'rulesets'
 
 FILE_CODELIST_EXTENSION = '.xml'
 """The expected extension of a file containing a Codelist."""
+FILE_CODELIST_MAPPING = 'codelist-mapping.xml'
+"""The name of a file containing definitions of how Codelist values map to data."""
 FILE_DATA_EXTENSION = '.xml'
 """The expected extension of a file containing IATI data."""
 FILE_RULESET_EXTENSION = '.json'
@@ -184,12 +189,42 @@ def get_codelist_path(codelist_name, version=None):
     return get_path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
 
 
+def get_codelist_mapping_path(version=None):
+    """Determine the path of the Codelist mapping file.
+
+    version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+
+    Returns:
+        str: The path to a file containing the mapping file.
+
+    """
+    return get_path_for_version(FILE_CODELIST_MAPPING, version)
+
+
+def get_lib_data_path(name):
+    """Determine the path of a general library data file with the given name.
+
+    The data file is not part of the IATI Standard. It is also required in the library itself, not just for testing purposes.
+
+    Args:
+        name (str): The name of the data file to locate. The name must include the file extension.
+
+    Returns:
+        str: The path to the specified file.
+
+    Note:
+        Does not check whether the specified file actually exists.
+
+    """
+    return os.path.join(BASE_PATH_LIB_DATA, name)
+
+
 def get_test_data_path(name, version=None):
     """Determine the path of an IATI data file with the given filename at the specified version of the Standard.
 
     Args:
-        name (str): The name of the data file to locate. The filename must not contain the '.xml' file extension.
-        version (float): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+        name (str): The name of the data file to locate. The name may contain forward slashes (`/`) to indicate a directory. Data files must be `.xml` files.
+        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
 
     Returns:
         str: The path to a file containing the specified data.
@@ -206,15 +241,55 @@ def get_test_data_path(name, version=None):
         Test this directly rather than just the indirect tests that exist at present.
 
     """
+    # ensure the folders are in a OS-independent format
+    if '/' in name:
+        split_name = name.split('/')
+        name = os.sep.join(split_name)
+
+    # remove the '.xml' file extension if present
+    if name[-4:] == FILE_DATA_EXTENSION:
+        name = name[:-4]
+
     return os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), '{0}'.format(name) + FILE_DATA_EXTENSION)
+
+
+def get_test_data_paths_in_folder(folder_name, version=None):
+    """Determine the paths of all IATI data files in the specified folder under the root test folder.
+
+    Args:
+        name (str): The name of the folder within which to locate data files.
+        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+
+    Returns:
+        list of str: The paths to data files in the specified folders.
+
+    """
+    # ensure the folders are in a OS-independent format
+    if '/' in folder_name:
+        split_name = folder_name.split('/')
+        folder_name = os.sep.join(split_name)
+
+    paths = list()
+    root_folder = os.path.join(PATH_TEST_DATA, get_folder_name_for_version(version), folder_name)
+    resource_folder = resource_filename(root_folder)
+
+    for base_folder, _, file_names in os.walk(resource_folder):
+        desired_files = [file_name for file_name in file_names if file_name[-4:] == FILE_DATA_EXTENSION]
+        for file_name in desired_files:
+            paths.append(os.path.join(base_folder, file_name))
+
+    # de-resource the file-names so that they're not duplicated
+    deresourced_paths = [path[path.find(root_folder):] for path in paths]
+
+    return deresourced_paths
 
 
 def get_test_ruleset_path(name, version=None):
     """Determine the path of an IATI test Ruleset file with the given filename at the specified version of the Standard.
 
     Args:
-        name (str): The name of the data file to locate. The filename must not contain the '.json' file extension.
-        version (float): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+        name (str): The name of the data file to locate. The filename must not contain the '.xml' file extension.
+        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
 
     Returns:
         str: The path to a file containing the specified test Ruleset.
@@ -364,15 +439,13 @@ def load_as_dataset(path):
     Returns:
         iati.Dataset: A Dataset object representing the contents of the file at the specified location.
 
-    Warning:
-        Should raise Exceptions when there are problems loading the requested data.
-
     Raises:
         FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
 
         ValueError: When a file at the specified path does not contain valid XML.
 
     Todo:
+        Ensure all reasonably possible OSErrors are documented here and in functions that call this.
         Add error handling for when the specified file does not exist.
 
     """
@@ -397,7 +470,23 @@ def load_as_string(path):
         Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
 
     """
-    return load_as_bytes(path).decode('utf-8')
+    loaded_bytes = load_as_bytes(path)
+
+    try:
+        loaded_str = loaded_bytes.decode('utf-8')
+    except UnicodeDecodeError:
+        # the file was not UTF-8, so perform a (slow) test to detect encoding
+        # only use the first section of the file since this is generally enough and prevents big files taking ages
+        detected_info = chardet.detect(loaded_bytes[:25000])
+        try:
+            loaded_str = loaded_bytes.decode(detected_info['encoding'])
+            # in Python 2 it is necessary to strip the BOM when decoding from UTF-16BE
+            if detected_info['encoding'] == 'UTF-16' and loaded_str[:1] == u'\ufeff':
+                loaded_str = loaded_str[1:]
+        except TypeError:
+            raise ValueError('Could not detect encoding of file')
+
+    return loaded_str
 
 
 def load_as_tree(path):

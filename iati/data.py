@@ -3,6 +3,7 @@ import sys
 from lxml import etree
 import iati.exceptions
 import iati.utilities
+import iati.validator
 
 
 class Dataset(object):
@@ -92,13 +93,17 @@ class Dataset(object):
                 else:
                     value_stripped_bytes = value_stripped
 
-                self.xml_tree = etree.fromstring(value_stripped_bytes)
-                self._xml_str = value_stripped
-            except etree.XMLSyntaxError:
-                msg = "The string provided to create a Dataset from is not valid XML."
-                iati.utilities.log_error(msg)
-                raise ValueError(msg)
-            except (AttributeError, TypeError, ValueError):
+                validation_error_log = iati.validator.validate_is_xml(value_stripped_bytes)
+
+                if not validation_error_log.contains_errors():
+                    self.xml_tree = etree.fromstring(value_stripped_bytes)
+                    self._xml_str = value_stripped
+                else:
+                    if validation_error_log.contains_error_of_type(TypeError):
+                        raise TypeError
+                    else:
+                        raise iati.exceptions.ValidationError(validation_error_log)
+            except (AttributeError, TypeError):
                 msg = "Datasets can only be ElementTrees or strings containing valid XML, using the xml_tree and xml_str attributes respectively. Actual type: {0}".format(type(value))
                 iati.utilities.log_error(msg)
                 raise TypeError(msg)

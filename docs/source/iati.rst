@@ -83,10 +83,10 @@ iati\.utilities module
     :undoc-members:
     :show-inheritance:
 
-iati\.validate module
----------------------
+iati\.validator module
+----------------------
 
-.. automodule:: iati.validate
+.. automodule:: iati.validator
     :members:
     :undoc-members:
     :show-inheritance:
