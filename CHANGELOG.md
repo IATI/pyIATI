@@ -16,6 +16,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Fixed
 
+- [Codelists] The names of Codes are detected in CLv2 XML Codelists (when there are no `<narrative>` elements.
+
 ### Security
 
 
