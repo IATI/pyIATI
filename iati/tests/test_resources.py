@@ -72,7 +72,7 @@ class TestResourceFolders(object):
             Deal with multiple versions.
 
         """
-        paths = iati.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail')
+        paths = iati.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail', '2.02')
 
         assert len(paths) == 237
 
@@ -184,21 +184,21 @@ class TestResourceSchemas(object):
         for path in paths:
             assert path[-4:] == iati.resources.FILE_SCHEMA_EXTENSION
 
-    def test_schema_activity_string(self):
+    def test_schema_activity_string(self, standard_version_all):
         """Check that the Activity schema file contains content."""
-        path = iati.resources.get_schema_path('iati-activities-schema')
+        path = iati.resources.get_schema_path('iati-activities-schema', standard_version_all)
 
         content = iati.resources.load_as_string(path)
 
-        assert len(content) > 130000
+        assert len(content) > 50000
 
-    def test_schema_activity_tree(self):
+    def test_schema_activity_tree(self, standard_version_all):
         """Check that the Activity schema loads into an XML Tree.
 
         This additionally involves checking that imported schemas also work.
 
         """
-        path = iati.resources.get_schema_path('iati-activities-schema')
+        path = iati.resources.get_schema_path('iati-activities-schema', standard_version_all)
         schema = iati.resources.load_as_tree(path)
 
         assert isinstance(schema, etree._ElementTree)  # pylint: disable=protected-access
