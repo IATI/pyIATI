@@ -84,10 +84,10 @@ iati\.tests\.test\_utilities module
     :undoc-members:
     :show-inheritance:
 
-iati\.tests\.test\_validate module
-----------------------------------
+iati\.tests\.test\_validator module
+-----------------------------------
 
-.. automodule:: iati.tests.test_validate
+.. automodule:: iati.tests.test_validator
     :members:
     :undoc-members:
     :show-inheritance:

@@ -6,6 +6,7 @@ Todo:
     Handle multiple versions of the Standard rather than limiting to the latest.
     Implement more than Codelists.
 """
+
 import json
 import os
 from collections import defaultdict
@@ -144,6 +145,40 @@ def codelists(version=None):
 
     """
     return _codelists(version)
+
+
+def codelist_mapping(version=None):
+    """Define the mapping process which states where in a Dataset you should find values on a given Codelist.
+
+    Args:
+        version (str): The version of the Standard to return the mapping file for. Defaults to None. This means that the mapping file is returned for the latest version of the Standard.
+
+    Returns:
+        dict of dict: A dictionary containing mapping information. Keys in the first dictionary are Codelist names. Keys in the second dictionary are `xpath` and `condition`. The condition is `None` if there is no condition.
+
+    Todo:
+        Make use of the `version` parameter.
+
+    """
+    path = iati.resources.get_codelist_mapping_path(version)
+    mapping_tree = iati.resources.load_as_tree(path)
+    mappings = defaultdict(list)
+
+    for mapping in mapping_tree.getroot().xpath('//mapping'):
+        codelist_name = mapping.find('codelist').attrib['ref']
+        codelist_location = mapping.find('path').text
+
+        try:
+            condition = mapping.find('condition').text
+        except AttributeError:  # there is no condition
+            condition = None
+
+        mappings[codelist_name].append({
+            'xpath': codelist_location,
+            'condition': condition
+        })
+
+    return mappings
 
 
 def ruleset(version=None):
