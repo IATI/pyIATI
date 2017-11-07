@@ -28,10 +28,10 @@ class TestResourceFolders(object):
     """A container for tests relating to resource folders."""
 
     @pytest.mark.parametrize('version, expected_version_foldername', [
-        ('2.02', '202'),
-        ('2.01', '201'),
-        ('1.05', '105'),
-        ('1.04', '104')
+        ('2.02', '2-02'),
+        ('2.01', '2-01'),
+        ('1.05', '1-05'),
+        ('1.04', '1-04')
     ])
     def test_get_folder_name_for_version(self, version, expected_version_foldername):
         """Check that expected components are present within folder paths."""
