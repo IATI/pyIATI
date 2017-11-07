@@ -93,7 +93,11 @@ class TestDefaultCodelists(object):
         assert 'There is no default Codelist in version' in str(excinfo.value)
 
     def test_default_codelists_type(self, codelist_lengths_by_version):
-        """Check that the default Codelists are of the correct type."""
+        """Check that the default Codelists are of the correct type.
+
+        Todo:
+            Switch from type-checking to behavior-checking, which is more Pythonic.
+        """
         codelists = iati.default.codelists(codelist_lengths_by_version.version)
 
         assert isinstance(codelists, dict)
