@@ -4,7 +4,7 @@ A developers’ toolkit for IATI.
 
 [![Build Status](https://travis-ci.org/IATI/pyIATI.svg?branch=master)](https://travis-ci.com/IATI/pyIATI)
 
-`master`: [![Requirements Status](https://requires.io/github/IATI/iati.core/requirements.svg?branch=master)](https://requires.io/github/IATI/iati.core/requirements/?branch=master) `dev`: [![Requirements Status](https://requires.io/github/IATI/iati.core/requirements.svg?branch=dev)](https://requires.io/github/IATI/iati.core/requirements/?branch=dev)
+`master`: [![Requirements Status](https://requires.io/github/IATI/pyIATI/requirements.svg?branch=master)](https://requires.io/github/IATI/pyIATI/requirements/?branch=master) `dev`: [![Requirements Status](https://requires.io/github/IATI/pyIATI/requirements.svg?branch=dev)](https://requires.io/github/IATI/pyIATI/requirements/?branch=dev)
 
 Varying between: [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges) and [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges) (see docstrings)
 
@@ -47,6 +47,14 @@ sphinx-build -b html docs/source/ docs/build/
 The file `docs/build/index.html` serves as the documentation home page.
 
 **Note:** These are a work-in-progress. The `edit-docs` branch works to provide an improved docs site.
+
+
+IATI Version Support
+====================
+
+pyIATI fully supports versions `1.04`, `1.05`, `2.01` and `2.02` of the IATI Standard.
+
+Schemas for versions `1.01`, `1.02` and `1.03` are included in the `iati/resources/standard` directory but are not yet accessible using the available pyIATI functions to return default schemas.
 
 
 Usage

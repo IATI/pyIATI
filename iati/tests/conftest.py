@@ -1,6 +1,7 @@
 """Configuration to exist in the global scope for pytest."""
 import collections
 import pytest
+import iati.default
 import iati.resources
 
 
@@ -18,6 +19,22 @@ def codelist_lengths_by_version(request):
     """
     output = collections.namedtuple('output', 'version expected_length')
     return output(version=request.param[0], expected_length=request.param[1])
+
+
+@pytest.fixture
+def schema_ruleset():
+    """Return a schema with the Standard Ruleset added.
+
+    Returns:
+        A valid Activity Schema with the Standard Ruleset added.
+
+    """
+    schema = iati.default.activity_schema(None, False)
+    ruleset = iati.default.ruleset()
+
+    schema.rulesets.add(ruleset)
+
+    return schema
 
 
 @pytest.fixture(params=iati.constants.STANDARD_VERSIONS)

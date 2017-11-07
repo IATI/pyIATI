@@ -19,6 +19,59 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Security
 
 
+## [0.2.0] - 2017-11-07
+
+### Added
+
+- [Codelists] Implement the `complete` attribute. [#45]
+- [Codelists] Codes may have equality compared with strings - the `value` of a Code is compared. [#45]
+- [Codelists] Add v2.02 Codelist mapping file. [#45]
+
+- [Documentation] Clarify version support in README. [#216]
+
+- [Exceptions] Add an `error_log` attribute to ValidationErrors. [#45]
+
+- [Resources] Add method to load data files relating to pyIATI (rather than the IATI Standard, or tests). [#45]
+- [Resources] Allow test files to be located within sub-folders by including slashes (`/`) in the name. [#45]
+- [Resources] Detect encoding of files that are not UTF-8. [#45]
+
+- [Validation] Change from `validate.py` to `validator.py` to improve readability of code using this module. [#86]
+- [Validation] Add a YAML file containing error information. [#117]
+- [Validation] Check whether a string is valid XML - truthy. [#45]
+- [Validation] Check whether a string is valid XML - detailed error information. [#45]
+- [Validation] Provide custom error messages when lxml returns errors for a string that is not XML. [#90]
+- [Validation] Check whether a Dataset is valid against an IATI Schema - truthy. [#45]
+- [Validation] Check whether a Dataset is valid against an IATI Schema - detailed error information. [#45]
+- [Validation] Provide custom error messages when lxml returns errors for Datasets that do not contain valid IATI XML. [#92]
+- [Validation] Check whether attributes in a Dataset have values from Codelists where required - truthy. [#45]
+- [Validation] Check whether attributes in a Dataset have values from Codelists where required - detailed error information. [#45]
+- [Validation] Check whether a Dataset conforms with Rules in a Ruleset - truthy. [#58]
+- [Validation] Check whether a Dataset conforms with Rules in a Ruleset - basic information about which Rules fail. [#58]
+- [Validation] Add a `ValidationErrorLog` containing `ValidationError`s to track validation errors. [#87]
+- [Validation] Rudimentary differentiation of errors and warnings. [#45]
+
+- [Tests] Add a range of test XML files. [#45]
+- [Tests] Add some missing tests. [#45]
+- [Tests] Add a somewhat normal-looking string to use for fuzzing. [#113]
+
+### Changed
+
+- [Codelists] The default name for a Code is now an empty string. [#45]
+- [Codelists] The name of a Code is no longer included when computing the hash. [#45]
+
+- [Datasets] pyIATI validation functionality used to determine whether a string is XML. This changes the types of Error that may be raised when updating the XML that a Dataset represents. [#95]
+
+- [Tests] Re-organise test data to use folders to separate logical groups. [#58]
+
+### Fixed
+
+- [Codelists] The names of Codes are detected in CLv2 XML Codelists (when there are no `<narrative>` elements).
+
+- [Documentation] Corrected some out-of-date documentation. [#45]
+
+- [Rulesets] Update `date_order` XPaths in Standard Ruleset. [IATI/IATI-Rulesets#31]
+
+
 ## [0.1.1] - 2017-10-25
 
 ### Fixed

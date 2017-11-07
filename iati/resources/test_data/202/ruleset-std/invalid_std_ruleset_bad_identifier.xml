@@ -2,7 +2,7 @@
 <!--Elements marked as such as required for Ruleset checks. Others are to make the file valid IATI XML.-->
 <iati-activities version="2.02">
   <iati-activity>
-    <iati-identifier>AA-AAA-123456789-ABC123</iati-identifier><!--ruleset check-->
+    <iati-identifier>////////</iati-identifier><!--ruleset check--><!-- iati-identifier does not meet the specified regex. -->
     <reporting-org type="40" ref="AA-AAA-123456789">
       <narrative>Organisation name</narrative>
     </reporting-org>
@@ -12,7 +12,7 @@
     <description>
       <narrative>Xxxxxxx</narrative>
     </description>
-    <participating-org role="2"></participating-org>
+    <participating-org ref="BB-BBB-123456789" role="2"></participating-org>
     <activity-status code="2"/><!--ruleset check-->
     <activity-date type="1" iso-date="2016-09-04" /><!--ruleset check-->
     <activity-date type="3" iso-date="2017-12-31" /><!--ruleset check-->
@@ -22,7 +22,7 @@
       <transaction-type code="1" />
       <transaction-date iso-date="2016-09-04" /><!--ruleset check-->
       <value currency="EUR" value-date="2012-01-01">1000</value>
-      <!--missing sector element--><!--ruleset check-->
+      <sector code="11111" /><!--ruleset check-->
     </transaction><!--ruleset check-->
   </iati-activity>
 </iati-activities>
