@@ -160,7 +160,7 @@ class TestDefaultRulesets(object):
 
     def test_default_ruleset_validation_rules_valid(self, schema_ruleset):
         """Check that a fully valid IATI file does not raise any type of error (including rules/rulesets)."""
-        data = iati.tests.utilities.load_as_dataset('valid_std_ruleset')
+        data = iati.tests.resources.load_as_dataset('valid_std_ruleset')
         result = iati.validator.full_validation(data, schema_ruleset)
 
         assert iati.validator.is_xml(data.xml_str)
@@ -203,7 +203,7 @@ class TestDefaultRulesets(object):
             Check that the expected missing elements appear the the help text for the given element.
 
         """
-        data = iati.tests.utilities.load_as_dataset(invalid_dataset_name)
+        data = iati.tests.resources.load_as_dataset(invalid_dataset_name)
         result = iati.validator.full_validation(data, schema_ruleset)
         errors_for_rule_error = result.get_errors_or_warnings_by_name(rule_error)
         errors_for_ruleset = result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')
