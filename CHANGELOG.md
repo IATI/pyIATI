@@ -8,6 +8,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+
+## [0.2.0] - 2017-11-07
+
+### Added
+
 - [Codelists] Implement the `complete` attribute. [#45]
 - [Codelists] Codes may have equality compared with strings - the `value` of a Code is compared. [#45]
 - [Codelists] Add v2.02 Codelist mapping file. [#45]
