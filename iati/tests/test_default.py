@@ -31,6 +31,11 @@ class TestDefaultCodelist(object):
         """Return the name of a valid Codelist."""
         return 'Country'
 
+    @pytest.fixture
+    def codelists_with_no_name_codes(self):
+        """Return the names of Codelists where Codes do not have names."""
+        return ['FileFormat', 'Version']
+
     @pytest.mark.parametrize("invalid_version", iati.tests.utilities.generate_test_types(['none'], True))
     def test_invalid_version_single_codelist(self, invalid_version, codelist_name):
         """Check that an invalid version causes an error when obtaining a single default Codelist.
@@ -95,15 +100,27 @@ class TestDefaultCodelist(object):
         for codelist in codelists.values():
             assert isinstance(codelist, iati.Codelist)
 
-    def test_default_codelists_code_values(self, standard_version_optional):
+    def test_default_codelists_code_values(self, standard_version_optional, codelists_with_no_name_codes):
         """Check that the default Codelists have Codes with relevant data in them."""
         codelists = iati.default.codelists(*standard_version_optional)
+        relevant_codelists = [codelist for codelist in codelists.values() if codelist.name not in codelists_with_no_name_codes]
 
         assert isinstance(codelists, dict)
-        for codelist in codelists.values():
+        for codelist in relevant_codelists:
             for code in codelist.codes:
                 assert isinstance(code, iati.Code)
                 assert code.name != ''
+
+    def test_default_codelists_no_name_codes_have_no_name(self, standard_version_optional, codelists_with_no_name_codes):
+        """Check that Codelists with Codes that supposedly have no name do have no name."""
+        codelists = iati.default.codelists(*standard_version_optional)
+        relevant_codelists = [codelist for codelist in codelists.values() if codelist.name in codelists_with_no_name_codes]
+
+        assert isinstance(codelists, dict)
+        for codelist in relevant_codelists:
+            for code in codelist.codes:
+                assert isinstance(code, iati.Code)
+                assert code.name == ''
 
     def test_default_codelists_length(self, codelist_lengths_by_version):
         """Check that the default Codelists for each version contain the expected number of Codelists."""

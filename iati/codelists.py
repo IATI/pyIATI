@@ -63,7 +63,7 @@ class Codelist(object):
             self.name = tree.attrib['name']
             for code_el in tree.findall('codelist-items/codelist-item'):
                 value = code_el.findtext('code')
-                name = code_el.findtext('name/narrative')
+                name = code_el.findtext('name/narrative') or code_el.findtext('name')
 
                 if (value is None) and (name is None):
                     msg = "The provided Codelist ({0}) has a Code that does not contain a name or value.".format(self.name)
