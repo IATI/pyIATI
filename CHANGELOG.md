@@ -8,6 +8,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+
+## [0.2.0] - 2017-11-07
+
+### Added
+
 - [Codelists] Implement the `complete` attribute. [#45]
 - [Codelists] Codes may have equality compared with strings - the `value` of a Code is compared. [#45]
 - [Codelists] Add v2.02 Codelist mapping file. [#45]
@@ -48,10 +63,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Tests] Re-organise test data to use folders to separate logical groups. [#58]
 
-### Deprecated
-
-### Removed
-
 ### Fixed
 
 - [Codelists] The names of Codes are detected in CLv2 XML Codelists (when there are no `<narrative>` elements).
@@ -59,8 +70,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Documentation] Corrected some out-of-date documentation. [#45]
 
 - [Rulesets] Update `date_order` XPaths in Standard Ruleset. [IATI/IATI-Rulesets#31]
-
-### Security
 
 
 ## [0.1.1] - 2017-10-25
