@@ -326,7 +326,7 @@ def get_folder_name_for_version(version=None):
         version = iati.constants.STANDARD_VERSION_LATEST
 
     if version in iati.constants.STANDARD_VERSIONS:
-        return version.replace('.', '')
+        return version.replace('.', '-')
     else:
         raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
 
