@@ -99,16 +99,16 @@ class TestDefaultCodelist(object):
         assert isinstance(codelists, dict)
         for codelist in codelists.values():
             assert isinstance(codelist, iati.Codelist)
+            for code in codelist.codes:
+                assert isinstance(code, iati.Code)
 
     def test_default_codelists_code_values(self, standard_version_optional, codelists_with_no_name_codes):
         """Check that the default Codelists have Codes with relevant data in them."""
         codelists = iati.default.codelists(*standard_version_optional)
         relevant_codelists = [codelist for codelist in codelists.values() if codelist.name not in codelists_with_no_name_codes]
 
-        assert isinstance(codelists, dict)
         for codelist in relevant_codelists:
             for code in codelist.codes:
-                assert isinstance(code, iati.Code)
                 assert code.name != ''
 
     def test_default_codelists_no_name_codes_have_no_name(self, standard_version_optional, codelists_with_no_name_codes):
@@ -116,10 +116,8 @@ class TestDefaultCodelist(object):
         codelists = iati.default.codelists(*standard_version_optional)
         relevant_codelists = [codelist for codelist in codelists.values() if codelist.name in codelists_with_no_name_codes]
 
-        assert isinstance(codelists, dict)
         for codelist in relevant_codelists:
             for code in codelist.codes:
-                assert isinstance(code, iati.Code)
                 assert code.name == ''
 
     def test_default_codelists_length(self, codelist_lengths_by_version):
