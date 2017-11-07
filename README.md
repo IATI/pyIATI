@@ -49,6 +49,14 @@ The file `docs/build/index.html` serves as the documentation home page.
 **Note:** These are a work-in-progress. The `edit-docs` branch works to provide an improved docs site.
 
 
+IATI Version Support
+====================
+
+pyIATI fully supports versions `1.04`, `1.05`, `2.01` and `2.02` of the IATI Standard.
+
+Schemas for versions `1.01`, `1.02` and `1.03` are packaged in the `iati/resources/standard` directory but are not yet accessible using the available pyIATI functions to return default schemas.
+
+
 Usage
 =====
 
