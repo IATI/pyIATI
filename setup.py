@@ -10,10 +10,14 @@ setup(
     packages = find_packages(),
     include_package_data = True,
     install_requires = [
+        # detecting character encoding of files
+        'chardet==3.0.4',
         # JSON schema parsing validation
         'jsonschema==2.6.0',
         # XML handling library
         'lxml==4.1.0',
+        # YAML parsing for validation error codes
+        'PyYAML==3.12',
         # python2/python3 compatibility library
         'six==1.11.0'
         ],
