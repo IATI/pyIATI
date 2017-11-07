@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Codelists] Codes may have equality compared with strings - the `value` of a Code is compared. [#45]
 - [Codelists] Add v2.02 Codelist mapping file. [#45]
 
+- [Documentation] Clarify version support in README. [#216]
+
 - [Exceptions] Add an `error_log` attribute to ValidationErrors. [#45]
 
 - [Resources] Add method to load data files relating to pyIATI (rather than the IATI Standard, or tests). [#45]
