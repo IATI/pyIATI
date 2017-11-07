@@ -25,7 +25,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Validation] Provide custom error messages when lxml returns errors for a string that is not XML. [#90]
 - [Validation] Check whether a Dataset is valid against an IATI Schema - truthy. [#45]
 - [Validation] Check whether a Dataset is valid against an IATI Schema - detailed error information. [#45]
-- [Validation] Provide custom error messages when lxml returns errors for Datasets that is do not contain valid IATI XML. [#92]
+- [Validation] Provide custom error messages when lxml returns errors for Datasets that do not contain valid IATI XML. [#92]
 - [Validation] Check whether attributes in a Dataset have values from Codelists where required - truthy. [#45]
 - [Validation] Check whether attributes in a Dataset have values from Codelists where required - detailed error information. [#45]
 - [Validation] Check whether a Dataset conforms with Rules in a Ruleset - truthy. [#58]
