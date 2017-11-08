@@ -1,4 +1,5 @@
 """A module containing tests for data validation."""
+# pylint: disable=too-many-lines
 import pytest
 import iati.data
 import iati.default

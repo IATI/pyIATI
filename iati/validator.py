@@ -308,7 +308,7 @@ def _extract_codes_from_attrib(dataset, split_xpath, condition=None):
     return located_codes
 
 
-def _extract_codes_from_element_text(dataset, split_xpath, condition=None):
+def _extract_codes_from_element_text(dataset, split_xpath, condition=None):  # pylint: disable=invalid-name
     """Extract codes for checking from a Dataset. The codes are being extracted from element text.
 
     Args:
@@ -368,13 +368,13 @@ def _check_codes(dataset, codelist):
         for (code, line_number) in located_codes:  # `line_number` used via `locals()` # pylint: disable=unused-variable
             if code not in codelist.codes:
                 if last_xpath_section.startswith('@'):
-                    attr_name = last_xpath_section[1:]
+                    attr_name = last_xpath_section[1:]  # used via `locals()` # pylint: disable=unused-variable
                     if codelist.complete:
                         error = ValidationError('err-code-not-on-codelist', locals())
                     else:
                         error = ValidationError('warn-code-not-on-codelist', locals())
                 else:
-                    el_name = split_xpath[-2:-1][0]
+                    el_name = split_xpath[-2:-1][0]  # used via `locals()` # pylint: disable=unused-variable
                     if codelist.complete:
                         error = ValidationError('err-code-not-on-codelist-element-text', locals())
                     else:
