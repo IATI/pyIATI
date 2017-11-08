@@ -285,7 +285,7 @@ def _extract_codes_from_attrib(dataset, split_xpath, condition=None):
 
     """
     parent_el_xpath = '/'.join(split_xpath[:-1])
-    last_xpath_section = split_xpath[-1:][0]
+    last_xpath_section = split_xpath[-1]
 
     attr_name = last_xpath_section[1:]
     if condition is None:
@@ -356,7 +356,7 @@ def _check_codes(dataset, codelist):
         base_xpath = mapping['xpath']
         condition = mapping['condition']
         split_xpath = base_xpath.split('/')
-        last_xpath_section = split_xpath[-1:][0]
+        last_xpath_section = split_xpath[-1]
 
         if last_xpath_section.startswith('@'):
             located_codes = _extract_codes_from_attrib(dataset, split_xpath, condition)
