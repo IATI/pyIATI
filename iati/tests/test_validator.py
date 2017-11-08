@@ -722,6 +722,7 @@ class TestValidationCodelist(ValidateCodelistsBase):
         assert iati.validator.is_iati_xml(data, schema_short_mapping_codelist)
         assert iati.validator.is_valid(data, schema_short_mapping_codelist)
 
+    @pytest.mark.skip
     def test_basic_validation_populated_schema(self, schema_fully_populated):
         """Perform data validation against valid IATI XML. The Schema is populated with all Codelists."""
         data = iati.tests.utilities.load_as_dataset('valid_iati')
