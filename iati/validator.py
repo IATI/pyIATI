@@ -308,6 +308,33 @@ def _extract_codes_from_attrib(dataset, split_xpath, condition=None):
     return located_codes
 
 
+def _extract_codes_from_element_text(dataset, split_xpath, condition=None):
+    """Extract codes for checking from a Dataset. The codes are being extracted from element text.
+
+    Args:
+        dataset (iati.data.Dataset): The Dataset to check Codelist values within.
+        split_xpath (list of str): The sections of the XPath, split by `/`.
+        condition (str): An optional XPath expression to limit the scope of what is extracted.
+
+    Returns:
+        list of tuple: A tuple in the format: `(str, int)` - The `str` is a matching code from within the Dataset; The `int` is the sourceline at which the parent element is located.
+
+    """
+    parent_el_xpath = '/'.join(split_xpath[:-1])
+
+    # include the condition
+    if condition:
+        parent_el_xpath = parent_el_xpath + '[' + condition + ']'
+
+    parents_to_check = dataset.xml_tree.xpath(parent_el_xpath)
+
+    located_codes = list()
+    for parent in parents_to_check:
+        located_codes.append((parent.text, parent.sourceline))
+
+    return located_codes
+
+
 def _check_codes(dataset, codelist):
     """Determine whether a given Dataset has values from the specified Codelist where expected.
 
@@ -318,6 +345,9 @@ def _check_codes(dataset, codelist):
     Returns:
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
 
+    Raises:
+        ValueError: When a path in a mapping is not looking for an attribute value or element text.
+
     """
     error_log = ValidationErrorLog()
     mappings = iati.default.codelist_mapping()
@@ -326,15 +356,29 @@ def _check_codes(dataset, codelist):
         base_xpath = mapping['xpath']
         condition = mapping['condition']
         split_xpath = base_xpath.split('/')
+        last_xpath_section = split_xpath[-1:][0]
 
-        located_codes = _extract_codes_from_attrib(dataset, split_xpath, condition)
+        if last_xpath_section.startswith('@'):
+            located_codes = _extract_codes_from_attrib(dataset, split_xpath, condition)
+        elif last_xpath_section == 'text()':
+            located_codes = _extract_codes_from_element_text(dataset, split_xpath, condition)
+        else:
+            raise ValueError('mapping path does not locate attribute value or element text')
 
         for (code, line_number) in located_codes:  # `line_number` used via `locals()` # pylint: disable=unused-variable
             if code not in codelist.codes:
-                if codelist.complete:
-                    error = ValidationError('err-code-not-on-codelist', locals())
+                if last_xpath_section.startswith('@'):
+                    attr_name = last_xpath_section[1:]
+                    if codelist.complete:
+                        error = ValidationError('err-code-not-on-codelist', locals())
+                    else:
+                        error = ValidationError('warn-code-not-on-codelist', locals())
                 else:
-                    error = ValidationError('warn-code-not-on-codelist', locals())
+                    el_name = split_xpath[-2:-1][0]
+                    if codelist.complete:
+                        error = ValidationError('err-code-not-on-codelist-element-text', locals())
+                    else:
+                        error = ValidationError('warn-code-not-on-codelist-element-text', locals())
 
                 error.actual_value = code
 
@@ -709,7 +753,10 @@ def is_valid(dataset, schema):
     except iati.exceptions.SchemaError:
         return False
 
-    return _correct_codelist_values(dataset, schema) and _conforms_with_ruleset(dataset, schema)
+    correct_codelist_values = _correct_codelist_values(dataset, schema)
+    conforms_with_ruleset = _conforms_with_ruleset(dataset, schema)
+
+    return correct_codelist_values and conforms_with_ruleset
 
 
 def is_xml(maybe_xml):
