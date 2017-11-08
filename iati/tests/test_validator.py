@@ -382,6 +382,16 @@ class ValidateCodelistsBase(ValidationTestBase):
 
         return schema
 
+    @pytest.fixture
+    def schema_fully_populated(self):
+        """Return an Activity Schema populated with all Codelists.
+
+        Todo:
+            Stop this being fixed to 2.02 (see: #223).
+
+        """
+        return iati.default.activity_schema('2.02')
+
 
 class TestValidationTruthyIATI(ValidationTestBase):
     """A container for tests relating to truthy validation of IATI data."""
@@ -711,6 +721,14 @@ class TestValidationCodelist(ValidateCodelistsBase):
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_short_mapping_codelist)
         assert iati.validator.is_valid(data, schema_short_mapping_codelist)
+
+    def test_basic_validation_populated_schema(self, schema_fully_populated):
+        """Perform data validation against valid IATI XML. The Schema is populated with all Codelists."""
+        data = iati.tests.utilities.load_as_dataset('valid_iati')
+
+        assert iati.validator.is_xml(data.xml_str)
+        assert iati.validator.is_iati_xml(data, schema_fully_populated)
+        assert iati.validator.is_valid(data, schema_fully_populated)
 
 
 class TestValidationVocabularies(ValidateCodelistsBase):
