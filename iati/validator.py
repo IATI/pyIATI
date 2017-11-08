@@ -282,9 +282,19 @@ def _check_codes(dataset, codelist):
     Returns:
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
 
+    Todo:
+        Stop this being fixed to 2.02.
+
     """
     error_log = ValidationErrorLog()
-    mappings = iati.default.codelist_mapping(dataset.version)
+
+    # clunky workaround due to pre-#230 behavior of `iati.Dataset().version`
+    if dataset.version in iati.constants.STANDARD_VERSIONS:
+        mappings = iati.default.codelist_mapping(dataset.version)
+    else:
+        # rather than attempting general checks, ensure version number errors occur
+        codelist = iati.default.codelist('Version', '2.02')
+        mappings = iati.default.codelist_mapping('2.02')
 
     for mapping in mappings[codelist.name]:
         base_xpath = mapping['xpath']
