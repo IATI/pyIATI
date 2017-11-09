@@ -374,7 +374,7 @@ def _check_codes(dataset, codelist):
                     else:
                         error = ValidationError('warn-code-not-on-codelist', locals())
                 else:
-                    el_name = split_xpath[-2:-1][0]  # used via `locals()` # pylint: disable=unused-variable
+                    el_name = split_xpath[-2]  # used via `locals()` # pylint: disable=unused-variable
                     if codelist.complete:
                         error = ValidationError('err-code-not-on-codelist-element-text', locals())
                     else:
