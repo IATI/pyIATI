@@ -704,10 +704,12 @@ class TestValidationCodelist(ValidateCodelistsBase):
         assert iati.validator.is_iati_xml(data, schema_incomplete_codelist)
         assert iati.validator.is_valid(data, schema_incomplete_codelist)
 
-    def test_basic_validation_short_mapping_xpath(self, schema_short_mapping_codelist):
+    @pytest.mark.parametrize('data', [
+        iati.tests.utilities.load_as_dataset('valid_iati'),
+        iati.tests.utilities.load_as_dataset('valid_iati_use_xml_lang')
+    ])
+    def test_basic_validation_short_mapping_xpath(self, schema_short_mapping_codelist, data):
         """Perform data validation against valid IATI XML. The attribute being tested refers to a Codelist with an abnormally short mapping file path. The data has no attributes mapped to by the Codelist."""
-        data = iati.tests.utilities.load_as_dataset('valid_iati')
-
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_short_mapping_codelist)
         assert iati.validator.is_valid(data, schema_short_mapping_codelist)
