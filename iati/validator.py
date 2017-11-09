@@ -333,6 +333,30 @@ def _extract_codes_from_element_text(dataset, parent_el_xpath, condition=None): 
     return located_codes
 
 
+def _extract_codes(dataset, parent_el_xpath, last_xpath_section, condition=None):
+    """Extract codes for checking from a Dataset.
+
+    Args:
+        dataset (iati.data.Dataset): The Dataset to check Codelist values within.
+        parent_el_xpath (str): An XPath to locate the element(s) with the code of interest.
+        last_xpath_section (str): The last section of the XPath, detailing how to find the code on the identified element(s).
+        condition (str): An optional XPath expression to limit the scope of what is extracted.
+
+    list of tuple: A tuple in the format: `(str, int)` - The `str` is a matching code from within the Dataset; The `int` is the sourceline at which the parent element is located.
+
+    Raises:
+        ValueError: When a path in a mapping is not looking for an attribute value or element text.
+
+    """
+    if last_xpath_section.startswith('@'):
+        attr_name = last_xpath_section[1:]
+        return _extract_codes_from_attrib(dataset, parent_el_xpath, attr_name, condition)
+    elif last_xpath_section == 'text()':
+        return _extract_codes_from_element_text(dataset, parent_el_xpath, condition)
+    else:
+        raise ValueError('mapping path does not locate attribute value or element text')
+
+
 def _check_codes(dataset, codelist):
     """Determine whether a given Dataset has values from the specified Codelist where expected.
 
@@ -344,7 +368,7 @@ def _check_codes(dataset, codelist):
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
 
     Raises:
-        ValueError: When a path in a mapping is not looking for an attribute value or element text.
+        ValueError: When a path in a mapping is looking for a type of information that is not supported.
 
     """
     error_log = ValidationErrorLog()
@@ -353,17 +377,12 @@ def _check_codes(dataset, codelist):
     for mapping in mappings[codelist.name]:
         parent_el_xpath, last_xpath_section = mapping['xpath'].rsplit('/', 1)
 
-        if last_xpath_section.startswith('@'):
-            attr_name = last_xpath_section[1:]  # also used via `locals()` - DO NOT REMOVE THIS VAR
-            located_codes = _extract_codes_from_attrib(dataset, parent_el_xpath, attr_name, mapping['condition'])
-        elif last_xpath_section == 'text()':
-            located_codes = _extract_codes_from_element_text(dataset, parent_el_xpath, mapping['condition'])
-        else:
-            raise ValueError('mapping path does not locate attribute value or element text')
+        located_codes = _extract_codes(dataset, parent_el_xpath, last_xpath_section, mapping['condition'])
 
         for (code, line_number) in located_codes:  # `line_number` used via `locals()` # pylint: disable=unused-variable
             if code not in codelist.codes:
                 if last_xpath_section.startswith('@'):
+                    attr_name = last_xpath_section[1:]  # used via `locals()`  # pylint: disable=unused-variable
                     if codelist.complete:
                         error = ValidationError('err-code-not-on-codelist', locals())
                     else:
