@@ -272,22 +272,19 @@ class ValidationErrorLog(object):
         return [err for err in self if err.status == 'warning']
 
 
-def _extract_codes_from_attrib(dataset, split_xpath, condition=None):
+def _extract_codes_from_attrib(dataset, parent_el_xpath, attr_name, condition=None):
     """Extract codes for checking from a Dataset. The codes are being extracted from attributes.
 
     Args:
         dataset (iati.data.Dataset): The Dataset to check Codelist values within.
-        split_xpath (list of str): The sections of the XPath, split by `/`.
+        parent_el_xpath (str): An XPath to locate the element(s) with the attribute of interest.
+        attr_name (str): The name of the attribute to extract a code from.
         condition (str): An optional XPath expression to limit the scope of what is extracted.
 
     Returns:
         list of tuple: A tuple in the format: `(str, int)` - The `str` is a matching code from within the Dataset; The `int` is the sourceline at which the parent element is located.
 
     """
-    parent_el_xpath = '/'.join(split_xpath[:-1])
-    last_xpath_section = split_xpath[-1]
-
-    attr_name = last_xpath_section[1:]
     if condition is None:
         parent_el_xpath = parent_el_xpath + '[@' + attr_name + ']'
     else:
@@ -308,20 +305,18 @@ def _extract_codes_from_attrib(dataset, split_xpath, condition=None):
     return located_codes
 
 
-def _extract_codes_from_element_text(dataset, split_xpath, condition=None):  # pylint: disable=invalid-name
+def _extract_codes_from_element_text(dataset, parent_el_xpath, condition=None):  # pylint: disable=invalid-name
     """Extract codes for checking from a Dataset. The codes are being extracted from element text.
 
     Args:
         dataset (iati.data.Dataset): The Dataset to check Codelist values within.
-        split_xpath (list of str): The sections of the XPath, split by `/`.
+        parent_el_xpath (str): An XPath to locate the element(s) with the attribute of interest.
         condition (str): An optional XPath expression to limit the scope of what is extracted.
 
     Returns:
         list of tuple: A tuple in the format: `(str, int)` - The `str` is a matching code from within the Dataset; The `int` is the sourceline at which the parent element is located.
 
     """
-    parent_el_xpath = '/'.join(split_xpath[:-1])
-
     # include the condition
     if condition:
         parent_el_xpath = parent_el_xpath + '[' + condition + ']'
@@ -355,26 +350,25 @@ def _check_codes(dataset, codelist):
     for mapping in mappings[codelist.name]:
         base_xpath = mapping['xpath']
         condition = mapping['condition']
-        split_xpath = base_xpath.split('/')
-        last_xpath_section = split_xpath[-1]
+        parent_el_xpath, last_xpath_section = base_xpath.rsplit('/', 1)
 
         if last_xpath_section.startswith('@'):
-            located_codes = _extract_codes_from_attrib(dataset, split_xpath, condition)
+            attr_name = last_xpath_section[1:]  # also used via `locals()` - DO NOT REMOVE THIS VAR
+            located_codes = _extract_codes_from_attrib(dataset, parent_el_xpath, attr_name, condition)
         elif last_xpath_section == 'text()':
-            located_codes = _extract_codes_from_element_text(dataset, split_xpath, condition)
+            located_codes = _extract_codes_from_element_text(dataset, parent_el_xpath, condition)
         else:
             raise ValueError('mapping path does not locate attribute value or element text')
 
         for (code, line_number) in located_codes:  # `line_number` used via `locals()` # pylint: disable=unused-variable
             if code not in codelist.codes:
                 if last_xpath_section.startswith('@'):
-                    attr_name = last_xpath_section[1:]  # used via `locals()` # pylint: disable=unused-variable
                     if codelist.complete:
                         error = ValidationError('err-code-not-on-codelist', locals())
                     else:
                         error = ValidationError('warn-code-not-on-codelist', locals())
                 else:
-                    el_name = split_xpath[-2]  # used via `locals()` # pylint: disable=unused-variable
+                    _, el_name = parent_el_xpath.rsplit('/', 1)  # used via `locals()` # pylint: disable=unused-variable
                     if codelist.complete:
                         error = ValidationError('err-code-not-on-codelist-element-text', locals())
                     else:
