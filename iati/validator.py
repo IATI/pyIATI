@@ -373,6 +373,7 @@ def _check_codes(dataset, codelist):
     """
     error_log = ValidationErrorLog()
     mappings = iati.default.codelist_mapping()
+    err_name_prefix = 'err' if codelist.complete else 'warn'
 
     for mapping in mappings[codelist.name]:
         parent_el_xpath, last_xpath_section = mapping['xpath'].rsplit('/', 1)
@@ -383,16 +384,10 @@ def _check_codes(dataset, codelist):
             if code not in codelist.codes:
                 if last_xpath_section.startswith('@'):
                     attr_name = last_xpath_section[1:]  # used via `locals()`  # pylint: disable=unused-variable
-                    if codelist.complete:
-                        error = ValidationError('err-code-not-on-codelist', locals())
-                    else:
-                        error = ValidationError('warn-code-not-on-codelist', locals())
+                    error = ValidationError(err_name_prefix + '-code-not-on-codelist', locals())
                 else:
                     _, el_name = parent_el_xpath.rsplit('/', 1)  # used via `locals()` # pylint: disable=unused-variable
-                    if codelist.complete:
-                        error = ValidationError('err-code-not-on-codelist-element-text', locals())
-                    else:
-                        error = ValidationError('warn-code-not-on-codelist-element-text', locals())
+                    error = ValidationError(err_name_prefix + '-code-not-on-codelist-element-text', locals())
 
                 error.actual_value = code
 
