@@ -348,15 +348,13 @@ def _check_codes(dataset, codelist):
     mappings = iati.default.codelist_mapping()
 
     for mapping in mappings[codelist.name]:
-        base_xpath = mapping['xpath']
-        condition = mapping['condition']
-        parent_el_xpath, last_xpath_section = base_xpath.rsplit('/', 1)
+        parent_el_xpath, last_xpath_section = mapping['xpath'].rsplit('/', 1)
 
         if last_xpath_section.startswith('@'):
             attr_name = last_xpath_section[1:]  # also used via `locals()` - DO NOT REMOVE THIS VAR
-            located_codes = _extract_codes_from_attrib(dataset, parent_el_xpath, attr_name, condition)
+            located_codes = _extract_codes_from_attrib(dataset, parent_el_xpath, attr_name, mapping['condition'])
         elif last_xpath_section == 'text()':
-            located_codes = _extract_codes_from_element_text(dataset, parent_el_xpath, condition)
+            located_codes = _extract_codes_from_element_text(dataset, parent_el_xpath, mapping['condition'])
         else:
             raise ValueError('mapping path does not locate attribute value or element text')
 
