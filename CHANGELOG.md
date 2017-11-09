@@ -66,6 +66,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Datasets] pyIATI validation functionality used to determine whether a string is XML. This changes the types of Error that may be raised when updating the XML that a Dataset represents. [#95]
 
+- [Resources] Rename version-specific resource folders to reduce ambiguity. [#217]
+
 - [Tests] Re-organise test data to use folders to separate logical groups. [#58]
 
 ### Fixed
