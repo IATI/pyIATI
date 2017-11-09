@@ -8,9 +8,33 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
+### Changed
+
+- [Resources] Rename version-specific resource folders to reduce ambiguity. [#217]
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+- [Codelists] Fixed impossible XPath in Codelist Mapping File. [IATI/IATI-Codelists#119]
+
+- [Validation] Prevent `XPathEvalError`s occurring when given a Codelist Mapping XPath that identifies something other than an attribute. [#229]
+- [Validation] Datasets with an `xml:lang` attribute no longer raise a `KeyError` upon performing Codelist validation against a Schema populated with the Language Codelist. [#226]
+
+### Security
+
+
+## [0.2.0] - 2017-11-07
+
+### Added
+
 - [Codelists] Implement the `complete` attribute. [#45]
 - [Codelists] Codes may have equality compared with strings - the `value` of a Code is compared. [#45]
 - [Codelists] Add v2.02 Codelist mapping file. [#45]
+
+- [Documentation] Clarify version support in README. [#216]
 
 - [Exceptions] Add an `error_log` attribute to ValidationErrors. [#45]
 
@@ -45,10 +69,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Datasets] pyIATI validation functionality used to determine whether a string is XML. This changes the types of Error that may be raised when updating the XML that a Dataset represents. [#95]
 
 - [Tests] Re-organise test data to use folders to separate logical groups. [#58]
-
-### Deprecated
-
-### Removed
+- [Tests] Functions for locating and loading test data moved from `iati.resources` and `iati.tests.utilities` to `iati.tests.resources`. [#215]
+- [Tests] Re-organise test data to use folders to separate logical groups. [#58]
 
 ### Fixed
 
@@ -57,8 +79,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Documentation] Corrected some out-of-date documentation. [#45]
 
 - [Rulesets] Update `date_order` XPaths in Standard Ruleset. [IATI/IATI-Rulesets#31]
-
-### Security
 
 
 ## [0.1.1] - 2017-10-25

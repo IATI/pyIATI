@@ -16,11 +16,21 @@ class ValidationTestBase(object):
         """An Activity Schema with no Codelists added."""
         return iati.default.activity_schema(None, False)
 
+    @pytest.fixture
+    def schema_fully_populated(self):
+        """Return an Activity Schema populated with all Codelists.
+
+        Todo:
+            Stop this being fixed to 2.02 (see: #223).
+
+        """
+        return iati.default.activity_schema('2.02')
+
     @pytest.fixture(params=[
-        iati.tests.utilities.load_as_string('valid_not_iati'),
-        iati.tests.utilities.load_as_string('valid_iati', '2.02'),
-        iati.tests.utilities.load_as_string('valid_iati_invalid_code', '2.02'),
-        iati.tests.utilities.load_as_string('leading_whitespace_xml')
+        iati.tests.resources.load_as_string('valid_not_iati'),
+        iati.tests.resources.load_as_string('valid_iati', '2.02'),
+        iati.tests.resources.load_as_string('valid_iati_invalid_code', '2.02'),
+        iati.tests.resources.load_as_string('leading_whitespace_xml')
     ])
     def xml_str(self, request):
         """A valid XML string.
@@ -36,7 +46,7 @@ class ValidationTestBase(object):
         """A valid XML string with the text declaration removed."""
         return '\n'.join(xml_str.strip().split('\n')[1:])
 
-    @pytest.fixture(params=iati.tests.utilities.generate_test_types([], True) + [iati.tests.utilities.load_as_string('invalid')])
+    @pytest.fixture(params=iati.tests.utilities.generate_test_types([], True) + [iati.tests.resources.load_as_string('invalid')])
     def not_xml(self, request):
         """A value that is not a valid XML string."""
         return request.param
@@ -56,8 +66,8 @@ class ValidationTestBase(object):
         return ''
 
     @pytest.fixture(params=[
-        iati.tests.utilities.load_as_dataset('valid_iati', '2.02'),
-        iati.tests.utilities.load_as_dataset('valid_iati_invalid_code', '2.02')
+        iati.tests.resources.load_as_dataset('valid_iati', '2.02'),
+        iati.tests.resources.load_as_dataset('valid_iati_invalid_code', '2.02')
     ])
     def iati_dataset(self, request):
         """A Dataset that is valid against the IATI Schema.
@@ -69,15 +79,15 @@ class ValidationTestBase(object):
         return request.param
 
     @pytest.fixture(params=[
-        iati.tests.utilities.load_as_dataset('valid_not_iati')
+        iati.tests.resources.load_as_dataset('valid_not_iati')
     ])
     def not_iati_dataset(self, request):
         """A Dataset that is not valid against the IATI Schema."""
         return request.param
 
     @pytest.fixture(params=[
-        iati.tests.utilities.load_as_dataset('invalid_iati_missing_required_element', '2.02'),
-        iati.tests.utilities.load_as_dataset('invalid_iati_missing_required_element_from_common', '2.02')
+        iati.tests.resources.load_as_dataset('invalid_iati_missing_required_element', '2.02'),
+        iati.tests.resources.load_as_dataset('invalid_iati_missing_required_element_from_common', '2.02')
     ])
     def not_iati_dataset_missing_required_el(self, request):
         """A Dataset that is not valid against the IATI Schema because it is missing a required element.
@@ -88,12 +98,12 @@ class ValidationTestBase(object):
         """
         return request.param
 
-    @pytest.fixture(params=iati.resources.get_test_data_paths_in_folder('ssot-activity-xml-pass'))
+    @pytest.fixture(params=iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-pass'))
     def iati_dataset_valid_from_ssot(self, request):
         """A `should-pass` Dataset from the SSOT."""
         return iati.resources.load_as_dataset(request.param)
 
-    @pytest.fixture(params=iati.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail'))
+    @pytest.fixture(params=iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail'))
     def iati_dataset_invalid_from_ssot(self, request):
         """A `should-fail` Dataset from the SSOT."""
         return iati.resources.load_as_dataset(request.param)
@@ -398,6 +408,16 @@ class ValidateCodelistsBase(ValidationTestBase):
 
         return schema
 
+    @pytest.fixture
+    def schema_element_text_codelist(self):
+        """Return an Activity Schema with a Codelist that maps to an element rather than attribute in the mapping file."""
+        schema = iati.default.activity_schema(None, False)
+        codelist = iati.default.codelist('CRSChannelCode')
+
+        schema.codelists.add(codelist)
+
+        return schema
+
 
 class TestValidationTruthyIATI(ValidationTestBase):
     """A container for tests relating to truthy validation of IATI data."""
@@ -409,7 +429,7 @@ class TestValidationTruthyIATI(ValidationTestBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_basic)
@@ -424,7 +444,7 @@ class TestValidationTruthyIATI(ValidationTestBase):
 
     def test_basic_validation_invalid(self, schema_basic):
         """Perform a super simple data validation against an invalid Dataset."""
-        data = iati.tests.utilities.load_as_dataset('valid_not_iati')
+        data = iati.tests.resources.load_as_dataset('valid_not_iati')
 
         assert iati.validator.is_xml(data.xml_str)
         assert not iati.validator.is_iati_xml(data, schema_basic)
@@ -444,7 +464,7 @@ class TestValidationTruthyIATI(ValidationTestBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('invalid_iati_missing_required_element', '2.02')
+        data = iati.tests.resources.load_as_dataset('invalid_iati_missing_required_element', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert not iati.validator.is_iati_xml(data, schema_basic)
@@ -457,11 +477,24 @@ class TestValidationTruthyIATI(ValidationTestBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('invalid_iati_missing_required_element_from_common', '2.02')
+        data = iati.tests.resources.load_as_dataset('invalid_iati_missing_required_element_from_common', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert not iati.validator.is_iati_xml(data, schema_basic)
         assert not iati.validator.is_valid(data, schema_basic)
+
+    def test_basic_validation_fully_populated_schema(self, schema_fully_populated):
+        """Perform validation against a minimal valid Dataset when validated against a fully populated Schema.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        data = iati.tests.resources.load_as_dataset('valid_iati_minimal_file', '2.02')
+
+        assert iati.validator.is_xml(data.xml_str)
+        assert iati.validator.is_iati_xml(data, schema_fully_populated)
+        assert iati.validator.is_valid(data, schema_fully_populated)
 
 
 class TestValidateIsXML(ValidationTestBase):
@@ -659,7 +692,7 @@ class TestIsValidIATIXML(ValidationTestBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('ssot-activity-xml-pass/location/01-generic-location', '2.02')
+        data = iati.tests.resources.load_as_dataset('ssot-activity-xml-pass/location/01-generic-location', '2.02')
 
         result = iati.validator.validate_is_iati_xml(data, schema_basic)
 
@@ -672,7 +705,7 @@ class TestIsValidIATIXML(ValidationTestBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('ssot-activity-xml-fail/other-identifier/01-missing-attribute-type', '2.02')
+        data = iati.tests.resources.load_as_dataset('ssot-activity-xml-fail/other-identifier/01-missing-attribute-type', '2.02')
 
         result = iati.validator.validate_is_iati_xml(data, schema_basic)
 
@@ -689,7 +722,7 @@ class TestValidationCodelist(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_version)
@@ -702,7 +735,7 @@ class TestValidationCodelist(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_invalid_code', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_invalid_code', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_version)
@@ -715,7 +748,7 @@ class TestValidationCodelist(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_valid_code_from_common', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_valid_code_from_common', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_org_type)
@@ -728,7 +761,7 @@ class TestValidationCodelist(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_invalid_code_from_common', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_invalid_code_from_common', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_org_type)
@@ -741,15 +774,15 @@ class TestValidationCodelist(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_valid_codes_multiple_xpaths_for_codelist', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_valid_codes_multiple_xpaths_for_codelist', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_org_type)
         assert iati.validator.is_valid(data, schema_org_type)
 
     @pytest.mark.parametrize("data", [
-        iati.tests.utilities.load_as_dataset('valid_iati_invalid_codes_multiple_xpaths_for_codelist_first', '2.02'),
-        iati.tests.utilities.load_as_dataset('valid_iati_invalid_codes_multiple_xpaths_for_codelist_second', '2.02')
+        iati.tests.resources.load_as_dataset('valid_iati_invalid_codes_multiple_xpaths_for_codelist_first', '2.02'),
+        iati.tests.resources.load_as_dataset('valid_iati_invalid_codes_multiple_xpaths_for_codelist_second', '2.02')
     ])
     def test_basic_validation_codes_invalid_multi_use_codelist(self, data, schema_org_type):
         """Perform data validation against valid IATI XML that has invalid Codelist values. The attributes being tested are under different elements, but require the same Codelist.
@@ -768,7 +801,7 @@ class TestValidationCodelist(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_incomplete_codelist_code_present', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_incomplete_codelist_code_present', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_incomplete_codelist)
@@ -781,7 +814,7 @@ class TestValidationCodelist(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_incomplete_codelist_code_not_present', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_incomplete_codelist_code_not_present', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_incomplete_codelist)
@@ -794,11 +827,37 @@ class TestValidationCodelist(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_short_mapping_codelist)
         assert iati.validator.is_valid(data, schema_short_mapping_codelist)
+
+    def test_basic_validation_codelist_code_from_element_valid(self, schema_element_text_codelist):
+        """Perform data validation against valid IATI XML. The Codelist being tested is being checked against an element text rather than an attribute.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        data = iati.tests.resources.load_as_dataset('valid_iati_codelist_mapping_element_text_valid_code', '2.02')
+
+        assert iati.validator.is_xml(data.xml_str)
+        assert iati.validator.is_iati_xml(data, schema_element_text_codelist)
+        assert iati.validator.is_valid(data, schema_element_text_codelist)
+
+    def test_basic_validation_codelist_code_from_element_invalid(self, schema_element_text_codelist):
+        """Perform data validation against valid IATI XML. The Codelist being tested is being checked against an element text rather than an attribute.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        data = iati.tests.resources.load_as_dataset('valid_iati_codelist_mapping_element_text_invalid_code', '2.02')
+
+        assert iati.validator.is_xml(data.xml_str)
+        assert iati.validator.is_iati_xml(data, schema_element_text_codelist)
+        assert not iati.validator.is_valid(data, schema_element_text_codelist)
 
 
 class TestValidationVocabularies(ValidateCodelistsBase):
@@ -811,7 +870,7 @@ class TestValidationVocabularies(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_vocab_default_implicit', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_default_implicit', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
@@ -824,7 +883,7 @@ class TestValidationVocabularies(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_vocab_default_implicit_invalid_code', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_default_implicit_invalid_code', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
@@ -837,7 +896,7 @@ class TestValidationVocabularies(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_vocab_default_explicit', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_default_explicit', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
@@ -850,7 +909,7 @@ class TestValidationVocabularies(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_vocab_non_default', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_non_default', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
@@ -867,7 +926,7 @@ class TestValidationVocabularies(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_vocab_multiple_same_valid', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_multiple_same_valid', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
@@ -884,7 +943,7 @@ class TestValidationVocabularies(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_vocab_multiple_different_valid', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_multiple_different_valid', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
@@ -901,7 +960,7 @@ class TestValidationVocabularies(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_vocab_multiple_same_invalid_code', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_multiple_same_invalid_code', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
@@ -918,7 +977,7 @@ class TestValidationVocabularies(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_vocab_multiple_different_invalid_code', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_multiple_different_invalid_code', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
@@ -931,7 +990,7 @@ class TestValidationVocabularies(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_vocab_user_defined', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_user_defined', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
@@ -945,7 +1004,7 @@ class TestValidationVocabularies(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_vocab_user_defined_with_uri_readable', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_user_defined_with_uri_readable', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
@@ -960,7 +1019,7 @@ class TestValidationVocabularies(ValidateCodelistsBase):
 
             Stop this being fixed to 2.02.
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_vocab_user_defined_with_uri_readable_bad_code', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_user_defined_with_uri_readable_bad_code', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
@@ -975,7 +1034,7 @@ class TestValidationVocabularies(ValidateCodelistsBase):
 
             Stop this being fixed to 2.02.
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_vocab_user_defined_with_uri_unreadable', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_user_defined_with_uri_unreadable', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
@@ -992,7 +1051,7 @@ class TestValidateRulesets(object):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_std_ruleset', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_std_ruleset', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_ruleset)
@@ -1011,7 +1070,7 @@ class TestValidateRulesets(object):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset(invalid_xml_file, '2.02')
+        data = iati.tests.resources.load_as_dataset(invalid_xml_file, '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_ruleset)
@@ -1024,7 +1083,7 @@ class TestValidateRulesets(object):
             Stop this being fixed to 2.02.
 
         """
-        data_with_multiple_rule_errors = iati.tests.utilities.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors', '2.02')
+        data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors', '2.02')
         result = iati.validator.full_validation(data_with_multiple_rule_errors, schema_ruleset)
 
         assert len(result.get_errors_or_warnings_by_category('rule')) > 1
@@ -1037,12 +1096,13 @@ class TestValidateRulesets(object):
             Stop this being fixed to 2.02.
 
         """
-        data_with_multiple_rule_errors = iati.tests.utilities.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors', '2.02')
+        data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors', '2.02')
         ruleset_1 = iati.default.ruleset('2.02')
         ruleset_2 = iati.default.ruleset('2.02')
         schema = iati.default.activity_schema(None, False)
         schema.rulesets.add(ruleset_1)
         schema.rulesets.add(ruleset_2)
+
         result = iati.validator.full_validation(data_with_multiple_rule_errors, schema)
 
         assert len(result.get_errors_or_warnings_by_category('rule')) > 1
@@ -1055,7 +1115,8 @@ class TestValidateRulesets(object):
             Stop this being fixed to 2.02.
 
         """
-        data_with_rule_warnings_only = iati.tests.utilities.load_as_dataset('valid_std_ruleset', '2.02')
+        data_with_rule_warnings_only = iati.tests.resources.load_as_dataset('valid_std_ruleset', '2.02')
+
         result = iati.validator.full_validation(data_with_rule_warnings_only, schema_ruleset)
 
         assert len(result.get_warnings()) >= 1
@@ -1073,7 +1134,7 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati', '2.02')
 
         assert iati.validator.full_validation(data, schema_version) == iati.validator.ValidationErrorLog()
 
@@ -1084,7 +1145,7 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        xml_str = iati.tests.utilities.load_as_string('valid_iati_invalid_code', '2.02')
+        xml_str = iati.tests.resources.load_as_string('valid_iati_invalid_code', '2.02')
         data = iati.Dataset(xml_str)
 
         result = iati.validator.full_validation(data, schema_version)[0]
@@ -1105,7 +1166,7 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_iati_incomplete_codelist_code_present', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_iati_incomplete_codelist_code_present', '2.02')
 
         result = iati.validator.full_validation(data, schema_incomplete_codelist)
 
@@ -1119,7 +1180,7 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
             Stop this being fixed to 2.02.
 
         """
-        xml_str = iati.tests.utilities.load_as_string('valid_iati_incomplete_codelist_code_not_present', '2.02')
+        xml_str = iati.tests.resources.load_as_string('valid_iati_incomplete_codelist_code_not_present', '2.02')
         data = iati.Dataset(xml_str)
 
         result = iati.validator.full_validation(data, schema_incomplete_codelist)[0]

@@ -28,13 +28,13 @@ class TestResourceFolders(object):
     """A container for tests relating to resource folders."""
 
     @pytest.mark.parametrize('version, expected_version_foldername', [
-        ('2.02', '202'),
-        ('2.01', '201'),
-        ('1.05', '105'),
-        ('1.04', '104'),
-        ('1.03', '103'),
-        ('1.02', '102'),
-        ('1.01', '101'),
+        ('2.02', '2-02'),
+        ('2.01', '2-01'),
+        ('1.05', '1-05'),
+        ('1.04', '1-04'),
+        ('1.03', '1-03'),
+        ('1.02', '1-02'),
+        ('1.01', '1-01'),
         ('1', '1'),
         ('2', '2'),
         (None, 'version-independent')
@@ -72,7 +72,7 @@ class TestResourceFolders(object):
             Deal with multiple versions.
 
         """
-        paths = iati.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail', '2.02')
+        paths = iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail', '2.02')
 
         assert len(paths) == 237
 
@@ -209,7 +209,7 @@ class TestResourceLoading(object):
 
     def test_load_as_bytes(self):
         """Test that resources.load_as_bytes returns a bytes object with the expected content."""
-        path_test_data = iati.resources.get_test_data_path('invalid')
+        path_test_data = iati.tests.resources.get_test_data_path('invalid')
 
         result = iati.resources.load_as_bytes(path_test_data)
 
@@ -218,7 +218,7 @@ class TestResourceLoading(object):
 
     def test_load_as_dataset(self):
         """Test that resources.load_as_dataset returns a Dataset object with the expected content."""
-        path_test_data = iati.resources.get_test_data_path('valid')
+        path_test_data = iati.tests.resources.get_test_data_path('valid')
 
         result = iati.resources.load_as_dataset(path_test_data)
 
@@ -227,14 +227,14 @@ class TestResourceLoading(object):
 
     def test_load_as_dataset_invalid(self):
         """Test that resources.load_as_dataset raises an error when the provided path does not lead to a file containing valid XML."""
-        path_test_data = iati.resources.get_test_data_path('invalid')
+        path_test_data = iati.tests.resources.get_test_data_path('invalid')
 
         with pytest.raises(ValueError):
             _ = iati.resources.load_as_dataset(path_test_data)
 
     def test_load_as_string(self):
         """Test that `resources.load_as_string()` returns a string (python3) or unicode (python2) object with the expected content."""
-        path_test_data = iati.resources.get_test_data_path('invalid')
+        path_test_data = iati.tests.resources.get_test_data_path('invalid')
 
         result = iati.resources.load_as_string(path_test_data)
 
@@ -244,7 +244,7 @@ class TestResourceLoading(object):
     @pytest.mark.parametrize("load_method", [iati.resources.load_as_bytes, iati.resources.load_as_dataset, iati.resources.load_as_string])
     def test_load_as_x_non_existing_file(self, load_method):
         """Test that `resources.load_as_bytes()` returns a bytes object with the expected content."""
-        path_test_data = iati.resources.get_test_data_path('this-file-does-not-exist')
+        path_test_data = iati.tests.resources.get_test_data_path('this-file-does-not-exist')
 
         # python 2/3 compatibility - FileNotFoundError introduced at Python 3
         try:
@@ -260,7 +260,7 @@ class TestResourceLoading(object):
     ])
     def test_load_as_string_restricted_charset(self, file_to_load):
         """Test that Datasets can be loaded from files encoded with a limited charset."""
-        path = iati.resources.get_test_data_path(file_to_load)
+        path = iati.tests.resources.get_test_data_path(file_to_load)
 
         data_str = iati.resources.load_as_string(path)
         dataset = iati.Dataset(data_str)
@@ -279,7 +279,7 @@ class TestResourceLoading(object):
     ])
     def test_load_as_string_unicode(self, file_to_load):
         """Test that Datasets can be loaded from files encoded with various unicode encodings."""
-        path = iati.resources.get_test_data_path(file_to_load)
+        path = iati.tests.resources.get_test_data_path(file_to_load)
 
         data_str = iati.resources.load_as_string(path)
         dataset = iati.Dataset(data_str)
@@ -300,7 +300,7 @@ class TestResourceLoading(object):
         The file with an undetectable encoding is a UTF-16LE file without a BOM.
 
         """
-        path = iati.resources.get_test_data_path(file_to_load)
+        path = iati.tests.resources.get_test_data_path(file_to_load)
 
         with pytest.raises(ValueError):
             _ = iati.resources.load_as_string(path)

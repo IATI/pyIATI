@@ -202,7 +202,7 @@ class TestDefaultRulesets(object):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset('valid_std_ruleset', '2.02')
+        data = iati.tests.resources.load_as_dataset('valid_std_ruleset', '2.02')
         result = iati.validator.full_validation(data, schema_ruleset)
 
         assert iati.validator.is_xml(data.xml_str)
@@ -247,7 +247,7 @@ class TestDefaultRulesets(object):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.tests.utilities.load_as_dataset(invalid_dataset_name, '2.02')
+        data = iati.tests.resources.load_as_dataset(invalid_dataset_name, '2.02')
         result = iati.validator.full_validation(data, schema_ruleset)
         errors_for_rule_error = result.get_errors_or_warnings_by_name(rule_error)
         errors_for_ruleset = result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')
