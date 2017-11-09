@@ -2,7 +2,7 @@
 
 A developers’ toolkit for IATI.
 
-[![Build Status](https://travis-ci.org/IATI/pyIATI.svg?branch=master)](https://travis-ci.com/IATI/pyIATI)
+[![Build Status](https://travis-ci.org/IATI/pyIATI.svg?branch=master)](https://travis-ci.com/IATI/pyIATI) [![PyPI](https://img.shields.io/pypi/v/pyIATI.svg)](https://pypi.python.org/pypi/pyIATI)
 
 `master`: [![Requirements Status](https://requires.io/github/IATI/pyIATI/requirements.svg?branch=master)](https://requires.io/github/IATI/pyIATI/requirements/?branch=master) `dev`: [![Requirements Status](https://requires.io/github/IATI/pyIATI/requirements.svg?branch=dev)](https://requires.io/github/IATI/pyIATI/requirements/?branch=dev)
 
