@@ -579,7 +579,7 @@ class TestDatasetVersionDetection(object):
             Stop this being fixed to 2.02.
 
         """
-        data = iati.resources.load_as_dataset(iati.tests.resources.get_test_data_path('valid_iati', '2.02'))
+        data = iati.tests.resources.load_as_dataset('valid_iati', '2.02')
 
         with pytest.raises(AttributeError) as excinfo:
             data.version = 'test'
