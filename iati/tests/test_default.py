@@ -31,6 +31,11 @@ class TestDefaultCodelists(object):
         """Return the name of a valid Codelist."""
         return 'Country'
 
+    @pytest.fixture
+    def codelists_with_no_name_codes(self):
+        """Return the names of Codelists where Codes do not have names."""
+        return ['FileFormat', 'Version']
+
     @pytest.mark.parametrize("invalid_version", iati.tests.utilities.generate_test_types(['none'], True))
     def test_invalid_version_single_codelist(self, invalid_version, codelist_name):
         """Check that an invalid version causes an error when obtaining a single default Codelist.
@@ -91,7 +96,7 @@ class TestDefaultCodelists(object):
         """Check that the default Codelists are of the correct type.
 
         Todo:
-            Check internal values beyond the codelists being the correct type.
+            Switch from type-checking to behavior-checking, which is more Pythonic.
         """
         codelists = iati.default.codelists(codelist_lengths_by_version.version)
 
@@ -99,6 +104,34 @@ class TestDefaultCodelists(object):
         assert len(codelists.values()) == codelist_lengths_by_version.expected_length
         for codelist in codelists.values():
             assert isinstance(codelist, iati.Codelist)
+            for code in codelist.codes:
+                assert isinstance(code, iati.Code)
+
+    def test_default_codelists_codes_have_name(self, standard_version_optional, codelists_with_no_name_codes):
+        """Check that Codelists with Codes that should have names do have names.
+
+        Codes in a Codelist should have a name. This checks that default Codelists have names. A small number of Codelists are excluded because they are known not to have names.
+
+        """
+        codelists = iati.default.codelists(*standard_version_optional)
+        relevant_codelists = [codelist for codelist in codelists.values() if codelist.name not in codelists_with_no_name_codes]
+
+        for codelist in relevant_codelists:
+            for code in codelist.codes:
+                assert code.name != ''
+
+    def test_default_codelists_no_name_codes_have_no_name(self, standard_version_optional, codelists_with_no_name_codes):
+        """Check that Codelists with Codes that are known to have no name have no name.
+
+        Ideally all Codes would have a name. There are a couple of Codelists where Codes do not. This test is intended to identify the point in time that names are added.
+
+        """
+        codelists = iati.default.codelists(*standard_version_optional)
+        relevant_codelists = [codelist for codelist in codelists.values() if codelist.name in codelists_with_no_name_codes]
+
+        for codelist in relevant_codelists:
+            for code in codelist.codes:
+                assert code.name == ''
 
     def test_codelist_mapping_condition(self):
         """Check that the Codelist mapping file is having conditions read.
