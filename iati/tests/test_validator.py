@@ -1,4 +1,5 @@
 """A module containing tests for data validation."""
+# pylint: disable=too-many-lines
 import pytest
 import iati.data
 import iati.default
@@ -14,6 +15,16 @@ class ValidationTestBase(object):
     def schema_basic(self):
         """An Activity Schema with no Codelists added."""
         return iati.default.activity_schema(None, False)
+
+    @pytest.fixture
+    def schema_fully_populated(self):
+        """Return an Activity Schema populated with all Codelists.
+
+        Todo:
+            Stop this being fixed to 2.02 (see: #223).
+
+        """
+        return iati.default.activity_schema('2.02')
 
     @pytest.fixture(params=[
         iati.tests.resources.load_as_string('valid_not_iati'),
@@ -382,6 +393,16 @@ class ValidateCodelistsBase(ValidationTestBase):
 
         return schema
 
+    @pytest.fixture
+    def schema_element_text_codelist(self):
+        """Return an Activity Schema with a Codelist that maps to an element rather than attribute in the mapping file."""
+        schema = iati.default.activity_schema(None, False)
+        codelist = iati.default.codelist('CRSChannelCode')
+
+        schema.codelists.add(codelist)
+
+        return schema
+
 
 class TestValidationTruthyIATI(ValidationTestBase):
     """A container for tests relating to truthy validation of IATI data."""
@@ -431,6 +452,14 @@ class TestValidationTruthyIATI(ValidationTestBase):
         assert iati.validator.is_xml(data.xml_str)
         assert not iati.validator.is_iati_xml(data, schema_basic)
         assert not iati.validator.is_valid(data, schema_basic)
+
+    def test_basic_validation_fully_populated_schema(self, schema_fully_populated):
+        """Perform validation against a minimal valid Dataset when validated against a fully populated Schema."""
+        data = iati.tests.resources.load_as_dataset('valid_iati_minimal_file')
+
+        assert iati.validator.is_xml(data.xml_str)
+        assert iati.validator.is_iati_xml(data, schema_fully_populated)
+        assert iati.validator.is_valid(data, schema_fully_populated)
 
 
 class TestValidateIsXML(ValidationTestBase):
@@ -713,6 +742,22 @@ class TestValidationCodelist(ValidateCodelistsBase):
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_short_mapping_codelist)
         assert iati.validator.is_valid(data, schema_short_mapping_codelist)
+
+    def test_basic_validation_codelist_code_from_element_valid(self, schema_element_text_codelist):
+        """Perform data validation against valid IATI XML. The Codelist being tested is being checked against an element text rather than an attribute."""
+        data = iati.tests.resources.load_as_dataset('valid_iati_codelist_mapping_element_text_valid_code')
+
+        assert iati.validator.is_xml(data.xml_str)
+        assert iati.validator.is_iati_xml(data, schema_element_text_codelist)
+        assert iati.validator.is_valid(data, schema_element_text_codelist)
+
+    def test_basic_validation_codelist_code_from_element_invalid(self, schema_element_text_codelist):
+        """Perform data validation against valid IATI XML. The Codelist being tested is being checked against an element text rather than an attribute."""
+        data = iati.tests.resources.load_as_dataset('valid_iati_codelist_mapping_element_text_invalid_code')
+
+        assert iati.validator.is_xml(data.xml_str)
+        assert iati.validator.is_iati_xml(data, schema_element_text_codelist)
+        assert not iati.validator.is_valid(data, schema_element_text_codelist)
 
 
 class TestValidationVocabularies(ValidateCodelistsBase):
