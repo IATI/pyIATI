@@ -295,6 +295,9 @@ def _extract_codes_from_attrib(dataset, parent_el_xpath, attr_name, condition=No
         parent_el_xpath = '/' + parent_el_xpath
     if parent_el_xpath.startswith('//['):
         parent_el_xpath = '//*[' + parent_el_xpath[3:]
+    # provide a secondary cludge to deal with the 'xml' namespace
+    if attr_name == 'xml:lang':
+        attr_name = '{http://www.w3.org/XML/1998/namespace}lang'
 
     parents_to_check = dataset.xml_tree.xpath(parent_el_xpath)
 
