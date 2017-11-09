@@ -21,7 +21,7 @@ class TestDatasets(object):
     @pytest.fixture
     def dataset_initialised(self):
         """Return an initialised Dataset to work from in other tests."""
-        return iati.tests.utilities.load_as_dataset('valid_not_iati')
+        return iati.tests.resources.load_as_dataset('valid_not_iati')
 
     def test_dataset_no_params(self):
         """Test Dataset creation with no parameters."""
@@ -37,7 +37,7 @@ class TestDatasets(object):
 
     def test_dataset_valid_xml_string(self):
         """Test Dataset creation with a valid XML string that is not IATI data."""
-        xml_str = iati.tests.utilities.load_as_string('valid_not_iati')
+        xml_str = iati.tests.resources.load_as_string('valid_not_iati')
         data = iati.Dataset(xml_str)
 
         assert data.xml_str == xml_str.strip()
@@ -45,7 +45,7 @@ class TestDatasets(object):
 
     def test_dataset_xml_string_leading_whitespace(self):
         """Test Dataset creation with a valid XML string that is not IATI data."""
-        xml_str = iati.tests.utilities.load_as_string('leading_whitespace_xml')
+        xml_str = iati.tests.resources.load_as_string('leading_whitespace_xml')
         data = iati.Dataset(xml_str)
         tree = etree.fromstring(xml_str.strip())
 
@@ -59,7 +59,7 @@ class TestDatasets(object):
     def test_dataset_invalid_xml_string(self):
         """Test Dataset creation with a string that is not valid XML."""
         with pytest.raises(iati.exceptions.ValidationError) as excinfo:
-            iati.Dataset(iati.tests.utilities.load_as_string('invalid'))
+            iati.Dataset(iati.tests.resources.load_as_string('invalid'))
 
         assert excinfo.value.error_log.contains_error_called('err-not-xml-empty-document')
 
@@ -95,7 +95,7 @@ class TestDatasets(object):
             Check that the tree is updated correctly.
 
         """
-        xml_str = iati.tests.utilities.load_as_string('valid_not_iati')
+        xml_str = iati.tests.resources.load_as_string('valid_not_iati')
         data = dataset_initialised
         data.xml_str = xml_str
 
@@ -103,7 +103,7 @@ class TestDatasets(object):
 
     def test_dataset_xml_str_assignment_invalid_str(self, dataset_initialised):
         """Test assignment to the xml_str property with an invalid XML string."""
-        xml_str = iati.tests.utilities.load_as_string('invalid')
+        xml_str = iati.tests.resources.load_as_string('invalid')
         data = dataset_initialised
 
         with pytest.raises(iati.exceptions.ValidationError) as excinfo:
@@ -153,7 +153,7 @@ class TestDatasets(object):
 
     def test_dataset_xml_tree_assignment_str(self, dataset_initialised):
         """Test assignment to the xml_tree property with an XML string."""
-        xml_str = iati.tests.utilities.load_as_string('valid_not_iati')
+        xml_str = iati.tests.resources.load_as_string('valid_not_iati')
         data = dataset_initialised
 
         with pytest.raises(TypeError) as excinfo:
@@ -284,8 +284,8 @@ class TestDatasetSourceFinding(object):
     """A container for tests relating to finding source context within a Dataset."""
 
     @pytest.fixture(params=[
-        iati.tests.utilities.load_as_dataset('valid_not_iati'),
-        iati.tests.utilities.load_as_dataset('valid_iati')
+        iati.tests.resources.load_as_dataset('valid_not_iati'),
+        iati.tests.resources.load_as_dataset('valid_iati')
     ])
     def data(self, request):
         """A Dataset to test."""
@@ -317,7 +317,7 @@ class TestDatasetSourceFinding(object):
 
         Ensure that the line numbers from which source is being returned are the same ones provided by the `sourceline` attribute from tree elements.
         """
-        data = iati.tests.utilities.load_as_dataset('valid_not_iati')
+        data = iati.tests.resources.load_as_dataset('valid_not_iati')
         split_xml_str = [''] + data.xml_str.split('\n')
         line_num = line_el_pair['line']
         el_from_tree = data.xml_tree.xpath(line_el_pair['el'])[0]
@@ -569,7 +569,7 @@ class TestDatasetVersionDetection(object):
 
     def test_cannot_assign_to_version_property(self):
         """Check that it is not possible to assign to the `version` property."""
-        data = iati.resources.load_as_dataset(iati.resources.get_test_data_path('valid_iati'))
+        data = iati.resources.load_as_dataset(iati.tests.resources.get_test_data_path('valid_iati'))
 
         with pytest.raises(AttributeError) as excinfo:
             data.version = 'test'

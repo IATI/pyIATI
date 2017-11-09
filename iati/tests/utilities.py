@@ -19,35 +19,7 @@ import decimal
 from lxml import etree
 import iati.resources
 import iati.constants
-
-
-def load_as_dataset(file_path):
-    """Load a specified test data file as a Dataset.
-
-    Args:
-        file_path (str): The path of the file, relative to the root test data folder. Folders should be separated by a forward-slash (`/`).
-
-    Returns:
-        dataset: A Dataset containing the contents of the file at the specified location.
-
-    Raises:
-        iati.exceptions.ValidationError: If the provided XML does not conform to the IATI standard.
-
-    """
-    return iati.resources.load_as_dataset(iati.resources.get_test_data_path(file_path))
-
-
-def load_as_string(file_path):
-    """Load a specified test data file as a string.
-
-    Args:
-        file_path (str): The path of the file, relative to the root test data folder. Folders should be separated by a forward-slash (`/`).
-
-    Returns:
-        str (python3) / unicode (python2): The contents of the file at the specified location.
-
-    """
-    return iati.resources.load_as_string(iati.resources.get_test_data_path(file_path))
+import iati.tests.resources
 
 
 # This will need updating once test data forcing XML format is fixed
@@ -62,11 +34,11 @@ SCHEMA_ORGANISATION_NAME_VALID = 'iati-organisations-schema'
 SCHEMA_NAME_VALID = 'iati-activities-schema'
 """A string containing a valid Schema name."""
 
-XML_TREE_VALID = etree.fromstring(load_as_string('valid_not_iati'))
+XML_TREE_VALID = etree.fromstring(iati.tests.resources.load_as_string('valid_not_iati'))
 """An etree that is valid XML but not IATI XML."""
-XML_TREE_VALID_IATI = etree.fromstring(load_as_string('valid_iati'))
+XML_TREE_VALID_IATI = etree.fromstring(iati.tests.resources.load_as_string('valid_iati'))
 """A valid IATI etree."""
-XML_TREE_VALID_IATI_INVALID_CODE = etree.fromstring(load_as_string('valid_iati_invalid_code'))
+XML_TREE_VALID_IATI_INVALID_CODE = etree.fromstring(iati.tests.resources.load_as_string('valid_iati_invalid_code'))
 """A valid IATI etree that has an invalid Code value."""
 
 
