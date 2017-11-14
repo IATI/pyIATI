@@ -127,7 +127,7 @@ def _codelists(version=None, use_cache=False):
         _, filename = os.path.split(path)
         name = filename[:-len(iati.resources.FILE_CODELIST_EXTENSION)]  # Get the name of the codelist, without the '.xml' file extension
         if (name not in _CODELISTS[version].keys()) or not use_cache:
-            xml_str = iati.resources.load_as_string(path)
+            xml_str = iati.utilities.load_as_string(path)
             codelist_found = iati.Codelist(name, xml=xml_str)
             _CODELISTS[version][name] = codelist_found
 
@@ -161,7 +161,7 @@ def codelist_mapping(version=None):
 
     """
     path = iati.resources.get_codelist_mapping_path(version)
-    mapping_tree = iati.resources.load_as_tree(path)
+    mapping_tree = iati.utilities.load_as_tree(path)
     mappings = defaultdict(list)
 
     for mapping in mapping_tree.getroot().xpath('//mapping'):
@@ -195,7 +195,7 @@ def ruleset(version=None):
 
     """
     path = iati.resources.get_ruleset_path(iati.resources.FILE_RULESET_STANDARD_NAME, version)
-    ruleset_str = iati.resources.load_as_string(path)
+    ruleset_str = iati.utilities.load_as_string(path)
 
     return iati.Ruleset(ruleset_str)
 
@@ -214,7 +214,7 @@ def ruleset_schema(version=None):
 
     """
     path = iati.resources.get_ruleset_path(iati.resources.FILE_RULESET_SCHEMA_NAME, version)
-    schema_str = iati.resources.load_as_string(path)
+    schema_str = iati.utilities.load_as_string(path)
 
     return json.loads(schema_str)
 

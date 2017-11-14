@@ -1,6 +1,7 @@
 """A module containing tests for the library implementation of accessing utilities."""
 from lxml import etree
 import pytest
+import six
 import iati.resources
 import iati.tests.utilities
 import iati.utilities
@@ -140,7 +141,7 @@ class TestUtilities(object):
         """Check that an etree can be converted to a schema."""
         path = iati.resources.get_schema_path('iati-activities-schema')
 
-        tree = iati.resources.load_as_tree(path)
+        tree = iati.utilities.load_as_tree(path)
         if not tree:  # pragma: no cover
             assert False
         schema = iati.utilities.convert_tree_to_schema(tree)
@@ -203,3 +204,145 @@ class TestDefaultVersions(object):
 
         for version in result:
             assert version.startswith(str(major_version))
+
+
+class TestFileLoading(object):
+    """A container for tests relating to loading files."""
+
+    @pytest.fixture(scope='session')
+    def invalid_xml_file_path_non_resource(self, tmpdir_factory):
+        """Return a path to an invalid XML file that is not a resource."""
+        path_original_data = iati.tests.resources.get_test_data_path('invalid')
+        original_data = iati.utilities.load_as_string(path_original_data)
+
+        new_file = tmpdir_factory.mktemp('test_file_loading').join('invalid.xml')
+        new_file.write(original_data)
+
+        return new_file.strpath
+
+    @pytest.fixture(params=[
+        iati.tests.resources.get_test_data_path('invalid'),
+        'non-resource'
+    ])  # pylint: disable=invalid-name
+    def invalid_xml_file_path(self, request, invalid_xml_file_path_non_resource):
+        """Return a path to an invalid XML file."""
+        if request.param == 'non-resource':
+            return invalid_xml_file_path_non_resource
+
+        return request.param
+
+    @pytest.fixture(scope='session')
+    def valid_xml_file_path_non_resource(self, tmpdir_factory):
+        """Return a path to a valid XML file that is not a resource."""
+        path_original_data = iati.tests.resources.get_test_data_path('valid')
+        original_data = iati.utilities.load_as_string(path_original_data)
+
+        new_file = tmpdir_factory.mktemp('test_file_loading').join('valid.xml')
+        new_file.write(original_data)
+
+        return new_file.strpath
+
+    @pytest.fixture(params=[
+        iati.tests.resources.get_test_data_path('valid'),
+        'non-resource'
+    ])  # pylint: disable=invalid-name
+    def valid_xml_file_path(self, request, valid_xml_file_path_non_resource):
+        """Return a path to a valid XML file."""
+        if request.param == 'non-resource':
+            return valid_xml_file_path_non_resource
+
+        return request.param
+
+    def test_load_as_bytes(self, invalid_xml_file_path):
+        """Test that `utilities.load_as_bytes()` returns a bytes object with the expected content."""
+        result = iati.utilities.load_as_bytes(invalid_xml_file_path)
+
+        assert isinstance(result, bytes)
+        assert result == 'This is a string that is not valid XML\n'.encode()
+
+    def test_load_as_dataset(self, valid_xml_file_path):
+        """Test that utilities.load_as_dataset returns a Dataset object with the expected content."""
+        result = iati.utilities.load_as_dataset(valid_xml_file_path)
+
+        assert isinstance(result, iati.Dataset)
+        assert '<?xml version="1.0"?>\n\n<iati-activities version="2.02">' in result.xml_str
+
+    def test_load_as_dataset_invalid(self, invalid_xml_file_path):
+        """Test that `utilities.load_as_dataset()` raises an error when the provided path does not lead to a file containing valid XML."""
+        with pytest.raises(ValueError):
+            _ = iati.utilities.load_as_dataset(invalid_xml_file_path)
+
+    def test_load_as_string(self, invalid_xml_file_path):
+        """Test that `utilities.load_as_string()` returns a string (python3) or unicode (python2) object with the expected content."""
+        result = iati.utilities.load_as_string(invalid_xml_file_path)
+
+        assert isinstance(result, six.string_types)
+        assert result == 'This is a string that is not valid XML\n'
+
+    @pytest.mark.parametrize("load_method", [
+        iati.utilities.load_as_bytes,
+        iati.utilities.load_as_dataset,
+        iati.utilities.load_as_string
+    ])
+    def test_load_as_x_non_existing_file(self, load_method):
+        """Test that `utilities.load_as_bytes()` returns a bytes object with the expected content."""
+        path_test_data = iati.tests.resources.get_test_data_path('this-file-does-not-exist')
+
+        # python 2/3 compatibility - FileNotFoundError introduced at Python 3
+        try:
+            FileNotFoundError
+        except NameError:
+            FileNotFoundError = IOError  # pylint: disable=redefined-builtin,invalid-name
+
+        with pytest.raises(FileNotFoundError):
+            _ = load_method(path_test_data)
+
+    @pytest.mark.parametrize("file_to_load", [
+        'dataset-encoding/valid-windows-1252.xml'
+    ])
+    def test_load_as_string_restricted_charset(self, file_to_load):
+        """Test that Datasets can be loaded from files encoded with a limited charset."""
+        path = iati.tests.resources.get_test_data_path(file_to_load)
+
+        data_str = iati.utilities.load_as_string(path)
+        dataset = iati.Dataset(data_str)
+        str_of_interest = dataset.xml_tree.xpath('//reporting-org/narrative/text()')[0]
+
+        # the character of interest is in windows-1252, but is different from ASCII
+        # python2/3 compatibility: encode string as UTF-8
+        assert str_of_interest.encode('utf-8') == b'\xc5\xb8'
+
+    @pytest.mark.parametrize("file_to_load", [
+        'dataset-encoding/valid-UTF-8.xml',
+        'dataset-encoding/valid-UTF-16LE.xml',
+        'dataset-encoding/valid-UTF-16BE.xml',
+        'dataset-encoding/valid-UTF-16.xml',
+        'dataset-encoding/valid-UTF-32.xml'
+    ])
+    def test_load_as_string_unicode(self, file_to_load):
+        """Test that Datasets can be loaded from files encoded with various unicode encodings."""
+        path = iati.tests.resources.get_test_data_path(file_to_load)
+
+        data_str = iati.utilities.load_as_string(path)
+        dataset = iati.Dataset(data_str)
+        str_of_interest = dataset.xml_tree.xpath('//reporting-org/narrative/text()')[0]
+
+        # the tested characters are all in the code range 004000-00FFFF
+        # this means that they are 3-bit at UTF-8, 2 bit as UTF-16 and 4-bit as UTF-32 in 8-bit environments
+        # https://en.wikipedia.org/wiki/Comparison_of_Unicode_encodings#Eight-bit_environments
+        # python2/3 compatibility: encode string as UTF-8
+        assert str_of_interest.encode('utf-8') == b'\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9'  # noqa: ignore=E501  # pylint: disable=line-too-long
+
+    @pytest.mark.parametrize("file_to_load", [
+        'dataset-encoding/valid-undetectable-encoding.xml'
+    ])
+    def test_load_as_string_undetectable_encoding(self, file_to_load):
+        """Test that when an encoding cannot be detected, the correct error is raised.
+
+        The file with an undetectable encoding is a UTF-16LE file without a BOM.
+
+        """
+        path = iati.tests.resources.get_test_data_path(file_to_load)
+
+        with pytest.raises(ValueError):
+            _ = iati.utilities.load_as_string(path)

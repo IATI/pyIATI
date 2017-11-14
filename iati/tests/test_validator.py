@@ -86,12 +86,12 @@ class ValidationTestBase(object):
     @pytest.fixture(params=iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-pass'))
     def iati_dataset_valid_from_ssot(self, request):
         """A `should-pass` Dataset from the SSOT."""
-        return iati.resources.load_as_dataset(request.param)
+        return iati.utilities.load_as_dataset(request.param)
 
     @pytest.fixture(params=iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail'))
     def iati_dataset_invalid_from_ssot(self, request):
         """A `should-fail` Dataset from the SSOT."""
-        return iati.resources.load_as_dataset(request.param)
+        return iati.utilities.load_as_dataset(request.param)
 
     @pytest.fixture
     def error_log_empty(self):

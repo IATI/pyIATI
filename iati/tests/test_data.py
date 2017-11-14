@@ -569,7 +569,8 @@ class TestDatasetVersionDetection(object):
 
     def test_cannot_assign_to_version_property(self):
         """Check that it is not possible to assign to the `version` property."""
-        data = iati.resources.load_as_dataset(iati.tests.resources.get_test_data_path('valid_iati'))
+        path = iati.tests.resources.get_test_data_path('valid_iati')
+        data = iati.utilities.load_as_dataset(path)
 
         with pytest.raises(AttributeError) as excinfo:
             data.version = 'test'
