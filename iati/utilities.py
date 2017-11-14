@@ -182,8 +182,6 @@ def load_as_bytes(path):
 
         Add error handling for when the specified file does not exist.
 
-        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
-
     """
     with open(path, 'rb') as file_to_load:
         data = file_to_load.read()
@@ -207,6 +205,7 @@ def load_as_dataset(path):
 
     Todo:
         Ensure all reasonably possible OSErrors are documented here and in functions that call this.
+
         Add error handling for when the specified file does not exist.
 
     """
@@ -226,9 +225,6 @@ def load_as_string(path):
 
     Raises:
         FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
-
-    Todo:
-        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
 
     """
     loaded_bytes = load_as_bytes(path)
