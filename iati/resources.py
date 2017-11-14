@@ -1,18 +1,6 @@
 """A module to provide a way of locating resources within the IATI library.
 
-There are two key groups of functions within this module: `get_*_path[s]()` and `load_as_*()`.
-
 The `get_*_path[s](name)` functions provide information about where to locate particular types of resources with a provided name.
-
-The `load_as_*(path)` functions load the contents of a file at the specified path and return it in the specified format.
-
-Example:
-    To load a test XML file located in `my_test_file` and use it to create a `Dataset`::
-
-        dataset = iati.resources.load_as_dataset(iati.tests.resources.get_test_data_path('my_test_file'))
-
-Note:
-    `pkg_resources` is used to allow resources to be located however the package is distributed. If using the standard `os` functionality, resources may not be locatable if, for example, the package is distributed as an egg.
 
 Warning:
     Many of the constants in this module should be deemed private to the IATI library.
@@ -22,13 +10,9 @@ Warning:
 Todo:
     Determine how to distribute SSOT content - with package, or separately (being downloaded at runtime).
 
-    Move the functions used to locate test data.
-
 """
 import os
 import pkg_resources
-import chardet
-from lxml import etree
 import iati.constants
 
 
@@ -93,7 +77,8 @@ def get_all_codelist_paths(version=None):
         Provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
 
     """
-    files = pkg_resources.resource_listdir(PACKAGE, get_path_for_version(PATH_CODELISTS, version))
+    folder_path = get_path_for_version(PATH_CODELISTS, version)
+    files = pkg_resources.resource_listdir(PACKAGE, folder_path[len(resource_filename('')):])
     files_codelists_only = [file_name for file_name in files if file_name[-4:] == FILE_CODELIST_EXTENSION]
     paths = [get_codelist_path(file_name, version) for file_name in files_codelists_only]
 
@@ -214,7 +199,7 @@ def get_lib_data_path(name):
         Does not check whether the specified file actually exists.
 
     """
-    return os.path.join(BASE_PATH_LIB_DATA, name)
+    return resource_filename(os.path.join(BASE_PATH_LIB_DATA, name))
 
 
 def get_folder_name_for_version(version=None):
@@ -317,118 +302,7 @@ def get_path_for_version(path, version=None):
         Test this directly rather than just the indirect tests that exist at present.
 
     """
-    return os.path.join(get_folder_path_for_version(version), path)
-
-
-def load_as_bytes(path):
-    """Load a resource at the specified path into a bytes object.
-
-    Args:
-        path (str): The path to the file that is to be read in.
-
-    Returns:
-        bytes: The contents of the file at the specified location.
-
-    Raises:
-        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
-
-    Todo:
-        Ensure all reasonably possible `OSError`s are documented here and in functions that call this.
-
-        Add error handling for when the specified file does not exist.
-
-        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
-
-    """
-    return pkg_resources.resource_string(PACKAGE, path)
-
-
-def load_as_dataset(path):
-    """Load a resource at the specified path into a Dataset.
-
-    Args:
-        path (str): The path to the file that is to be read in.
-
-    Returns:
-        iati.Dataset: A Dataset object representing the contents of the file at the specified location.
-
-    Raises:
-        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
-
-        ValueError: When a file at the specified path does not contain valid XML.
-
-    Todo:
-        Ensure all reasonably possible OSErrors are documented here and in functions that call this.
-        Add error handling for when the specified file does not exist.
-
-    """
-    dataset_str = load_as_string(path)
-
-    return iati.Dataset(dataset_str)
-
-
-def load_as_string(path):
-    """Load a resource at the specified path into a string.
-
-    Args:
-        path (str): The path to the file that is to be read in.
-
-    Returns:
-        str (python3) / unicode (python2): The contents of the file at the specified location.
-
-    Raises:
-        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
-
-    Todo:
-        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
-
-    """
-    loaded_bytes = load_as_bytes(path)
-
-    try:
-        loaded_str = loaded_bytes.decode('utf-8')
-    except UnicodeDecodeError:
-        # the file was not UTF-8, so perform a (slow) test to detect encoding
-        # only use the first section of the file since this is generally enough and prevents big files taking ages
-        detected_info = chardet.detect(loaded_bytes[:25000])
-        try:
-            loaded_str = loaded_bytes.decode(detected_info['encoding'])
-            # in Python 2 it is necessary to strip the BOM when decoding from UTF-16BE
-            if detected_info['encoding'] == 'UTF-16' and loaded_str[:1] == u'\ufeff':
-                loaded_str = loaded_str[1:]
-        except TypeError:
-            raise ValueError('Could not detect encoding of file')
-
-    return loaded_str
-
-
-def load_as_tree(path):
-    """Load a schema with the specified name into an ElementTree.
-
-    Args:
-        path (str): The path to the file that is to be converted to an ElementTree. The file at the specified location must contain valid XML.
-
-    Returns:
-        etree._ElementTree: An ElementTree representing the parsed XML.
-
-    Raises:
-        OSError: An error occurred accessing the specified file.
-
-    Warning:
-        There should be errors raised when the request is to load something that is not valid XML.
-
-        Does not fully hide the lxml internal workings. This includes making reference to a private lxml type.
-
-    Todo:
-        Handle when the specified file can be accessed without issue, but it does not contain valid XML.
-
-    """
-    path_filename = resource_filename(path)
-    try:
-        doc = etree.parse(path_filename)
-        return doc
-    except OSError:
-        raise
+    return resource_filename(os.path.join(get_folder_path_for_version(version), path))
 
 
 def resource_filename(path):

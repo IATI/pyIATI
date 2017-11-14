@@ -70,7 +70,7 @@ class TestCodelists(object):
 
         """
         path = iati.resources.get_codelist_path('FlowType', '2.02')
-        xml_str = iati.resources.load_as_string(path)
+        xml_str = iati.utilities.load_as_string(path)
         codelist = iati.Codelist(name_to_set, xml=xml_str)
 
         code_names = ['ODA', 'OOF', 'Private grants', 'Private Market', 'Non flow', 'Other flows']
@@ -91,7 +91,8 @@ class TestCodelists(object):
         """
         codelist_name = 'BudgetType'
         path = iati.resources.get_codelist_path(codelist_name, '2.02')
-        xml_str = iati.resources.load_as_string(path)
+        xml_str = iati.utilities.load_as_string(path)
+
         codelist = iati.Codelist(codelist_name, xml=xml_str)
 
         assert codelist.complete is True
@@ -105,7 +106,8 @@ class TestCodelists(object):
         """
         codelist_name = 'Country'
         path = iati.resources.get_codelist_path(codelist_name, '2.02')
-        xml_str = iati.resources.load_as_string(path)
+        xml_str = iati.utilities.load_as_string(path)
+
         codelist = iati.Codelist(codelist_name, xml=xml_str)
 
         assert codelist.complete is False

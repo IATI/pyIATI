@@ -710,7 +710,7 @@ def get_error_codes():
         Raise an error when there is a problem with non-base_exception-related errors.
 
     """
-    err_codes_str = iati.resources.load_as_string(iati.resources.get_lib_data_path('validation_err_codes.yaml'))
+    err_codes_str = iati.utilities.load_as_string(iati.resources.get_lib_data_path('validation_err_codes.yaml'))
     err_codes_list_of_dict = yaml.safe_load(err_codes_str)
     # yaml parses the values into a list of dicts, so they need combining into one
     err_codes_dict = {k: v for code in err_codes_list_of_dict for k, v in code.items()}

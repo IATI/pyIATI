@@ -8,13 +8,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
+- [Datasets] A Dataset `xml_tree` may be set with an ElementTree. [#235]
+
+- [Utility] Non-resource files may be loaded using utility functions. [#235]
+
 ### Changed
 
+- [Resources] Move `load_as_x` functions to `iati.utilities`. [#235]
 - [Resources] Rename version-specific resource folders to reduce ambiguity. [#217]
 
 ### Deprecated
 
 ### Removed
+
+- [Documentation] Stop tracking auto-generated docs templates. [#236]
 
 ### Fixed
 
