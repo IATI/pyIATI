@@ -103,11 +103,11 @@ def get_test_ruleset_path(name, version=None):
     return os.path.join(PATH_TEST_DATA, iati.resources.get_folder_name_for_version(version), 'rulesets/{0}'.format(name) + iati.resources.FILE_RULESET_EXTENSION)
 
 
-def load_as_dataset(file_path):
+def load_as_dataset(relative_path):
     """Load a specified test data file as a Dataset.
 
     Args:
-        file_path (str): The path of the file, relative to the root test data folder. Folders should be separated by a forward-slash (`/`).
+        relative_path (str): The path of the file, relative to the root test data folder. Folders should be separated by a forward-slash (`/`).
 
     Returns:
         dataset: A Dataset containing the contents of the file at the specified location.
@@ -116,17 +116,21 @@ def load_as_dataset(file_path):
         iati.exceptions.ValidationError: If the provided XML does not conform to the IATI standard.
 
     """
-    return iati.utilities.load_as_dataset(iati.tests.resources.get_test_data_path(file_path))
+    path = iati.tests.resources.get_test_data_path(relative_path)
+
+    return iati.utilities.load_as_dataset(path)
 
 
-def load_as_string(file_path):
+def load_as_string(relative_path):
     """Load a specified test data file as a string.
 
     Args:
-        file_path (str): The path of the file, relative to the root test data folder. Folders should be separated by a forward-slash (`/`).
+        relative_path (str): The path of the file, relative to the root test data folder. Folders should be separated by a forward-slash (`/`).
 
     Returns:
         str (python3) / unicode (python2): The contents of the file at the specified location.
 
     """
-    return iati.utilities.load_as_string(iati.tests.resources.get_test_data_path(file_path))
+    path = iati.tests.resources.get_test_data_path(relative_path)
+
+    return iati.utilities.load_as_string(path)

@@ -5,7 +5,8 @@ The `load_as_*(path)` functions load the contents of a file at the specified pat
 Example:
     To load a test XML file located in `my_test_file` and use it to create a `Dataset`::
 
-        dataset = iati.utilities.load_as_dataset(iati.tests.resources.get_test_data_path('my_test_file'))
+        path = iati.tests.resources.get_test_data_path('my_test_file')
+        dataset = iati.utilities.load_as_dataset(path)
 
 """
 import logging
