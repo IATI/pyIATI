@@ -13,7 +13,6 @@ Todo:
 """
 import os
 import pkg_resources
-from lxml import etree
 import iati.constants
 
 
