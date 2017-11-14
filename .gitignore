@@ -6,6 +6,9 @@
 pyenv/
 pyenv2/
 
+# generated docs files
+docs/source/*.rst
+
 # defined files to ignore
 ignore_*
 

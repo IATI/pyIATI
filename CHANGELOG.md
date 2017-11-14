@@ -21,6 +21,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Removed
 
+- [Documentation] Stop tracking auto-generated docs templates. [#236]
+
 ### Fixed
 
 - [Codelists] Fixed impossible XPath in Codelist Mapping File. [IATI/IATI-Codelists#119]
