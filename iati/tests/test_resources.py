@@ -94,7 +94,7 @@ class TestResourceCodelists(object):
         """Check that the FlowType codelist is loaded as a string and contains content."""
         path = iati.resources.get_codelist_path('FlowType', *standard_version_optional)
 
-        content = iati.resources.load_as_string(path)
+        content = iati.utilities.load_as_string(path)
 
         assert len(content) > 3200
         assert iati.validator.is_xml(content)
@@ -124,7 +124,7 @@ class TestResourceCodelists(object):
         """Check that the Codelist Mapping File path points to a valid XML file."""
         path = iati.resources.get_codelist_mapping_path(*standard_version_optional)
 
-        content = iati.resources.load_as_string(path)
+        content = iati.utilities.load_as_string(path)
 
         assert len(content) > 5000
         assert iati.validator.is_xml(content)
@@ -182,7 +182,7 @@ class TestResourceSchemas(object):
         """Check that the Activity schema file contains content."""
         path = iati.resources.get_schema_path('iati-activities-schema')
 
-        content = iati.resources.load_as_string(path)
+        content = iati.utilities.load_as_string(path)
 
         assert len(content) > 130000
 
@@ -193,7 +193,7 @@ class TestResourceSchemas(object):
 
         """
         path = iati.resources.get_schema_path('iati-activities-schema')
-        schema = iati.resources.load_as_tree(path)
+        schema = iati.utilities.load_as_tree(path)
 
         assert isinstance(schema, etree._ElementTree)  # pylint: disable=protected-access
 
@@ -205,7 +205,7 @@ class TestResourceLoading(object):
         """Test that resources.load_as_bytes returns a bytes object with the expected content."""
         path_test_data = iati.tests.resources.get_test_data_path('invalid')
 
-        result = iati.resources.load_as_bytes(path_test_data)
+        result = iati.utilities.load_as_bytes(path_test_data)
 
         assert isinstance(result, bytes)
         assert result == 'This is a string that is not valid XML\n'.encode()
@@ -214,7 +214,7 @@ class TestResourceLoading(object):
         """Test that resources.load_as_dataset returns a Dataset object with the expected content."""
         path_test_data = iati.tests.resources.get_test_data_path('valid')
 
-        result = iati.resources.load_as_dataset(path_test_data)
+        result = iati.utilities.load_as_dataset(path_test_data)
 
         assert isinstance(result, iati.Dataset)
         assert '<?xml version="1.0"?>\n\n<iati-activities version="2.02">' in result.xml_str
@@ -224,18 +224,18 @@ class TestResourceLoading(object):
         path_test_data = iati.tests.resources.get_test_data_path('invalid')
 
         with pytest.raises(ValueError):
-            _ = iati.resources.load_as_dataset(path_test_data)
+            _ = iati.utilities.load_as_dataset(path_test_data)
 
     def test_load_as_string(self):
         """Test that `resources.load_as_string()` returns a string (python3) or unicode (python2) object with the expected content."""
         path_test_data = iati.tests.resources.get_test_data_path('invalid')
 
-        result = iati.resources.load_as_string(path_test_data)
+        result = iati.utilities.load_as_string(path_test_data)
 
         assert isinstance(result, six.string_types)
         assert result == 'This is a string that is not valid XML\n'
 
-    @pytest.mark.parametrize("load_method", [iati.resources.load_as_bytes, iati.resources.load_as_dataset, iati.resources.load_as_string])
+    @pytest.mark.parametrize("load_method", [iati.utilities.load_as_bytes, iati.utilities.load_as_dataset, iati.utilities.load_as_string])
     def test_load_as_x_non_existing_file(self, load_method):
         """Test that `resources.load_as_bytes()` returns a bytes object with the expected content."""
         path_test_data = iati.tests.resources.get_test_data_path('this-file-does-not-exist')
@@ -256,7 +256,7 @@ class TestResourceLoading(object):
         """Test that Datasets can be loaded from files encoded with a limited charset."""
         path = iati.tests.resources.get_test_data_path(file_to_load)
 
-        data_str = iati.resources.load_as_string(path)
+        data_str = iati.utilities.load_as_string(path)
         dataset = iati.Dataset(data_str)
         str_of_interest = dataset.xml_tree.xpath('//reporting-org/narrative/text()')[0]
 
@@ -275,7 +275,7 @@ class TestResourceLoading(object):
         """Test that Datasets can be loaded from files encoded with various unicode encodings."""
         path = iati.tests.resources.get_test_data_path(file_to_load)
 
-        data_str = iati.resources.load_as_string(path)
+        data_str = iati.utilities.load_as_string(path)
         dataset = iati.Dataset(data_str)
         str_of_interest = dataset.xml_tree.xpath('//reporting-org/narrative/text()')[0]
 
@@ -297,4 +297,4 @@ class TestResourceLoading(object):
         path = iati.tests.resources.get_test_data_path(file_to_load)
 
         with pytest.raises(ValueError):
-            _ = iati.resources.load_as_string(path)
+            _ = iati.utilities.load_as_string(path)

@@ -2,6 +2,7 @@
 import logging
 import os
 from io import StringIO
+import chardet
 from lxml import etree
 import iati.constants
 
@@ -152,6 +153,119 @@ def dict_raise_on_duplicates(ordered_pairs):
         else:
             duplicate_free_dict[key] = value
     return duplicate_free_dict
+
+
+def load_as_bytes(path):
+    """Load a file at the specified path into a bytes object.
+
+    Args:
+        path (str): The path to the file that is to be read in.
+
+    Returns:
+        bytes: The contents of the file at the specified location.
+
+    Raises:
+        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+
+    Todo:
+        Ensure all reasonably possible `OSError`s are documented here and in functions that call this.
+
+        Add error handling for when the specified file does not exist.
+
+        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
+
+    """
+    with open(path, 'rb') as file_to_load:
+        data = file_to_load.read()
+
+    return data
+
+
+def load_as_dataset(path):
+    """Load a file at the specified path into a Dataset.
+
+    Args:
+        path (str): The path to the file that is to be read in.
+
+    Returns:
+        iati.Dataset: A Dataset object representing the contents of the file at the specified location.
+
+    Raises:
+        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+
+        ValueError: When a file at the specified path does not contain valid XML.
+
+    Todo:
+        Ensure all reasonably possible OSErrors are documented here and in functions that call this.
+        Add error handling for when the specified file does not exist.
+
+    """
+    dataset_str = load_as_string(path)
+
+    return iati.Dataset(dataset_str)
+
+
+def load_as_string(path):
+    """Load a file at the specified path into a string.
+
+    Args:
+        path (str): The path to the file that is to be read in.
+
+    Returns:
+        str (python3) / unicode (python2): The contents of the file at the specified location.
+
+    Raises:
+        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+
+    Todo:
+        Pass in PACKAGE as a default parameter, so that this code can be used by other library modules (e.g. iati.fetch).
+
+    """
+    loaded_bytes = load_as_bytes(path)
+
+    try:
+        loaded_str = loaded_bytes.decode('utf-8')
+    except UnicodeDecodeError:
+        # the file was not UTF-8, so perform a (slow) test to detect encoding
+        # only use the first section of the file since this is generally enough and prevents big files taking ages
+        detected_info = chardet.detect(loaded_bytes[:25000])
+        try:
+            loaded_str = loaded_bytes.decode(detected_info['encoding'])
+            # in Python 2 it is necessary to strip the BOM when decoding from UTF-16BE
+            if detected_info['encoding'] == 'UTF-16' and loaded_str[:1] == u'\ufeff':
+                loaded_str = loaded_str[1:]
+        except TypeError:
+            raise ValueError('Could not detect encoding of file')
+
+    return loaded_str
+
+
+def load_as_tree(path):
+    """Load a schema at the specified path into an ElementTree.
+
+    Args:
+        path (str): The path to the file that is to be converted to an ElementTree. The file at the specified location must contain valid XML.
+
+    Returns:
+        etree._ElementTree: An ElementTree representing the parsed XML.
+
+    Raises:
+        OSError: An error occurred accessing the specified file.
+
+    Warning:
+        There should be errors raised when the request is to load something that is not valid XML.
+
+        Does not fully hide the lxml internal workings. This includes making reference to a private lxml type.
+
+    Todo:
+        Handle when the specified file can be accessed without issue, but it does not contain valid XML.
+
+    """
+    try:
+        doc = etree.parse(path)
+        return doc
+    except OSError:
+        raise
 
 
 def log(lvl, msg, *args, **kwargs):

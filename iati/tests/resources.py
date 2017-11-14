@@ -42,7 +42,9 @@ def get_test_data_path(name, version=None):
     if name[-4:] == iati.resources.FILE_DATA_EXTENSION:
         name = name[:-4]
 
-    return os.path.join(PATH_TEST_DATA, iati.resources.get_folder_name_for_version(version), '{0}'.format(name) + iati.resources.FILE_DATA_EXTENSION)
+    relative_path = os.path.join(PATH_TEST_DATA, iati.resources.get_folder_name_for_version(version), '{0}'.format(name) + iati.resources.FILE_DATA_EXTENSION)
+
+    return iati.resources.resource_filename(relative_path)
 
 
 def get_test_data_paths_in_folder(folder_name, version=None):
@@ -71,7 +73,7 @@ def get_test_data_paths_in_folder(folder_name, version=None):
             paths.append(os.path.join(base_folder, file_name))
 
     # de-resource the file-names so that they're not duplicated
-    deresourced_paths = [path[path.find(root_folder):] for path in paths]
+    deresourced_paths = [iati.resources.resource_filename(path[path.find(root_folder):]) for path in paths]
 
     return deresourced_paths
 
@@ -114,7 +116,7 @@ def load_as_dataset(file_path):
         iati.exceptions.ValidationError: If the provided XML does not conform to the IATI standard.
 
     """
-    return iati.resources.load_as_dataset(iati.tests.resources.get_test_data_path(file_path))
+    return iati.utilities.load_as_dataset(iati.tests.resources.get_test_data_path(file_path))
 
 
 def load_as_string(file_path):
@@ -127,4 +129,4 @@ def load_as_string(file_path):
         str (python3) / unicode (python2): The contents of the file at the specified location.
 
     """
-    return iati.resources.load_as_string(iati.tests.resources.get_test_data_path(file_path))
+    return iati.utilities.load_as_string(iati.tests.resources.get_test_data_path(file_path))

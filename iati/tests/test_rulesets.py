@@ -394,7 +394,7 @@ class RuleSubclassTestBase(object):  # pylint: disable=too-many-public-methods
 
         """
         with pytest.raises(TypeError):
-            rule_instantiating.is_valid_for(iati.resources.load_as_tree(iati.tests.resources.get_test_data_path('ruleset/valid_atleastone')))
+            rule_instantiating.is_valid_for(iati.utilities.load_as_tree(iati.tests.resources.get_test_data_path('ruleset/valid_atleastone')))
 
     def test_multiple_valid_context_matches_is_valid_for(self, valid_multiple_context, valid_nest_case, rule_constructor, valid_dataset):
         """Check Rule returns expected result when checking multiple contexts."""
