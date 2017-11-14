@@ -209,36 +209,73 @@ class TestDefaultVersions(object):
 class TestFileLoading(object):
     """A container for tests relating to loading files."""
 
-    def test_load_as_bytes(self):
-        """Test that `utilities.load_as_bytes()` returns a bytes object with the expected content."""
-        path_test_data = iati.tests.resources.get_test_data_path('invalid')
 
-        result = iati.utilities.load_as_bytes(path_test_data)
+    @pytest.fixture(scope='session')
+    def invalid_xml_file_path_non_resource(self, tmpdir_factory):
+        """Return a path to an invalid XML file that is not a resource."""
+        path_original_data = iati.tests.resources.get_test_data_path('invalid')
+        original_data = iati.utilities.load_as_string(path_original_data)
+
+        new_file = tmpdir_factory.mktemp('test_file_loading').join('invalid.xml')
+        new_file.write(original_data)
+
+        return new_file.strpath
+
+    @pytest.fixture(params=[
+        iati.tests.resources.get_test_data_path('invalid'),
+        'non-resource'
+    ])
+    def invalid_xml_file_path(self, request, invalid_xml_file_path_non_resource):
+        """Return a path to an invalid XML file."""
+        if request.param == 'non-resource':
+            return invalid_xml_file_path_non_resource
+
+        return request.param
+
+    @pytest.fixture(scope='session')
+    def valid_xml_file_path_non_resource(self, tmpdir_factory):
+        """Return a path to a valid XML file that is not a resource."""
+        path_original_data = iati.tests.resources.get_test_data_path('valid')
+        original_data = iati.utilities.load_as_string(path_original_data)
+
+        new_file = tmpdir_factory.mktemp('test_file_loading').join('valid.xml')
+        new_file.write(original_data)
+
+        return new_file.strpath
+
+    @pytest.fixture(params=[
+        iati.tests.resources.get_test_data_path('valid'),
+        'non-resource'
+    ])
+    def valid_xml_file_path(self, request, valid_xml_file_path_non_resource):
+        """Return a path to a valid XML file."""
+        if request.param == 'non-resource':
+            return valid_xml_file_path_non_resource
+
+        return request.param
+
+    def test_load_as_bytes(self, invalid_xml_file_path):
+        """Test that `utilities.load_as_bytes()` returns a bytes object with the expected content."""
+        result = iati.utilities.load_as_bytes(invalid_xml_file_path)
 
         assert isinstance(result, bytes)
         assert result == 'This is a string that is not valid XML\n'.encode()
 
-    def test_load_as_dataset(self):
+    def test_load_as_dataset(self, valid_xml_file_path):
         """Test that utilities.load_as_dataset returns a Dataset object with the expected content."""
-        path_test_data = iati.tests.resources.get_test_data_path('valid')
-
-        result = iati.utilities.load_as_dataset(path_test_data)
+        result = iati.utilities.load_as_dataset(valid_xml_file_path)
 
         assert isinstance(result, iati.Dataset)
         assert '<?xml version="1.0"?>\n\n<iati-activities version="2.02">' in result.xml_str
 
-    def test_load_as_dataset_invalid(self):
+    def test_load_as_dataset_invalid(self, invalid_xml_file_path):
         """Test that `utilities.load_as_dataset()` raises an error when the provided path does not lead to a file containing valid XML."""
-        path_test_data = iati.tests.resources.get_test_data_path('invalid')
-
         with pytest.raises(ValueError):
-            _ = iati.utilities.load_as_dataset(path_test_data)
+            _ = iati.utilities.load_as_dataset(invalid_xml_file_path)
 
-    def test_load_as_string(self):
+    def test_load_as_string(self, invalid_xml_file_path):
         """Test that `utilities.load_as_string()` returns a string (python3) or unicode (python2) object with the expected content."""
-        path_test_data = iati.tests.resources.get_test_data_path('invalid')
-
-        result = iati.utilities.load_as_string(path_test_data)
+        result = iati.utilities.load_as_string(invalid_xml_file_path)
 
         assert isinstance(result, six.string_types)
         assert result == 'This is a string that is not valid XML\n'
