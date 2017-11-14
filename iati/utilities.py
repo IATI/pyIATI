@@ -1,4 +1,13 @@
-"""A module containing utility functions."""
+"""A module containing utility functions.
+
+The `load_as_*(path)` functions load the contents of a file at the specified path and return it in the specified format.
+
+Example:
+    To load a test XML file located in `my_test_file` and use it to create a `Dataset`::
+
+        dataset = iati.utilities.load_as_dataset(iati.tests.resources.get_test_data_path('my_test_file'))
+
+"""
 import logging
 import os
 from io import StringIO

@@ -1,20 +1,4 @@
-"""A module containing utility constants and functions for tests.
-
-A large number of constants containing example file content are contained. These constants are named from left to right, with general properties first, then leading into more specific information. These names indicate what they are used for.
-
-Example:
-    To load a file into a string::
-
-        name_of_file = 'a-file-name-without-the-extension'
-        CONSTANT_NAME = load_as_string(name_of_file)
-
-Note:
-    The current method of managing test data is known to be sub-optimal. Suggestions for better methods that satisfy requirements are appreciated!
-
-Todo:
-    Add versions of constants that are valid for differing schema versions.
-
-"""
+"""A module containing utility constants and functions for tests."""
 import decimal
 from lxml import etree
 import iati.resources

@@ -1,18 +1,6 @@
 """A module to provide a way of locating resources within the IATI library.
 
-There are two key groups of functions within this module: `get_*_path[s]()` and `load_as_*()`.
-
 The `get_*_path[s](name)` functions provide information about where to locate particular types of resources with a provided name.
-
-The `load_as_*(path)` functions load the contents of a file at the specified path and return it in the specified format.
-
-Example:
-    To load a test XML file located in `my_test_file` and use it to create a `Dataset`::
-
-        dataset = iati.utilities.load_as_dataset(iati.tests.resources.get_test_data_path('my_test_file'))
-
-Note:
-    `pkg_resources` is used to allow resources to be located however the package is distributed. If using the standard `os` functionality, resources may not be locatable if, for example, the package is distributed as an egg.
 
 Warning:
     Many of the constants in this module should be deemed private to the IATI library.
@@ -21,8 +9,6 @@ Warning:
 
 Todo:
     Determine how to distribute SSOT content - with package, or separately (being downloaded at runtime).
-
-    Move the functions used to locate test data.
 
 """
 import os
