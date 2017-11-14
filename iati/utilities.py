@@ -180,8 +180,6 @@ def load_as_bytes(path):
     Todo:
         Ensure all reasonably possible `OSError`s are documented here and in functions that call this.
 
-        Add error handling for when the specified file does not exist.
-
     """
     with open(path, 'rb') as file_to_load:
         data = file_to_load.read()
@@ -205,8 +203,6 @@ def load_as_dataset(path):
 
     Todo:
         Ensure all reasonably possible OSErrors are documented here and in functions that call this.
-
-        Add error handling for when the specified file does not exist.
 
     """
     dataset_str = load_as_string(path)
@@ -264,7 +260,7 @@ def load_as_tree(path):
         Does not fully hide the lxml internal workings. This includes making reference to a private lxml type.
 
     Todo:
-        Handle when the specified file can be accessed without issue, but it does not contain valid XML.
+        Handle when the specified file can be accessed without issue, but it does not contain valid XML. Pending `version-independent` test data folder addition - see #218.
 
     """
     try:
