@@ -209,7 +209,6 @@ class TestDefaultVersions(object):
 class TestFileLoading(object):
     """A container for tests relating to loading files."""
 
-
     @pytest.fixture(scope='session')
     def invalid_xml_file_path_non_resource(self, tmpdir_factory):
         """Return a path to an invalid XML file that is not a resource."""
@@ -224,7 +223,7 @@ class TestFileLoading(object):
     @pytest.fixture(params=[
         iati.tests.resources.get_test_data_path('invalid'),
         'non-resource'
-    ])
+    ])  # pylint: disable=invalid-name
     def invalid_xml_file_path(self, request, invalid_xml_file_path_non_resource):
         """Return a path to an invalid XML file."""
         if request.param == 'non-resource':
@@ -246,7 +245,7 @@ class TestFileLoading(object):
     @pytest.fixture(params=[
         iati.tests.resources.get_test_data_path('valid'),
         'non-resource'
-    ])
+    ])  # pylint: disable=invalid-name
     def valid_xml_file_path(self, request, valid_xml_file_path_non_resource):
         """Return a path to a valid XML file."""
         if request.param == 'non-resource':
