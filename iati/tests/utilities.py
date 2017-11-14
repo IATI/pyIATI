@@ -1,6 +1,5 @@
 """A module containing utility constants and functions for tests."""
 import decimal
-from lxml import etree
 import iati.constants
 import iati.tests.resources
 
