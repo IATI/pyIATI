@@ -116,10 +116,10 @@ If you wish to load your own Ruleset you can do this using:
 
 ```python
 import iati.rulesets
+import iati.utilities
 
 # Load a local Ruleset
-with open('path/to/ruleset.json', 'r') as json_file_object:
-    ruleset_str = json_file_object.read()
+ruleset_str = iati.utilities.load_as_string('/absolute/path/to/ruleset.json')
 
 # To create a Ruleset object from your ruleset_str:
 iati.Ruleset(ruleset_str)
@@ -127,14 +127,19 @@ iati.Ruleset(ruleset_str)
 
 ### Working with IATI Datasets
 
-#### Loading a dataset
+#### Loading a dataset - local
+
+```python
+import iati.utilities
+
+# Load a local file
+dataset = iati.utilities.load_as_dataset('/absolute/path/to/iati-activites.xml')
+```
+
+#### Loading a dataset - remote
 
 ```python
 import iati.data
-
-# Load a local file
-with open('path/to/iati-activites.xml', 'r') as xml_file_object:
-    dataset_as_string = xml_file_object.read()
 
 # Load a remote file
 # Assumes the Requests library is installed: http://docs.python-requests.org/
