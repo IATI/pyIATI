@@ -6,10 +6,11 @@ Steps to follow to release a new version of pyIATI.
 1. In the `dev` branch.
     1. Ensure license information for any new dependencies has been added to `LICENSES-3RD-PARTY.txt`.
     2. Read the README to ensure it is up-to-date (if it isn't, fix it!).
-    3. Ensure that all relevant Pull Requests have been merged into `dev`.
-    4. Ensure the `Unreleased` section in `CHANGELOG.md` covers all changes between `  dev` and `master`.
-    5. Ensure all lines under `Unreleased` in `CHANGELOG.md` include a reference to a Pull Request or Issue.
-    6. Prepare the release. You will need a new pull request for these steps:
+    3. Ensure pyIATI includes the latest relevant version of SSOT content.
+    4. Ensure that all relevant Pull Requests have been merged into `dev`.
+    5. Ensure the `Unreleased` section in `CHANGELOG.md` covers all changes between `  dev` and `master`.
+    6. Ensure all lines under `Unreleased` in `CHANGELOG.md` include a reference to a Pull Request or Issue.
+    7. Prepare the release. You will need a new pull request for these steps:
         1. Bump the version, as per [SemVer](http://semver.org/). Run one of the following as appropriate:
             1. If the changes are bug fixes only: `bumpversion patch`
             2. If new features are added: `bumpversion minor`
@@ -17,7 +18,7 @@ Steps to follow to release a new version of pyIATI.
         2. Move content under `Unreleased` in `CHANGELOG.md` to a new section, with a heading in the format: `[version-number] - yyyy-mm-dd`.
         3. Ensure a blank `Unreleased` section is left in `CHANGELOG.md` (see later in doc for template).
         4. Run `make docs` to update documentation and commit updated templates to the repository.
-    7. Merge `dev` into `master`.
+    8. Merge `dev` into `master`.
 2. On the `master` branch.
     1. Create a new [Github Release](https://github.com/IATI/pyIATI/releases).
         * Title: `v{{version-number}}`
