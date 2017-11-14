@@ -9,13 +9,15 @@ Steps to follow to release a new version of pyIATI.
     3. Ensure that all relevant Pull Requests have been merged into `dev`.
     4. Ensure the `Unreleased` section in `CHANGELOG.md` covers all changes between `  dev` and `master`.
     5. Ensure all lines under `Unreleased` in `CHANGELOG.md` include a reference to a Pull Request or Issue.
-    6. Bump the version.
-        1. If the changes are bug fixes only: `bumpversion patch`
-        2. If new features are added: `bumpversion minor`
-        3. There **MUST NOT** be a `major` version increase (to `1.0.0`) until a suitable amount of functionality is stable and tested.
-    7. Move content under `Unreleased` in `CHANGELOG.md` to a new section, with a heading in the format: `[version-number] - yyyy-mm-dd`.
-    8. Ensure a blank `Unreleased` section is left in `CHANGELOG.md` (see later in doc for template).
-    9. Merge `dev` into `master`.
+    6. Prepare the release. You will need a new pull request for these steps:
+        1. Bump the version, as per [SemVer](http://semver.org/). Run one of the following as appropriate:
+            1. If the changes are bug fixes only: `bumpversion patch`
+            2. If new features are added: `bumpversion minor`
+            3. There **MUST NOT** be a `major` version increase (to `1.0.0`) until a suitable amount of functionality is stable and tested.
+        2. Move content under `Unreleased` in `CHANGELOG.md` to a new section, with a heading in the format: `[version-number] - yyyy-mm-dd`.
+        3. Ensure a blank `Unreleased` section is left in `CHANGELOG.md` (see later in doc for template).
+        4. Run `make docs` to update documentation and commit updated templates to the repository.
+    7. Merge `dev` into `master`.
 2. On the `master` branch.
     1. Create a new [Github Release](https://github.com/IATI/pyIATI/releases).
         * Title: `v{{version-number}}`
@@ -29,7 +31,7 @@ Steps to follow to release a new version of pyIATI.
     1. Check that you have a the login credentials for the PyPi test and production instances in a `~/.pypirc` file. [See here](https://docs.python.org/3.6/distutils/packageindex.html#pypirc) for an example.
     2. Package the release ready to upload to PyPi: `python setup.py sdist`
     3. Upload to the PyPi test server: `twine upload dist/* -r pypi-test`
-    4. Test installation from the PyPi test server – this will install `pyIATI` from the test PyPi, but other dependencies (e.g. `lxml` from the production server):
+    4. Test installation from the PyPi test server – this will install `pyIATI` from the test PyPi, but other dependencies (e.g. `lxml` and others) from the production server:
     `pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pyIATI`
     5. Check that all is well by running `pip freeze`. If the latest version is present, all is well.
     6. Upload to the PyPi production server: `twine upload dist/* -r pypi-production`
