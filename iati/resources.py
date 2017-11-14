@@ -77,7 +77,7 @@ def get_all_codelist_paths(version=None):
     """Find the paths for all Codelists at the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that paths to the latest version of the Codelists are returned.
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that paths to a version-independent version of the Codelists are returned.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -104,7 +104,7 @@ def get_all_schema_paths(version=None):
     """Find the paths for all Schemas at the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to the latest version of the Schemas are returned.
+        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to a version-independent version of the Schemas are returned.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -125,7 +125,7 @@ def get_all_activity_schema_paths(version=None):
     """Find the paths for all Activity Schemas at the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the activity schemas for. Defaults to None. This means that paths to the latest version of the Activity Schemas are returned.
+        version (str): The version of the Standard to return the activity schemas for. Defaults to None. This means that paths to a version-independent version of the Activity Schemas are returned.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -146,7 +146,7 @@ def get_all_organisation_schema_paths(version=None):  # pylint: disable=invalid-
     """Find the paths for all Organisation Schemas at the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Organisation schemas for. Defaults to None. This means that paths to the latest version of the Organisation Schemas are returned.
+        version (str): The version of the Standard to return the Organisation schemas for. Defaults to None. This means that paths to a version-independent version of the Organisation Schemas are returned.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -169,7 +169,7 @@ def get_codelist_path(codelist_name, version=None):
 
     Args:
         codelist_name (str): The name of the codelist to locate. Should the name end in `.xml`, this shall be removed to determine the name.
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that a path to the latest version of the Codelist is returned.
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that a path to a version-independent version of the Codelist is returned.
 
     Returns:
         str: The path to a file containing the specified Codelist.
@@ -190,7 +190,7 @@ def get_codelist_path(codelist_name, version=None):
 def get_codelist_mapping_path(version=None):
     """Determine the path of the Codelist mapping file.
 
-    version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+    version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename independent of any version of the Standard.
 
     Returns:
         str: The path to a file containing the mapping file.
@@ -221,7 +221,7 @@ def get_folder_name_for_version(version=None):
     """Return the folder name for a given version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the folder path for. Defaults to None. This means that the folder name corresponding to the latest version of the Standard is returned.
+        version (str): The version of the Standard to return the folder path for. Defaults to None. This means that the folder name independent of any version of the Standard is returned.
 
     Returns:
         str: The folder name for the specified version of the Standard.
@@ -249,7 +249,7 @@ def get_ruleset_path(name, version=None):
 
     Args:
         name (str): The name of the Ruleset to locate.
-        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that paths to the latest version of the Ruleset are returned.
+        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that paths to a version-independent version of the Ruleset are returned.
 
     Returns:
         str: The path to a file containing the specified ruleset.
@@ -269,7 +269,7 @@ def get_schema_path(name, version=None):
 
     Args:
         name (str): The name of the Schema to locate.
-        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that paths to the latest version of the Schema is returned.
+        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that paths to a version-independent version of the Schema is returned.
 
     Returns:
         str: The path to a file containing the specified Schema.
@@ -291,7 +291,7 @@ def get_folder_path_for_version(version=None):
     """Return the path for the folder containing SSOT data (schemas, codelists etc) at the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the folder path for. Defaults to None. This means that the path corresponding to the latest version of the Standard is returned.
+        version (str): The version of the Standard to return the folder path for. Defaults to None. This means that the path independent of any version of the Standard is returned.
 
     Returns:
         str: The relative path to the folder for containing SSOT data the specified version of the Standard.
@@ -305,7 +305,7 @@ def get_path_for_version(path, version=None):
 
     Args:
         path (str): The path to the file that is to be read in.
-        version (str): The version of the Standard to return the folder path for. Defaults to None. This means that the path corresponding to the latest version of the Standard is returned.
+        version (str): The version of the Standard to return the folder path for. Defaults to None. This means that the path independent of any version of the Standard is returned.
 
     Returns:
         str: The relative path to a file at the specified version of the Standard.

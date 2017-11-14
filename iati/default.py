@@ -69,7 +69,7 @@ def codelist(name, version=None):
 
     Args:
         name (str): The name of the Codelist to return.
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the specified Codelist is returned.
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that a version-independent version of the specified Codelist is returned.
 
     Raises:
         ValueError: When a specified name is not a Codelist at the specified version of the Standard.
@@ -102,7 +102,7 @@ def _codelists(version=None, use_cache=False):
     """Locate the default Codelists for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelists are returned.
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that a version-independent version of the Codelists are returned.
         use_cache (bool): Whether the cache should be used rather than loading the Codelists from disk again. If used, a `deepcopy()` should be performed on any returned Codelist before it is modified.
 
     Raises:
@@ -138,7 +138,7 @@ def codelists(version=None):
     """Return the default Codelists for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelists are returned.
+        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that a version-independent version of the Codelists are returned.
 
     Returns:
         dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.Codelist() instances, populated with the relevant Codes.
@@ -151,7 +151,7 @@ def codelist_mapping(version=None):
     """Define the mapping process which states where in a Dataset you should find values on a given Codelist.
 
     Args:
-        version (str): The version of the Standard to return the mapping file for. Defaults to None. This means that the mapping file is returned for the latest version of the Standard.
+        version (str): The version of the Standard to return the mapping file for. Defaults to None. This means that a version-independent mapping file is returned.
 
     Returns:
         dict of dict: A dictionary containing mapping information. Keys in the first dictionary are Codelist names. Keys in the second dictionary are `xpath` and `condition`. The condition is `None` if there is no condition.
@@ -185,7 +185,7 @@ def ruleset(version=None):
     """Return the Standard Ruleset for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that the latest Standard Ruleset is returned.
+        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that a version-independent Standard Ruleset is returned.
 
     Returns:
         iati.Ruleset: The default Ruleset for the specified version of the Standard.
@@ -204,7 +204,7 @@ def ruleset_schema(version=None):
     """Return the Ruleset schema for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that the latest Ruleset schema is returned.
+        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that a version-independent Ruleset schema is returned.
 
     Returns:
         dict: A dictionary representing the Ruleset schema for the specified version of the Standard.
@@ -254,7 +254,7 @@ def _populate_schema(schema, version=None):
 
     Args:
         schema (iati.Schema): The Schema to populate.
-        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Standard is assumed.
+        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that a version-independent version of the Standard is assumed.
 
     Returns:
         iati.Schema: The provided Schema, populated with additional information.
@@ -280,7 +280,7 @@ def _schema(path_func, schema_class, version=None, populate=True, use_cache=Fals
     Args:
         path_func (func): A function to return the paths at which the relevant Schema can be found.
         schema_class (type): A class definition for the Schema of interest.
-        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
+        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that a version-independent version of the Schema is returned.
         populate (bool): Whether the Schema should be populated with auxilliary information such as Codelists and Rulesets.
         use_cache (bool): Whether the cache should be used rather than loading the Schema from disk again. If used, a `deepcopy()` should be performed on any returned Schema before it is modified.
 
@@ -310,7 +310,7 @@ def activity_schema(version=None, populate=True):
     """Return the default Activity Schema for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
+        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that a version-independent version of the Schema is returned.
         populate (bool): Whether the Schema should be populated with auxilliary information such as Codelists and Rulesets.
 
     Raises:
@@ -327,7 +327,7 @@ def organisation_schema(version=None, populate=True):
     """Return the default Organisation Schema for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
+        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that a version-independent version of the Schema is returned.
         populate (bool): Whether the Schema should be populated with auxilliary information such as Codelists and Rulesets.
 
     Raises:

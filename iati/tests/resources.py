@@ -16,7 +16,7 @@ def get_test_data_path(name, version=None):
 
     Args:
         name (str): The name of the data file to locate. The name may contain forward slashes (`/`) to indicate a directory. Data files must be `.xml` files.
-        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename independent of any version of the Standard.
 
     Returns:
         str: The path to a file containing the specified data.
@@ -50,7 +50,7 @@ def get_test_data_paths_in_folder(folder_name, version=None):
 
     Args:
         name (str): The name of the folder within which to locate data files.
-        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename independent of any version of the Standard.
 
     Returns:
         list of str: The paths to data files in the specified folders.
@@ -81,7 +81,7 @@ def get_test_ruleset_path(name, version=None):
 
     Args:
         name (str): The name of the data file to locate. The filename must not contain the '.xml' file extension.
-        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename independent of any version of the Standard.
 
     Returns:
         str: The path to a file containing the specified test Ruleset.
@@ -106,7 +106,7 @@ def load_as_dataset(file_path, version=None):
 
     Args:
         file_path (str): The path of the file, relative to the root test data folder. Folders should be separated by a forward-slash (`/`).
-        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename independent of any version of the Standard.
 
     Returns:
         dataset: A Dataset containing the contents of the file at the specified location.
@@ -123,7 +123,7 @@ def load_as_string(file_path, version=None):
 
     Args:
         file_path (str): The path of the file, relative to the root test data folder. Folders should be separated by a forward-slash (`/`).
-        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
+        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename independent of any version of the Standard.
 
     Returns:
         str (python3) / unicode (python2): The contents of the file at the specified location.
