@@ -13,8 +13,13 @@ class ValidationTestBase(object):
 
     @pytest.fixture
     def schema_basic(self):
-        """An Activity Schema with no Codelists added."""
-        return iati.default.activity_schema(None, False)
+        """An Activity Schema with no Codelists added.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        return iati.default.activity_schema('2.02', False)
 
     @pytest.fixture
     def schema_fully_populated(self):
@@ -361,7 +366,7 @@ class ValidateCodelistsBase(ValidationTestBase):
             Stop this being fixed to 2.02.
 
         """
-        schema = iati.default.activity_schema(None, False)
+        schema = iati.default.activity_schema('2.02', False)
         codelist = iati.default.codelist('Version', '2.02')
 
         schema.codelists.add(codelist)
@@ -376,7 +381,7 @@ class ValidateCodelistsBase(ValidationTestBase):
             Stop this being fixed to 2.02.
 
         """
-        schema = iati.default.activity_schema(None, False)
+        schema = iati.default.activity_schema('2.02', False)
         codelist = iati.default.codelist('OrganisationType', '2.02')
 
         schema.codelists.add(codelist)
@@ -391,7 +396,7 @@ class ValidateCodelistsBase(ValidationTestBase):
             Stop this being fixed to 2.02.
 
         """
-        schema = iati.default.activity_schema(None, False)
+        schema = iati.default.activity_schema('2.02', False)
         codelist = iati.default.codelist('Country', '2.02')
 
         schema.codelists.add(codelist)
@@ -406,7 +411,7 @@ class ValidateCodelistsBase(ValidationTestBase):
             Stop this being fixed to 2.02.
 
         """
-        schema = iati.default.activity_schema(None, False)
+        schema = iati.default.activity_schema('2.02', False)
         codelist = iati.default.codelist('Language', '2.02')
 
         schema.codelists.add(codelist)
@@ -421,7 +426,7 @@ class ValidateCodelistsBase(ValidationTestBase):
             Stop this being fixed to 2.02.
 
         """
-        schema = iati.default.activity_schema(None, False)
+        schema = iati.default.activity_schema('2.02', False)
 
         codelist_1 = iati.default.codelist('SectorVocabulary', '2.02')
         codelist_2 = iati.default.codelist('Sector', '2.02')
@@ -441,7 +446,7 @@ class ValidateCodelistsBase(ValidationTestBase):
             Stop this being fixed to 2.02.
 
         """
-        schema = iati.default.activity_schema(None, False)
+        schema = iati.default.activity_schema('2.02', False)
         codelist = iati.default.codelist('CRSChannelCode', '2.02')
 
         schema.codelists.add(codelist)
@@ -1129,7 +1134,7 @@ class TestValidateRulesets(object):
         data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors', '2.02')
         ruleset_1 = iati.default.ruleset('2.02')
         ruleset_2 = iati.default.ruleset('2.02')
-        schema = iati.default.activity_schema(None, False)
+        schema = iati.default.activity_schema('2.02', False)
         schema.rulesets.add(ruleset_1)
         schema.rulesets.add(ruleset_2)
 
