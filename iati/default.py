@@ -140,6 +140,9 @@ def codelists(version=None):
     Args:
         version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that a version-independent version of the Codelists are returned.
 
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
     Returns:
         dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.Codelist() instances, populated with the relevant Codes.
 
@@ -152,6 +155,9 @@ def codelist_mapping(version=None):
 
     Args:
         version (str): The version of the Standard to return the mapping file for. Defaults to None. This means that a version-independent mapping file is returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
 
     Returns:
         dict of dict: A dictionary containing mapping information. Keys in the first dictionary are Codelist names. Keys in the second dictionary are `xpath` and `condition`. The condition is `None` if there is no condition.
@@ -187,11 +193,11 @@ def ruleset(version=None):
     Args:
         version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that a version-independent Standard Ruleset is returned.
 
-    Returns:
-        iati.Ruleset: The default Ruleset for the specified version of the Standard.
-
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        iati.Ruleset: The default Ruleset for the specified version of the Standard.
 
     """
     path = iati.resources.get_ruleset_path(iati.resources.FILE_RULESET_STANDARD_NAME, version)
@@ -206,11 +212,11 @@ def ruleset_schema(version=None):
     Args:
         version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that a version-independent Ruleset schema is returned.
 
-    Returns:
-        dict: A dictionary representing the Ruleset schema for the specified version of the Standard.
-
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        dict: A dictionary representing the Ruleset schema for the specified version of the Standard.
 
     """
     path = iati.resources.get_ruleset_path(iati.resources.FILE_RULESET_SCHEMA_NAME, version)
