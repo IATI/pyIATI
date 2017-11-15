@@ -663,7 +663,7 @@ def _create_error_for_rule(rule):
 
 
 def full_validation(dataset, schema):
-    """Perform full validation on a Dataset.
+    """Perform full validation on a Dataset against the provided Schema.
 
     Args:
         dataset (iati.Dataset): The Dataset to check validity of.
