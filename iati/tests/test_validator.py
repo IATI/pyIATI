@@ -17,6 +17,11 @@ class ValidationTestBase(object):
         return iati.default.activity_schema(None, False)
 
     @pytest.fixture
+    def schema_basic_org(self):
+        """An Org Schema with no Codelists added."""
+        return iati.default.organisation_schema(None, False)
+
+    @pytest.fixture
     def schema_fully_populated(self):
         """Return an Activity Schema populated with all Codelists.
 
@@ -84,13 +89,23 @@ class ValidationTestBase(object):
         return request.param
 
     @pytest.fixture(params=iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-pass'))
-    def iati_dataset_valid_from_ssot(self, request):
-        """A `should-pass` Dataset from the SSOT."""
+    def iati_dataset_valid_from_ssot_activity(self, request):
+        """A `should-pass` activity Dataset from the SSOT."""
         return iati.utilities.load_as_dataset(request.param)
 
     @pytest.fixture(params=iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail'))
-    def iati_dataset_invalid_from_ssot(self, request):
-        """A `should-fail` Dataset from the SSOT."""
+    def iati_dataset_invalid_from_ssot_activity(self, request):
+        """A `should-fail` activity Dataset from the SSOT."""
+        return iati.utilities.load_as_dataset(request.param)
+
+    @pytest.fixture(params=iati.tests.resources.get_test_data_paths_in_folder('ssot-org-xml-pass'))
+    def iati_dataset_valid_from_ssot_org(self, request):
+        """A `should-pass` organisation Dataset from the SSOT."""
+        return iati.utilities.load_as_dataset(request.param)
+
+    @pytest.fixture(params=iati.tests.resources.get_test_data_paths_in_folder('ssot-org-xml-fail'))
+    def iati_dataset_invalid_from_ssot_org(self, request):
+        """A `should-fail` organisation Dataset from the SSOT."""
         return iati.utilities.load_as_dataset(request.param)
 
     @pytest.fixture
@@ -415,12 +430,21 @@ class TestValidationTruthyIATI(ValidationTestBase):
         assert iati.validator.is_iati_xml(data, schema_basic)
         assert iati.validator.is_valid(data, schema_basic)
 
-    def test_basic_validation_should_pass_from_ssot(self, iati_dataset_valid_from_ssot, schema_basic):
+    def test_basic_validation_should_pass_from_ssot_activity(self, iati_dataset_valid_from_ssot_activity, schema_basic):
         """Perform check to see whether a parameter is valid IATI XML.
 
         The parameter is valid IATI XML. It is sourced from the SSOT.
         """
-        assert iati.validator.is_iati_xml(iati_dataset_valid_from_ssot, schema_basic)
+        assert iati.validator.is_xml(iati_dataset_valid_from_ssot_activity.xml_str)
+        assert iati.validator.is_iati_xml(iati_dataset_valid_from_ssot_activity, schema_basic)
+
+    def test_basic_validation_should_pass_from_ssot_org(self, iati_dataset_valid_from_ssot_org, schema_basic_org):
+        """Perform check to see whether a parameter is valid IATI XML.
+
+        The parameter is valid IATI XML. It is sourced from the SSOT.
+        """
+        assert iati.validator.is_xml(iati_dataset_valid_from_ssot_org.xml_str)
+        assert iati.validator.is_iati_xml(iati_dataset_valid_from_ssot_org, schema_basic_org)
 
     def test_basic_validation_invalid(self, schema_basic):
         """Perform a super simple data validation against an invalid Dataset."""
@@ -430,12 +454,21 @@ class TestValidationTruthyIATI(ValidationTestBase):
         assert not iati.validator.is_iati_xml(data, schema_basic)
         assert not iati.validator.is_valid(data, schema_basic)
 
-    def test_basic_validation_should_fail_from_ssot(self, iati_dataset_invalid_from_ssot, schema_basic):
+    def test_basic_validation_should_fail_from_ssot_activity(self, iati_dataset_invalid_from_ssot_activity, schema_basic):
         """Perform check to see whether a parameter is valid IATI XML.
 
         The parameter is not valid IATI XML. It is sourced from the SSOT.
         """
-        assert not iati.validator.is_iati_xml(iati_dataset_invalid_from_ssot, schema_basic)
+        assert iati.validator.is_xml(iati_dataset_invalid_from_ssot_activity.xml_str)
+        assert not iati.validator.is_iati_xml(iati_dataset_invalid_from_ssot_activity, schema_basic)
+
+    def test_basic_validation_should_fail_from_ssot_org(self, iati_dataset_invalid_from_ssot_org, schema_basic_org):
+        """Perform check to see whether a parameter is valid IATI XML.
+
+        The parameter is not valid IATI XML. It is sourced from the SSOT.
+        """
+        assert iati.validator.is_xml(iati_dataset_invalid_from_ssot_org.xml_str)
+        assert not iati.validator.is_iati_xml(iati_dataset_invalid_from_ssot_org, schema_basic_org)
 
     def test_basic_validation_invalid_missing_required_element(self, schema_basic):
         """Perform a super simple data validation against a Dataset that is invalid due to a missing required element."""
