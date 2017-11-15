@@ -88,26 +88,6 @@ class ValidationTestBase(object):
         """A Dataset that is not valid against the IATI Schema because it is missing a required element."""
         return request.param
 
-    @pytest.fixture(params=iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-pass'))
-    def iati_dataset_valid_from_ssot_activity(self, request):
-        """A `should-pass` activity Dataset from the SSOT."""
-        return iati.utilities.load_as_dataset(request.param)
-
-    @pytest.fixture(params=iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail'))
-    def iati_dataset_invalid_from_ssot_activity(self, request):
-        """A `should-fail` activity Dataset from the SSOT."""
-        return iati.utilities.load_as_dataset(request.param)
-
-    @pytest.fixture(params=iati.tests.resources.get_test_data_paths_in_folder('ssot-org-xml-pass'))
-    def iati_dataset_valid_from_ssot_org(self, request):
-        """A `should-pass` organisation Dataset from the SSOT."""
-        return iati.utilities.load_as_dataset(request.param)
-
-    @pytest.fixture(params=iati.tests.resources.get_test_data_paths_in_folder('ssot-org-xml-fail'))
-    def iati_dataset_invalid_from_ssot_org(self, request):
-        """A `should-fail` organisation Dataset from the SSOT."""
-        return iati.utilities.load_as_dataset(request.param)
-
     @pytest.fixture
     def error_log_empty(self):
         """An empty error log.
@@ -430,23 +410,37 @@ class TestValidationTruthyIATI(ValidationTestBase):
         assert iati.validator.is_iati_xml(data, schema_basic)
         assert iati.validator.is_valid(data, schema_basic)
 
-    # pylint: disable=invalid-name
-    def test_basic_validation_should_pass_from_ssot_activity(self, iati_dataset_valid_from_ssot_activity, schema_basic):
+    @pytest.mark.parametrize('file_path', iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-pass') + iati.tests.resources.get_test_data_paths_in_folder('ssot-org-xml-pass'))
+    def test_basic_validation_should_pass_from_ssot(self, file_path, schema_basic, schema_basic_org):
         """Perform check to see whether a parameter is valid IATI XML.
 
         The parameter is valid IATI XML. It is sourced from the SSOT.
         """
-        assert iati.validator.is_xml(iati_dataset_valid_from_ssot_activity.xml_str)
-        assert iati.validator.is_iati_xml(iati_dataset_valid_from_ssot_activity, schema_basic)
+        dataset = iati.utilities.load_as_dataset(file_path)
 
-    # pylint: disable=invalid-name
-    def test_basic_validation_should_pass_from_ssot_org(self, iati_dataset_valid_from_ssot_org, schema_basic_org):
+        if 'ssot-activity-xml-pass' in file_path:
+            schema = schema_basic
+        else:
+            schema = schema_basic_org
+
+        assert iati.validator.is_xml(dataset.xml_str)
+        assert iati.validator.is_iati_xml(dataset, schema)
+
+    @pytest.mark.parametrize('file_path', iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail') + iati.tests.resources.get_test_data_paths_in_folder('ssot-org-xml-fail'))
+    def test_basic_validation_should_fail_from_ssot(self, file_path, schema_basic, schema_basic_org):
         """Perform check to see whether a parameter is valid IATI XML.
 
         The parameter is valid IATI XML. It is sourced from the SSOT.
         """
-        assert iati.validator.is_xml(iati_dataset_valid_from_ssot_org.xml_str)
-        assert iati.validator.is_iati_xml(iati_dataset_valid_from_ssot_org, schema_basic_org)
+        dataset = iati.utilities.load_as_dataset(file_path)
+
+        if 'ssot-activity-xml-fail' in file_path:
+            schema = schema_basic
+        else:
+            schema = schema_basic_org
+
+        assert iati.validator.is_xml(dataset.xml_str)
+        assert not iati.validator.is_iati_xml(dataset, schema)
 
     def test_basic_validation_invalid(self, schema_basic):
         """Perform a super simple data validation against an invalid Dataset."""
@@ -455,24 +449,6 @@ class TestValidationTruthyIATI(ValidationTestBase):
         assert iati.validator.is_xml(data.xml_str)
         assert not iati.validator.is_iati_xml(data, schema_basic)
         assert not iati.validator.is_valid(data, schema_basic)
-
-    # pylint: disable=invalid-name
-    def test_basic_validation_should_fail_from_ssot_activity(self, iati_dataset_invalid_from_ssot_activity, schema_basic):
-        """Perform check to see whether a parameter is valid IATI XML.
-
-        The parameter is not valid IATI XML. It is sourced from the SSOT.
-        """
-        assert iati.validator.is_xml(iati_dataset_invalid_from_ssot_activity.xml_str)
-        assert not iati.validator.is_iati_xml(iati_dataset_invalid_from_ssot_activity, schema_basic)
-
-    # pylint: disable=invalid-name
-    def test_basic_validation_should_fail_from_ssot_org(self, iati_dataset_invalid_from_ssot_org, schema_basic_org):
-        """Perform check to see whether a parameter is valid IATI XML.
-
-        The parameter is not valid IATI XML. It is sourced from the SSOT.
-        """
-        assert iati.validator.is_xml(iati_dataset_invalid_from_ssot_org.xml_str)
-        assert not iati.validator.is_iati_xml(iati_dataset_invalid_from_ssot_org, schema_basic_org)
 
     def test_basic_validation_invalid_missing_required_element(self, schema_basic):
         """Perform a super simple data validation against a Dataset that is invalid due to a missing required element."""
