@@ -35,6 +35,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Constants] `STANDARD_VERSIONS` now lists all versions of the Standard, not just those that are fully supported by pyIATI. [#223]
 
+- [Defaults] Test and document `ValueError`s that can be raised by functions in `iati.default`. [#241]
+
 - [Validation] Prevent `XPathEvalError`s occurring when given a Codelist Mapping XPath that identifies something other than an attribute. [#229]
 - [Validation] Datasets with an `xml:lang` attribute no longer raise a `KeyError` upon performing Codelist validation against a Schema populated with the Language Codelist. [#226]
 
