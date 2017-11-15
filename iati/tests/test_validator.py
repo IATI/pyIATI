@@ -919,7 +919,7 @@ class TestValidateRulesets(object):
     def test_one_ruleset_error_added_for_multiple_rule_errors(self, schema_ruleset):
         """Check that a Dataset containing multiple Rule errors produces an error log containing only one Ruleset error."""
         data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors')
-        result = iati.validator.full_validation(data_with_multiple_rule_errors, schema_ruleset)
+        result = iati.validator._check_ruleset_conformance(data_with_multiple_rule_errors, schema_ruleset)  # pylint: disable=protected-access
 
         assert len(result.get_errors_or_warnings_by_category('rule')) > 1
         assert len(result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')) == 1
@@ -932,7 +932,7 @@ class TestValidateRulesets(object):
         schema = iati.default.activity_schema(None, False)
         schema.rulesets.add(ruleset_1)
         schema.rulesets.add(ruleset_2)
-        result = iati.validator.full_validation(data_with_multiple_rule_errors, schema)
+        result = iati.validator._check_ruleset_conformance(data_with_multiple_rule_errors, schema)  # pylint: disable=protected-access
 
         assert len(result.get_errors_or_warnings_by_category('rule')) > 1
         assert len(result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')) == 2
@@ -940,7 +940,7 @@ class TestValidateRulesets(object):
     def test_no_ruleset_errors_added_for_rule_warnings(self, schema_ruleset):
         """Check that a Dataset containing only Rule warnings does not result in a Ruleset error being added."""
         data_with_rule_warnings_only = iati.tests.resources.load_as_dataset('valid_std_ruleset')
-        result = iati.validator.full_validation(data_with_rule_warnings_only, schema_ruleset)
+        result = iati.validator._check_ruleset_conformance(data_with_rule_warnings_only, schema_ruleset)  # pylint: disable=protected-access
 
         assert len(result.get_warnings()) >= 1
         assert len(result.get_errors_or_warnings_by_category('rule')) >= 1
@@ -1005,3 +1005,11 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
 
         assert len(result) == 1
         assert result.contains_error_called('err-not-xml-empty-document')
+
+    def test_full_validation_ruleset_conformance_fail(self, schema_ruleset):
+        """Perform data validation against valid IATI XML that does not conform to Rulesets."""
+        data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors')
+        result = iati.validator.full_validation(data_with_multiple_rule_errors, schema_ruleset)
+
+        assert len(result.get_errors_or_warnings_by_category('rule')) > 1
+        assert len(result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')) == 1
