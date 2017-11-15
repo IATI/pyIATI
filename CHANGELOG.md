@@ -8,11 +8,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
+- [Constants] `STANDARD_VERSIONS_SUPPORTED` lists all versions of the Standard that are fully supported by pyIATI. [#223]
+
 - [Datasets] A Dataset `xml_tree` may be set with an ElementTree. [#235]
+
+- [Resources] Add ability to define resource files that are version-independent. [#223]
 
 - [Utility] Non-resource files may be loaded using utility functions. [#235]
 
 ### Changed
+
+- [General] Change default behavior of `version` argument as per proposal in #218. [#223]
 
 - [Resources] Move `load_as_x` functions to `iati.utilities`. [#235]
 - [Resources] Rename version-specific resource folders to reduce ambiguity. [#217]
@@ -26,6 +32,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Fixed
 
 - [Codelists] Fixed impossible XPath in Codelist Mapping File. [IATI/IATI-Codelists#119]
+
+- [Constants] `STANDARD_VERSIONS` now lists all versions of the Standard, not just those that are fully supported by pyIATI. [#223]
 
 - [Validation] Prevent `XPathEvalError`s occurring when given a Codelist Mapping XPath that identifies something other than an attribute. [#229]
 - [Validation] Datasets with an `xml:lang` attribute no longer raise a `KeyError` upon performing Codelist validation against a Schema populated with the Language Codelist. [#226]
