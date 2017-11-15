@@ -950,6 +950,15 @@ class TestValidateRulesets(object):
 class TestValidatorFullValidation(ValidateCodelistsBase):
     """A container for tests relating to detailed error output from validation."""
 
+    def test_full_validation_not_xml_detailed_output(self, schema_basic):
+        """Perform full validation against a string that is not XML."""
+        not_xml = 'This is not XML.'
+
+        result = iati.validator.full_validation(not_xml, schema_basic)
+
+        assert len(result) == 1
+        assert result.contains_error_called('err-not-xml-empty-document')
+
     def test_full_validation_codelist_valid_detailed_output(self, schema_version):
         """Perform data validation against valid IATI XML that has valid Codelist values.  Obtain detailed error output."""
         data = iati.tests.resources.load_as_dataset('valid_iati')
@@ -996,15 +1005,6 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
         assert result.status == 'warning'
         assert 'Country' in result.info
         assert 'Country' in result.help
-
-    def test_full_validation_not_xml_detailed_output(self, schema_basic):
-        """Perform full validation against a string that is not XML."""
-        not_xml = 'This is not XML.'
-
-        result = iati.validator.full_validation(not_xml, schema_basic)
-
-        assert len(result) == 1
-        assert result.contains_error_called('err-not-xml-empty-document')
 
     def test_full_validation_ruleset_conformance_fail(self, schema_ruleset):
         """Perform data validation against valid IATI XML that does not conform to Rulesets."""
