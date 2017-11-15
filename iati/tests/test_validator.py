@@ -959,6 +959,16 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
         assert len(result) == 1
         assert result.contains_error_called('err-not-xml-empty-document')
 
+    def test_full_validation_iati_xml(self, not_iati_dataset_missing_required_el, schema_basic):  # pylint: disable=invalid-name
+        """Perform check to see whether a parameter is valid IATI XML.
+
+        The parameter is not valid IATI XML. It is missing a required element.
+        """
+        result = iati.validator.full_validation(not_iati_dataset_missing_required_el, schema_basic)
+
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-iati-xml-missing-required-element')
+
     def test_full_validation_codelist_valid_detailed_output(self, schema_version):
         """Perform data validation against valid IATI XML that has valid Codelist values.  Obtain detailed error output."""
         data = iati.tests.resources.load_as_dataset('valid_iati')
