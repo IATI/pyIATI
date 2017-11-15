@@ -18,6 +18,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Changed
 
+- [Defaults] Make `version` argument mandatory when accessing Standard content that may differ between versions. [#243]
+
 - [General] Change default behavior of `version` argument as per proposal in #218. [#223]
 
 - [Resources] Move `load_as_x` functions to `iati.utilities`. [#235]
@@ -26,6 +28,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Deprecated
 
 ### Removed
+
+- [Defaults] Remove `get_default_version_if_none()`. [#243]
+- [Defaults] Remove `version` argument for `ruleset_schema()` since this is version-independent.
 
 - [Documentation] Stop tracking auto-generated docs templates. [#236]
 

@@ -355,9 +355,14 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_version(self):
-        """Return an Activity Schema with the Version Codelist added."""
+        """Return an Activity Schema with the Version Codelist added.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
         schema = iati.default.activity_schema(None, False)
-        codelist = iati.default.codelist('Version')
+        codelist = iati.default.codelist('Version', '2.02')
 
         schema.codelists.add(codelist)
 
@@ -365,9 +370,14 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_org_type(self):
-        """Return an Activity Schema with the OrganisationType Codelist added."""
+        """Return an Activity Schema with the OrganisationType Codelist added.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
         schema = iati.default.activity_schema(None, False)
-        codelist = iati.default.codelist('OrganisationType')
+        codelist = iati.default.codelist('OrganisationType', '2.02')
 
         schema.codelists.add(codelist)
 
@@ -375,9 +385,14 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_incomplete_codelist(self):
-        """Return an Activity Schema with an incomplete Codelist added."""
+        """Return an Activity Schema with an incomplete Codelist added.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
         schema = iati.default.activity_schema(None, False)
-        codelist = iati.default.codelist('Country')
+        codelist = iati.default.codelist('Country', '2.02')
 
         schema.codelists.add(codelist)
 
@@ -385,9 +400,14 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_short_mapping_codelist(self):
-        """Return an Activity Schema with a Codelist that has a short `path` in the mapping file."""
+        """Return an Activity Schema with a Codelist that has a short `path` in the mapping file.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
         schema = iati.default.activity_schema(None, False)
-        codelist = iati.default.codelist('Language')
+        codelist = iati.default.codelist('Language', '2.02')
 
         schema.codelists.add(codelist)
 
@@ -395,12 +415,17 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_sectors(self):
-        """Return an Activity Schema with the DAC Sector Codelists and appropriate vocabulary added."""
+        """Return an Activity Schema with the DAC Sector Codelists and appropriate vocabulary added.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
         schema = iati.default.activity_schema(None, False)
 
-        codelist_1 = iati.default.codelist('SectorVocabulary')
-        codelist_2 = iati.default.codelist('Sector')
-        codelist_3 = iati.default.codelist('SectorCategory')
+        codelist_1 = iati.default.codelist('SectorVocabulary', '2.02')
+        codelist_2 = iati.default.codelist('Sector', '2.02')
+        codelist_3 = iati.default.codelist('SectorCategory', '2.02')
 
         schema.codelists.add(codelist_1)
         schema.codelists.add(codelist_2)
@@ -410,9 +435,14 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_element_text_codelist(self):
-        """Return an Activity Schema with a Codelist that maps to an element rather than attribute in the mapping file."""
+        """Return an Activity Schema with a Codelist that maps to an element rather than attribute in the mapping file.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
         schema = iati.default.activity_schema(None, False)
-        codelist = iati.default.codelist('CRSChannelCode')
+        codelist = iati.default.codelist('CRSChannelCode', '2.02')
 
         schema.codelists.add(codelist)
 
