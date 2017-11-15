@@ -430,6 +430,7 @@ class TestValidationTruthyIATI(ValidationTestBase):
         assert iati.validator.is_iati_xml(data, schema_basic)
         assert iati.validator.is_valid(data, schema_basic)
 
+    # pylint: disable=invalid-name
     def test_basic_validation_should_pass_from_ssot_activity(self, iati_dataset_valid_from_ssot_activity, schema_basic):
         """Perform check to see whether a parameter is valid IATI XML.
 
@@ -438,6 +439,7 @@ class TestValidationTruthyIATI(ValidationTestBase):
         assert iati.validator.is_xml(iati_dataset_valid_from_ssot_activity.xml_str)
         assert iati.validator.is_iati_xml(iati_dataset_valid_from_ssot_activity, schema_basic)
 
+    # pylint: disable=invalid-name
     def test_basic_validation_should_pass_from_ssot_org(self, iati_dataset_valid_from_ssot_org, schema_basic_org):
         """Perform check to see whether a parameter is valid IATI XML.
 
@@ -454,6 +456,7 @@ class TestValidationTruthyIATI(ValidationTestBase):
         assert not iati.validator.is_iati_xml(data, schema_basic)
         assert not iati.validator.is_valid(data, schema_basic)
 
+    # pylint: disable=invalid-name
     def test_basic_validation_should_fail_from_ssot_activity(self, iati_dataset_invalid_from_ssot_activity, schema_basic):
         """Perform check to see whether a parameter is valid IATI XML.
 
@@ -462,6 +465,7 @@ class TestValidationTruthyIATI(ValidationTestBase):
         assert iati.validator.is_xml(iati_dataset_invalid_from_ssot_activity.xml_str)
         assert not iati.validator.is_iati_xml(iati_dataset_invalid_from_ssot_activity, schema_basic)
 
+    # pylint: disable=invalid-name
     def test_basic_validation_should_fail_from_ssot_org(self, iati_dataset_invalid_from_ssot_org, schema_basic_org):
         """Perform check to see whether a parameter is valid IATI XML.
 
