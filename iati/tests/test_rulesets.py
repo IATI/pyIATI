@@ -41,16 +41,14 @@ class TestRuleset(object):
         assert isinstance(ruleset.rules, set)
         assert ruleset.rules == set()
 
-    @pytest.mark.parametrize("not_a_ruleset",
-        iati.tests.utilities.generate_test_types(['str', 'bytearray', 'none'], True) +
-        [
-            '{"xpath": "string"}',
-            '{"xpath": 1}',
-            '{"xpath": 1.1}',
-            '{"xpath": null}',
-            '{"xpath": true}',
-            '{"xpath": ["array", 1, true]}',
-        ])
+    @pytest.mark.parametrize("not_a_ruleset", [
+        '{"xpath": "string"}',
+        '{"xpath": 1}',
+        '{"xpath": 1.1}',
+        '{"xpath": null}',
+        '{"xpath": true}',
+        '{"xpath": ["array", 1, true]}',
+    ] + iati.tests.utilities.generate_test_types(['str', 'bytearray', 'none'], True))
     def test_ruleset_init_ruleset_str_not_str(self, not_a_ruleset):
         """Check that a Ruleset cannot be created when given a string that does not conform to the Ruleset Schema."""
         with pytest.raises(ValueError):
