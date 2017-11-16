@@ -74,7 +74,7 @@ class Schema(object):
 
         """
         self_tree_str = etree.tostring(self.flatten_includes(self._schema_base_tree), pretty_print=True)
-        other_tree_str = etree.tostring(other.flatten_includes(other._schema_base_tree), pretty_print=True)
+        other_tree_str = etree.tostring(other.flatten_includes(other._schema_base_tree), pretty_print=True)  # pylint: disable=protected-access
 
         return (self_tree_str == other_tree_str) and (collections.Counter(self.codelists) == collections.Counter(other.codelists))
 
