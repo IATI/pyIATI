@@ -50,7 +50,12 @@ def constructor_for_rule_type(rule_type):
 
 
 class Ruleset(object):
-    """Representation of a Ruleset as defined within the IATI SSOT."""
+    """Representation of a Ruleset as defined within the IATI SSOT.
+
+    Attributes:
+        rules (set): The Rules contained within this Ruleset.
+
+    """
 
     def __init__(self, ruleset_str=None):
         """Initialise a Ruleset.
