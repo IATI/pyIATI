@@ -73,6 +73,12 @@ def std_version_invalid(request):
     return request.param
 
 
+@pytest.fixture(params=iati.constants.STANDARD_VERSIONS_MAJOR)
+def standard_version_major(request):
+    """Return a major version of the IATI Standard."""
+    return str(request.param)
+
+
 @pytest.fixture(params=iati.constants.STANDARD_VERSIONS)
 def standard_version_all(request):
     """Return a version of the IATI Standard."""
