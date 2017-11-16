@@ -1,5 +1,6 @@
 """A module containing tests for the library representation of Schemas."""
 # pylint: disable=protected-access
+import copy
 from lxml import etree
 import pytest
 import iati.codelists
@@ -10,8 +11,8 @@ import iati.schemas
 import iati.tests.utilities
 
 
-class TestSchemas(object):
-    """A container for tests relating to Schemas."""
+class SchemaTestsBase(object):
+    """A base class for all Schema tests."""
 
     @pytest.fixture(params=[
         {
@@ -34,6 +35,10 @@ class TestSchemas(object):
         """
         schema_path = request.param['path_func'](*standard_version_optional)[0]
         return request.param['schema_class'](schema_path)
+
+
+class TestSchemas(SchemaTestsBase):
+    """A container for tests relating to Schemas."""
 
     @pytest.mark.parametrize("schema_func, expected_root_element_name", [
         (iati.default.activity_schema, 'iati-activities'),
@@ -225,3 +230,21 @@ class TestSchemas(object):
             Consider if this test should test against a versioned Ruleset.
         """
         raise NotImplementedError
+
+
+class TestSchemaEquality(SchemaTestsBase):
+    """A container for tests relating to Schema equality."""
+
+    @pytest.fixture
+    def schema_initialised(self):
+        return iati.default.activity_schema('2.02')
+
+    def test_schema_same_object_equal(self, schema_initialised):
+        """Check that a Schema is deemed to be equal with itself."""
+        assert schema_initialised == schema_initialised
+
+    def test_schema_same_diff_object_equal(self, schema_initialised):
+        """Check that two instances of the same Schema are deemed to be equal."""
+        schema_copy = copy.deepcopy(schema_initialised)
+
+        assert schema_initialised == schema_copy

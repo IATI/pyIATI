@@ -1,4 +1,5 @@
 """A module containing a core representation of IATI Schemas."""
+import collections
 from lxml import etree
 import iati.codelists
 import iati.constants
@@ -63,6 +64,25 @@ class Schema(object):
         else:
             self._schema_base_tree = loaded_tree
 
+    def __eq__(self, other):
+        """Check Schema equality.
+
+        This allows uniqueness to be correctly defined.
+
+        Todo:
+            Utilise all attributes as part of the equality process.
+
+        """
+        self_tree_str = etree.tostring(self.flatten_includes(self._schema_base_tree), pretty_print=True)
+        other_tree_str = etree.tostring(other.flatten_includes(other._schema_base_tree), pretty_print=True)
+
+        # check codelists are the same
+        for codelist in self.codelists:
+            if codelist not in other.codelists:
+                return False
+
+        return (self_tree_str == other_tree_str)
+
     def _change_include_to_xinclude(self, tree):
         """Change the method in which common elements are included.
 
@@ -96,7 +116,7 @@ class Schema(object):
         include_xpath = (iati.constants.NAMESPACE + 'include')
         include_el = tree.getroot().find(include_xpath)
         if include_el is None:
-            return
+            return tree
         include_location = include_el.attrib['schemaLocation']
 
         # add namespace for XInclude
