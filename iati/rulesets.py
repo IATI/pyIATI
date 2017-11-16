@@ -113,13 +113,13 @@ class Ruleset(object):
             ruleset_dict (dict): A JSON-format Ruleset parsed into a dictionary.
 
         Raises:
-            ValueError: When `ruleset_str` does not validate against the Ruleset Schema.
+            ValueError: When `ruleset_dict` does not validate against the Ruleset Schema.
 
         """
         try:
             jsonschema.validate(ruleset_dict, iati.default.ruleset_schema())
         except jsonschema.ValidationError:
-            raise ValueError
+            raise ValueError('The provided Ruleset does not validate against the Ruleset Schema')
 
     def _set_rules(self, ruleset_dict):
         """Set the Rules of the Ruleset.
