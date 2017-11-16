@@ -67,12 +67,12 @@ class Ruleset(object):
             ruleset_str = ''
 
         try:
-            self.ruleset = json.loads(ruleset_str, object_pairs_hook=iati.utilities.dict_raise_on_duplicates)
+            self._ruleset = json.loads(ruleset_str, object_pairs_hook=iati.utilities.dict_raise_on_duplicates)
         except TypeError:
             raise ValueError('Provided Ruleset string is not a string.')
         except ValueError:  # python2/3 - should be json.decoder.JSONDecodeError at python 3.5+
             if ruleset_str.strip() == '':
-                self.ruleset = {}
+                self._ruleset = {}
             else:
                 raise ValueError('Provided Ruleset string is not valid JSON.')
         self._validate_ruleset()
@@ -112,7 +112,7 @@ class Ruleset(object):
 
         """
         try:
-            jsonschema.validate(self.ruleset, iati.default.ruleset_schema())
+            jsonschema.validate(self._ruleset, iati.default.ruleset_schema())
         except jsonschema.ValidationError:
             raise ValueError
 
@@ -122,7 +122,7 @@ class Ruleset(object):
         Extract each case of each Rule from the Ruleset and add to initialised `rules` set.
 
         """
-        for context, rule in self.ruleset.items():
+        for context, rule in self._ruleset.items():
             for rule_type, cases in rule.items():
                 for case in cases['cases']:
                     constructor = constructor_for_rule_type(rule_type)
