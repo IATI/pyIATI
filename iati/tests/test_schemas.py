@@ -235,10 +235,6 @@ class TestSchemas(SchemaTestsBase):
 class TestSchemaEquality(SchemaTestsBase):
     """A container for tests relating to Schema equality."""
 
-    @pytest.fixture
-    def schema_initialised(self):
-        return iati.default.activity_schema('2.02')
-
     def test_schema_same_object_equal(self, schema_initialised):
         """Check that a Schema is deemed to be equal with itself."""
         assert schema_initialised == schema_initialised
