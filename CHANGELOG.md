@@ -11,8 +11,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Datasets] A Dataset `xml_tree` may be set with an ElementTree. [#235]
 
 - [Resources] Updated SSOT to latest content as of 2017-11-14. [#237]
+- [Resources] Remove SSOT organisation test files that are not valid XML. [IATI/IATI-Schemas#376, #242]
 
 - [Utility] Non-resource files may be loaded using utility functions. [#235]
+
+- [Validation] Test that SSOT organisation test files are valid IATI XML. [#242]
 
 ### Changed
 
@@ -27,7 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Fixed
 
-- [Codelists] Fixed impossible XPath in Codelist Mapping File. [IATI/IATI-Codelists#119]
+- [Codelists] Fixed impossible XPath in Codelist Mapping File. [IATI/IATI-Codelists#119, #229]
 
 - [Defaults] Test and document `ValueError`s that can be raised by functions in `iati.default`. [#241]
 
