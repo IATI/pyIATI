@@ -447,7 +447,7 @@ def _check_is_iati_xml(dataset, schema):
             error = _create_error_for_lxml_log_entry(log_entry)
             error_log.add(error)
     except AttributeError:
-        raise TypeError('The provided argument that should have been a Dataset was actually a {0}'.format(type(dataset)))
+        raise TypeError('Unexpected argument: {0} is not an iati.Dataset'.format(type(dataset)))
 
     return error_log
 
