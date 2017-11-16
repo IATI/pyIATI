@@ -1,4 +1,5 @@
 """A module containing tests for the library representation of Codelists."""
+import copy
 import pytest
 from lxml import etree
 import iati.codelists
@@ -162,3 +163,55 @@ class TestCodes(object):
         assert enum_el.tag == iati.constants.NAMESPACE + 'enumeration'
         assert enum_el.attrib['value'] == value_to_set
         assert enum_el.nsmap == iati.constants.NSMAP
+
+
+class TestCodelistEquality(object):
+    """A container for tests relating to Codelist equality."""
+
+    @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
+    def test_codelist_same_object_equal(self, codelist):
+        """Check that a Codelist is deemed to be equal with itself."""
+        assert codelist == codelist
+
+    @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
+    def test_codelist_same_diff_object_equal(self, codelist):
+        """Check that two instances of the same Codelist are deemed to be equal."""
+        codelist_copy = copy.deepcopy(codelist)
+
+        assert codelist == codelist_copy
+
+    @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
+    def test_codelist_diff_name_not_equal(self, codelist):
+        """Check that two Codelist with the same codes but different names are not deemed to be equal."""
+        codelist_copy = copy.deepcopy(codelist)
+        codelist_copy.name = codelist.name + 'with a difference'
+
+        assert codelist != codelist_copy
+
+    @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
+    def test_codelist_diff_num_codes_not_equal(self, codelist):
+        """Check that two Codelist with the same name but different codes are not deemed to be equal."""
+        codelist_copy = copy.deepcopy(codelist)
+        codelist_copy.codes.add(iati.Code())
+
+        assert codelist != codelist_copy
+
+    @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
+    def test_codelist_diff_code_name_not_equal(self, codelist):
+        """Check that two Codelist with the same name but a Code with a different name are not deemed to be equal."""
+        codelist_copy = copy.deepcopy(codelist)
+        code = codelist_copy.codes.pop()
+        code.name = code.name + 'with a difference'
+        codelist_copy.codes.add(code)
+
+        assert codelist != codelist_copy
+
+    @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
+    def test_codelist_diff_code_value_not_equal(self, codelist):
+        """Check that two Codelist with the same name but a Code with a different value are not deemed to be equal."""
+        codelist_copy = copy.deepcopy(codelist)
+        code = codelist_copy.codes.pop()
+        code.value = code.value + 'with a difference'
+        codelist_copy.codes.add(code)
+
+        assert codelist != codelist_copy
