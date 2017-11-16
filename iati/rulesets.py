@@ -84,7 +84,10 @@ class Ruleset(object):
                 raise ValueError('Provided Ruleset string is not valid JSON.')
 
         self._validate_ruleset(ruleset_dict)
-        self._set_rules(ruleset_dict)
+        try:
+            self._set_rules(ruleset_dict)
+        except AttributeError:
+            raise ValueError('Provided Ruleset validates against the Ruleset Schema, but should not. See: https://github.com/IATI/IATI-Rulesets/issues/49')
 
     def is_valid_for(self, dataset):
         """Validate a Dataset against the Ruleset.
@@ -124,7 +127,7 @@ class Ruleset(object):
         try:
             jsonschema.validate(ruleset_dict, iati.default.ruleset_schema())
         except jsonschema.ValidationError:
-            raise ValueError('The provided Ruleset does not validate against the Ruleset Schema')
+            raise ValueError('Provided Ruleset does not validate against the Ruleset Schema')
 
     def _set_rules(self, ruleset_dict):
         """Set the Rules of the Ruleset.
