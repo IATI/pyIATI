@@ -75,7 +75,7 @@ class Ruleset(object):
                 self.ruleset = {}
             else:
                 raise ValueError('Provided Ruleset string is not valid JSON.')
-        self.validate_ruleset()
+        self._validate_ruleset()
         self.rules = set()
         self._set_rules()
 
@@ -104,7 +104,7 @@ class Ruleset(object):
 
         return True
 
-    def validate_ruleset(self):
+    def _validate_ruleset(self):
         """Validate a Ruleset against the Ruleset Schema.
 
         Raises:
