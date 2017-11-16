@@ -183,12 +183,12 @@ class Code(object):
     """
 
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, value=None, name=''):
+    def __init__(self, value, name=''):
         """Initialise a Code.
 
         Args:
-            name (str): The name of the code being initialised.
             value (str): The value of the code being initialised.
+            name (str): The name of the code being initialised.
 
         Note:
             Instances of a Code should remain independent of a particular version of the IATI Standard. Versioning should be handled elsewhere.

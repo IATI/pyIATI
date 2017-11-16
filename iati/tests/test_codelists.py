@@ -45,8 +45,7 @@ class TestCodelists(object):
     def test_codelist_add_code(self, name_to_set):
         """Check a Code can be added to a Codelist."""
         codelist = iati.Codelist(name_to_set)
-        code = iati.Code()
-        codelist.codes.add(code)
+        codelist.codes.add(iati.Code(''))
 
         num_codes = len(codelist.codes)
 
@@ -123,12 +122,10 @@ class TestCodelists(object):
 class TestCodes(object):
     """A container for tests relating to Codes."""
 
-    def test_code_default_attributes(self):
-        """Check a Code's default attributes are correct."""
-        code = iati.Code()
-
-        assert code.name == ''
-        assert code.value is None
+    def test_code_no_attributes(self):
+        """Check a Code cannot be instantiated with no arguments."""
+        with pytest.raises(TypeError):
+            _ = iati.Code()
 
     def test_code_value_instance(self):
         """Check a Code's attributes are correct when being defined with only a value."""
@@ -216,7 +213,7 @@ class TestCodelistEquality(object):
     def test_codelist_diff_num_codes_not_equal(self, codelist, cmp_func_different):
         """Check that two Codelist with the same name but different codes are not deemed to be equal."""
         codelist_copy = copy.deepcopy(codelist)
-        codelist_copy.codes.add(iati.Code())
+        codelist_copy.codes.add(iati.Code(''))
 
         assert cmp_func_different(codelist, codelist_copy)
 
