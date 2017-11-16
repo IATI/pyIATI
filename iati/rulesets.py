@@ -63,21 +63,23 @@ class Ruleset(object):
             ValueError: When `ruleset_str` does not validate against the Ruleset Schema or cannot be correctly decoded.
 
         """
+        self.rules = set()
+
         if ruleset_str is None:
             ruleset_str = ''
 
         try:
-            self._ruleset = json.loads(ruleset_str, object_pairs_hook=iati.utilities.dict_raise_on_duplicates)
+            ruleset_dict = json.loads(ruleset_str, object_pairs_hook=iati.utilities.dict_raise_on_duplicates)
         except TypeError:
             raise ValueError('Provided Ruleset string is not a string.')
         except ValueError:  # python2/3 - should be json.decoder.JSONDecodeError at python 3.5+
             if ruleset_str.strip() == '':
-                self._ruleset = {}
+                ruleset_dict = {}
             else:
                 raise ValueError('Provided Ruleset string is not valid JSON.')
-        self._validate_ruleset()
-        self.rules = set()
-        self._set_rules()
+
+        self._validate_ruleset(ruleset_dict)
+        self._set_rules(ruleset_dict)
 
     def is_valid_for(self, dataset):
         """Validate a Dataset against the Ruleset.
@@ -104,25 +106,31 @@ class Ruleset(object):
 
         return True
 
-    def _validate_ruleset(self):
+    def _validate_ruleset(self, ruleset_dict):
         """Validate a Ruleset against the Ruleset Schema.
+
+        Args:
+            ruleset_dict (dict): A JSON-format Ruleset parsed into a dictionary.
 
         Raises:
             ValueError: When `ruleset_str` does not validate against the Ruleset Schema.
 
         """
         try:
-            jsonschema.validate(self._ruleset, iati.default.ruleset_schema())
+            jsonschema.validate(ruleset_dict, iati.default.ruleset_schema())
         except jsonschema.ValidationError:
             raise ValueError
 
-    def _set_rules(self):
+    def _set_rules(self, ruleset_dict):
         """Set the Rules of the Ruleset.
 
         Extract each case of each Rule from the Ruleset and add to initialised `rules` set.
 
+        Args:
+            ruleset_dict (dict): A JSON-format Ruleset parsed into a dictionary.
+
         """
-        for context, rule in self._ruleset.items():
+        for context, rule in ruleset_dict.items():
             for rule_type, cases in rule.items():
                 for case in cases['cases']:
                     constructor = constructor_for_rule_type(rule_type)
