@@ -125,7 +125,7 @@ class TestCodes(object):
     def test_code_no_attributes(self):
         """Check a Code cannot be instantiated with no arguments."""
         with pytest.raises(TypeError):
-            _ = iati.Code()
+            _ = iati.Code()  # pylint: disable=no-value-for-parameter
 
     def test_code_value_instance(self):
         """Check a Code's attributes are correct when being defined with only a value."""
