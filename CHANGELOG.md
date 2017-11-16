@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Datasets] A Dataset `xml_tree` may be set with an ElementTree. [#235]
 
+- [Resources] Updated SSOT to latest content as of 2017-11-14. [#237]
+
 - [Utility] Non-resource files may be loaded using utility functions. [#235]
 
 ### Changed

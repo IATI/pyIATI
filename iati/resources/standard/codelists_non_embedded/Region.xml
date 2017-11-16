@@ -9,7 +9,7 @@
         <codelist-item>
             <code>88</code>
             <name>
-                <narrative>States Ex-Yugoslavia, unspecified</narrative>
+                <narrative>States Ex-Yugoslavia unspecified</narrative>
                 <narrative xml:lang="fr">Etats ex-Yougoslavie non spécifié</narrative>
             </name>
         </codelist-item>
@@ -51,7 +51,7 @@
         <codelist-item>
             <code>389</code>
             <name>
-                <narrative>North and Central America, regional</narrative>
+                <narrative>North &amp; Central America, regional</narrative>
                 <narrative xml:lang="fr">Amérique N. &amp; C., régional</narrative>
             </name>
         </codelist-item>
@@ -93,7 +93,7 @@
         <codelist-item>
             <code>689</code>
             <name>
-                <narrative>South and Central Asia, regional</narrative>
+                <narrative>South &amp; Central Asia, regional</narrative>
                 <narrative xml:lang="fr">Asie du Sud &amp; C., régional</narrative>
             </name>
         </codelist-item>
