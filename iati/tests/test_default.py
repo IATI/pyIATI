@@ -14,6 +14,9 @@ class TestDefault(object):
     @pytest.mark.parametrize("func_to_check", [
         iati.default.get_default_version_if_none,
         iati.default.codelists,
+        iati.default.codelist_mapping,
+        iati.default.ruleset,
+        iati.default.ruleset_schema,
         iati.default.activity_schema,
         iati.default.organisation_schema
     ])

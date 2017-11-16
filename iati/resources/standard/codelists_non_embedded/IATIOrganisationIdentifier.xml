@@ -6,12 +6,12 @@
         <description>
             <narrative>
             This is a list of organisation identifiers that is maintained by the IATI Secretariat.
-            The prefix for organisations on this list is XI-IATI 
+            The prefix for organisations on this list is XI-IATI
 
             If a bona fide organisation is not registered with any recognised or appropriate registration agency (http://iatistandard.org/202/codelists/OrganisationRegistrationAgency/) they should contact the IATI Technical Team who will exceptionally allocate an organisation identifier using the XI-IATI prefix.
 
             While some of these identifiers have been derived from DAC codes, this 'meaning' is not carried forward. i.e. IATI generated identifiers have no intrinsic meaning.
-            
+
             For general guidance about constructing Organisation Identifiers, please see http://iatistandard.org/organisation-identifiers/
             </narrative>
         </description>
@@ -38,14 +38,26 @@
             <url>http://www.umn.org.np/</url>
         </codelist-item>
         <codelist-item>
-            <code>XI-IATI-CWSEC</code>
+            <code>XI-IATI-ADVZ</code>
             <name>
-                <narrative>The Commonwealth Secretariat</narrative>
+                <narrative>Agência de Desenvolvimento do Vale do Zambeze</narrative>
             </name>
             <description>
-                <narrative>The Commonwealth is a voluntary association of 52 independent and equal sovereign states. Its guiding principles are contained in their Commonwealth Charter.</narrative>
+                <narrative>Description:
+                The Agência do Zambeze is a public-sector agency under the Ministry of Economics and Finance in Mozambique. The mission of the Agência do Zambeze is to promote the socio-economic and sustainable development of the Lower Zambezi River Basin.</narrative>
             </description>
-            <url>http://thecommonwealth.org/</url>
+            <url>http://www.inm.gov.mz/?q=pt-pt/ag%C3%AAncia-de-desenvolvimento-do-vale-do-zambeze</url>
+        </codelist-item>
+        <codelist-item>
+            <code>XI-IATI-AIAS</code>
+            <name>
+                <narrative>Administração de Infra-Estruturas de Águas e Saneamento</narrative>
+            </name>
+            <description>
+                <narrative>Description:
+                AIAS manages the property of the secondary public systems for water supply and for the residual water drainage public systems in Mozambique promoting their autonomous efficient and financially feasible operational management through assignment to private operators or other third party entities.</narrative>
+            </description>
+            <url>http://www.aias.gov.mz/</url>
         </codelist-item>
         <codelist-item>
             <code>XI-IATI-EBRD</code>
@@ -68,6 +80,16 @@
                 <narrative>CABI (Centre for Agriculture and Biosciences International) is an international not-for-profit organization that improves people’s lives worldwide by providing information and applying scientific expertise to solve problems in agriculture and the environment. It's approach involves putting information, skills and tools into people’s hands. CABI’s member countries guide and influence our work which is delivered by scientific staff based in our global network of centres.</narrative>
             </description>
             <url>http://www.cabi.org/</url>
+        </codelist-item>
+        <codelist-item>
+            <code>XI-IATI-CWSEC</code>
+            <name>
+                <narrative>The Commonwealth Secretariat</narrative>
+            </name>
+            <description>
+                <narrative>The Commonwealth is a voluntary association of 52 independent and equal sovereign states. Its guiding principles are contained in their Commonwealth Charter.</narrative>
+            </description>
+            <url>http://thecommonwealth.org/</url>
         </codelist-item>
         <codelist-item>
             <code>XI-IATI-EC_DEVCO</code>
@@ -148,6 +170,16 @@
                 <narrative>The Netherlands Space Office (NSO) is the governmental space agency of the Netherlands. Its primary task is to develop and execute the national space policy. NSO is the main point of contact for national and international space affairs.</narrative>
             </description>
             <url>http://www.spaceoffice.nl/</url>
+        </codelist-item>
+        <codelist-item>
+            <code>XI-IATI-UNPF</code>
+            <name>
+                <narrative>UN Pooled funds</narrative>
+            </name>
+            <description>
+                <narrative>The UN pooled funds are a UN inter-agency financing mechanism with three characteristics. First, UN pooled funds are designed to support a clearly defined programmatic purpose and results framework through contributions that are co-mingled, not earmarked to a specific UN entity and held by a UN fund administrator. Second, decisions on project / programmatic allocations are made by a UN-led governance mechanism, taking into account the programmatic purpose and results framework of the fund. Third, fund implementation is (fully or largely) entrusted to UN entities that assume the programmatic and financial accountability for the resources received.</narrative>
+            </description>
+            <url>https://undg.org/</url>
         </codelist-item>
         <codelist-item activation-date="2016-12-15">
             <code>XI-IATI-WAI</code>

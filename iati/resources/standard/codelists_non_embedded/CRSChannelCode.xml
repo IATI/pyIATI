@@ -9,8 +9,8 @@
         <codelist-item status="active" activation-date="2015-12-07">
             <code>10000</code>
             <name>
-                <narrative>Public Sector Institutions</narrative>
-                <narrative xml:lang="fr">Institutions du Secteur Public</narrative>
+                <narrative>PUBLIC SECTOR INSTITUTIONS</narrative>
+                <narrative xml:lang="fr">INSTITUTIONS DU SECTEUR PUBLIC</narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -20,11 +20,67 @@
                 <narrative xml:lang="fr">Gouvernement du donneur</narrative>
             </name>
         </codelist-item>
+        <codelist-item status="active" activation-date="2016-07-06">
+            <code>11001</code>
+            <name>
+                <narrative>Central Government</narrative>
+                <narrative xml:lang="fr">Gouvernment central</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2016-07-06">
+            <code>11002</code>
+            <name>
+                <narrative>Local Government</narrative>
+                <narrative xml:lang="fr">Gouvernment local</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2016-07-06">
+            <code>11003</code>
+            <name>
+                <narrative>Public corporations</narrative>
+                <narrative xml:lang="fr">Entreprise publique</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2016-07-06">
+            <code>11004</code>
+            <name>
+                <narrative>Other public entities in donor country</narrative>
+                <narrative xml:lang="fr">Autres entité publique dans le pays donneur</narrative>
+            </name>
+        </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
             <code>12000</code>
             <name>
                 <narrative>Recipient Government</narrative>
                 <narrative xml:lang="fr">Gouvernement du bénéficiaire</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2016-07-06">
+            <code>12001</code>
+            <name>
+                <narrative>Central Government</narrative>
+                <narrative xml:lang="fr">Gouvernment central</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2016-07-06">
+            <code>12002</code>
+            <name>
+                <narrative>Local Government</narrative>
+                <narrative xml:lang="fr">Gouvernment local</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2016-07-06">
+            <code>12003</code>
+            <name>
+                <narrative>Public corporations</narrative>
+                <narrative xml:lang="fr">Entreprise publique</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2016-07-06">
+            <code>12004</code>
+            <name>
+                <narrative>Other public entities in recipient country</narrative>
+                <narrative xml:lang="fr">Autres entité publique dans le pays bénéficiaire</narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -37,15 +93,15 @@
         <codelist-item status="active" activation-date="2015-12-07">
             <code>20000</code>
             <name>
-                <narrative>Non-governmental Organisations (NGOs) And Civil Society</narrative>
-                <narrative xml:lang="fr">Organisations Non Gouvernementales (ONG) et Société Civile</narrative>
+                <narrative>NON-GOVERNMENTAL ORGANISATIONS (NGOs) AND CIVIL SOCIETY</narrative>
+                <narrative xml:lang="fr">ORGANISATIONS NON GOUVERNEMENTALES (ONG) et SOCIÉTÉ CIVILE</narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
             <code>21000</code>
             <name>
-                <narrative>International NGO</narrative>
-                <narrative xml:lang="fr">ONG Internationale</narrative>
+                <narrative>INTERNATIONAL NGO</narrative>
+                <narrative xml:lang="fr">ONG INTERNATIONALE</narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -67,6 +123,13 @@
             <name>
                 <narrative>Association of Geoscientists for International Development</narrative>
                 <narrative xml:lang="fr">Association de géoscientifiques pour le développement international</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-08-08">
+            <code>21063</code>
+            <name>
+                <narrative>Conservation International</narrative>
+                <narrative xml:lang="fr"/>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -101,7 +164,7 @@
             <code>21503</code>
             <name>
                 <narrative>Family Health International 360</narrative>
-                <narrative xml:lang="fr">0</narrative>
+                <narrative xml:lang="fr"></narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -191,7 +254,7 @@
         <codelist-item status="active" activation-date="2015-12-07">
             <code>21061</code>
             <name>
-                <narrative>International Rehabilitation Council for Torture</narrative>
+                <narrative>International Rehabilitation Council for Torture Victims</narrative>
                 <narrative xml:lang="fr">Conseil international de réhabilitation pour les victimes de torture</narrative>
             </name>
         </codelist-item>
@@ -199,14 +262,14 @@
             <code>21504</code>
             <name>
                 <narrative>International Relief and Development</narrative>
-                <narrative xml:lang="fr">0</narrative>
+                <narrative xml:lang="fr"></narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
             <code>21506</code>
             <name>
                 <narrative>International Rescue Committee</narrative>
-                <narrative xml:lang="fr">0</narrative>
+                <narrative xml:lang="fr"></narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -220,7 +283,7 @@
             <code>21053</code>
             <name>
                 <narrative>IPAS-Protecting Women’s Health, Advancing Women’s Reproductive Rights</narrative>
-                <narrative xml:lang="fr">IPAS-Protecting Women’s Health, Advancing Women’s Reproductive Rights</narrative>
+                <narrative xml:lang="fr">IPAS-Protecting Womens Health, Advancing Womens Reproductive Rights</narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -234,14 +297,14 @@
             <code>21501</code>
             <name>
                 <narrative>OXFAM International</narrative>
-                <narrative xml:lang="fr">0</narrative>
+                <narrative xml:lang="fr"></narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
             <code>21507</code>
             <name>
                 <narrative>Pact World</narrative>
-                <narrative xml:lang="fr">0</narrative>
+                <narrative xml:lang="fr"></narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -262,7 +325,7 @@
             <code>21505</code>
             <name>
                 <narrative>Save the Children</narrative>
-                <narrative xml:lang="fr">0</narrative>
+                <narrative xml:lang="fr"></narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -290,7 +353,7 @@
             <code>21502</code>
             <name>
                 <narrative>World Vision</narrative>
-                <narrative xml:lang="fr">0</narrative>
+                <narrative xml:lang="fr"></narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -394,8 +457,8 @@
         <codelist-item status="active" activation-date="2015-12-07">
             <code>21027</code>
             <name>
-                <narrative>International Trust Fund for Demining and Mine Victims Assistance</narrative>
-                <narrative xml:lang="fr">Fonds international d’affectation spéciale pour le déminage et l’assistance aux victimes des mines</narrative>
+                <narrative>ITF Enhancing Human Security</narrative>
+                <narrative xml:lang="fr">ITF Améliorer la sécurité humaine</narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -409,14 +472,14 @@
             <code>22501</code>
             <name>
                 <narrative>OXFAM - provider country office</narrative>
-                <narrative xml:lang="fr">0</narrative>
+                <narrative xml:lang="fr"></narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
             <code>22502</code>
             <name>
                 <narrative>Save the Children - donor country office</narrative>
-                <narrative xml:lang="fr">0</narrative>
+                <narrative xml:lang="fr"></narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -489,6 +552,13 @@
                 <narrative xml:lang="fr">Conseil latino-américain des sciences sociales</narrative>
             </name>
         </codelist-item>
+        <codelist-item status="active" activation-date="2017-08-08">
+            <code>23501</code>
+            <name>
+                <narrative>National Red Cross and Red Crescent Societies</narrative>
+                <narrative xml:lang="fr"/>
+            </name>
+        </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
             <code>21030</code>
             <name>
@@ -506,8 +576,8 @@
         <codelist-item status="active" activation-date="2015-12-07">
             <code>30000</code>
             <name>
-                <narrative>Public-Private Partnerships (PPPs) And Networks</narrative>
-                <narrative xml:lang="fr">Partenariats public-privé et Réseaux</narrative>
+                <narrative>PUBLIC-PRIVATE PARTNERSHIPS (PPPs) and NETWORKS</narrative>
+                <narrative xml:lang="fr">PARTENARIATS PUBLIC-PRIVÉ ET RÉSEAUX</narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -563,7 +633,7 @@
             <code>30015</code>
             <name>
                 <narrative>Global Energy Efficiency and Renewable Energy Fund</narrative>
-                <narrative xml:lang="fr">Fonds mondial pour la promotion de l’'efficacité énergétique et des énergies renouvelables</narrative>
+                <narrative xml:lang="fr">Fonds mondial pour la promotion de l'efficacité énergétique et des énergies renouvelables</narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -619,7 +689,7 @@
             <code>21056</code>
             <name>
                 <narrative>Renewable Energy and Energy Efficiency Partnership</narrative>
-                <narrative xml:lang="fr">Partenariat pour les énergies renouvelables et l’'efficience énergétique</narrative>
+                <narrative xml:lang="fr">Partenariat pour les énergies renouvelables et l'efficience énergétique</narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -709,8 +779,8 @@
         <codelist-item status="active" activation-date="2015-12-07">
             <code>40000</code>
             <name>
-                <narrative>Multilateral Organisations</narrative>
-                <narrative xml:lang="fr">Organisations Multilatérales</narrative>
+                <narrative>MULTILATERAL ORGANISATIONS</narrative>
+                <narrative xml:lang="fr">ORGANISATIONS MULTILATÉRALES</narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -884,8 +954,8 @@
         <codelist-item status="active" activation-date="2015-12-07">
             <code>41310</code>
             <name>
-                <narrative>United Nations Department of Peacekeeping Operations [only MINURSO, MINUSCA, MINUSMA, MINUSTAH, MONUSCO, UNAMID, UNIFIL, UNIFSA, UNMIK, UNMIL, UNMIS (terminated July 2011), UNMISS, UNMIT (terminated December 2012), UNOCI]. Report contributions mission by mission in CRS++.</narrative>
-                <narrative xml:lang="fr">Département des opérations de maintien de la paix des Nations unies [seulement MINURSO, MINUSCA, MINUSMA, MINUSTAH, MONUSCO, MINUAD, FINUL, FISNUA, MINUK, MINUL, MINUS (terminée en juillet 2011), UNMISS, MINUT (terminée en décembre 2012), ONUCI]. Notifier les contributions mission par mission au format SNPC++.</narrative>
+                <narrative>United Nations Department of Peacekeeping Operations [only MINURSO, MINUSCA, MINUSMA, MINUSTAH, MONUSCO, UNAMID, UNIFIL, UNISFA, UNMIK, UNMIL, UNMISS, UNOCI]. Report contributions mission by mission in CRS++.</narrative>
+                <narrative xml:lang="fr">Département des opérations de maintien de la paix des Nations unies [seulement MINURSO, MINUSCA, MINUSMA, MINUSTAH, MONUSCO, MINUAD, FINUL, FISNUA, MINUK, MINUL, UNMISS, ONUCI]. Notifier les contributions mission par mission au format SNPC++.</narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -1032,7 +1102,7 @@
             <code>41501</code>
             <name>
                 <narrative>United Nations Reducing Emissions from Deforestation and Forest Degradation</narrative>
-                <narrative xml:lang="fr">0</narrative>
+                <narrative xml:lang="fr"></narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -1112,6 +1182,13 @@
                 <narrative xml:lang="fr">Union postale universelle</narrative>
             </name>
         </codelist-item>
+        <codelist-item status="active" activation-date="2017-08-08">
+            <code>41503</code>
+            <name>
+                <narrative>UN-led Country-based Pooled Funds</narrative>
+                <narrative xml:lang="fr"/>
+            </name>
+        </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
             <code>41140</code>
             <name>
@@ -1145,6 +1222,13 @@
             <name>
                 <narrative>World Meteorological Organisation</narrative>
                 <narrative xml:lang="fr">Organisation météorologique mondiale</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-08-08">
+            <code>41319</code>
+            <name>
+                <narrative>World Tourism Organization</narrative>
+                <narrative xml:lang="fr"/>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -1215,6 +1299,13 @@
             <name>
                 <narrative>International Monetary Fund - Subsidization of Emergency Post Conflict Assistance/Emergency Assistance for Natural Disasters for PRGT-eligible members</narrative>
                 <narrative xml:lang="fr">Fonds monétaire international – Aide d’urgence après un conflit (EPCA) et aide d’urgence à la suite de catastrophes naturelles (ENDA) pour les membres pouvant bénéficier de la FRPC</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2016-07-06">
+            <code>43006</code>
+            <name>
+                <narrative>Catastrophe Containment and Relief Trust</narrative>
+                <narrative xml:lang="fr">Fonds fiduciaire d’assistance et de riposte aux catastrophes</narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -1348,6 +1439,13 @@
             <name>
                 <narrative>Asian Development Fund</narrative>
                 <narrative xml:lang="fr">Fonds asiatique de développement</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-08-08">
+            <code>46026</code>
+            <name>
+                <narrative>Asian Infrastructure Investment Bank</narrative>
+                <narrative xml:lang="fr"/>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -1553,11 +1651,18 @@
                 <narrative xml:lang="fr">Centre épidémiologique des Caraïbes</narrative>
             </name>
         </codelist-item>
+        <codelist-item status="active" activation-date="2017-08-08">
+            <code>47145</code>
+            <name>
+                <narrative>Center of Excellence in Finance</narrative>
+                <narrative xml:lang="fr"/>
+            </name>
+        </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
             <code>47112</code>
             <name>
                 <narrative>Central European Initiative - Special Fund for Climate and Environmental Protection</narrative>
-                <narrative xml:lang="fr">Initiative de l’Europe centrale - – Fonds Spécial pour la protection climatique et environnementale</narrative>
+                <narrative xml:lang="fr">Initiative de l’Europe centrale -  Fonds Spécial pour la protection climatique et environnementale</narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -1662,7 +1767,7 @@
             <code>47504</code>
             <name>
                 <narrative>Forest Carbon Partnership Facility</narrative>
-                <narrative xml:lang="fr">0</narrative>
+                <narrative xml:lang="fr"></narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -1690,7 +1795,7 @@
             <code>47503</code>
             <name>
                 <narrative>Global Agriculture and Food Security Program</narrative>
-                <narrative xml:lang="fr">0</narrative>
+                <narrative xml:lang="fr"></narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -1725,7 +1830,7 @@
             <code>47502</code>
             <name>
                 <narrative>Global Fund for Disaster Risk Reduction</narrative>
-                <narrative xml:lang="fr">0</narrative>
+                <narrative xml:lang="fr"></narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -1753,7 +1858,7 @@
             <code>47116</code>
             <name>
                 <narrative>Integrated Framework for Trade-Related Technical Assistance to Least Developed Countries</narrative>
-                <narrative xml:lang="fr">Cadre intégré pour l’'assistance technique liée au commerce en faveur des pays les moins avancés</narrative>
+                <narrative xml:lang="fr">Cadre intégré pour l'assistance technique liée au commerce en faveur des pays les moins avancés</narrative>
             </name>
         </codelist-item>
         <codelist-item status="active" activation-date="2015-12-07">
@@ -2085,7 +2190,21 @@
                 <narrative xml:lang="fr">Organisation Mondiale des Douanes Fonds de coopération douanière</narrative>
             </name>
         </codelist-item>
-        <codelist-item status="active" activation-date="2015-12-07">
+        <codelist-item status="active" activation-date="2016-07-06">
+            <code>47143</code>
+            <name>
+                <narrative>Global Community Engagement and Resilience Fund</narrative>
+                <narrative xml:lang="fr">Fonds mondial pour l’engagement de la communauté et la résilience</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2016-07-06">
+            <code>47144</code>
+            <name>
+                <narrative>International Renewable Energy Agency</narrative>
+                <narrative xml:lang="fr">Agence internationale pour les energies renouvelables</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="withdrawn" activation-date="2015-12-07" withdrawal-date="2017-05-09">
             <code>50000</code>
             <name>
                 <narrative>Other</narrative>
@@ -2295,8 +2414,106 @@
                 <narrative xml:lang="fr">Centre international pour l’aménagement des ressources bioaquatiques</narrative>
             </name>
         </codelist-item>
-        <codelist-item status="active" activation-date="2015-12-07">
+        <codelist-item status="withdrawn" activation-date="2015-12-07">
             <code>52000</code>
+            <name>
+                <narrative>Other</narrative>
+                <narrative xml:lang="fr">Autre</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-03-31">
+            <code>60000</code>
+            <name>
+                <narrative>Private sector institution</narrative>
+                <narrative xml:lang="fr">Institutions du Secteur Privé</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-03-31">
+            <code>61000</code>
+            <name>
+                <narrative>Private sector in provider country</narrative>
+                <narrative xml:lang="fr">Secteur privé du pays donneur</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-03-31">
+            <code>61001</code>
+            <name>
+                <narrative>Private bank in provider country</narrative>
+                <narrative xml:lang="fr">Banque privée dans le pays donneur</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-03-31">
+            <code>61002</code>
+            <name>
+                <narrative>Private exporter in provider country</narrative>
+                <narrative xml:lang="fr">Exportateur privé dans le pays donneur</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-03-31">
+            <code>61003</code>
+            <name>
+                <narrative>Private investor in provider country</narrative>
+                <narrative xml:lang="fr">Investisseur privé dans le pays donneur</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-03-31">
+            <code>61004</code>
+            <name>
+                <narrative>Other non-bank entity in provider country</narrative>
+                <narrative xml:lang="fr">Autre entité non-bancaire dans le pays donneur</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-03-31">
+            <code>62000</code>
+            <name>
+                <narrative>Private sector in recipient country</narrative>
+                <narrative xml:lang="fr">Secteur privé du pays bénéficiaire</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-03-31">
+            <code>62001</code>
+            <name>
+                <narrative>Private bank in recipient country</narrative>
+                <narrative xml:lang="fr">Banque privée dans le pays bénéficiaire</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-03-31">
+            <code>62002</code>
+            <name>
+                <narrative>Joint-venture in recipient country</narrative>
+                <narrative xml:lang="fr">Co-entreprise dans le pays bénéficiaire</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-03-31">
+            <code>62003</code>
+            <name>
+                <narrative>Other non-bank in recipient country</narrative>
+                <narrative xml:lang="fr">Autre entité non-bancaire dans le pays bénéficiaire</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-03-31">
+            <code>63000</code>
+            <name>
+                <narrative>Private sector in third country</narrative>
+                <narrative xml:lang="fr">Secteur privé d'un pays tiers</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-03-31">
+            <code>63001</code>
+            <name>
+                <narrative>Private bank in third country</narrative>
+                <narrative xml:lang="fr">Banque privée d'un pays tiers</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-03-31">
+            <code>63002</code>
+            <name>
+                <narrative>Private non-bank in third country</narrative>
+                <narrative xml:lang="fr">Secteur privé non-bancaire dans le pays bénéficiaire</narrative>
+            </name>
+        </codelist-item>
+        <codelist-item status="active" activation-date="2017-03-31">
+            <code>90000</code>
             <name>
                 <narrative>Other</narrative>
                 <narrative xml:lang="fr">Autre</narrative>
