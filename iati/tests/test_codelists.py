@@ -167,6 +167,7 @@ class TestCodelistEquality(object):
 
     @pytest.fixture(params=[
         lambda x, y: x == y,
+        lambda x, y: y == x,
         lambda x, y: hash(x) == hash(y)
     ])
     def cmp_func_equal(self, request):
@@ -175,6 +176,7 @@ class TestCodelistEquality(object):
 
     @pytest.fixture(params=[
         lambda x, y: x != y,
+        lambda x, y: y != x,
         lambda x, y: hash(x) != hash(y)
     ])
     def cmp_func_different(self, request):
@@ -226,6 +228,7 @@ class TestCodelistEquality(object):
         codelist_copy.codes.add(code)
 
         assert codelist != codelist_copy
+        assert codelist_copy != codelist
 
     @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
     def test_codelist_diff_code_name_same_hash(self, codelist):
