@@ -19,6 +19,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Changed
 
+- [Codelists] `complete` attribute included in equality comparison and hash calculations. [#247]
+
 - [Resources] Move `load_as_x` functions to `iati.utilities`. [#235]
 - [Resources] Rename version-specific resource folders to reduce ambiguity. [#217]
 

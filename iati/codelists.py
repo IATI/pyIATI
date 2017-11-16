@@ -105,7 +105,7 @@ class Codelist(object):
             Utilise all attributes as part of the equality process.
 
         """
-        return ((self.name) == (other.name)) and (collections.Counter(self.codes) == collections.Counter(other.codes))
+        return (self.name == other.name) and (self.complete == other.complete) and (collections.Counter(self.codes) == collections.Counter(other.codes))
 
     def __ne__(self, other):
         """Check Codelist inequality.
@@ -127,7 +127,7 @@ class Codelist(object):
         """
         sorted_codes = sorted(self.codes, key=lambda x: x.value)
 
-        return hash((self.name, tuple(sorted_codes)))
+        return hash((self.name, self.complete, tuple(sorted_codes)))
 
     @property
     def xsd_restriction(self):
