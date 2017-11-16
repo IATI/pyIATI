@@ -166,35 +166,51 @@ class TestCodes(object):
 
 
 class TestCodelistEquality(object):
-    """A container for tests relating to Codelist equality."""
+    """A container for tests relating to Codelist equality - both direct and via hashing."""
+
+    @pytest.fixture(params=[
+        lambda x, y: x == y,
+        lambda x, y: hash(x) == hash(y)
+    ])
+    def cmp_func_equal(self, request):
+        """Return a comparison function that checks whether things are equal."""
+        return request.param
+
+    @pytest.fixture(params=[
+        lambda x, y: x != y,
+        lambda x, y: hash(x) != hash(y)
+    ])
+    def cmp_func_different(self, request):
+        """Return a comparison function that checks whether things are different."""
+        return request.param
 
     @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
-    def test_codelist_same_object_equal(self, codelist):
+    def test_codelist_same_object_equal(self, codelist, cmp_func_equal):
         """Check that a Codelist is deemed to be equal with itself."""
-        assert codelist == codelist
+        assert cmp_func_equal(codelist, codelist)
 
     @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
-    def test_codelist_same_diff_object_equal(self, codelist):
+    def test_codelist_same_diff_object_equal(self, codelist, cmp_func_equal):
         """Check that two instances of the same Codelist are deemed to be equal."""
         codelist_copy = copy.deepcopy(codelist)
 
-        assert codelist == codelist_copy
+        assert cmp_func_equal(codelist, codelist_copy)
 
     @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
-    def test_codelist_diff_name_not_equal(self, codelist):
+    def test_codelist_diff_name_not_equal(self, codelist, cmp_func_different):
         """Check that two Codelist with the same codes but different names are not deemed to be equal."""
         codelist_copy = copy.deepcopy(codelist)
         codelist_copy.name = codelist.name + 'with a difference'
 
-        assert codelist != codelist_copy
+        assert cmp_func_different(codelist, codelist_copy)
 
     @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
-    def test_codelist_diff_num_codes_not_equal(self, codelist):
+    def test_codelist_diff_num_codes_not_equal(self, codelist, cmp_func_different):
         """Check that two Codelist with the same name but different codes are not deemed to be equal."""
         codelist_copy = copy.deepcopy(codelist)
         codelist_copy.codes.add(iati.Code())
 
-        assert codelist != codelist_copy
+        assert cmp_func_different(codelist, codelist_copy)
 
     @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
     def test_codelist_diff_code_name_not_equal(self, codelist):
@@ -207,11 +223,21 @@ class TestCodelistEquality(object):
         assert codelist != codelist_copy
 
     @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
-    def test_codelist_diff_code_value_not_equal(self, codelist):
+    def test_codelist_diff_code_name_same_hash(self, codelist):
+        """Check that two Codelist with the same name but a Code with a different name have the same hash."""
+        codelist_copy = copy.deepcopy(codelist)
+        code = codelist_copy.codes.pop()
+        code.name = code.name + 'with a difference'
+        codelist_copy.codes.add(code)
+
+        assert hash(codelist) == hash(codelist_copy)
+
+    @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
+    def test_codelist_diff_code_value_not_equal(self, codelist, cmp_func_different):
         """Check that two Codelist with the same name but a Code with a different value are not deemed to be equal."""
         codelist_copy = copy.deepcopy(codelist)
         code = codelist_copy.codes.pop()
         code.value = code.value + 'with a difference'
         codelist_copy.codes.add(code)
 
-        assert codelist != codelist_copy
+        assert cmp_func_different(codelist, codelist_copy)
