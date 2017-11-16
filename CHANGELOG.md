@@ -17,11 +17,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Resources] Move `load_as_x` functions to `iati.utilities`. [#235]
 - [Resources] Rename version-specific resource folders to reduce ambiguity. [#217]
 
+- [Rulesets] `validate_ruleset()` changed from public to private function. [#246]
+
 ### Deprecated
 
 ### Removed
 
 - [Documentation] Stop tracking auto-generated docs templates. [#236]
+
+- [Rulesets] `ruleset` attribute removed from Rulesets. [#246]
 
 ### Fixed
 
