@@ -244,3 +244,10 @@ class TestSchemaEquality(SchemaTestsBase):
         schema_copy = copy.deepcopy(schema_initialised)
 
         assert schema_initialised == schema_copy
+
+    def test_schema_diff_num_codelists_not_equal(self, schema_initialised):
+        """Check that two Schemas with the same name but different numbers of Codelists are not deemed to be equal."""
+        schema_copy = copy.deepcopy(schema_initialised)
+        schema_copy.codelists.add(iati.Codelist(''))
+
+        assert schema_initialised == schema_copy
