@@ -152,7 +152,6 @@ class Rule(object):
     Acts as a base class for specific types of Rule that actually check the content of the data.
 
     Attributes:
-        name (str): The type of Rule, as specified in a JSON Ruleset.
         context (str): An XPath expression to locate the elements that the Rule is to be checked against.
         case (dict): Specific configuration for this instance of the Rule.
 
@@ -182,6 +181,11 @@ class Rule(object):
     def __str__(self):
         """Return string to state what the Rule is checking."""
         return 'This is a Rule.'
+
+    @property
+    def name(self):
+        """str: The type of Rule, as specified in a JSON Ruleset."""
+        return self._name
 
     def _validated_context(self, context):
         """Check that a valid `context` is given for a Rule.
@@ -434,7 +438,7 @@ class RuleAtLeastOne(Rule):
 
     def __init__(self, context, case):
         """Initialise an `atleast_one` rule."""
-        self.name = 'atleast_one'
+        self._name = 'atleast_one'
 
         super(RuleAtLeastOne, self).__init__(context, case)
 
@@ -499,7 +503,7 @@ class RuleDateOrder(Rule):
 
     def __init__(self, context, case):
         """Initialise a `date_order` rule."""
-        self.name = 'date_order'
+        self._name = 'date_order'
         self.special_case = 'NOW'  # Was a constant sort of
 
         super(RuleDateOrder, self).__init__(context, case)
@@ -610,7 +614,7 @@ class RuleDependent(Rule):
 
     def __init__(self, context, case):
         """Initialise a `dependent` rule."""
-        self.name = 'dependent'
+        self._name = 'dependent'
 
         super(RuleDependent, self).__init__(context, case)
 
@@ -653,7 +657,7 @@ class RuleNoMoreThanOne(Rule):
 
     def __init__(self, context, case):
         """Initialise a `no_more_than_one` rule."""
-        self.name = 'no_more_than_one'
+        self._name = 'no_more_than_one'
 
         super(RuleNoMoreThanOne, self).__init__(context, case)
 
@@ -703,7 +707,7 @@ class RuleRegexMatches(Rule):
             ValueError: When the case does not contain valid regex.
 
         """
-        self.name = 'regex_matches'
+        self._name = 'regex_matches'
 
         super(RuleRegexMatches, self).__init__(context, case)
 
@@ -757,7 +761,7 @@ class RuleRegexNoMatches(Rule):
             ValueError: When the case does not contain valid regex.
 
         """
-        self.name = 'regex_no_matches'
+        self._name = 'regex_no_matches'
 
         super(RuleRegexNoMatches, self).__init__(context, case)
 
@@ -806,7 +810,7 @@ class RuleStartsWith(Rule):
 
     def __init__(self, context, case):
         """Initialise a `startswith` Rule."""
-        self.name = 'startswith'
+        self._name = 'startswith'
 
         super(RuleStartsWith, self).__init__(context, case)
 
@@ -865,7 +869,7 @@ class RuleSum(Rule):
 
     def __init__(self, context, case):
         """Initialise a `sum` rule."""
-        self.name = 'sum'
+        self._name = 'sum'
 
         super(RuleSum, self).__init__(context, case)
 
@@ -917,7 +921,7 @@ class RuleUnique(Rule):
 
     def __init__(self, context, case):
         """Initialise a `unique` rule."""
-        self.name = 'unique'
+        self._name = 'unique'
 
         super(RuleUnique, self).__init__(context, case)
 
