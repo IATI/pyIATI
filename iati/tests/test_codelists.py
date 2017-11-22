@@ -1,4 +1,5 @@
 """A module containing tests for the library representation of Codelists."""
+import copy
 import pytest
 from lxml import etree
 import iati.codelists
@@ -44,8 +45,7 @@ class TestCodelists(object):
     def test_codelist_add_code(self, name_to_set):
         """Check a Code can be added to a Codelist."""
         codelist = iati.Codelist(name_to_set)
-        code = iati.Code()
-        codelist.codes.add(code)
+        codelist.codes.add(iati.Code(''))
 
         num_codes = len(codelist.codes)
 
@@ -122,12 +122,10 @@ class TestCodelists(object):
 class TestCodes(object):
     """A container for tests relating to Codes."""
 
-    def test_code_default_attributes(self):
-        """Check a Code's default attributes are correct."""
-        code = iati.Code()
-
-        assert code.name == ''
-        assert code.value is None
+    def test_code_no_attributes(self):
+        """Check a Code cannot be instantiated with no arguments."""
+        with pytest.raises(TypeError):
+            _ = iati.Code()  # pylint: disable=no-value-for-parameter
 
     def test_code_value_instance(self):
         """Check a Code's attributes are correct when being defined with only a value."""
@@ -162,3 +160,112 @@ class TestCodes(object):
         assert enum_el.tag == iati.constants.NAMESPACE + 'enumeration'
         assert enum_el.attrib['value'] == value_to_set
         assert enum_el.nsmap == iati.constants.NSMAP
+
+
+class TestCodelistEquality(object):
+    """A container for tests relating to Codelist equality - both direct and via hashing."""
+
+    @pytest.fixture(params=[
+        lambda x, y: x == y,
+        lambda x, y: y == x,
+        lambda x, y: hash(x) == hash(y)
+    ])
+    def cmp_func_equal(self, request):
+        """Return a comparison function that checks whether things are equal."""
+        return request.param
+
+    @pytest.fixture(params=[
+        lambda x, y: x != y,
+        lambda x, y: y != x,
+        lambda x, y: hash(x) != hash(y)
+    ])
+    def cmp_func_different(self, request):
+        """Return a comparison function that checks whether things are different."""
+        return request.param
+
+    @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
+    def test_codelist_same_object_equal(self, codelist, cmp_func_equal):
+        """Check that a Codelist is deemed to be equal with itself."""
+        assert cmp_func_equal(codelist, codelist)
+
+    @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
+    def test_codelist_same_diff_object_equal(self, codelist, cmp_func_equal):
+        """Check that two instances of the same Codelist are deemed to be equal."""
+        codelist_copy = copy.deepcopy(codelist)
+
+        assert cmp_func_equal(codelist, codelist_copy)
+
+    @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
+    def test_codelist_diff_name_not_equal(self, codelist, cmp_func_different):
+        """Check that two different Codelists are not deemed to be equal.
+
+        The two Codelists have different names, but are otherwise identical.
+        """
+        codelist_copy = copy.deepcopy(codelist)
+        codelist_copy.name = codelist.name + 'with a difference'
+
+        assert cmp_func_different(codelist, codelist_copy)
+
+    @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
+    def test_codelist_diff_completeness_not_equal(self, codelist, cmp_func_different):
+        """Check that two different Codelists are not deemed to be equal.
+
+        The two Codelists have different completeness, but are otherwise identical.
+        """
+        codelist_copy = copy.deepcopy(codelist)
+        codelist_copy.complete = not codelist.complete
+
+        assert cmp_func_different(codelist, codelist_copy)
+
+    @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
+    def test_codelist_diff_num_codes_not_equal(self, codelist, cmp_func_different):
+        """Check that two different Codelists are not deemed to be equal.
+
+        One Codelist contains a Code that the other does not, but they are otherwise identical.
+        """
+        codelist_copy = copy.deepcopy(codelist)
+        codelist_copy.codes.add(iati.Code(''))
+
+        assert cmp_func_different(codelist, codelist_copy)
+
+    @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
+    def test_codelist_diff_code_name_not_equal(self, codelist):
+        """Check that two different Codelists are not deemed to be equal.
+
+        One contained Code has a different name, but the Codelists are otherwise identical.
+        """
+        codelist_copy = copy.deepcopy(codelist)
+        code = codelist_copy.codes.pop()
+        code.name = code.name + 'with a difference'
+        codelist_copy.codes.add(code)
+
+        assert codelist != codelist_copy
+        assert codelist_copy != codelist
+
+    @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
+    def test_codelist_diff_code_name_same_hash(self, codelist):
+        """Check that two not-equal Codelists are deemed to have the same hash.
+
+        One contained Code has a different name, but the Codelists are otherwise identical.
+
+        The hash should be the same since the important part of a `Code` is the `value` attribute. The name is not deemed to change its hash.
+        """
+        codelist_copy = copy.deepcopy(codelist)
+        code = codelist_copy.codes.pop()
+        code.name = code.name + 'with a difference'
+        codelist_copy.codes.add(code)
+
+        assert hash(codelist) == hash(codelist_copy)
+
+    @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
+    def test_codelist_diff_code_value_not_equal(self, codelist, cmp_func_different):
+        """Check that two different Codelists are not deemed to be equal.
+
+        One contained Code has a different value, but the Codelists are otherwise identical.
+        """
+        codelist_copy = copy.deepcopy(codelist)
+        code = codelist_copy.codes.pop()
+        code.value = code.value + 'with a difference'
+        codelist_copy.codes.add(code)
+
+        assert cmp_func_different(codelist, codelist_copy)

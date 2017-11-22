@@ -105,7 +105,7 @@ class Codelist(object):
             Utilise all attributes as part of the equality process.
 
         """
-        return ((self.name) == (other.name)) and (collections.Counter(self.codes) == collections.Counter(other.codes))
+        return (self.name == other.name) and (self.complete == other.complete) and (collections.Counter(self.codes) == collections.Counter(other.codes))
 
     def __ne__(self, other):
         """Check Codelist inequality.
@@ -125,7 +125,9 @@ class Codelist(object):
             Utilise all attributes as part of the equality process.
 
         """
-        return hash((self.name, tuple(self.codes)))
+        sorted_codes = sorted(self.codes, key=lambda x: x.value)
+
+        return hash((self.name, self.complete, tuple(sorted_codes)))
 
     @property
     def xsd_restriction(self):
@@ -181,12 +183,12 @@ class Code(object):
     """
 
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, value=None, name=''):
+    def __init__(self, value, name=''):
         """Initialise a Code.
 
         Args:
-            name (str): The name of the code being initialised.
             value (str): The value of the code being initialised.
+            name (str): The name of the code being initialised.
 
         Note:
             Instances of a Code should remain independent of a particular version of the IATI Standard. Versioning should be handled elsewhere.
