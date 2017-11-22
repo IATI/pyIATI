@@ -197,7 +197,10 @@ class TestCodelistEquality(object):
 
     @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
     def test_codelist_diff_name_not_equal(self, codelist, cmp_func_different):
-        """Check that two Codelist with the same codes but different names are not deemed to be equal."""
+        """Check that two different Codelists are not deemed to be equal.
+
+        The two Codelists have different names, but are otherwise identical.
+        """
         codelist_copy = copy.deepcopy(codelist)
         codelist_copy.name = codelist.name + 'with a difference'
 
@@ -205,7 +208,10 @@ class TestCodelistEquality(object):
 
     @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
     def test_codelist_diff_completeness_not_equal(self, codelist, cmp_func_different):
-        """Check that two Codelist with the same codes but different completeness are not deemed to be equal."""
+        """Check that two different Codelists are not deemed to be equal.
+
+        The two Codelists have different completeness, but are otherwise identical.
+        """
         codelist_copy = copy.deepcopy(codelist)
         codelist_copy.complete = not codelist.complete
 
@@ -213,7 +219,10 @@ class TestCodelistEquality(object):
 
     @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
     def test_codelist_diff_num_codes_not_equal(self, codelist, cmp_func_different):
-        """Check that two Codelist with the same name but different codes are not deemed to be equal."""
+        """Check that two different Codelists are not deemed to be equal.
+
+        One Codelist contains a Code that the other does not, but they are otherwise identical.
+        """
         codelist_copy = copy.deepcopy(codelist)
         codelist_copy.codes.add(iati.Code(''))
 
@@ -221,7 +230,10 @@ class TestCodelistEquality(object):
 
     @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
     def test_codelist_diff_code_name_not_equal(self, codelist):
-        """Check that two Codelist with the same name but a Code with a different name are not deemed to be equal."""
+        """Check that two different Codelists are not deemed to be equal.
+
+        One contained Code has a different name, but the Codelists are otherwise identical.
+        """
         codelist_copy = copy.deepcopy(codelist)
         code = codelist_copy.codes.pop()
         code.name = code.name + 'with a difference'
@@ -232,7 +244,12 @@ class TestCodelistEquality(object):
 
     @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
     def test_codelist_diff_code_name_same_hash(self, codelist):
-        """Check that two Codelist with the same name but a Code with a different name have the same hash."""
+        """Check that two not-equal Codelists are deemed to have the same hash.
+
+        One contained Code has a different name, but the Codelists are otherwise identical.
+
+        The hash should be the same since the important part of a `Code` is the `value` attribute. The name is not deemed to change its hash.
+        """
         codelist_copy = copy.deepcopy(codelist)
         code = codelist_copy.codes.pop()
         code.name = code.name + 'with a difference'
@@ -242,7 +259,10 @@ class TestCodelistEquality(object):
 
     @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())
     def test_codelist_diff_code_value_not_equal(self, codelist, cmp_func_different):
-        """Check that two Codelist with the same name but a Code with a different value are not deemed to be equal."""
+        """Check that two different Codelists are not deemed to be equal.
+
+        One contained Code has a different value, but the Codelists are otherwise identical.
+        """
         codelist_copy = copy.deepcopy(codelist)
         code = codelist_copy.codes.pop()
         code.value = code.value + 'with a difference'
