@@ -337,7 +337,12 @@ class RuleSubclassFixtures(object):
 
 
 class RuleSubclassTestsGeneral(RuleSubclassFixtures):  # pylint: disable=too-many-public-methods
-    """A container for general tests for Rule subclasses."""
+    """A container for general tests for Rule subclasses.
+
+    Todo:
+        Where `rule_instantiating` is used, determine whether changing to `rule` would reduce the coverage of the test.
+
+    """
 
     def test_rule_init_valid_parameter_types(self, rule_instantiating):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
