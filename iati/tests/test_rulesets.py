@@ -295,6 +295,11 @@ class RuleSubclassFixtures(object):
         condition_validating_case['condition'] = request.param
         return condition_validating_case
 
+    @pytest.fixture()
+    def rule(self, rule_constructor, valid_single_context, single_instantiating_case):
+        """A single instance of a Rule subclass."""
+        return rule_constructor(valid_single_context, single_instantiating_case)
+
     @pytest.fixture
     def rule_instantiating(self, rule_constructor, instantiating_case, valid_single_context):
         """Rule subclass that instantiates but is not used for validation testing."""
@@ -331,8 +336,8 @@ class RuleSubclassFixtures(object):
         return rule_constructor(valid_single_context, condition_is_true_invalid)
 
 
-class RuleSubclassTestBase(RuleSubclassFixtures):  # pylint: disable=too-many-public-methods
-    """A base class for Rule subclass tests."""
+class RuleSubclassTestsGeneral(RuleSubclassFixtures):  # pylint: disable=too-many-public-methods
+    """A container for general tests for Rule subclasses."""
 
     def test_rule_init_valid_parameter_types(self, rule_instantiating):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
@@ -458,6 +463,15 @@ class RuleSubclassTestBase(RuleSubclassFixtures):  # pylint: disable=too-many-pu
             rule_constructor(valid_single_context, junk_condition_case)
 
 
+class RuleSubclassTestBase(RuleSubclassTestsGeneral):
+    """A base class for Rule subclass tests.
+
+    This allows particular types of Rule to inherit from a single class, while allowing for logical separation of blocks of tests.
+    """
+
+    pass
+
+
 class TestRuleAtLeastOne(RuleSubclassTestBase):
     """A container for tests relating to RuleAtLeastOne."""
 
@@ -497,6 +511,11 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         {'paths': ['element7', 'element8']},  # multiple paths, both expected matches missing
         {'paths': ['element13/@attribute', 'element14/@attribute']}
     ]
+
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
 
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
@@ -630,6 +649,11 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         """Type of Rule."""
         return 'date_order'
 
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
+
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
         """Permitted case for this Rule."""
@@ -762,6 +786,11 @@ class TestRuleDependent(RuleSubclassTestBase):
         """Type of Rule."""
         return 'dependent'
 
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
+
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
         """Permitted case for this Rule."""
@@ -854,6 +883,11 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     def rule_type(self):
         """Type of Rule."""
         return 'no_more_than_one'
+
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
 
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
@@ -948,6 +982,11 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         """Type of Rule."""
         return 'regex_matches'
 
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
+
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
         """Permitted case for instatiating this Rule."""
@@ -1041,6 +1080,11 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         """Type of Rule."""
         return 'regex_no_matches'
 
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
+
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
         """Permitted case for instatiating this Rule."""
@@ -1132,6 +1176,11 @@ class TestRuleStartsWith(RuleSubclassTestBase):
     def rule_type(self):
         """Type of Rule."""
         return 'startswith'
+
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
 
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
@@ -1279,6 +1328,11 @@ class TestRuleSum(RuleSubclassTestBase):
         """Type of Rule."""
         return 'sum'
 
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
+
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
         """Permitted case for instatiating this Rule."""
@@ -1373,6 +1427,11 @@ class TestRuleUnique(RuleSubclassTestBase):
     def rule_type(self):
         """Type of Rule."""
         return 'unique'
+
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
 
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
