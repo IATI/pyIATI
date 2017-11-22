@@ -172,7 +172,7 @@ class Rule(object):
             ValueError: When a rule_type is not one of the permitted Rule types.
 
         """
-        self.case = case
+        self._case = case
         self.context = self._validated_context(context)
         self._valid_rule_configuration(case)
         self._set_case_attributes(case)

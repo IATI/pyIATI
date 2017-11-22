@@ -1,7 +1,6 @@
 """A module containing tests for the library representation of Rulesets.
 
 Todo:
-    Remove references to `case`.
     Check all tests are still necessary/relevant.
     Condense tests for individual Rules.
     Try to standardise Rule arrays for extraction.
