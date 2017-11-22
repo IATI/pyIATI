@@ -20,6 +20,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Changed
 
+- [Codelists] `complete` attribute included in equality comparison and hash calculations. [#247]
+- [Codelists] Codes must have a value to instantiate. [#247]
+
 - [Resources] Move `load_as_x` functions to `iati.utilities`. [#235]
 - [Resources] Rename version-specific resource folders to reduce ambiguity. [#217]
 
@@ -38,6 +41,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Fixed
 
 - [Codelists] Fixed impossible XPath in Codelist Mapping File. [IATI/IATI-Codelists#119, #229]
+- [Codelists] Sort Codes in a Codelist before hashing so that Codelists with the same Codes always have the same hash. [#247]
 
 - [Defaults] Test and document `ValueError`s that can be raised by functions in `iati.default`. [#241]
 
