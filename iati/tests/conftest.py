@@ -101,6 +101,12 @@ def cmp_func_equal_val(request):
     return request.param
 
 
+@pytest.fixture(params=_CMP_FUNC_EQUAL_HASH)
+def cmp_func_equal_hash(request):
+    """Return a comparison function that checks whether two values have the same hash."""
+    return request.param
+
+
 @pytest.fixture(params=_CMP_FUNC_EQUAL_VAL + _CMP_FUNC_EQUAL_HASH)
 def cmp_func_equal_val_and_hash(request):
     """Return a comparison function that checks whether two values are equal and have the same hash."""
