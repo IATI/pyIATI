@@ -337,7 +337,12 @@ class RuleSubclassFixtures(object):
 
 
 class RuleSubclassTestsGeneral(RuleSubclassFixtures):  # pylint: disable=too-many-public-methods
-    """A container for general tests for Rule subclasses."""
+    """A container for general tests for Rule subclasses.
+
+    Todo:
+        Where `rule_instantiating` is used, determine whether changing to `rule` would reduce the coverage of the test.
+
+    """
 
     def test_rule_init_valid_parameter_types(self, rule_instantiating):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
@@ -367,6 +372,11 @@ class RuleSubclassTestsGeneral(RuleSubclassFixtures):  # pylint: disable=too-man
     def test_rule_name(self, rule_instantiating, rule_type):
         """Check that a Rule subclass has the expected name."""
         assert rule_instantiating.name == rule_type
+
+    def test_rule_name_cannot_be_set(self, rule):
+        """Check that a Rule subclass cannot have its name changed after instantiation."""
+        with pytest.raises(AttributeError):
+            rule.name = 'a new name'
 
     def test_rule_string_output_general(self, rule_instantiating):
         """Check that the string format of the Rule has been customised and variables formatted."""
