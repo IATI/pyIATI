@@ -235,45 +235,29 @@ class TestSchemas(SchemaTestsBase):
 class TestSchemaEquality(SchemaTestsBase):
     """A container for tests relating to Schema equality."""
 
-    @pytest.fixture(params=[
-        lambda x, y: x == y,
-        lambda x, y: y == x
-    ])
-    def cmp_func_equal(self, request):
-        """Return a comparison function that checks whether things are equal."""
-        return request.param
-
-    @pytest.fixture(params=[
-        lambda x, y: x != y,
-        lambda x, y: y != x
-    ])
-    def cmp_func_different(self, request):
-        """Return a comparison function that checks whether things are different."""
-        return request.param
-
     @pytest.fixture
     def codelist_empty(self):
         """Return a Codelist with no Codes."""
         return iati.Codelist('')
 
-    def test_schema_same_object_equal(self, schema_initialised, cmp_func_equal):
+    def test_schema_same_object_equal(self, schema_initialised, cmp_func_equal_val):
         """Check that a Schema is deemed to be equal with itself."""
-        assert cmp_func_equal(schema_initialised, schema_initialised)
+        assert cmp_func_equal_val(schema_initialised, schema_initialised)
 
-    def test_schema_same_diff_object_equal(self, schema_initialised, cmp_func_equal):
+    def test_schema_same_diff_object_equal(self, schema_initialised, cmp_func_equal_val):
         """Check that two instances of the same Schema are deemed to be equal."""
         schema_copy = copy.deepcopy(schema_initialised)
 
-        assert cmp_func_equal(schema_initialised, schema_copy)
+        assert cmp_func_equal_val(schema_initialised, schema_copy)
 
-    def test_schema_diff_num_codelists_not_equal(self, schema_initialised, codelist_empty, cmp_func_different):
+    def test_schema_diff_num_codelists_not_equal(self, schema_initialised, codelist_empty, cmp_func_different_val):
         """Check that two Schemas with different numbers of Codelists are not deemed to be equal."""
         schema_copy = copy.deepcopy(schema_initialised)
         schema_copy.codelists.add(codelist_empty)
 
-        assert cmp_func_different(schema_initialised, schema_copy)
+        assert cmp_func_different_val(schema_initialised, schema_copy)
 
-    def test_schema_modified_codelist_not_equal(self, schema_initialised, codelist_empty, cmp_func_different):
+    def test_schema_modified_codelist_not_equal(self, schema_initialised, codelist_empty, cmp_func_different_val):
         """Check that two Schemas with where one Codelist is different are not deemed to be equal."""
         schema_initialised.codelists.add(codelist_empty)
         schema_copy = copy.deepcopy(schema_initialised)
@@ -282,4 +266,4 @@ class TestSchemaEquality(SchemaTestsBase):
         codelist.name = codelist.name + 'with a difference'
         schema_copy.codelists.add(codelist)
 
-        assert cmp_func_different(schema_initialised, schema_copy)
+        assert cmp_func_different_val(schema_initialised, schema_copy)
