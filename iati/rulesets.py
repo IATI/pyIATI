@@ -165,7 +165,6 @@ class Rule(object):
 
         Args:
             context (str): An XPath expression to locate the elements that the Rule is to be checked against.
-            case (dict): Specific configuration for this instance of the Rule.
 
         Raises:
             TypeError: When a parameter is of an incorrect type.
