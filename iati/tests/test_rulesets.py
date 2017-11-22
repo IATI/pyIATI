@@ -247,8 +247,8 @@ class TestRuleSubclasses(object):
             rule_constructor(context, case)
 
 
-class RuleSubclassTestBase(object):  # pylint: disable=too-many-public-methods
-    """A base class for Rule subclass tests."""
+class RuleSubclassFixtures(object):
+    """A base class for fixtures to use in Rule subclass tests."""
 
     @pytest.fixture
     def valid_single_context(self):
@@ -329,6 +329,10 @@ class RuleSubclassTestBase(object):  # pylint: disable=too-many-public-methods
     def invalid_condition_rule(self, rule_constructor, valid_single_context, condition_is_true_invalid):
         """Return a Rule with a `condition`."""
         return rule_constructor(valid_single_context, condition_is_true_invalid)
+
+
+class RuleSubclassTestBase(RuleSubclassFixtures):  # pylint: disable=too-many-public-methods
+    """A base class for Rule subclass tests."""
 
     def test_rule_init_valid_parameter_types(self, rule_instantiating):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
