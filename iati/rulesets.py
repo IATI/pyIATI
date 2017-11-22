@@ -186,21 +186,13 @@ class Rule(object):
         """Check Rule equality.
 
         This allows uniqueness to be correctly defined upon insertion into a set.
-
-        Todo:
-            Utilise all attributes as part of the equality process.
-
         """
-        return self.name == other.name
+        return (self.name == other.name) and (str(self) == str(other))
 
     def __hash__(self):
         """Hash the Rule.
 
         This allows uniqueness to be correctly defined upon insertion into a set.
-
-        Todo:
-            Utilise all attributes as part of the equality process.
-
         """
         return hash((self.name, str(self)))
 
