@@ -486,13 +486,13 @@ class RuleSubclassEquality(RuleSubclassFixtures):
 
         assert cmp_func_equal_val_and_hash(rule, rule_copy)
 
-    def test_rule_diff_name_not_equal(self, rule, cmp_func_different_val_and_hash):
+    def test_rule_diff_context_not_equal(self, rule, cmp_func_different_val_and_hash):
         """Check that two different Rules are not deemed to be equal.
 
-        The two Rules have different names, but are otherwise identical.
+        The two Rules have different contexts, but are otherwise identical.
         """
         rule_copy = deepcopy(rule)
-        rule_copy.name = rule.name + 'with a difference'
+        rule_copy.context = rule.context + 'with a difference'
 
         assert cmp_func_different_val_and_hash(rule, rule_copy)
 
