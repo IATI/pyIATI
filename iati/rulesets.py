@@ -202,7 +202,7 @@ class Rule(object):
             Utilise all attributes as part of the equality process.
 
         """
-        return hash(self.name)
+        return hash((self.name, str(self)))
 
     @property
     def name(self):
