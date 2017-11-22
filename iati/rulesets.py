@@ -183,6 +183,28 @@ class Rule(object):
         """Return string to state what the Rule is checking."""
         return 'This is a Rule.'
 
+    def __eq__(self, other):
+        """Check Rule equality.
+
+        This allows uniqueness to be correctly defined upon insertion into a set.
+
+        Todo:
+            Utilise all attributes as part of the equality process.
+
+        """
+        return self.name == other.name
+
+    def __hash__(self):
+        """Hash the Rule.
+
+        This allows uniqueness to be correctly defined upon insertion into a set.
+
+        Todo:
+            Utilise all attributes as part of the equality process.
+
+        """
+        return hash(self.name)
+
     def _validated_context(self, context):
         """Check that a valid `context` is given for a Rule.
 
