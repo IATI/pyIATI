@@ -1,5 +1,6 @@
 """A module containing tests for the library representation of Schemas."""
 # pylint: disable=protected-access
+import copy
 from lxml import etree
 import pytest
 import iati.codelists
@@ -208,20 +209,29 @@ class TestSchemas(object):
 
         assert len(schema_initialised.rulesets) == 1
 
-    @pytest.mark.skip(reason='Not implemented')
     def test_schema_rulesets_add_twice(self, schema_initialised):
-        """Check that it is not possible to add the same Rulesets to a Schema multiple times.
+        """Check that it is not possible to add the same Ruleset to a Schema multiple times.
 
         Todo:
             Consider if this test should test against a versioned Ruleset.
         """
-        raise NotImplementedError
+        ruleset = iati.default.ruleset()
 
-    @pytest.mark.skip(reason='Not implemented')
+        schema_initialised.rulesets.add(ruleset)
+        schema_initialised.rulesets.add(ruleset)
+
+        assert len(schema_initialised.rulesets) == 1
+
     def test_schema_rulesets_add_duplicate(self, schema_initialised):
-        """Check that it is not possible to add multiple functionally identical Rulesets to a Schema.
+        """Check that it is possible to add multiple functionally identical Rulesets to a Schema.
 
         Todo:
             Consider if this test should test against a versioned Ruleset.
         """
-        raise NotImplementedError
+        ruleset = iati.default.ruleset()
+        ruleset_copy = copy.deepcopy(ruleset)
+
+        schema_initialised.rulesets.add(ruleset)
+        schema_initialised.rulesets.add(ruleset_copy)
+
+        assert len(schema_initialised.rulesets) == 2
