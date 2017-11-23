@@ -51,13 +51,19 @@ class RulesetFixtures(object):
         return iati.Ruleset(request.param)
 
     multiple_rules_multiple_contexts_init_config = [
-        '{"CONTEXT_1": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}, "CONTEXT_2": {"atleast_one": {"cases": [{"paths": ["test_path_2"]}]}}}'
+        '{"CONTEXT_1": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}, "CONTEXT_2": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}}',  # same case in each context
+        '{"CONTEXT_1": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}, "CONTEXT_2": {"atleast_one": {"cases": [{"paths": ["test_path_2"]}]}}}'  # different case in each context
     ]
 
     @pytest.fixture(params=multiple_rules_multiple_contexts_init_config)
     def ruleset_multiple_rules_multiple_contexts(self, request):
         """Return a Ruleset containing multiple Rules. The Rules are spread across multiple contexts."""
         return iati.Ruleset(request.param)
+
+    @pytest.fixture(params=one_rule_init_config + multiple_rules_one_context_init_config + multiple_rules_multiple_contexts_init_config)
+    def ruleset_non_empty(self, request):
+        """Return a Ruleset that contains at least one Rule."""
+        return request.param
 
     @pytest.fixture(params=empty_init_config + one_rule_init_config + multiple_rules_one_context_init_config + multiple_rules_multiple_contexts_init_config)
     def ruleset(self, request):
