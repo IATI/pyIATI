@@ -163,9 +163,6 @@ class Rule(object):
     def __init__(self, context, case):
         """Initialise a Rule.
 
-        Args:
-            case (dict): Specific configuration for this instance of the Rule.
-
         Raises:
             TypeError: When a parameter is of an incorrect type.
             ValueError: When a rule_type is not one of the permitted Rule types.
