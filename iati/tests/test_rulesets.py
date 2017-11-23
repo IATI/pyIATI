@@ -63,12 +63,12 @@ class RulesetFixtures(object):
     @pytest.fixture(params=one_rule_init_config + multiple_rules_one_context_init_config + multiple_rules_multiple_contexts_init_config)
     def ruleset_non_empty(self, request):
         """Return a Ruleset that contains at least one Rule."""
-        return request.param
+        return iati.Ruleset(request.param)
 
     @pytest.fixture(params=empty_init_config + one_rule_init_config + multiple_rules_one_context_init_config + multiple_rules_multiple_contexts_init_config)
     def ruleset(self, request):
         """Return a Ruleset."""
-        return request.param
+        return iati.Ruleset(request.param)
 
 
 class TestRulesetInitialisation(RulesetFixtures):
@@ -205,6 +205,11 @@ class TestRulesetValidityChecks(RulesetFixtures):
 class TestRulesetEquality(RulesetFixtures):
     """A container for tests relating to checking the equality of Rulesets."""
 
+    @pytest.fixture
+    def rule(self):
+        """Return a Rule."""
+        return iati.RuleAtLeastOne('TestRulesetEqualityCONTEXT', {"paths": ["test_path"]})
+
     def test_ruleset_same_object_equal(self, ruleset, cmp_func_equal_val_and_hash):
         """Check that a Rule is deemed to be equal with itself."""
         assert cmp_func_equal_val_and_hash(ruleset, ruleset)
@@ -214,6 +219,16 @@ class TestRulesetEquality(RulesetFixtures):
         ruleset_copy = deepcopy(ruleset)
 
         assert cmp_func_equal_val_and_hash(ruleset, ruleset_copy)
+
+    def test_ruleset_diff_num_rules_not_equal(self, ruleset, rule, cmp_func_different_val_and_hash):
+        """Check that two different Rulesets are not deemed to be equal.
+
+        One Ruleset contains a Rule that the other does not, but they are otherwise identical.
+        """
+        ruleset_copy = deepcopy(ruleset)
+        ruleset_copy.rules.add(rule)
+
+        assert cmp_func_different_val_and_hash(ruleset, ruleset_copy)
 
 
 class TestRule(object):
