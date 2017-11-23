@@ -105,10 +105,6 @@ class Ruleset(object):
         """Hash the Ruleset.
 
         This allows uniqueness to be correctly defined upon insertion into a set.
-
-        Todo:
-            Utilise all attributes as part of the equality process.
-
         """
         return hash(id(self))
 
