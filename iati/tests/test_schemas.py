@@ -235,3 +235,18 @@ class TestSchemas(object):
         schema_initialised.rulesets.add(ruleset_copy)
 
         assert len(schema_initialised.rulesets) == 2
+
+    def test_schema_rulesets_add_two_different(self, schema_initialised):
+        """Check that it is possible to add multiple different Rulesets to a Schema.
+
+        Todo:
+            Consider if this test should test against a versioned Ruleset.
+        """
+        ruleset = iati.default.ruleset()
+        ruleset_copy = copy.deepcopy(ruleset)
+        ruleset_copy.rules.pop()
+
+        schema_initialised.rulesets.add(ruleset)
+        schema_initialised.rulesets.add(ruleset_copy)
+
+        assert len(schema_initialised.rulesets) == 2
