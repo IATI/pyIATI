@@ -164,7 +164,6 @@ class Rule(object):
         """Initialise a Rule.
 
         Args:
-            context (str): An XPath expression to locate the elements that the Rule is to be checked against.
             case (dict): Specific configuration for this instance of the Rule.
 
         Raises:
@@ -173,7 +172,7 @@ class Rule(object):
 
         """
         self._case = case
-        self.context = self._validated_context(context)
+        self._context = self._validated_context(context)
         self._valid_rule_configuration(case)
         self._set_case_attributes(case)
         self._normalize_xpaths()
@@ -195,6 +194,11 @@ class Rule(object):
         This allows uniqueness to be correctly defined upon insertion into a set.
         """
         return hash((self.name, str(self)))
+
+    @property
+    def context(self):
+        """str: An XPath expression to locate the elements that the Rule is to be checked against."""
+        return self._context
 
     @property
     def name(self):
