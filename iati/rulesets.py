@@ -110,7 +110,7 @@ class Ruleset(object):
             Utilise all attributes as part of the equality process.
 
         """
-        return hash(tuple(self.rules))
+        return hash(id(self))
 
     def is_valid_for(self, dataset):
         """Validate a Dataset against the Ruleset.

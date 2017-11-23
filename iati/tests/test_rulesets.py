@@ -214,11 +214,12 @@ class TestRulesetEquality(RulesetFixtures):
         """Check that a Rule is deemed to be equal with itself."""
         assert cmp_func_equal_val_and_hash(ruleset, ruleset)
 
-    def test_ruleset_same_diff_object_equal(self, ruleset, cmp_func_equal_val_and_hash):
+    def test_ruleset_same_diff_object_equal(self, ruleset, cmp_func_equal_val, cmp_func_different_hash):
         """Check that two instances of the same Ruleset are deemed to be equal."""
         ruleset_copy = deepcopy(ruleset)
 
-        assert cmp_func_equal_val_and_hash(ruleset, ruleset_copy)
+        assert cmp_func_equal_val(ruleset, ruleset_copy)
+        assert cmp_func_different_hash(ruleset, ruleset_copy)
 
     def test_ruleset_diff_num_rules_not_equal(self, ruleset, rule, cmp_func_different_val_and_hash):
         """Check that two different Rulesets are not deemed to be equal.
