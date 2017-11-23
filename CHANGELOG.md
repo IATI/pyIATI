@@ -13,15 +13,29 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Datasets] A Dataset `xml_tree` may be set with an ElementTree. [#235]
 
 - [Resources] Add ability to define resource files that are version-independent. [#223]
+- [Resources] Updated SSOT to latest content as of 2017-11-14. [#237]
+- [Resources] Remove SSOT organisation test files that are not valid XML. [IATI/IATI-Schemas#376, #242]
 
 - [Utility] Non-resource files may be loaded using utility functions. [#235]
 
+- [Validation] `full_validation()` now checks whether a Dataset is IATI XML. [#239]
+- [Validation] Test that SSOT organisation test files are valid IATI XML. [#242]
+
 ### Changed
+
+- [Codelists] `complete` attribute included in equality comparison and hash calculations. [#247]
+- [Codelists] Codes must have a value to instantiate. [#247]
 
 - [General] Change default behavior of `version` argument as per proposal in #218. [#223]
 
 - [Resources] Move `load_as_x` functions to `iati.utilities`. [#235]
 - [Resources] Rename version-specific resource folders to reduce ambiguity. [#217]
+
+- [Rulesets] `validate_ruleset()` changed from public to private function. [#246]
+- [Rulesets] `case` attribute on a Rule changed from public to private. [#252]
+- [Rulesets] `context` attribute on a Rule changed to read-only property. [#253]
+
+- [Validation] `_check_is_iati_xml()` will raise a `TypeError` when given a non-dataset. This replaces an undocumented `AttributeError`. [#239]
 
 ### Deprecated
 
@@ -29,13 +43,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Documentation] Stop tracking auto-generated docs templates. [#236]
 
+- [Rulesets] `ruleset` attribute removed from Rulesets. [#246]
+
 ### Fixed
 
-- [Codelists] Fixed impossible XPath in Codelist Mapping File. [IATI/IATI-Codelists#119]
+- [Codelists] Fixed impossible XPath in Codelist Mapping File. [IATI/IATI-Codelists#119, #229]
+- [Codelists] Sort Codes in a Codelist before hashing so that Codelists with the same Codes always have the same hash. [#247]
 
 - [Constants] `STANDARD_VERSIONS` now lists all versions of the Standard, not just those that are fully supported by pyIATI. [#223]
 
 - [Defaults] Test and document `ValueError`s that can be raised by functions in `iati.default`. [#241]
+
+- [Rulesets] `name` attribute on a Rule changed to read-only property. [#251]
+- [Rulesets] Equal Rulesets are now deemed to be equal. [#249]
 
 - [Validation] Prevent `XPathEvalError`s occurring when given a Codelist Mapping XPath that identifies something other than an attribute. [#229]
 - [Validation] Datasets with an `xml:lang` attribute no longer raise a `KeyError` upon performing Codelist validation against a Schema populated with the Language Codelist. [#226]

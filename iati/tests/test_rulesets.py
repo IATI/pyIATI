@@ -1,7 +1,6 @@
 """A module containing tests for the library representation of Rulesets.
 
 Todo:
-    Remove references to `case`.
     Check all tests are still necessary/relevant.
     Condense tests for individual Rules.
     Try to standardise Rule arrays for extraction.
@@ -16,34 +15,83 @@ import iati.resources
 import iati.tests.utilities
 
 
-class TestRuleset(object):
-    """A container for tests relating to Rulesets."""
+class RulesetFixtures(object):
+    """A base class for fixtures to use in Ruleset tests."""
 
-    def test_ruleset_init_no_parameters(self):
-        """Check that an empty Ruleset can be created when no parameters are given."""
-        ruleset = iati.Ruleset()
-
-        assert isinstance(ruleset, iati.Ruleset)
-        assert isinstance(ruleset.rules, set)
-        assert ruleset.rules == set()
-
-    @pytest.mark.parametrize("ruleset_str", [
+    empty_init_config = [
         '{"CONTEXT": {"atleast_one": {"cases": []}}}',  # JSON string that has no Rules
         ' ',  # whitespace only
         '',  # empty string
         None  # none
-    ])
-    def test_ruleset_init_ruleset_valid_no_rules(self, ruleset_str):
-        """Check that a Ruleset is created when given a JSON Ruleset in string format even if it contains no Rules."""
-        ruleset = iati.Ruleset(ruleset_str)
+    ]
+
+    @pytest.fixture(params=empty_init_config)
+    def ruleset_empty(self, request):
+        """Return an empty Ruleset."""
+        return iati.Ruleset(request.param)
+
+    one_rule_init_config = [
+        '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path"]}]}}}'
+    ]
+
+    @pytest.fixture(params=one_rule_init_config)
+    def ruleset_one_rule(self, request):
+        """Return a Ruleset containing one Rule."""
+        return iati.Ruleset(request.param)
+
+    multiple_rules_one_context_init_config = [  # pylint: disable=invalid-name
+        '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}, {"paths": ["test_path_2"]}]}}}',  # same type of Rule
+        '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}, "no_more_than_one": {"cases": [{"paths": ["test_path_2"]}]}}}',  # different types of Rule, different case info
+        '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}, "no_more_than_one": {"cases": [{"paths": ["test_path_1"]}]}}}',  # different types of Rule, same case info
+    ]
+
+    @pytest.fixture(params=multiple_rules_one_context_init_config)
+    def ruleset_multiple_rules_one_context(self, request):
+        """Return a Ruleset containing multiple Rules. All Rules are in the same context."""
+        return iati.Ruleset(request.param)
+
+    multiple_rules_multiple_contexts_init_config = [  # pylint: disable=invalid-name
+        '{"CONTEXT_1": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}, "CONTEXT_2": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}}',  # same case in each context
+        '{"CONTEXT_1": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}, "CONTEXT_2": {"atleast_one": {"cases": [{"paths": ["test_path_2"]}]}}}'  # different case in each context
+    ]
+
+    @pytest.fixture(params=multiple_rules_multiple_contexts_init_config)
+    def ruleset_multiple_rules_multiple_contexts(self, request):
+        """Return a Ruleset containing multiple Rules. The Rules are spread across multiple contexts."""
+        return iati.Ruleset(request.param)
+
+    @pytest.fixture(params=one_rule_init_config + multiple_rules_one_context_init_config + multiple_rules_multiple_contexts_init_config)
+    def ruleset_non_empty(self, request):
+        """Return a Ruleset that contains at least one Rule."""
+        return iati.Ruleset(request.param)
+
+    @pytest.fixture(params=empty_init_config + one_rule_init_config + multiple_rules_one_context_init_config + multiple_rules_multiple_contexts_init_config)
+    def ruleset(self, request):
+        """Return a Ruleset."""
+        return iati.Ruleset(request.param)
+
+
+class TestRulesetInitialisation(RulesetFixtures):
+    """A container for tests relating to Ruleset initialisation."""
+
+    def test_ruleset_init_empty(self, ruleset_empty):
+        """Check that an empty Ruleset can be created."""
+        ruleset = ruleset_empty
 
         assert isinstance(ruleset, iati.Ruleset)
         assert isinstance(ruleset.rules, set)
         assert ruleset.rules == set()
 
-    @pytest.mark.parametrize("not_a_ruleset", iati.tests.utilities.generate_test_types(['str', 'bytearray', 'none'], True))
+    @pytest.mark.parametrize("not_a_ruleset", [
+        '{"xpath": "string"}',
+        '{"xpath": 1}',
+        '{"xpath": 1.1}',
+        '{"xpath": null}',
+        '{"xpath": true}',
+        '{"xpath": ["array", 1, true]}',
+    ] + iati.tests.utilities.generate_test_types(['str', 'bytearray', 'none'], True))
     def test_ruleset_init_ruleset_str_not_str(self, not_a_ruleset):
-        """Check that a Ruleset cannot be created when given at least one Rule in a non-string format."""
+        """Check that a Ruleset cannot be created when given a string that does not conform to the Ruleset Schema."""
         with pytest.raises(ValueError):
             iati.Ruleset(not_a_ruleset)
 
@@ -60,11 +108,9 @@ class TestRuleset(object):
         with pytest.raises(ValueError):
             iati.Ruleset(not_a_ruleset_str)
 
-    def test_ruleset_init_ruleset_1_rule(self):
+    def test_ruleset_init_ruleset_1_rule(self, ruleset_one_rule):
         """Check that a Ruleset can be created when given a JSON Ruleset in string format with one Rule."""
-        ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path"]}]}}}'
-
-        ruleset = iati.Ruleset(ruleset_str)
+        ruleset = ruleset_one_rule
 
         assert isinstance(ruleset, iati.Ruleset)
         assert isinstance(ruleset.rules, set)
@@ -79,32 +125,15 @@ class TestRuleset(object):
         with pytest.raises(ValueError):
             iati.Ruleset(ruleset_str)
 
-    def test_ruleset_init_ruleset_2_rules_single_case(self):
-        """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules under a single case."""
-        ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}, {"paths": ["test_path_2"]}]}}}'
-
-        ruleset = iati.Ruleset(ruleset_str)
+    def test_ruleset_init_ruleset_multiple_rules_single_context(self, ruleset_multiple_rules_one_context):  # pylint: disable=invalid-name
+        """Check that a Ruleset can be created when given a JSON Ruleset in string format with multiple Rules under a single context."""
+        ruleset = ruleset_multiple_rules_one_context
 
         assert isinstance(ruleset, iati.Ruleset)
         assert isinstance(ruleset.rules, set)
         assert len(ruleset.rules) == 2
         for rule in ruleset.rules:
             assert isinstance(rule, iati.Rule)
-            assert isinstance(rule, iati.RuleAtLeastOne)
-
-    def test_ruleset_init_ruleset_multiple_cases(self):
-        """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules of different types, each under the same context."""
-        ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}, "no_more_than_one": {"cases": [{"paths": ["test_path_2"]}]}}}'
-
-        ruleset = iati.Ruleset(ruleset_str)
-
-        assert isinstance(ruleset, iati.Ruleset)
-        assert isinstance(ruleset.rules, set)
-        assert len(ruleset.rules) == 2
-        for rule in ruleset.rules:
-            assert isinstance(rule, iati.Rule)
-        assert len([rule for rule in ruleset.rules if isinstance(rule, iati.RuleAtLeastOne)]) == 1
-        assert len([rule for rule in ruleset.rules if isinstance(rule, iati.RuleNoMoreThanOne)]) == 1
 
     def test_ruleset_init_ruleset_duplicate_types(self):
         """Check that a Ruleset raises a ValueError when given a JSON Ruleset in string format with two Rules of the same type, each under the same context."""
@@ -120,11 +149,9 @@ class TestRuleset(object):
         with pytest.raises(ValueError):
             iati.Ruleset(ruleset_str)
 
-    def test_ruleset_init_ruleset_multiple_contexts(self):
+    def test_ruleset_init_ruleset_multiple_contexts(self, ruleset_multiple_rules_multiple_contexts):  # pylint: disable=invalid-name
         """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules of the same type, each under a different context."""
-        ruleset_str = '{"CONTEXT_1": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}, "CONTEXT_2": {"atleast_one": {"cases": [{"paths": ["test_path_2"]}]}}}'
-
-        ruleset = iati.Ruleset(ruleset_str)
+        ruleset = ruleset_multiple_rules_multiple_contexts
 
         assert isinstance(ruleset, iati.Ruleset)
         assert isinstance(ruleset.rules, set)
@@ -132,6 +159,10 @@ class TestRuleset(object):
         for rule in ruleset.rules:
             assert isinstance(rule, iati.Rule)
             assert isinstance(rule, iati.RuleAtLeastOne)
+
+
+class TestRulesetValidityChecks(RulesetFixtures):
+    """A container for tests relating to checking whether a Dataset is valid for a Ruleset."""
 
     def test_ruleset_is_valid_for_valid_dataset(self):
         """Check that a Dataset can be validated against the Standard Ruleset.
@@ -179,6 +210,49 @@ class TestRuleset(object):
         ruleset.rules.add(rule)
 
         assert not ruleset.is_valid_for(invalid_dataset)
+
+
+class TestRulesetEquality(RulesetFixtures):
+    """A container for tests relating to checking the equality of Rulesets."""
+
+    @pytest.fixture
+    def rule(self):
+        """Return a Rule."""
+        return iati.RuleAtLeastOne('TestRulesetEqualityCONTEXT', {"paths": ["test_path"]})
+
+    def test_ruleset_same_object_equal(self, ruleset, cmp_func_equal_val_and_hash):
+        """Check that a Rule is deemed to be equal with itself."""
+        assert cmp_func_equal_val_and_hash(ruleset, ruleset)
+
+    def test_ruleset_same_diff_object_equal(self, ruleset, cmp_func_equal_val, cmp_func_different_hash):
+        """Check that two instances of the same Ruleset are deemed to be equal."""
+        ruleset_copy = deepcopy(ruleset)
+
+        assert cmp_func_equal_val(ruleset, ruleset_copy)
+        assert cmp_func_different_hash(ruleset, ruleset_copy)
+
+    def test_ruleset_diff_num_rules_not_equal(self, ruleset, rule, cmp_func_different_val_and_hash):
+        """Check that two different Rulesets are not deemed to be equal.
+
+        One Ruleset contains a Rule that the other does not, but they are otherwise identical.
+        """
+        ruleset_copy = deepcopy(ruleset)
+        ruleset_copy.rules.add(rule)
+
+        assert cmp_func_different_val_and_hash(ruleset, ruleset_copy)
+
+    def test_ruleset_diff_rule_not_equal(self, ruleset_non_empty, cmp_func_different_val_and_hash):
+        """Check that two different Rulesets are not deemed to be equal.
+
+        One contained Rule differs between the Rulesets, but they are otherwise identical.
+        """
+        ruleset = ruleset_non_empty
+        ruleset_copy = deepcopy(ruleset)
+        rule = ruleset_copy.rules.pop()
+        rule._name = rule._name + 'with-a-difference'
+        ruleset_copy.rules.add(rule)
+
+        assert cmp_func_different_val_and_hash(ruleset, ruleset_copy)
 
 
 class TestRule(object):
@@ -251,8 +325,8 @@ class TestRuleSubclasses(object):
             rule_constructor(context, case)
 
 
-class RuleSubclassTestBase(object):  # pylint: disable=too-many-public-methods
-    """A base class for Rule subclass tests."""
+class RuleSubclassFixtures(object):
+    """A base class for fixtures to use in Rule subclass tests."""
 
     @pytest.fixture
     def valid_single_context(self):
@@ -299,6 +373,11 @@ class RuleSubclassTestBase(object):  # pylint: disable=too-many-public-methods
         condition_validating_case['condition'] = request.param
         return condition_validating_case
 
+    @pytest.fixture()
+    def rule(self, rule_constructor, valid_single_context, single_instantiating_case):
+        """A single instance of a Rule subclass."""
+        return rule_constructor(valid_single_context, single_instantiating_case)
+
     @pytest.fixture
     def rule_instantiating(self, rule_constructor, instantiating_case, valid_single_context):
         """Rule subclass that instantiates but is not used for validation testing."""
@@ -334,6 +413,17 @@ class RuleSubclassTestBase(object):  # pylint: disable=too-many-public-methods
         """Return a Rule with a `condition`."""
         return rule_constructor(valid_single_context, condition_is_true_invalid)
 
+
+class RuleSubclassTestsGeneral(RuleSubclassFixtures):  # pylint: disable=too-many-public-methods
+    """A container for general tests for Rule subclasses.
+
+    Todo:
+        Where `rule_instantiating` is used, determine whether changing to `rule` would reduce the coverage of the test.
+
+        Test and ensure dynamically-created attributes (`less`, `more`, `paths`, etc) are not writable after instantiation.
+
+    """
+
     def test_rule_init_valid_parameter_types(self, rule_instantiating):
         """Check that Rule subclasses can be instantiated with valid parameter types."""
         assert isinstance(rule_instantiating, iati.Rule)
@@ -362,6 +452,16 @@ class RuleSubclassTestBase(object):  # pylint: disable=too-many-public-methods
     def test_rule_name(self, rule_instantiating, rule_type):
         """Check that a Rule subclass has the expected name."""
         assert rule_instantiating.name == rule_type
+
+    def test_rule_name_cannot_be_set(self, rule):
+        """Check that a Rule subclass cannot have its name changed after instantiation."""
+        with pytest.raises(AttributeError):
+            rule.name = 'a new name'
+
+    def test_rule_context_cannot_be_set(self, rule):
+        """Check that a Rule subclass cannot have its context changed after instantiation."""
+        with pytest.raises(AttributeError):
+            rule.context = 'a-new-context'
 
     def test_rule_string_output_general(self, rule_instantiating):
         """Check that the string format of the Rule has been customised and variables formatted."""
@@ -458,6 +558,49 @@ class RuleSubclassTestBase(object):  # pylint: disable=too-many-public-methods
             rule_constructor(valid_single_context, junk_condition_case)
 
 
+class RuleSubclassEquality(RuleSubclassFixtures):
+    """A container for tests relating to checking the equality of Rule subclasses."""
+
+    def test_rule_same_object_equal(self, rule, cmp_func_equal_val_and_hash):
+        """Check that a Rule is deemed to be equal with itself."""
+        assert cmp_func_equal_val_and_hash(rule, rule)
+
+    def test_rule_same_diff_object_equal(self, rule, cmp_func_equal_val_and_hash):
+        """Check that two instances of the same Rule are deemed to be equal."""
+        rule_copy = deepcopy(rule)
+
+        assert cmp_func_equal_val_and_hash(rule, rule_copy)
+
+    def test_rule_diff_name_not_equal(self, rule, cmp_func_different_val_and_hash):
+        """Check that two different Rules are not deemed to be equal.
+
+        The two Rules have different names, but are otherwise identical.
+        """
+        rule_copy = deepcopy(rule)
+        rule_copy._name = rule.name + 'with-a-difference'
+
+        assert cmp_func_different_val_and_hash(rule, rule_copy)
+
+    def test_rule_diff_context_not_equal(self, rule, cmp_func_different_val_and_hash):
+        """Check that two different Rules are not deemed to be equal.
+
+        The two Rules have different contexts, but are otherwise identical.
+        """
+        rule_copy = deepcopy(rule)
+        rule_copy._context = rule.context + 'with-a-difference'
+
+        assert cmp_func_different_val_and_hash(rule, rule_copy)
+
+
+class RuleSubclassTestBase(RuleSubclassTestsGeneral, RuleSubclassEquality):
+    """A base class for Rule subclass tests.
+
+    This allows particular types of Rule to inherit from a single class, while allowing for logical separation of blocks of tests.
+    """
+
+    pass
+
+
 class TestRuleAtLeastOne(RuleSubclassTestBase):
     """A container for tests relating to RuleAtLeastOne."""
 
@@ -497,6 +640,11 @@ class TestRuleAtLeastOne(RuleSubclassTestBase):
         {'paths': ['element7', 'element8']},  # multiple paths, both expected matches missing
         {'paths': ['element13/@attribute', 'element14/@attribute']}
     ]
+
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
 
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
@@ -630,6 +778,11 @@ class TestRuleDateOrder(RuleSubclassTestBase):
         """Type of Rule."""
         return 'date_order'
 
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
+
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
         """Permitted case for this Rule."""
@@ -762,6 +915,11 @@ class TestRuleDependent(RuleSubclassTestBase):
         """Type of Rule."""
         return 'dependent'
 
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
+
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
         """Permitted case for this Rule."""
@@ -854,6 +1012,11 @@ class TestRuleNoMoreThanOne(RuleSubclassTestBase):
     def rule_type(self):
         """Type of Rule."""
         return 'no_more_than_one'
+
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
 
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
@@ -948,6 +1111,11 @@ class TestRuleRegexMatches(RuleSubclassTestBase):
         """Type of Rule."""
         return 'regex_matches'
 
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
+
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
         """Permitted case for instatiating this Rule."""
@@ -1041,6 +1209,11 @@ class TestRuleRegexNoMatches(RuleSubclassTestBase):
         """Type of Rule."""
         return 'regex_no_matches'
 
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
+
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
         """Permitted case for instatiating this Rule."""
@@ -1132,6 +1305,11 @@ class TestRuleStartsWith(RuleSubclassTestBase):
     def rule_type(self):
         """Type of Rule."""
         return 'startswith'
+
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
 
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
@@ -1279,6 +1457,11 @@ class TestRuleSum(RuleSubclassTestBase):
         """Type of Rule."""
         return 'sum'
 
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
+
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
         """Permitted case for instatiating this Rule."""
@@ -1373,6 +1556,11 @@ class TestRuleUnique(RuleSubclassTestBase):
     def rule_type(self):
         """Type of Rule."""
         return 'unique'
+
+    @pytest.fixture(params=[all_valid_cases[0]])
+    def single_instantiating_case(self, request):
+        """Single permitted case for instatiating this Rule."""
+        return request.param
 
     @pytest.fixture(params=all_valid_cases)
     def instantiating_case(self, request):
