@@ -72,11 +72,24 @@ class Schema(object):
         Todo:
             Utilise all attributes as part of the equality process.
 
+            Determine a better method of checking whether the contained Rulesets are equal.
+
         """
+        # perform cheap checks first
+        if (len(self.codelists) != len(other.codelists)) or (len(self.rulesets) != len(other.rulesets)):
+            return False
+
+        # turn the tree into something that can be easily compared
         self_tree_str = etree.tostring(self.flatten_includes(self._schema_base_tree), pretty_print=True)
         other_tree_str = etree.tostring(other.flatten_includes(other._schema_base_tree), pretty_print=True)  # pylint: disable=protected-access
 
-        return (self_tree_str == other_tree_str) and (collections.Counter(self.codelists) == collections.Counter(other.codelists))
+        # compare Rulesets - cannot use `collections.Counter` since it works on hash values, which differ between equal Rulesets
+        self_rulesets = list(self.rulesets)
+        other_rulesets = list(other.rulesets)
+        for self_rs in self_rulesets:
+            other_rulesets = [other_rs for other_rs in other_rulesets if other_rs != self_rs]
+
+        return (self_tree_str == other_tree_str) and (collections.Counter(self.codelists) == collections.Counter(other.codelists)) and (len(other_rulesets) == 0)
 
     def _change_include_to_xinclude(self, tree):
         """Change the method in which common elements are included.
