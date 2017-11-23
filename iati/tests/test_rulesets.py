@@ -378,6 +378,11 @@ class RuleSubclassTestsGeneral(RuleSubclassFixtures):  # pylint: disable=too-man
         with pytest.raises(AttributeError):
             rule.name = 'a new name'
 
+    def test_rule_context_cannot_be_set(self, rule):
+        """Check that a Rule subclass cannot have its context changed after instantiation."""
+        with pytest.raises(AttributeError):
+            rule.context = 'a-new-context'
+
     def test_rule_string_output_general(self, rule_instantiating):
         """Check that the string format of the Rule has been customised and variables formatted."""
         assert 'iati.rulesets' not in str(rule_instantiating)
