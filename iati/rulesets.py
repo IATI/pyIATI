@@ -7,6 +7,7 @@ Todo:
 
 """
 # no-member errors are due to using `setattr()` # pylint: disable=no-member
+import collections
 import decimal
 import json
 import re
@@ -50,7 +51,12 @@ def constructor_for_rule_type(rule_type):
 
 
 class Ruleset(object):
-    """Representation of a Ruleset as defined within the IATI SSOT."""
+    """Representation of a Ruleset as defined within the IATI SSOT.
+
+    Attributes:
+        rules (set): The Rules contained within this Ruleset.
+
+    """
 
     def __init__(self, ruleset_str=None):
         """Initialise a Ruleset.
@@ -63,21 +69,44 @@ class Ruleset(object):
             ValueError: When `ruleset_str` does not validate against the Ruleset Schema or cannot be correctly decoded.
 
         """
+        self.rules = set()
+
         if ruleset_str is None:
             ruleset_str = ''
 
         try:
-            self.ruleset = json.loads(ruleset_str, object_pairs_hook=iati.utilities.dict_raise_on_duplicates)
+            ruleset_dict = json.loads(ruleset_str, object_pairs_hook=iati.utilities.dict_raise_on_duplicates)
         except TypeError:
             raise ValueError('Provided Ruleset string is not a string.')
         except ValueError:  # python2/3 - should be json.decoder.JSONDecodeError at python 3.5+
             if ruleset_str.strip() == '':
-                self.ruleset = {}
+                ruleset_dict = {}
             else:
                 raise ValueError('Provided Ruleset string is not valid JSON.')
-        self.validate_ruleset()
-        self.rules = set()
-        self._set_rules()
+
+        self._validate_ruleset(ruleset_dict)
+        try:
+            self._set_rules(ruleset_dict)
+        except AttributeError:
+            raise ValueError('Provided Ruleset validates against the Ruleset Schema, but should not. See: https://github.com/IATI/IATI-Rulesets/issues/49')
+
+    def __eq__(self, other):
+        """Check Ruleset equality.
+
+        This allows uniqueness to be correctly defined upon insertion into a set.
+        """
+        return collections.Counter(self.rules) == collections.Counter(other.rules)
+
+    def __ne__(self, other):
+        """Check Ruleset inequality."""
+        return not self == other
+
+    def __hash__(self):
+        """Hash the Ruleset.
+
+        This allows uniqueness to be correctly defined upon insertion into a set.
+        """
+        return hash(id(self))
 
     def is_valid_for(self, dataset):
         """Validate a Dataset against the Ruleset.
@@ -104,25 +133,31 @@ class Ruleset(object):
 
         return True
 
-    def validate_ruleset(self):
+    def _validate_ruleset(self, ruleset_dict):
         """Validate a Ruleset against the Ruleset Schema.
 
+        Args:
+            ruleset_dict (dict): A JSON-format Ruleset parsed into a dictionary.
+
         Raises:
-            ValueError: When `ruleset_str` does not validate against the Ruleset Schema.
+            ValueError: When `ruleset_dict` does not validate against the Ruleset Schema.
 
         """
         try:
-            jsonschema.validate(self.ruleset, iati.default.ruleset_schema())
+            jsonschema.validate(ruleset_dict, iati.default.ruleset_schema())
         except jsonschema.ValidationError:
-            raise ValueError
+            raise ValueError('Provided Ruleset does not validate against the Ruleset Schema')
 
-    def _set_rules(self):
+    def _set_rules(self, ruleset_dict):
         """Set the Rules of the Ruleset.
 
         Extract each case of each Rule from the Ruleset and add to initialised `rules` set.
 
+        Args:
+            ruleset_dict (dict): A JSON-format Ruleset parsed into a dictionary.
+
         """
-        for context, rule in self.ruleset.items():
+        for context, rule in ruleset_dict.items():
             for rule_type, cases in rule.items():
                 for case in cases['cases']:
                     constructor = constructor_for_rule_type(rule_type)
@@ -136,7 +171,6 @@ class Rule(object):
     Acts as a base class for specific types of Rule that actually check the content of the data.
 
     Attributes:
-        name (str): The type of Rule, as specified in a JSON Ruleset.
         context (str): An XPath expression to locate the elements that the Rule is to be checked against.
         case (dict): Specific configuration for this instance of the Rule.
 
@@ -148,17 +182,13 @@ class Rule(object):
     def __init__(self, context, case):
         """Initialise a Rule.
 
-        Args:
-            context (str): An XPath expression to locate the elements that the Rule is to be checked against.
-            case (dict): Specific configuration for this instance of the Rule.
-
         Raises:
             TypeError: When a parameter is of an incorrect type.
             ValueError: When a rule_type is not one of the permitted Rule types.
 
         """
-        self.case = case
-        self.context = self._validated_context(context)
+        self._case = case
+        self._context = self._validated_context(context)
         self._valid_rule_configuration(case)
         self._set_case_attributes(case)
         self._normalize_xpaths()
@@ -166,6 +196,34 @@ class Rule(object):
     def __str__(self):
         """Return string to state what the Rule is checking."""
         return 'This is a Rule.'
+
+    def __eq__(self, other):
+        """Check Rule equality.
+
+        This allows uniqueness to be correctly defined upon insertion into a set.
+        """
+        return (self.name == other.name) and (str(self) == str(other))
+
+    def __ne__(self, other):
+        """Check Rule inequality."""
+        return not self == other
+
+    def __hash__(self):
+        """Hash the Rule.
+
+        This allows uniqueness to be correctly defined upon insertion into a set.
+        """
+        return hash((self.name, str(self)))
+
+    @property
+    def context(self):
+        """str: An XPath expression to locate the elements that the Rule is to be checked against."""
+        return self._context
+
+    @property
+    def name(self):
+        """str: The type of Rule, as specified in a JSON Ruleset."""
+        return self._name
 
     def _validated_context(self, context):
         """Check that a valid `context` is given for a Rule.
@@ -418,7 +476,7 @@ class RuleAtLeastOne(Rule):
 
     def __init__(self, context, case):
         """Initialise an `atleast_one` rule."""
-        self.name = 'atleast_one'
+        self._name = 'atleast_one'
 
         super(RuleAtLeastOne, self).__init__(context, case)
 
@@ -483,7 +541,7 @@ class RuleDateOrder(Rule):
 
     def __init__(self, context, case):
         """Initialise a `date_order` rule."""
-        self.name = 'date_order'
+        self._name = 'date_order'
         self.special_case = 'NOW'  # Was a constant sort of
 
         super(RuleDateOrder, self).__init__(context, case)
@@ -594,7 +652,7 @@ class RuleDependent(Rule):
 
     def __init__(self, context, case):
         """Initialise a `dependent` rule."""
-        self.name = 'dependent'
+        self._name = 'dependent'
 
         super(RuleDependent, self).__init__(context, case)
 
@@ -637,7 +695,7 @@ class RuleNoMoreThanOne(Rule):
 
     def __init__(self, context, case):
         """Initialise a `no_more_than_one` rule."""
-        self.name = 'no_more_than_one'
+        self._name = 'no_more_than_one'
 
         super(RuleNoMoreThanOne, self).__init__(context, case)
 
@@ -687,7 +745,7 @@ class RuleRegexMatches(Rule):
             ValueError: When the case does not contain valid regex.
 
         """
-        self.name = 'regex_matches'
+        self._name = 'regex_matches'
 
         super(RuleRegexMatches, self).__init__(context, case)
 
@@ -741,7 +799,7 @@ class RuleRegexNoMatches(Rule):
             ValueError: When the case does not contain valid regex.
 
         """
-        self.name = 'regex_no_matches'
+        self._name = 'regex_no_matches'
 
         super(RuleRegexNoMatches, self).__init__(context, case)
 
@@ -790,7 +848,7 @@ class RuleStartsWith(Rule):
 
     def __init__(self, context, case):
         """Initialise a `startswith` Rule."""
-        self.name = 'startswith'
+        self._name = 'startswith'
 
         super(RuleStartsWith, self).__init__(context, case)
 
@@ -849,7 +907,7 @@ class RuleSum(Rule):
 
     def __init__(self, context, case):
         """Initialise a `sum` rule."""
-        self.name = 'sum'
+        self._name = 'sum'
 
         super(RuleSum, self).__init__(context, case)
 
@@ -901,7 +959,7 @@ class RuleUnique(Rule):
 
     def __init__(self, context, case):
         """Initialise a `unique` rule."""
-        self.name = 'unique'
+        self._name = 'unique'
 
         super(RuleUnique, self).__init__(context, case)
 

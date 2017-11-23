@@ -119,6 +119,12 @@ def cmp_func_different_val(request):
     return request.param
 
 
+@pytest.fixture(params=_CMP_FUNC_DIFFERENT_HASH)
+def cmp_func_different_hash(request):
+    """Return a comparison function that checks whether two hashes are different."""
+    return request.param
+
+
 @pytest.fixture(params=_CMP_FUNC_DIFFERENT_VAL + _CMP_FUNC_DIFFERENT_HASH)
 def cmp_func_different_val_and_hash(request):
     """Return a comparison function that checks whether two values are different and have different hashes."""
