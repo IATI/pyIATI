@@ -15,26 +15,62 @@ import iati.resources
 import iati.tests.utilities
 
 
-class TestRuleset(object):
-    """A container for tests relating to Rulesets."""
+class RulesetFixtures(object):
+    """A base class for fixtures to use in Ruleset tests."""
 
-    def test_ruleset_init_no_parameters(self):
-        """Check that an empty Ruleset can be created when no parameters are given."""
-        ruleset = iati.Ruleset()
-
-        assert isinstance(ruleset, iati.Ruleset)
-        assert isinstance(ruleset.rules, set)
-        assert ruleset.rules == set()
-
-    @pytest.mark.parametrize("ruleset_str", [
+    empty_init_config = [
         '{"CONTEXT": {"atleast_one": {"cases": []}}}',  # JSON string that has no Rules
         ' ',  # whitespace only
         '',  # empty string
         None  # none
-    ])
-    def test_ruleset_init_ruleset_valid_no_rules(self, ruleset_str):
-        """Check that a Ruleset is created when given a JSON Ruleset in string format even if it contains no Rules."""
-        ruleset = iati.Ruleset(ruleset_str)
+    ]
+
+    @pytest.fixture(params=empty_init_config)
+    def ruleset_empty(self, request):
+        """Return an empty Ruleset."""
+        return iati.Ruleset(request.param)
+
+    one_rule_init_config = [
+        '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path"]}]}}}'
+    ]
+
+    @pytest.fixture(params=one_rule_init_config)
+    def ruleset_one_rule(self, request):
+        """Return a Ruleset containing one Rule."""
+        return iati.Ruleset(request.param)
+
+    multiple_rules_one_context_init_config = [
+        '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}, {"paths": ["test_path_2"]}]}}}',  # same type of Rule
+        '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}, "no_more_than_one": {"cases": [{"paths": ["test_path_2"]}]}}}',  # different types of Rule, different case info
+        '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}, "no_more_than_one": {"cases": [{"paths": ["test_path_1"]}]}}}',  # different types of Rule, same case info
+    ]
+
+    @pytest.fixture(params=multiple_rules_one_context_init_config)
+    def ruleset_multiple_rules_one_context(self, request):
+        """Return a Ruleset containing multiple Rules. All Rules are in the same context."""
+        return iati.Ruleset(request.param)
+
+    multiple_rules_multiple_contexts_init_config = [
+        '{"CONTEXT_1": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}, "CONTEXT_2": {"atleast_one": {"cases": [{"paths": ["test_path_2"]}]}}}'
+    ]
+
+    @pytest.fixture(params=multiple_rules_multiple_contexts_init_config)
+    def ruleset_multiple_rules_multiple_contexts(self, request):
+        """Return a Ruleset containing multiple Rules. The Rules are spread across multiple contexts."""
+        return iati.Ruleset(request.param)
+
+    @pytest.fixture(params=empty_init_config + one_rule_init_config + multiple_rules_one_context_init_config + multiple_rules_multiple_contexts_init_config)
+    def ruleset(self, request):
+        """Return a Ruleset."""
+        return request.param
+
+
+class TestRulesetInitialisation(RulesetFixtures):
+    """A container for tests relating to Ruleset initialisation."""
+
+    def test_ruleset_init_empty(self, ruleset_empty):
+        """Check that an empty Ruleset can be created."""
+        ruleset = ruleset_empty
 
         assert isinstance(ruleset, iati.Ruleset)
         assert isinstance(ruleset.rules, set)
@@ -66,11 +102,9 @@ class TestRuleset(object):
         with pytest.raises(ValueError):
             iati.Ruleset(not_a_ruleset_str)
 
-    def test_ruleset_init_ruleset_1_rule(self):
+    def test_ruleset_init_ruleset_1_rule(self, ruleset_one_rule):
         """Check that a Ruleset can be created when given a JSON Ruleset in string format with one Rule."""
-        ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path"]}]}}}'
-
-        ruleset = iati.Ruleset(ruleset_str)
+        ruleset = ruleset_one_rule
 
         assert isinstance(ruleset, iati.Ruleset)
         assert isinstance(ruleset.rules, set)
@@ -85,32 +119,15 @@ class TestRuleset(object):
         with pytest.raises(ValueError):
             iati.Ruleset(ruleset_str)
 
-    def test_ruleset_init_ruleset_2_rules_single_case(self):
-        """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules under a single case."""
-        ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}, {"paths": ["test_path_2"]}]}}}'
-
-        ruleset = iati.Ruleset(ruleset_str)
+    def test_ruleset_init_ruleset_multiple_rules_single_context(self, ruleset_multiple_rules_one_context):
+        """Check that a Ruleset can be created when given a JSON Ruleset in string format with multiple Rules under a single context."""
+        ruleset = ruleset_multiple_rules_one_context
 
         assert isinstance(ruleset, iati.Ruleset)
         assert isinstance(ruleset.rules, set)
         assert len(ruleset.rules) == 2
         for rule in ruleset.rules:
             assert isinstance(rule, iati.Rule)
-            assert isinstance(rule, iati.RuleAtLeastOne)
-
-    def test_ruleset_init_ruleset_multiple_cases(self):
-        """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules of different types, each under the same context."""
-        ruleset_str = '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}, "no_more_than_one": {"cases": [{"paths": ["test_path_2"]}]}}}'
-
-        ruleset = iati.Ruleset(ruleset_str)
-
-        assert isinstance(ruleset, iati.Ruleset)
-        assert isinstance(ruleset.rules, set)
-        assert len(ruleset.rules) == 2
-        for rule in ruleset.rules:
-            assert isinstance(rule, iati.Rule)
-        assert len([rule for rule in ruleset.rules if isinstance(rule, iati.RuleAtLeastOne)]) == 1
-        assert len([rule for rule in ruleset.rules if isinstance(rule, iati.RuleNoMoreThanOne)]) == 1
 
     def test_ruleset_init_ruleset_duplicate_types(self):
         """Check that a Ruleset raises a ValueError when given a JSON Ruleset in string format with two Rules of the same type, each under the same context."""
@@ -126,11 +143,9 @@ class TestRuleset(object):
         with pytest.raises(ValueError):
             iati.Ruleset(ruleset_str)
 
-    def test_ruleset_init_ruleset_multiple_contexts(self):
+    def test_ruleset_init_ruleset_multiple_contexts(self, ruleset_multiple_rules_multiple_contexts):
         """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules of the same type, each under a different context."""
-        ruleset_str = '{"CONTEXT_1": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}, "CONTEXT_2": {"atleast_one": {"cases": [{"paths": ["test_path_2"]}]}}}'
-
-        ruleset = iati.Ruleset(ruleset_str)
+        ruleset = ruleset_multiple_rules_multiple_contexts
 
         assert isinstance(ruleset, iati.Ruleset)
         assert isinstance(ruleset.rules, set)
@@ -139,10 +154,15 @@ class TestRuleset(object):
             assert isinstance(rule, iati.Rule)
             assert isinstance(rule, iati.RuleAtLeastOne)
 
+
+class TestRulesetValidityChecks(RulesetFixtures):
+    """A container for tests relating to checking whether a Dataset is valid for a Ruleset."""
+
     def test_ruleset_is_valid_for_valid_dataset(self):
         """Check that a Dataset can be validated against the Standard Ruleset."""
         ruleset = iati.tests.utilities.RULESET_FOR_TESTING
         valid_dataset = iati.tests.resources.load_as_dataset('valid_std_ruleset')
+
         assert ruleset.is_valid_for(valid_dataset)
 
     @pytest.mark.parametrize("invalid_dataset", [
@@ -176,18 +196,8 @@ class TestRuleset(object):
         assert not ruleset.is_valid_for(invalid_dataset)
 
 
-class TestRulesetEquality(object):
+class TestRulesetEquality(RulesetFixtures):
     """A container for tests relating to checking the equality of Rulesets."""
-
-    @pytest.fixture(params=[
-        iati.Ruleset(),
-        iati.Ruleset('{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path"]}]}}}'),
-        iati.Ruleset('{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}, "no_more_than_one": {"cases": [{"paths": ["test_path_2"]}]}}}'),
-        iati.Ruleset('{"CONTEXT_1": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}, "CONTEXT_2": {"atleast_one": {"cases": [{"paths": ["test_path_2"]}]}}}')
-    ])
-    def ruleset(self, request):
-        """Return a Ruleset."""
-        return request.param
 
     def test_ruleset_same_object_equal(self, ruleset, cmp_func_equal_val_and_hash):
         """Check that a Rule is deemed to be equal with itself."""
