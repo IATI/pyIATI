@@ -97,6 +97,10 @@ class Ruleset(object):
         """
         return collections.Counter(self.rules) == collections.Counter(other.rules)
 
+    def __ne__(self, other):
+        """Check Ruleset inequality."""
+        return not self == other
+
     def __hash__(self):
         """Hash the Ruleset.
 
@@ -203,6 +207,10 @@ class Rule(object):
         This allows uniqueness to be correctly defined upon insertion into a set.
         """
         return (self.name == other.name) and (str(self) == str(other))
+
+    def __ne__(self, other):
+        """Check Rule inequality."""
+        return not self == other
 
     def __hash__(self):
         """Hash the Rule.
