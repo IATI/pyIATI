@@ -39,7 +39,7 @@ class RulesetFixtures(object):
         """Return a Ruleset containing one Rule."""
         return iati.Ruleset(request.param)
 
-    multiple_rules_one_context_init_config = [
+    multiple_rules_one_context_init_config = [  # pylint: disable=invalid-name
         '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}, {"paths": ["test_path_2"]}]}}}',  # same type of Rule
         '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}, "no_more_than_one": {"cases": [{"paths": ["test_path_2"]}]}}}',  # different types of Rule, different case info
         '{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}, "no_more_than_one": {"cases": [{"paths": ["test_path_1"]}]}}}',  # different types of Rule, same case info
@@ -50,7 +50,7 @@ class RulesetFixtures(object):
         """Return a Ruleset containing multiple Rules. All Rules are in the same context."""
         return iati.Ruleset(request.param)
 
-    multiple_rules_multiple_contexts_init_config = [
+    multiple_rules_multiple_contexts_init_config = [  # pylint: disable=invalid-name
         '{"CONTEXT_1": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}, "CONTEXT_2": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}}',  # same case in each context
         '{"CONTEXT_1": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}, "CONTEXT_2": {"atleast_one": {"cases": [{"paths": ["test_path_2"]}]}}}'  # different case in each context
     ]
@@ -125,7 +125,7 @@ class TestRulesetInitialisation(RulesetFixtures):
         with pytest.raises(ValueError):
             iati.Ruleset(ruleset_str)
 
-    def test_ruleset_init_ruleset_multiple_rules_single_context(self, ruleset_multiple_rules_one_context):
+    def test_ruleset_init_ruleset_multiple_rules_single_context(self, ruleset_multiple_rules_one_context):  # pylint: disable=invalid-name
         """Check that a Ruleset can be created when given a JSON Ruleset in string format with multiple Rules under a single context."""
         ruleset = ruleset_multiple_rules_one_context
 
@@ -149,7 +149,7 @@ class TestRulesetInitialisation(RulesetFixtures):
         with pytest.raises(ValueError):
             iati.Ruleset(ruleset_str)
 
-    def test_ruleset_init_ruleset_multiple_contexts(self, ruleset_multiple_rules_multiple_contexts):
+    def test_ruleset_init_ruleset_multiple_contexts(self, ruleset_multiple_rules_multiple_contexts):  # pylint: disable=invalid-name
         """Check that a Ruleset can be created when given a JSON Ruleset in string format with two Rules of the same type, each under a different context."""
         ruleset = ruleset_multiple_rules_multiple_contexts
 
