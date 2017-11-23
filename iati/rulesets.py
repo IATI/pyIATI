@@ -7,6 +7,7 @@ Todo:
 
 """
 # no-member errors are due to using `setattr()` # pylint: disable=no-member
+import collections
 import decimal
 import json
 import re
@@ -88,6 +89,24 @@ class Ruleset(object):
             self._set_rules(ruleset_dict)
         except AttributeError:
             raise ValueError('Provided Ruleset validates against the Ruleset Schema, but should not. See: https://github.com/IATI/IATI-Rulesets/issues/49')
+
+    def __eq__(self, other):
+        """Check Ruleset equality.
+
+        This allows uniqueness to be correctly defined upon insertion into a set.
+        """
+        return collections.Counter(self.rules) == collections.Counter(other.rules)
+
+    def __ne__(self, other):
+        """Check Ruleset inequality."""
+        return not self == other
+
+    def __hash__(self):
+        """Hash the Ruleset.
+
+        This allows uniqueness to be correctly defined upon insertion into a set.
+        """
+        return hash(id(self))
 
     def is_valid_for(self, dataset):
         """Validate a Dataset against the Ruleset.
@@ -177,6 +196,24 @@ class Rule(object):
     def __str__(self):
         """Return string to state what the Rule is checking."""
         return 'This is a Rule.'
+
+    def __eq__(self, other):
+        """Check Rule equality.
+
+        This allows uniqueness to be correctly defined upon insertion into a set.
+        """
+        return (self.name == other.name) and (str(self) == str(other))
+
+    def __ne__(self, other):
+        """Check Rule inequality."""
+        return not self == other
+
+    def __hash__(self):
+        """Hash the Rule.
+
+        This allows uniqueness to be correctly defined upon insertion into a set.
+        """
+        return hash((self.name, str(self)))
 
     @property
     def context(self):
