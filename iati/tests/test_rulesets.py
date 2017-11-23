@@ -230,6 +230,19 @@ class TestRulesetEquality(RulesetFixtures):
 
         assert cmp_func_different_val_and_hash(ruleset, ruleset_copy)
 
+    def test_ruleset_diff_rule_not_equal(self, ruleset_non_empty, cmp_func_different_val_and_hash):
+        """Check that two different Rulesets are not deemed to be equal.
+
+        One contained Rule differs between the Rulesets, but they are otherwise identical.
+        """
+        ruleset = ruleset_non_empty
+        ruleset_copy = deepcopy(ruleset)
+        rule = ruleset_copy.rules.pop()
+        rule._name = rule._name + 'with-a-difference'
+        ruleset_copy.rules.add(rule)
+
+        assert cmp_func_different_val_and_hash(ruleset, ruleset_copy)
+
 
 class TestRule(object):
     """A container for tests relating to Rules."""
