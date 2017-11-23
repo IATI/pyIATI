@@ -163,16 +163,13 @@ class Rule(object):
     def __init__(self, context, case):
         """Initialise a Rule.
 
-        Args:
-            context (str): An XPath expression to locate the elements that the Rule is to be checked against.
-
         Raises:
             TypeError: When a parameter is of an incorrect type.
             ValueError: When a rule_type is not one of the permitted Rule types.
 
         """
         self._case = case
-        self.context = self._validated_context(context)
+        self._context = self._validated_context(context)
         self._valid_rule_configuration(case)
         self._set_case_attributes(case)
         self._normalize_xpaths()
@@ -180,6 +177,11 @@ class Rule(object):
     def __str__(self):
         """Return string to state what the Rule is checking."""
         return 'This is a Rule.'
+
+    @property
+    def context(self):
+        """str: An XPath expression to locate the elements that the Rule is to be checked against."""
+        return self._context
 
     @property
     def name(self):
