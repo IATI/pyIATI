@@ -7,6 +7,7 @@ Todo:
 
 """
 # no-member errors are due to using `setattr()` # pylint: disable=no-member
+import collections
 import decimal
 import json
 import re
@@ -88,6 +89,24 @@ class Ruleset(object):
             self._set_rules(ruleset_dict)
         except AttributeError:
             raise ValueError('Provided Ruleset validates against the Ruleset Schema, but should not. See: https://github.com/IATI/IATI-Rulesets/issues/49')
+
+    def __eq__(self, other):
+        """Check Ruleset equality.
+
+        This allows uniqueness to be correctly defined upon insertion into a set.
+        """
+        return collections.Counter(self.rules) == collections.Counter(other.rules)
+
+    def __hash__(self):
+        """Hash the Ruleset.
+
+        This allows uniqueness to be correctly defined upon insertion into a set.
+
+        Todo:
+            Utilise all attributes as part of the equality process.
+
+        """
+        return hash(tuple(self.rules))
 
     def is_valid_for(self, dataset):
         """Validate a Dataset against the Ruleset.

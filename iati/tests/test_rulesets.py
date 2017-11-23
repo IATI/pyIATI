@@ -176,6 +176,30 @@ class TestRuleset(object):
         assert not ruleset.is_valid_for(invalid_dataset)
 
 
+class TestRulesetEquality(object):
+    """A container for tests relating to checking the equality of Rulesets."""
+
+    @pytest.fixture(params=[
+        iati.Ruleset(),
+        iati.Ruleset('{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path"]}]}}}'),
+        iati.Ruleset('{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}, "no_more_than_one": {"cases": [{"paths": ["test_path_2"]}]}}}'),
+        iati.Ruleset('{"CONTEXT_1": {"atleast_one": {"cases": [{"paths": ["test_path_1"]}]}}, "CONTEXT_2": {"atleast_one": {"cases": [{"paths": ["test_path_2"]}]}}}')
+    ])
+    def ruleset(self, request):
+        """Return a Ruleset."""
+        return request.param
+
+    def test_ruleset_same_object_equal(self, ruleset, cmp_func_equal_val_and_hash):
+        """Check that a Rule is deemed to be equal with itself."""
+        assert cmp_func_equal_val_and_hash(ruleset, ruleset)
+
+    def test_ruleset_same_diff_object_equal(self, ruleset, cmp_func_equal_val_and_hash):
+        """Check that two instances of the same Ruleset are deemed to be equal."""
+        ruleset_copy = deepcopy(ruleset)
+
+        assert cmp_func_equal_val_and_hash(ruleset, ruleset_copy)
+
+
 class TestRule(object):
     """A container for tests relating to Rules."""
 
