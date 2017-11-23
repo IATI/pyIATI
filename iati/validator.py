@@ -437,6 +437,7 @@ def _check_is_iati_xml(dataset, schema):
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
 
     Raises:
+        TypeError: Something was provided as a Dataset that is not a Dataset.
         iati.exceptions.SchemaError: An error occurred in the parsing of the Schema.
 
     Todo:
@@ -456,6 +457,8 @@ def _check_is_iati_xml(dataset, schema):
         for log_entry in doc_invalid.error_log:  # pylint: disable=no-member
             error = _create_error_for_lxml_log_entry(log_entry)
             error_log.add(error)
+    except AttributeError:
+        raise TypeError('Unexpected argument: {0} is not an iati.Dataset'.format(type(dataset)))
 
     return error_log
 
@@ -671,7 +674,7 @@ def _create_error_for_rule(rule):
 
 
 def full_validation(dataset, schema):
-    """Perform full validation on a Dataset.
+    """Perform full validation on a Dataset against the provided Schema.
 
     Args:
         dataset (iati.Dataset): The Dataset to check validity of.
@@ -690,6 +693,10 @@ def full_validation(dataset, schema):
     error_log = ValidationErrorLog()
 
     error_log.extend(_check_is_xml(dataset))
+    try:
+        error_log.extend(_check_is_iati_xml(dataset, schema))
+    except TypeError:
+        return error_log
     error_log.extend(_check_codelist_values(dataset, schema))
     error_log.extend(_check_ruleset_conformance(dataset, schema))
 

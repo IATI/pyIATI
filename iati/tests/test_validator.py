@@ -22,6 +22,11 @@ class ValidationTestBase(object):
         return iati.default.activity_schema('2.02', False)
 
     @pytest.fixture
+    def schema_basic_org(self):
+        """An Org Schema with no Codelists added."""
+        return iati.default.organisation_schema(None, False)
+
+    @pytest.fixture
     def schema_fully_populated(self):
         """Return an Activity Schema populated with all Codelists.
 
@@ -102,16 +107,6 @@ class ValidationTestBase(object):
 
         """
         return request.param
-
-    @pytest.fixture(params=iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-pass'))
-    def iati_dataset_valid_from_ssot(self, request):
-        """A `should-pass` Dataset from the SSOT."""
-        return iati.utilities.load_as_dataset(request.param)
-
-    @pytest.fixture(params=iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail'))
-    def iati_dataset_invalid_from_ssot(self, request):
-        """A `should-fail` Dataset from the SSOT."""
-        return iati.utilities.load_as_dataset(request.param)
 
     @pytest.fixture
     def error_log_empty(self):
@@ -470,12 +465,37 @@ class TestValidationTruthyIATI(ValidationTestBase):
         assert iati.validator.is_iati_xml(data, schema_basic)
         assert iati.validator.is_valid(data, schema_basic)
 
-    def test_basic_validation_should_pass_from_ssot(self, iati_dataset_valid_from_ssot, schema_basic):
+    @pytest.mark.parametrize('file_path', iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-pass') + iati.tests.resources.get_test_data_paths_in_folder('ssot-org-xml-pass'))
+    def test_basic_validation_should_pass_from_ssot(self, file_path, schema_basic, schema_basic_org):
         """Perform check to see whether a parameter is valid IATI XML.
 
         The parameter is valid IATI XML. It is sourced from the SSOT.
         """
-        assert iati.validator.is_iati_xml(iati_dataset_valid_from_ssot, schema_basic)
+        dataset = iati.utilities.load_as_dataset(file_path)
+
+        if 'ssot-activity-xml-pass' in file_path:
+            schema = schema_basic
+        else:
+            schema = schema_basic_org
+
+        assert iati.validator.is_xml(dataset.xml_str)
+        assert iati.validator.is_iati_xml(dataset, schema)
+
+    @pytest.mark.parametrize('file_path', iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail') + iati.tests.resources.get_test_data_paths_in_folder('ssot-org-xml-fail'))
+    def test_basic_validation_should_fail_from_ssot(self, file_path, schema_basic, schema_basic_org):
+        """Perform check to see whether a parameter is valid IATI XML.
+
+        The parameter is valid IATI XML. It is sourced from the SSOT.
+        """
+        dataset = iati.utilities.load_as_dataset(file_path)
+
+        if 'ssot-activity-xml-fail' in file_path:
+            schema = schema_basic
+        else:
+            schema = schema_basic_org
+
+        assert iati.validator.is_xml(dataset.xml_str)
+        assert not iati.validator.is_iati_xml(dataset, schema)
 
     def test_basic_validation_invalid(self, schema_basic):
         """Perform a super simple data validation against an invalid Dataset."""
@@ -484,13 +504,6 @@ class TestValidationTruthyIATI(ValidationTestBase):
         assert iati.validator.is_xml(data.xml_str)
         assert not iati.validator.is_iati_xml(data, schema_basic)
         assert not iati.validator.is_valid(data, schema_basic)
-
-    def test_basic_validation_should_fail_from_ssot(self, iati_dataset_invalid_from_ssot, schema_basic):
-        """Perform check to see whether a parameter is valid IATI XML.
-
-        The parameter is not valid IATI XML. It is sourced from the SSOT.
-        """
-        assert not iati.validator.is_iati_xml(iati_dataset_invalid_from_ssot, schema_basic)
 
     def test_basic_validation_invalid_missing_required_element(self, schema_basic):
         """Perform a super simple data validation against a Dataset that is invalid due to a missing required element.
@@ -1162,6 +1175,25 @@ class TestValidateRulesets(object):
 class TestValidatorFullValidation(ValidateCodelistsBase):
     """A container for tests relating to detailed error output from validation."""
 
+    def test_full_validation_not_xml_detailed_output(self, schema_basic):
+        """Perform full validation against a string that is not XML."""
+        not_xml = 'This is not XML.'
+
+        result = iati.validator.full_validation(not_xml, schema_basic)
+
+        assert len(result) == 1
+        assert result.contains_error_called('err-not-xml-empty-document')
+
+    def test_full_validation_iati_xml(self, not_iati_dataset_missing_required_el, schema_basic):  # pylint: disable=invalid-name
+        """Perform check to see whether a parameter is valid IATI XML.
+
+        The parameter is not valid IATI XML. It is missing a required element.
+        """
+        result = iati.validator.full_validation(not_iati_dataset_missing_required_el, schema_basic)
+
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-iati-xml-missing-required-element')
+
     def test_full_validation_codelist_valid_detailed_output(self, schema_version):
         """Perform data validation against valid IATI XML that has valid Codelist values.  Obtain detailed error output.
 
@@ -1227,11 +1259,10 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
         assert 'Country' in result.info
         assert 'Country' in result.help
 
-    def test_full_validation_not_xml_detailed_output(self, schema_basic):
-        """Perform full validation against a string that is not XML."""
-        not_xml = 'This is not XML.'
+    def test_full_validation_ruleset_conformance_fail(self, schema_ruleset):
+        """Perform data validation against valid IATI XML that does not conform to Rulesets."""
+        data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors')
+        result = iati.validator.full_validation(data_with_multiple_rule_errors, schema_ruleset)
 
-        result = iati.validator.full_validation(not_xml, schema_basic)
-
-        assert len(result) == 1
-        assert result.contains_error_called('err-not-xml-empty-document')
+        assert len(result.get_errors_or_warnings_by_category('rule')) > 1
+        assert len(result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')) == 1
