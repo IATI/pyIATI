@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Resources] Rename version-specific resource folders to reduce ambiguity. [#217]
 
 - [Rulesets] `validate_ruleset()` changed from public to private function. [#246]
+- [Rulesets] `case` attribute on a Rule changed from public to private. [#252]
 - [Rulesets] `context` attribute on a Rule changed to read-only property. [#253]
 
 - [Validation] `_check_is_iati_xml()` will raise a `TypeError` when given a non-dataset. This replaces an undocumented `AttributeError`. [#239]

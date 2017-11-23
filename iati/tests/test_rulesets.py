@@ -1,7 +1,6 @@
 """A module containing tests for the library representation of Rulesets.
 
 Todo:
-    Remove references to `case`.
     Check all tests are still necessary/relevant.
     Condense tests for individual Rules.
     Try to standardise Rule arrays for extraction.
@@ -341,6 +340,8 @@ class RuleSubclassTestsGeneral(RuleSubclassFixtures):  # pylint: disable=too-man
 
     Todo:
         Where `rule_instantiating` is used, determine whether changing to `rule` would reduce the coverage of the test.
+
+        Test and ensure dynamically-created attributes (`less`, `more`, `paths`, etc) are not writable after instantiation.
 
     """
 
