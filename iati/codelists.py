@@ -108,12 +108,7 @@ class Codelist(object):
         return (self.name == other.name) and (self.complete == other.complete) and (collections.Counter(self.codes) == collections.Counter(other.codes))
 
     def __ne__(self, other):
-        """Check Codelist inequality.
-
-        Note:
-            This is required since there are no implicit relationships when comparing objects. https://docs.python.org/2/reference/datamodel.html#object.__ne__
-
-        """
+        """Check Codelist inequality."""
         return not self == other
 
     def __hash__(self):
@@ -226,12 +221,7 @@ class Code(object):
             return self.value == other
 
     def __ne__(self, other):
-        """Check Code inequality.
-
-        Note:
-            This is required since there are no implicit relationships when comparing objects. https://docs.python.org/2/reference/datamodel.html#object.__ne__
-
-        """
+        """Check Code inequality."""
         return not self == other
 
     def __hash__(self):
