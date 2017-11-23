@@ -341,6 +341,8 @@ class RuleSubclassTestsGeneral(RuleSubclassFixtures):  # pylint: disable=too-man
     Todo:
         Where `rule_instantiating` is used, determine whether changing to `rule` would reduce the coverage of the test.
 
+        Test and ensure dynamically-created attributes (`less`, `more`, `paths`, etc) are not writable after instantiation.
+
     """
 
     def test_rule_init_valid_parameter_types(self, rule_instantiating):
