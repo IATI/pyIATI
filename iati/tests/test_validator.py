@@ -1261,7 +1261,7 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
 
     def test_full_validation_ruleset_conformance_fail(self, schema_ruleset):
         """Perform data validation against valid IATI XML that does not conform to Rulesets."""
-        data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors')
+        data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors', '2.02')
         result = iati.validator.full_validation(data_with_multiple_rule_errors, schema_ruleset)
 
         assert len(result.get_errors_or_warnings_by_category('rule')) > 1
