@@ -16,7 +16,7 @@ pylint==1.7.4 # rq.filter: <2.0
 radon==2.1.1 # rq.filter: <3.0
 
 # testing tools
-pytest==3.2.5 # rq.filter: <4.0
+pytest==3.3.0 # rq.filter: <4.0
 pytest-cov==2.5.1 # rq.filter: <3.0
 pytest-xdist==1.20.1 # rq.filter: <2.0
 
