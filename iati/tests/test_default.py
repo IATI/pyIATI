@@ -10,17 +10,27 @@ import iati.tests.utilities
 class TestDefault(object):
     """A container for tests relating to Default data."""
 
-    @pytest.mark.parametrize("func_to_check", [
+    @pytest.fixture(params=[
         iati.default.codelists,
         iati.default.codelist_mapping,
         iati.default.ruleset,
         iati.default.activity_schema,
         iati.default.organisation_schema
     ])
-    def test_invalid_version(self, std_version_invalid, func_to_check):
+    def default_data_func_version_param(self, request):
+        """Return a default data function that takes only a version as a parameter."""
+        return request.param
+
+    def test_invalid_version(self, std_version_invalid, default_data_func_version_param):
         """Check that an invalid version causes an error when obtaining default data."""
         with pytest.raises(ValueError):
-            func_to_check(std_version_invalid)
+            default_data_func_version_param(std_version_invalid)
+
+    def test_major_version_matches_minor(self, standard_version_major, default_data_func_version_param):
+        """Check that specifying a major version returns the same info as the corresponding decimal."""
+        minor_version = iati.default._specific_version_for(standard_version_major)  # pylint: disable=protected-access
+
+        assert default_data_func_version_param(standard_version_major) == default_data_func_version_param(minor_version)
 
 
 # pylint: disable=protected-access

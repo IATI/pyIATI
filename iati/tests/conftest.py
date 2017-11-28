@@ -73,6 +73,12 @@ def std_version_invalid(request):
     return request.param
 
 
+@pytest.fixture(params=iati.constants.STANDARD_VERSIONS_MAJOR)
+def standard_version_major(request):
+    """Return a major version of the IATI Standard."""
+    return str(request.param)
+
+
 @pytest.fixture(params=iati.constants.STANDARD_VERSIONS)
 def standard_version_all(request):
     """Return a version of the IATI Standard."""
@@ -121,6 +127,12 @@ _CMP_FUNC_DIFFERENT_HASH = [
 @pytest.fixture(params=_CMP_FUNC_EQUAL_VAL)
 def cmp_func_equal_val(request):
     """Return a comparison function that checks whether two values are equal."""
+    return request.param
+
+
+@pytest.fixture(params=_CMP_FUNC_EQUAL_HASH)
+def cmp_func_equal_hash(request):
+    """Return a comparison function that checks whether two values have the same hash."""
     return request.param
 
 
