@@ -24,11 +24,6 @@ def get_test_data_path(name, version=None):
     Note:
         Does not check whether the specified data file actually exists.
 
-    Warning:
-        This is a function used for testing purposes and should be located in a different module. DO NOT reply on it remaining here.
-
-        Needs to handle a more complex file structure than a single flat directory.
-
     Todo:
         Test this directly rather than just the indirect tests that exist at present.
 
@@ -92,8 +87,6 @@ def get_test_ruleset_path(name, version=None):
         Does not check whether the specified file actually exists.
 
     Warning:
-        This is a function used for testing purposes and should be located in a different module. DO NOT reply on it remaining here.
-
         Needs to handle a more complex file structure than a single flat directory.
 
     Todo:
