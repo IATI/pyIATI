@@ -90,8 +90,6 @@ def codelist(name, version):
 
         Better distinguish TypeErrors from KeyErrors - sometimes the latter is raised when the former should have been.
 
-        Determine how to handle requested an Embedded Codelist for an Integer Version.
-
     """
     try:
         codelist_found = _codelists(version, True)[name]
