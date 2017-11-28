@@ -222,7 +222,7 @@ def ruleset_schema():
         dict: A dictionary representing the Ruleset schema for the specified version of the Standard.
 
     Todo:
-        Determine whether a version should be provided.
+        Determine whether a version should be provided. This is worth considering if the content of the IATI Ruleset Schema varies between versions.
 
     """
     path = iati.resources.get_ruleset_path(iati.resources.FILE_RULESET_SCHEMA_NAME)
