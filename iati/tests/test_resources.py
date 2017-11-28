@@ -4,6 +4,7 @@ import pytest
 import iati.constants
 import iati.resources
 import iati.validator
+import iati.tests.resources
 
 
 class TestResources(object):
@@ -64,16 +65,26 @@ class TestResourceFolders(object):
         path = iati.resources.get_folder_path_for_version(*standard_version_optional)
         assert path_component in path
 
-    def test_get_test_data_paths_in_folder(self):
+    @pytest.mark.parametrize('version, expected_num_paths', [
+        ('2.02', 237),
+        ('2.01', 217),
+        ('1.05', 17),
+        ('1.04', 17),
+        ('1.03', 17),
+        ('1.02', 17),
+        ('1.01', 16),
+        ('1', 0),
+        ('2', 0),
+        (None, 0)
+    ])
+    def test_get_test_data_paths_in_folder(self, version, expected_num_paths):
         """Check that test data is being found in specified subfolders.
 
-        Todo:
-            Deal with multiple versions.
-
+        Look for the number of paths in the `ssot-activity-xml-fail` folder.
         """
-        paths = iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail', '2.02')
+        paths = iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail', version)
 
-        assert len(paths) == 237
+        assert len(paths) == expected_num_paths
 
 
 class TestResourceLibraryData(object):
