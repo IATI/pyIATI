@@ -42,6 +42,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Rulesets] `ruleset` attribute removed from Rulesets. [#246]
 
+- [Tests] `iati.tests.resources.get_test_ruleset_path()` removed due to no calls to function. [#256]
+
 ### Fixed
 
 - [Codelists] Fixed impossible XPath in Codelist Mapping File. [IATI/IATI-Codelists#119, #229]

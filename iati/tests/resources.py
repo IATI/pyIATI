@@ -24,11 +24,6 @@ def get_test_data_path(name, version=None):
     Note:
         Does not check whether the specified data file actually exists.
 
-    Warning:
-        This is a function used for testing purposes and should be located in a different module. DO NOT reply on it remaining here.
-
-        Needs to handle a more complex file structure than a single flat directory.
-
     Todo:
         Test this directly rather than just the indirect tests that exist at present.
 
@@ -76,31 +71,6 @@ def get_test_data_paths_in_folder(folder_name, version=None):
     deresourced_paths = [iati.resources.resource_filename(path[path.find(root_folder):]) for path in paths]
 
     return deresourced_paths
-
-
-def get_test_ruleset_path(name, version=None):
-    """Determine the path of an IATI test Ruleset file with the given filename at the specified version of the Standard.
-
-    Args:
-        name (str): The name of the data file to locate. The filename must not contain the '.xml' file extension.
-        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
-
-    Returns:
-        str: The path to a file containing the specified test Ruleset.
-
-    Note:
-        Does not check whether the specified file actually exists.
-
-    Warning:
-        This is a function used for testing purposes and should be located in a different module. DO NOT reply on it remaining here.
-
-        Needs to handle a more complex file structure than a single flat directory.
-
-    Todo:
-        Might need removing. What is using it now?
-
-    """
-    return os.path.join(PATH_TEST_DATA, iati.resources.get_folder_name_for_version(version), 'rulesets/{0}'.format(name) + iati.resources.FILE_RULESET_EXTENSION)
 
 
 def load_as_dataset(relative_path):
