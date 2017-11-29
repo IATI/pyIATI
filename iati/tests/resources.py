@@ -37,7 +37,7 @@ def get_test_data_path(name, version=None):
     if name[-4:] == iati.resources.FILE_DATA_EXTENSION:
         name = name[:-4]
 
-    relative_path = os.path.join(PATH_TEST_DATA, iati.resources.get_folder_name_for_version(version), '{0}'.format(name) + iati.resources.FILE_DATA_EXTENSION)
+    relative_path = os.path.join(PATH_TEST_DATA, iati.resources.folder_name_for_version(version), '{0}'.format(name) + iati.resources.FILE_DATA_EXTENSION)
 
     return iati.resources.resource_filename(relative_path)
 
@@ -59,7 +59,7 @@ def get_test_data_paths_in_folder(folder_name, version=None):
         folder_name = os.sep.join(split_name)
 
     paths = list()
-    root_folder = os.path.join(PATH_TEST_DATA, iati.resources.get_folder_name_for_version(version), folder_name)
+    root_folder = os.path.join(PATH_TEST_DATA, iati.resources.folder_name_for_version(version), folder_name)
     resource_folder = iati.resources.resource_filename(root_folder)
 
     for base_folder, _, file_names in os.walk(resource_folder):

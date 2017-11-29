@@ -77,7 +77,7 @@ def get_codelist_paths(version=None):
         Provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
 
     """
-    folder_path = get_path_for_version(PATH_CODELISTS, version)
+    folder_path = path_for_version(PATH_CODELISTS, version)
     files = pkg_resources.resource_listdir(PACKAGE, folder_path[len(resource_filename('')):])
     files_codelists_only = [file_name for file_name in files if file_name[-4:] == FILE_CODELIST_EXTENSION]
     paths = [create_codelist_path(file_name, version) for file_name in files_codelists_only]
@@ -169,7 +169,7 @@ def create_codelist_path(codelist_name, version=None):
     if codelist_name[-4:] == FILE_CODELIST_EXTENSION:
         codelist_name = codelist_name[:-4]
 
-    return get_path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
+    return path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
 
 
 def create_codelist_mapping_path(version=None):
@@ -181,7 +181,7 @@ def create_codelist_mapping_path(version=None):
         str: The path to a file containing the mapping file.
 
     """
-    return get_path_for_version(FILE_CODELIST_MAPPING, version)
+    return path_for_version(FILE_CODELIST_MAPPING, version)
 
 
 def create_lib_data_path(name):
@@ -202,7 +202,7 @@ def create_lib_data_path(name):
     return resource_filename(os.path.join(BASE_PATH_LIB_DATA, name))
 
 
-def get_folder_name_for_version(version=None):
+def folder_name_for_version(version=None):
     """Return the folder name for a given version of the Standard.
 
     Args:
@@ -241,7 +241,7 @@ def create_ruleset_path(name, version=None):
         Test this directly rather than just the indirect tests that exist at present.
 
     """
-    return get_path_for_version(os.path.join(PATH_RULESETS, '{0}'.format(name) + FILE_RULESET_EXTENSION), version)
+    return path_for_version(os.path.join(PATH_RULESETS, '{0}'.format(name) + FILE_RULESET_EXTENSION), version)
 
 
 def create_schema_path(name, version=None):
@@ -264,7 +264,7 @@ def create_schema_path(name, version=None):
         Test this directly rather than just the indirect tests that exist at present.
 
     """
-    return get_path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
+    return path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
 
 def get_folder_path_for_version(version=None):
@@ -277,10 +277,10 @@ def get_folder_path_for_version(version=None):
         str: The relative path to the folder for containing SSOT data the specified version of the Standard.
 
     """
-    return os.path.join(BASE_PATH_STANDARD, get_folder_name_for_version(version))
+    return os.path.join(BASE_PATH_STANDARD, folder_name_for_version(version))
 
 
-def get_path_for_version(path, version=None):
+def path_for_version(path, version=None):
     """Return the relative location of a specified path at the specified version of the Standard.
 
     Args:

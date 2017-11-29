@@ -32,9 +32,9 @@ class TestResourceFolders(object):
         ('1.05', '1-05'),
         ('1.04', '1-04')
     ])
-    def test_get_folder_name_for_version(self, version, expected_version_foldername):
+    def test_folder_name_for_version(self, version, expected_version_foldername):
         """Check that expected components are present within folder paths."""
-        path = iati.resources.get_folder_name_for_version(version)
+        path = iati.resources.folder_name_for_version(version)
         assert expected_version_foldername == path
 
     @pytest.mark.parametrize('version', [
@@ -44,10 +44,10 @@ class TestResourceFolders(object):
         1.01,  # A version must be specified as a string
         'string'
     ])
-    def test_get_folder_name_for_version_invalid_version(self, version):
+    def test_folder_name_for_version_invalid_version(self, version):
         """Check that an invalid version of the Standard raises a ValueError exception."""
         with pytest.raises(ValueError):
-            iati.resources.get_folder_name_for_version(version)
+            iati.resources.folder_name_for_version(version)
 
     @pytest.mark.parametrize('path_component', [
         'resources',
