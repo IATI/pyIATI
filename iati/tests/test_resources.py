@@ -201,7 +201,7 @@ class TestResourceSchemas(object):
 
     def test_schema_activity_string(self, standard_version_all):
         """Check that the Activity schema file contains content."""
-        path = iati.resources.create_schema_path('iati-activities-schema')
+        path = iati.resources.create_schema_path('iati-activities-schema', standard_version_all)
 
         content = iati.utilities.load_as_string(path)
 
@@ -213,7 +213,7 @@ class TestResourceSchemas(object):
         This additionally involves checking that imported schemas also work.
 
         """
-        path = iati.resources.create_schema_path('iati-activities-schema')
+        path = iati.resources.create_schema_path('iati-activities-schema', standard_version_all)
         schema = iati.utilities.load_as_tree(path)
 
         assert isinstance(schema, etree._ElementTree)  # pylint: disable=protected-access
