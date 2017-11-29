@@ -39,7 +39,7 @@ def get_test_data_path(name, version=None):
 
     relative_path = os.path.join(PATH_TEST_DATA, iati.resources.folder_name_for_version(version), '{0}'.format(name) + iati.resources.FILE_DATA_EXTENSION)
 
-    return iati.resources.resource_filename(relative_path)
+    return iati.resources.resource_filesystem_path(relative_path)
 
 
 def get_test_data_paths_in_folder(folder_name, version=None):
@@ -60,7 +60,7 @@ def get_test_data_paths_in_folder(folder_name, version=None):
 
     paths = list()
     root_folder = os.path.join(PATH_TEST_DATA, iati.resources.folder_name_for_version(version), folder_name)
-    resource_folder = iati.resources.resource_filename(root_folder)
+    resource_folder = iati.resources.resource_filesystem_path(root_folder)
 
     for base_folder, _, file_names in os.walk(resource_folder):
         desired_files = [file_name for file_name in file_names if file_name[-4:] == iati.resources.FILE_DATA_EXTENSION]
@@ -68,7 +68,7 @@ def get_test_data_paths_in_folder(folder_name, version=None):
             paths.append(os.path.join(base_folder, file_name))
 
     # de-resource the file-names so that they're not duplicated
-    deresourced_paths = [iati.resources.resource_filename(path[path.find(root_folder):]) for path in paths]
+    deresourced_paths = [iati.resources.resource_filesystem_path(path[path.find(root_folder):]) for path in paths]
 
     return deresourced_paths
 

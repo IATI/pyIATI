@@ -9,7 +9,7 @@ import iati.validator
 class TestResources(object):
     """A container for tests relating to resources in general."""
 
-    def test_resource_filename(self):
+    def test_resource_filesystem_path(self):
         """Check that resource file names are found correctly.
 
         Todo:
@@ -17,7 +17,7 @@ class TestResources(object):
 
         """
         path = iati.resources.PATH_SCHEMAS
-        filename = iati.resources.resource_filename(path)
+        filename = iati.resources.resource_filesystem_path(path)
 
         assert len(filename) > len(path)
         assert filename.endswith(path)
