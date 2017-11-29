@@ -85,6 +85,29 @@ def get_codelist_paths(version=None):
     return paths
 
 
+def get_codelist_mapping_paths(version=None):
+    """Find the paths for all Codelist Mapping files at the specified version of the Standard.
+
+    Args:
+        version (str): The version of the Standard to return the Codelist Mapping file for. Defaults to None. This means that paths to the latest version of the Codelist Mapping file are returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        list(str): A list of paths to all of the Codelist Mapping files at the specified version of the Standard.
+
+    Todo:
+        Further exploration needs to be undertaken in how to handle pre-1.04 versions of the Standard.
+
+        Add tests to show that versions 1.04 and above are being correctly handled, including errors.
+
+    """
+    paths = [create_codelist_mapping_path(version)]
+
+    return paths
+
+
 def get_ruleset_paths(version=None):
     """Find the paths for all Rulesets at the specified version of the Standard.
 

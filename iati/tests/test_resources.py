@@ -119,6 +119,12 @@ class TestResourceCodelists(object):
         assert path.count(iati.resources.FILE_CODELIST_EXTENSION) == 1
         assert iati.resources.PATH_CODELISTS in path
 
+    def test_get_codelist_mapping_paths(self, standard_version_optional):
+        """Check that all codelist mapping paths are found."""
+        codelist_mapping_paths = iati.resources.get_codelist_mapping_paths(*standard_version_optional)
+
+        assert len(codelist_mapping_paths) == 1
+
     def test_create_codelist_mapping_path(self, standard_version_optional):
         """Check that the Codelist Mapping File path points to a valid XML file."""
         path = iati.resources.create_codelist_mapping_path(*standard_version_optional)
