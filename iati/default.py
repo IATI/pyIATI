@@ -121,7 +121,7 @@ def _codelists(version=None, use_cache=False):
     """
     version = get_default_version_if_none(version)
 
-    paths = iati.resources.get_all_codelist_paths(version)
+    paths = iati.resources.get_codelist_paths(version)
 
     for path in paths:
         _, filename = os.path.split(path)
@@ -166,7 +166,7 @@ def codelist_mapping(version=None):
         Make use of the `version` parameter.
 
     """
-    path = iati.resources.get_codelist_mapping_path(version)
+    path = iati.resources.create_codelist_mapping_path(version)
     mapping_tree = iati.utilities.load_as_tree(path)
     mappings = defaultdict(list)
 
@@ -200,7 +200,7 @@ def ruleset(version=None):
         iati.Ruleset: The default Ruleset for the specified version of the Standard.
 
     """
-    path = iati.resources.get_ruleset_path(iati.resources.FILE_RULESET_STANDARD_NAME, version)
+    path = iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_STANDARD_NAME, version)
     ruleset_str = iati.utilities.load_as_string(path)
 
     return iati.Ruleset(ruleset_str)
@@ -219,7 +219,7 @@ def ruleset_schema(version=None):
         dict: A dictionary representing the Ruleset schema for the specified version of the Standard.
 
     """
-    path = iati.resources.get_ruleset_path(iati.resources.FILE_RULESET_SCHEMA_NAME, version)
+    path = iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_SCHEMA_NAME, version)
     schema_str = iati.utilities.load_as_string(path)
 
     return json.loads(schema_str)
@@ -326,7 +326,7 @@ def activity_schema(version=None, populate=True):
         iati.ActivitySchema: An instantiated IATI Schema for the specified version of the Standard.
 
     """
-    return _schema(iati.resources.get_all_activity_schema_paths, iati.ActivitySchema, version, populate)
+    return _schema(iati.resources.get_activity_schema_paths, iati.ActivitySchema, version, populate)
 
 
 def organisation_schema(version=None, populate=True):
@@ -343,4 +343,4 @@ def organisation_schema(version=None, populate=True):
         iati.OrganisationSchema: An instantiated IATI Schema for the specified version of the Standard.
 
     """
-    return _schema(iati.resources.get_all_organisation_schema_paths, iati.OrganisationSchema, version, populate)
+    return _schema(iati.resources.get_organisation_schema_paths, iati.OrganisationSchema, version, populate)

@@ -16,11 +16,11 @@ class SchemaTestsBase(object):
 
     @pytest.fixture(params=[
         {
-            "path_func": iati.resources.get_all_activity_schema_paths,
+            "path_func": iati.resources.get_activity_schema_paths,
             "schema_class": iati.ActivitySchema
         },
         {
-            "path_func": iati.resources.get_all_organisation_schema_paths,
+            "path_func": iati.resources.get_organisation_schema_paths,
             "schema_class": iati.OrganisationSchema
         }
     ])
