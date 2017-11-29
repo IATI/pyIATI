@@ -16,11 +16,11 @@ class SchemaTestsBase(object):
 
     @pytest.fixture(params=[
         {
-            "path_func": iati.resources.get_all_activity_schema_paths,
+            "path_func": iati.resources.get_activity_schema_paths,
             "schema_class": iati.ActivitySchema
         },
         {
-            "path_func": iati.resources.get_all_organisation_schema_paths,
+            "path_func": iati.resources.get_organisation_schema_paths,
             "schema_class": iati.OrganisationSchema
         }
     ])
@@ -215,23 +215,47 @@ class TestSchemas(SchemaTestsBase):
 
         assert len(schema_initialised.rulesets) == 1
 
-    @pytest.mark.skip(reason='Not implemented')
     def test_schema_rulesets_add_twice(self, schema_initialised):
-        """Check that it is not possible to add the same Rulesets to a Schema multiple times.
+        """Check that it is not possible to add the same Ruleset to a Schema multiple times.
 
         Todo:
             Consider if this test should test against a versioned Ruleset.
         """
-        raise NotImplementedError
+        ruleset = iati.default.ruleset()
 
-    @pytest.mark.skip(reason='Not implemented')
+        schema_initialised.rulesets.add(ruleset)
+        schema_initialised.rulesets.add(ruleset)
+
+        assert len(schema_initialised.rulesets) == 1
+
     def test_schema_rulesets_add_duplicate(self, schema_initialised):
-        """Check that it is not possible to add multiple functionally identical Rulesets to a Schema.
+        """Check that it is possible to add multiple functionally identical Rulesets to a Schema.
 
         Todo:
             Consider if this test should test against a versioned Ruleset.
         """
-        raise NotImplementedError
+        ruleset = iati.default.ruleset()
+        ruleset_copy = copy.deepcopy(ruleset)
+
+        schema_initialised.rulesets.add(ruleset)
+        schema_initialised.rulesets.add(ruleset_copy)
+
+        assert len(schema_initialised.rulesets) == 2
+
+    def test_schema_rulesets_add_two_different(self, schema_initialised):
+        """Check that it is possible to add multiple different Rulesets to a Schema.
+
+        Todo:
+            Consider if this test should test against a versioned Ruleset.
+        """
+        ruleset = iati.default.ruleset()
+        ruleset_copy = copy.deepcopy(ruleset)
+        ruleset_copy.rules.pop()
+
+        schema_initialised.rulesets.add(ruleset)
+        schema_initialised.rulesets.add(ruleset_copy)
+
+        assert len(schema_initialised.rulesets) == 2
 
 
 class TestSchemaEquality(SchemaTestsBase):

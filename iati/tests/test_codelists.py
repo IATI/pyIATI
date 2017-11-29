@@ -69,7 +69,7 @@ class TestCodelists(object):
             Stop this being fixed to 2.02.
 
         """
-        path = iati.resources.get_codelist_path('FlowType', '2.02')
+        path = iati.resources.create_codelist_path('FlowType', '2.02')
         xml_str = iati.utilities.load_as_string(path)
         codelist = iati.Codelist(name_to_set, xml=xml_str)
 
@@ -90,7 +90,7 @@ class TestCodelists(object):
 
         """
         codelist_name = 'BudgetType'
-        path = iati.resources.get_codelist_path(codelist_name, '2.02')
+        path = iati.resources.create_codelist_path(codelist_name, '2.02')
         xml_str = iati.utilities.load_as_string(path)
 
         codelist = iati.Codelist(codelist_name, xml=xml_str)
@@ -105,7 +105,7 @@ class TestCodelists(object):
 
         """
         codelist_name = 'Country'
-        path = iati.resources.get_codelist_path(codelist_name, '2.02')
+        path = iati.resources.create_codelist_path(codelist_name, '2.02')
         xml_str = iati.utilities.load_as_string(path)
 
         codelist = iati.Codelist(codelist_name, xml=xml_str)

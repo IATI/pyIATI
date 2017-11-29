@@ -92,8 +92,8 @@ def standard_version_optional(request):
     For mor information about unpacking argument lists, see https://docs.python.org/3.6/tutorial/controlflow.html#unpacking-argument-lists
 
     Example:
-        The returned list can be used to test functions (such as `get_all_codelist_paths`) which has an optional parameter for the version, or can expect `version=None`.,
-        In this case test usage would be `get_all_codelist_paths(*standard_version_optional)`.
+        The returned list can be used to test functions (such as `get_codelist_paths`) which has an optional parameter for the version, or can expect `version=None`.,
+        In this case test usage would be `get_codelist_paths(*standard_version_optional)`.
 
     Returns:
         list: Either i) an empty list, ii) a list containing None, or iii) a string which corresponds to a version of the Standard.

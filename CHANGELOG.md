@@ -18,6 +18,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Utility] Non-resource files may be loaded using utility functions. [#235]
 
+- [Schemas] Test that multiple Rulesets can be added to a Schema. [#254]
+
 - [Validation] `full_validation()` now checks whether a Dataset is IATI XML. [#239]
 - [Validation] Test that SSOT organisation test files are valid IATI XML. [#242]
 
@@ -32,6 +34,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Resources] Move `load_as_x` functions to `iati.utilities`. [#235]
 - [Resources] Rename version-specific resource folders to reduce ambiguity. [#217]
+- [Resources] Rename various resource functions to improve clarity. [#259]
 
 - [Rulesets] `validate_ruleset()` changed from public to private function. [#246]
 - [Rulesets] `case` attribute on a Rule changed from public to private. [#252]
@@ -49,6 +52,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Documentation] Stop tracking auto-generated docs templates. [#236]
 
 - [Rulesets] `ruleset` attribute removed from Rulesets. [#246]
+
+- [Tests] `iati.tests.resources.get_test_ruleset_path()` removed due to no calls to function. [#256]
 
 ### Fixed
 
