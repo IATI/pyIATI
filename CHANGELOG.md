@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Resources] Move `load_as_x` functions to `iati.utilities`. [#235]
 - [Resources] Rename version-specific resource folders to reduce ambiguity. [#217]
+- [Resources] Rename various resource functions to improve clarity. [#259]
 
 - [Rulesets] `validate_ruleset()` changed from public to private function. [#246]
 - [Rulesets] `case` attribute on a Rule changed from public to private. [#252]
