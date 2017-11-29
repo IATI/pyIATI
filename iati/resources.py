@@ -85,6 +85,29 @@ def get_codelist_paths(version=None):
     return paths
 
 
+def get_ruleset_paths(version=None):
+    """Find the paths for all Rulesets at the specified version of the Standard.
+
+    Args:
+        version (str): The version of the Standard to return the Rulesets for. Defaults to None. This means that paths to the latest version of the Rulesets are returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        list(str): A list of paths to all of the Rulesets at the specified version of the Standard.
+
+    Todo:
+        Further exploration needs to be undertaken in how to handle pre-1.04 versions of the Standard.
+
+        Add tests to show that versions 1.04 and above are being correctly handled, including errors.
+
+    """
+    paths = [create_ruleset_path(FILE_RULESET_STANDARD_NAME, version)]
+
+    return paths
+
+
 def get_schema_paths(version=None):
     """Find the paths for all Schemas at the specified version of the Standard.
 

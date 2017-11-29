@@ -129,6 +129,16 @@ class TestResourceCodelists(object):
         assert iati.validator.is_xml(content)
 
 
+class TestResourceRulesets(object):
+    """A container for tests relating to Ruleset resources."""
+
+    def test_get_ruleset_paths(self, standard_version_optional):
+        """Check that all ruleset paths are found."""
+        ruleset_paths = iati.resources.get_ruleset_paths(*standard_version_optional)
+
+        assert len(ruleset_paths) == 1
+
+
 class TestResourceSchemas(object):
     """A container for tests relating to Schema resources."""
 
