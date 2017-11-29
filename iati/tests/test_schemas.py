@@ -1,5 +1,6 @@
 """A module containing tests for the library representation of Schemas."""
 # pylint: disable=protected-access
+import copy
 from lxml import etree
 import pytest
 import iati.codelists
@@ -10,16 +11,16 @@ import iati.schemas
 import iati.tests.utilities
 
 
-class TestSchemas(object):
-    """A container for tests relating to Schemas."""
+class SchemaTestsBase(object):
+    """A base class for all Schema tests."""
 
     @pytest.fixture(params=[
         {
-            "path_func": iati.resources.get_all_activity_schema_paths,
+            "path_func": iati.resources.get_activity_schema_paths,
             "schema_class": iati.ActivitySchema
         },
         {
-            "path_func": iati.resources.get_all_organisation_schema_paths,
+            "path_func": iati.resources.get_organisation_schema_paths,
             "schema_class": iati.OrganisationSchema
         }
     ])
@@ -34,6 +35,10 @@ class TestSchemas(object):
         """
         schema_path = request.param['path_func'](*standard_version_optional)[0]
         return request.param['schema_class'](schema_path)
+
+
+class TestSchemas(SchemaTestsBase):
+    """A container for tests relating to Schemas."""
 
     @pytest.mark.parametrize("schema_func, expected_root_element_name", [
         (iati.default.activity_schema, 'iati-activities'),
@@ -210,20 +215,160 @@ class TestSchemas(object):
 
         assert len(schema_initialised.rulesets) == 1
 
-    @pytest.mark.skip(reason='Not implemented')
     def test_schema_rulesets_add_twice(self, schema_initialised):
-        """Check that it is not possible to add the same Rulesets to a Schema multiple times.
+        """Check that it is not possible to add the same Ruleset to a Schema multiple times.
 
         Todo:
             Consider if this test should test against a versioned Ruleset.
-        """
-        raise NotImplementedError
 
-    @pytest.mark.skip(reason='Not implemented')
+            Stop this being fixed to 2.02.
+
+        """
+        ruleset = iati.default.ruleset('2.02')
+
+        schema_initialised.rulesets.add(ruleset)
+        schema_initialised.rulesets.add(ruleset)
+
+        assert len(schema_initialised.rulesets) == 1
+
     def test_schema_rulesets_add_duplicate(self, schema_initialised):
-        """Check that it is not possible to add multiple functionally identical Rulesets to a Schema.
+        """Check that it is possible to add multiple functionally identical Rulesets to a Schema.
 
         Todo:
             Consider if this test should test against a versioned Ruleset.
+
+            Stop this being fixed to 2.02.
+
         """
-        raise NotImplementedError
+        ruleset = iati.default.ruleset('2.02')
+        ruleset_copy = copy.deepcopy(ruleset)
+
+        schema_initialised.rulesets.add(ruleset)
+        schema_initialised.rulesets.add(ruleset_copy)
+
+        assert len(schema_initialised.rulesets) == 2
+
+    def test_schema_rulesets_add_two_different(self, schema_initialised):
+        """Check that it is possible to add multiple different Rulesets to a Schema.
+
+        Todo:
+            Consider if this test should test against a versioned Ruleset.
+
+            Stop this being fixed to 2.02.
+
+        """
+        ruleset = iati.default.ruleset('2.02')
+        ruleset_copy = copy.deepcopy(ruleset)
+        ruleset_copy.rules.pop()
+
+        schema_initialised.rulesets.add(ruleset)
+        schema_initialised.rulesets.add(ruleset_copy)
+
+        assert len(schema_initialised.rulesets) == 2
+
+
+class TestSchemaEquality(SchemaTestsBase):
+    """A container for tests relating to Schema equality."""
+
+    @pytest.fixture
+    def codelist_empty(self):
+        """Return a Codelist with no Codes."""
+        return iati.Codelist('')
+
+    @pytest.fixture
+    def ruleset_empty(self):
+        """Return a Ruleset with no Rules."""
+        return iati.Ruleset()
+
+    @pytest.fixture
+    def ruleset_non_empty(self):
+        """Return a non-empty Ruleset."""
+        return iati.Ruleset('{"CONTEXT": {"atleast_one": {"cases": [{"paths": ["test_path"]}]}}}')
+
+    def test_schema_same_object_equal(self, schema_initialised, cmp_func_equal_val):
+        """Check that a Schema is deemed to be equal with itself."""
+        assert cmp_func_equal_val(schema_initialised, schema_initialised)
+
+    def test_schema_same_diff_object_equal(self, schema_initialised, cmp_func_equal_val):
+        """Check that two instances of the same Schema are deemed to be equal."""
+        schema_copy = copy.deepcopy(schema_initialised)
+
+        assert cmp_func_equal_val(schema_initialised, schema_copy)
+
+    def test_schema_same_num_codelists_equal(self, schema_initialised, codelist_empty, cmp_func_equal_val):
+        """Check that two Schemas with the same non-zero number of Codelists are deemed to be equal."""
+        schema_initialised.codelists.add(codelist_empty)
+        schema_copy = copy.deepcopy(schema_initialised)
+
+        assert cmp_func_equal_val(schema_initialised, schema_copy)
+
+    def test_schema_diff_num_codelists_not_equal(self, schema_initialised, codelist_empty, cmp_func_different_val):
+        """Check that two Schemas with different numbers of Codelists are not deemed to be equal."""
+        schema_copy = copy.deepcopy(schema_initialised)
+        schema_copy.codelists.add(codelist_empty)
+
+        assert cmp_func_different_val(schema_initialised, schema_copy)
+
+    def test_schema_modified_codelist_not_equal(self, schema_initialised, codelist_empty, cmp_func_different_val):
+        """Check that two Schemas with where one Codelist is different are not deemed to be equal."""
+        schema_initialised.codelists.add(codelist_empty)
+        schema_copy = copy.deepcopy(schema_initialised)
+
+        codelist = schema_copy.codelists.pop()
+        codelist.name = codelist.name + 'with a difference'
+        schema_copy.codelists.add(codelist)
+
+        assert cmp_func_different_val(schema_initialised, schema_copy)
+
+    def test_schema_same_num_rulesets_equal(self, schema_initialised, ruleset_empty, cmp_func_equal_val):
+        """Check that two Schemas with the same non-zero number of Rulesets are deemed to be equal."""
+        schema_initialised.rulesets.add(ruleset_empty)
+        schema_copy = copy.deepcopy(schema_initialised)
+
+        assert cmp_func_equal_val(schema_initialised, schema_copy)
+
+    def test_schema_multiple_equivalent_rulesets_equal(self, schema_initialised, ruleset_empty, ruleset_non_empty, cmp_func_equal_val):
+        """Check that two Schemas each with multiple equivalent Rulesets are deemed equal."""
+        schema_initialised.rulesets.add(ruleset_empty)
+        schema_initialised.rulesets.add(copy.deepcopy(ruleset_empty))
+        schema_initialised.rulesets.add(ruleset_non_empty)
+        schema_initialised.rulesets.add(copy.deepcopy(ruleset_non_empty))
+        schema_copy = copy.deepcopy(schema_initialised)
+
+        assert cmp_func_equal_val(schema_initialised, schema_copy)
+
+    def test_schema_diff_num_equivalent_rulesets_not_equal(self, schema_initialised, ruleset_empty, ruleset_non_empty, cmp_func_different_val):
+        """Check that two Schemas each with varied numbers of equivalent Rulesets are not deemed to be equal.
+
+        Each Schema contains one pair of Rulesets that are the deemed to be equal.
+        One Schema contains a second pair of equal Rulesets. The other Schema only contains one of these.
+        """
+        schema_initialised.rulesets.add(ruleset_empty)
+        schema_initialised.rulesets.add(copy.deepcopy(ruleset_empty))
+        schema_initialised.rulesets.add(ruleset_non_empty)
+        schema_initialised.rulesets.add(copy.deepcopy(ruleset_non_empty))
+        schema_copy = copy.deepcopy(schema_initialised)
+
+        schema_copy.rulesets.pop()
+
+        assert cmp_func_different_val(schema_initialised, schema_copy)
+
+    def test_schema_diff_num_rulesets_not_equal(self, schema_initialised, ruleset_empty, cmp_func_different_val):
+        """Check that two Schemas with different numbers of Rulesets are not deemed to be equal."""
+        schema_copy = copy.deepcopy(schema_initialised)
+        schema_copy.rulesets.add(ruleset_empty)
+
+        assert cmp_func_different_val(schema_initialised, schema_copy)
+
+    def test_schema_modified_ruleset_not_equal(self, schema_initialised, ruleset_non_empty, cmp_func_different_val):
+        """Check that two Schemas with where one Ruleset is different are not deemed to be equal."""
+        schema_initialised.rulesets.add(ruleset_non_empty)
+        schema_copy = copy.deepcopy(schema_initialised)
+
+        ruleset = schema_copy.rulesets.pop()
+        rule = ruleset.rules.pop()
+        rule._name = rule.name + 'with-a-difference'
+        ruleset.rules.add(rule)
+        schema_copy.rulesets.add(ruleset)
+
+        assert cmp_func_different_val(schema_initialised, schema_copy)

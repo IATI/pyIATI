@@ -18,7 +18,7 @@ class TestUtilities(object):
             Stop this being fixed to 2.02.
 
         """
-        activity_schema_path = iati.resources.get_all_activity_schema_paths('2.02')[0]
+        activity_schema_path = iati.resources.get_activity_schema_paths('2.02')[0]
 
         return iati.ActivitySchema(activity_schema_path)._schema_base_tree  # pylint: disable=protected-access
 
@@ -148,7 +148,7 @@ class TestUtilities(object):
             Stop this being fixed to 2.02.
 
         """
-        path = iati.resources.get_all_activity_schema_paths('2.02')[0]
+        path = iati.resources.get_activity_schema_paths('2.02')[0]
 
         tree = iati.utilities.load_as_tree(path)
         if not tree:  # pragma: no cover

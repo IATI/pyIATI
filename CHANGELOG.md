@@ -15,13 +15,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Resources] Add ability to define resource files that are version-independent. [#223]
 - [Resources] Updated SSOT to latest content as of 2017-11-14. [#237]
 - [Resources] Remove SSOT organisation test files that are not valid XML. [IATI/IATI-Schemas#376, #242]
+- [Resources] Add `get_ruleset_paths()` and `get_codelist_mapping_paths()` to improve consistency of resources module. [#260]
 
 - [Utility] Non-resource files may be loaded using utility functions. [#235]
+
+- [Schemas] Test that multiple Rulesets can be added to a Schema. [#254]
 
 - [Validation] `full_validation()` now checks whether a Dataset is IATI XML. [#239]
 - [Validation] Test that SSOT organisation test files are valid IATI XML. [#242]
 
 ### Changed
+
+- [Defaults] Make `version` argument mandatory when accessing Standard content that may differ between versions. [#243]
 
 - [Codelists] `complete` attribute included in equality comparison and hash calculations. [#247]
 - [Codelists] Codes must have a value to instantiate. [#247]
@@ -30,6 +35,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Resources] Move `load_as_x` functions to `iati.utilities`. [#235]
 - [Resources] Rename version-specific resource folders to reduce ambiguity. [#217]
+- [Resources] Rename various resource functions to improve clarity. [#259]
 
 - [Rulesets] `validate_ruleset()` changed from public to private function. [#246]
 - [Rulesets] `case` attribute on a Rule changed from public to private. [#252]
@@ -41,9 +47,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Removed
 
+- [Defaults] Remove `get_default_version_if_none()`. [#243]
+- [Defaults] Remove `version` argument for `ruleset_schema()` since this is version-independent.
+
 - [Documentation] Stop tracking auto-generated docs templates. [#236]
 
 - [Rulesets] `ruleset` attribute removed from Rulesets. [#246]
+
+- [Tests] `iati.tests.resources.get_test_ruleset_path()` removed due to no calls to function. [#256]
 
 ### Fixed
 
@@ -56,6 +67,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Rulesets] `name` attribute on a Rule changed to read-only property. [#251]
 - [Rulesets] Equal Rulesets are now deemed to be equal. [#249]
+
+- [Schemas] A tree is now returned from `_change_include_to_xinclude()` when there are no includes to convert. [#244]
 
 - [Validation] Prevent `XPathEvalError`s occurring when given a Codelist Mapping XPath that identifies something other than an attribute. [#229]
 - [Validation] Datasets with an `xml:lang` attribute no longer raise a `KeyError` upon performing Codelist validation against a Schema populated with the Language Codelist. [#226]

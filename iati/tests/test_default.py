@@ -10,20 +10,54 @@ import iati.tests.utilities
 class TestDefault(object):
     """A container for tests relating to Default data."""
 
-    @pytest.mark.parametrize("invalid_version", iati.tests.utilities.generate_test_types(['none'], True))
-    @pytest.mark.parametrize("func_to_check", [
-        iati.default.get_default_version_if_none,
+    @pytest.fixture(params=[
         iati.default.codelists,
         iati.default.codelist_mapping,
         iati.default.ruleset,
-        iati.default.ruleset_schema,
         iati.default.activity_schema,
         iati.default.organisation_schema
     ])
-    def test_invalid_version(self, invalid_version, func_to_check):
+    def default_data_func_version_param(self, request):
+        """Return a default data function that takes only a version as a parameter."""
+        return request.param
+
+    def test_invalid_version(self, std_version_invalid, default_data_func_version_param):
         """Check that an invalid version causes an error when obtaining default data."""
         with pytest.raises(ValueError):
-            func_to_check(invalid_version)
+            default_data_func_version_param(std_version_invalid)
+
+    def test_major_version_matches_minor(self, standard_version_major, default_data_func_version_param):
+        """Check that specifying a major version returns the same info as the corresponding decimal."""
+        minor_version = iati.default._specific_version_for(standard_version_major)  # pylint: disable=protected-access
+
+        assert default_data_func_version_param(standard_version_major) == default_data_func_version_param(minor_version)
+
+
+# pylint: disable=protected-access
+class TestDefaultVersionConversion(object):
+    """A container for tests relating to conversion of version numbers."""
+
+    def test_decimal_version_conversion_valid(self, standard_version_all):
+        """Check that Decimal Versions remain unchanged."""
+        assert iati.default._specific_version_for(standard_version_all) == standard_version_all
+
+    @pytest.mark.parametrize('integer_version, expected_decimal', [
+        ('1', '1.05'),
+        ('2', iati.constants.STANDARD_VERSION_LATEST)
+    ])
+    def test_integer_version_conversion_valid(self, integer_version, expected_decimal):
+        """Check that valid Integer Versions return the last Decimal in the Integer."""
+        assert iati.default._specific_version_for(integer_version) == expected_decimal
+
+    def test_version_conversion_invalid(self, std_version_invalid):
+        """Check that invalid versions cause a ValueError."""
+        with pytest.raises(ValueError):
+            iati.default._specific_version_for(std_version_invalid)
+
+    def test_version_conversion_None(self):
+        """Check that None cause a ValueError."""
+        with pytest.raises(ValueError):
+            iati.default._specific_version_for(None)
 
 
 class TestDefaultCodelists(object):
@@ -39,8 +73,7 @@ class TestDefaultCodelists(object):
         """Return the names of Codelists where Codes do not have names."""
         return ['FileFormat', 'Version']
 
-    @pytest.mark.parametrize("invalid_version", iati.tests.utilities.generate_test_types(['none'], True))
-    def test_invalid_version_single_codelist(self, invalid_version, codelist_name):
+    def test_invalid_version_single_codelist(self, std_version_invalid, codelist_name):
         """Check that an invalid version causes an error when obtaining a single default Codelist.
 
         Note:
@@ -48,7 +81,7 @@ class TestDefaultCodelists(object):
 
         """
         with pytest.raises(ValueError):
-            iati.default.codelist(codelist_name, invalid_version)
+            iati.default.codelist(codelist_name, std_version_invalid)
 
     def test_default_codelist_valid_at_all_versions(self, codelist_name, standard_version_optional):
         """Check that a named default Codelist may be located.
@@ -320,8 +353,13 @@ class TestDefaultModifications(object):
 
     @pytest.fixture
     def codelist(self, codelist_name):
-        """Return a default Codelist that is part of the IATI Standard."""
-        return iati.default.codelist(codelist_name)
+        """Return a default Codelist that is part of the IATI Standard.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        return iati.default.codelist(codelist_name, '2.02')
 
     @pytest.fixture
     def codelist_non_default(self):
