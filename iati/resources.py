@@ -80,12 +80,12 @@ def get_codelist_paths(version=None):
     folder_path = get_path_for_version(PATH_CODELISTS, version)
     files = pkg_resources.resource_listdir(PACKAGE, folder_path[len(resource_filename('')):])
     files_codelists_only = [file_name for file_name in files if file_name[-4:] == FILE_CODELIST_EXTENSION]
-    paths = [get_codelist_path(file_name, version) for file_name in files_codelists_only]
+    paths = [create_codelist_path(file_name, version) for file_name in files_codelists_only]
 
     return paths
 
 
-def get_schema_paths(version=None):
+def create_schema_paths(version=None):
     """Find the paths for all Schemas at the specified version of the Standard.
 
     Args:
@@ -124,7 +124,7 @@ def get_activity_schema_paths(version=None):
         Look to match against integers so there is a clear reason to return a list rather than a single Schema.
 
     """
-    return [get_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version)]
+    return [create_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version)]
 
 
 def get_organisation_schema_paths(version=None):  # pylint: disable=invalid-name
@@ -146,10 +146,10 @@ def get_organisation_schema_paths(version=None):  # pylint: disable=invalid-name
 
 
     """
-    return [get_schema_path(FILE_SCHEMA_ORGANISATION_NAME, version)]
+    return [create_schema_path(FILE_SCHEMA_ORGANISATION_NAME, version)]
 
 
-def get_codelist_path(codelist_name, version=None):
+def create_codelist_path(codelist_name, version=None):
     """Determine the path of a Codelist with the given name at the specified version of the Standard.
 
     Args:
@@ -172,7 +172,7 @@ def get_codelist_path(codelist_name, version=None):
     return get_path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
 
 
-def get_codelist_mapping_path(version=None):
+def create_codelist_mapping_path(version=None):
     """Determine the path of the Codelist mapping file.
 
     version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename at the latest version of the Standard.
@@ -184,7 +184,7 @@ def get_codelist_mapping_path(version=None):
     return get_path_for_version(FILE_CODELIST_MAPPING, version)
 
 
-def get_lib_data_path(name):
+def create_lib_data_path(name):
     """Determine the path of a general library data file with the given name.
 
     The data file is not part of the IATI Standard. It is also required in the library itself, not just for testing purposes.
@@ -224,7 +224,7 @@ def get_folder_name_for_version(version=None):
         raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
 
 
-def get_ruleset_path(name, version=None):
+def create_ruleset_path(name, version=None):
     """Determine the path of a Ruleset with the given name at the specified version of the Standard.
 
     Args:
@@ -244,7 +244,7 @@ def get_ruleset_path(name, version=None):
     return get_path_for_version(os.path.join(PATH_RULESETS, '{0}'.format(name) + FILE_RULESET_EXTENSION), version)
 
 
-def get_schema_path(name, version=None):
+def create_schema_path(name, version=None):
     """Determine the path of a Schema with the given name at the specified version of the Standard.
 
     Args:

@@ -139,7 +139,7 @@ class Schema(object):
         # create a new element
         xinclude_el = etree.Element(
             '{' + xi_uri + '}include',
-            href=iati.resources.get_schema_path(include_location[:-4], self._get_version()),
+            href=iati.resources.create_schema_path(include_location[:-4], self._get_version()),
             parse='xml',
             nsmap=new_nsmap
         )
@@ -147,7 +147,7 @@ class Schema(object):
         # make the path to `xml.xsd` reference the correct file
         import_xpath = (iati.constants.NAMESPACE + 'import')
         import_el = tree.getroot().find(import_xpath)
-        import_el.attrib['schemaLocation'] = iati.resources.get_schema_path('xml', self._get_version())
+        import_el.attrib['schemaLocation'] = iati.resources.create_schema_path('xml', self._get_version())
 
         # insert the new element
         tree.getroot().insert(import_el.getparent().index(import_el) + 1, xinclude_el)

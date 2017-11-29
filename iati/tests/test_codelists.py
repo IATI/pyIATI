@@ -64,7 +64,7 @@ class TestCodelists(object):
 
     def test_codelist_define_from_xml(self, name_to_set):
         """Check that a Codelist can be generated from an XML codelist definition."""
-        path = iati.resources.get_codelist_path('FlowType')
+        path = iati.resources.create_codelist_path('FlowType')
         xml_str = iati.utilities.load_as_string(path)
         codelist = iati.Codelist(name_to_set, xml=xml_str)
 
@@ -80,7 +80,7 @@ class TestCodelists(object):
     def test_codelist_complete(self):
         """Check that a Codelist can be generated from an XML codelist definition."""
         codelist_name = 'BudgetType'
-        path = iati.resources.get_codelist_path(codelist_name)
+        path = iati.resources.create_codelist_path(codelist_name)
         xml_str = iati.utilities.load_as_string(path)
         codelist = iati.Codelist(codelist_name, xml=xml_str)
 
@@ -89,7 +89,7 @@ class TestCodelists(object):
     def test_codelist_incomplete(self):
         """Check that a Codelist can be generated from an XML codelist definition."""
         codelist_name = 'Country'
-        path = iati.resources.get_codelist_path(codelist_name)
+        path = iati.resources.create_codelist_path(codelist_name)
         xml_str = iati.utilities.load_as_string(path)
         codelist = iati.Codelist(codelist_name, xml=xml_str)
 

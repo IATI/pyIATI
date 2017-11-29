@@ -13,7 +13,7 @@ class TestUtilities(object):
     @pytest.fixture
     def schema_base_tree(self):
         """Return schema_base_tree."""
-        activity_schema_path = iati.resources.get_schema_path(
+        activity_schema_path = iati.resources.create_schema_path(
             iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID
         )
         return iati.ActivitySchema(activity_schema_path)._schema_base_tree  # pylint: disable=protected-access
@@ -139,7 +139,7 @@ class TestUtilities(object):
 
     def test_convert_tree_to_schema(self):
         """Check that an etree can be converted to a schema."""
-        path = iati.resources.get_schema_path('iati-activities-schema')
+        path = iati.resources.create_schema_path('iati-activities-schema')
 
         tree = iati.utilities.load_as_tree(path)
         if not tree:  # pragma: no cover

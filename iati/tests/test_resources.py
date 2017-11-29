@@ -77,9 +77,9 @@ class TestResourceLibraryData(object):
         'name',
         'Name.xml',
     ])
-    def test_get_lib_data_path(self, file_name):
+    def test_create_lib_data_path(self, file_name):
         """Check that library data can be located."""
-        path = iati.resources.get_lib_data_path(file_name)
+        path = iati.resources.create_lib_data_path(file_name)
 
         assert iati.resources.BASE_PATH_LIB_DATA != ''
         assert iati.resources.BASE_PATH_LIB_DATA in path
@@ -91,7 +91,7 @@ class TestResourceCodelists(object):
 
     def test_codelist_flow_type(self, standard_version_optional):
         """Check that the FlowType codelist is loaded as a string and contains content."""
-        path = iati.resources.get_codelist_path('FlowType', *standard_version_optional)
+        path = iati.resources.create_codelist_path('FlowType', *standard_version_optional)
 
         content = iati.utilities.load_as_string(path)
 
@@ -113,15 +113,15 @@ class TestResourceCodelists(object):
     ])
     def test_get_codelist_path_name(self, standard_version_optional, codelist):
         """Check that a codelist path is found from just a name."""
-        path = iati.resources.get_codelist_path(codelist, *standard_version_optional)
+        path = iati.resources.create_codelist_path(codelist, *standard_version_optional)
 
         assert path[-4:] == iati.resources.FILE_CODELIST_EXTENSION
         assert path.count(iati.resources.FILE_CODELIST_EXTENSION) == 1
         assert iati.resources.PATH_CODELISTS in path
 
-    def test_get_codelist_mapping_path(self, standard_version_optional):
+    def test_create_codelist_mapping_path(self, standard_version_optional):
         """Check that the Codelist Mapping File path points to a valid XML file."""
-        path = iati.resources.get_codelist_mapping_path(*standard_version_optional)
+        path = iati.resources.create_codelist_mapping_path(*standard_version_optional)
 
         content = iati.utilities.load_as_string(path)
 
@@ -161,25 +161,25 @@ class TestResourceSchemas(object):
             Handle all paths to schemas being found correctly.
 
         """
-        paths = iati.resources.get_schema_paths(*standard_version_optional)
+        paths = iati.resources.create_schema_paths(*standard_version_optional)
 
         assert len(paths) == 2
 
-    @pytest.mark.parametrize('get_schema_path_function', [
-        iati.resources.get_schema_paths,
+    @pytest.mark.parametrize('create_schema_path_function', [
+        iati.resources.create_schema_paths,
         iati.resources.get_activity_schema_paths,
         iati.resources.get_organisation_schema_paths
     ])
-    def test_find_schema_paths_file_extension(self, standard_version_optional, get_schema_path_function):
+    def test_find_schema_paths_file_extension(self, standard_version_optional, create_schema_path_function):
         """Check that the correct file extension is present within file paths returned by get_all_*schema_paths functions."""
-        paths = get_schema_path_function(*standard_version_optional)
+        paths = create_schema_path_function(*standard_version_optional)
 
         for path in paths:
             assert path[-4:] == iati.resources.FILE_SCHEMA_EXTENSION
 
     def test_schema_activity_string(self):
         """Check that the Activity schema file contains content."""
-        path = iati.resources.get_schema_path('iati-activities-schema')
+        path = iati.resources.create_schema_path('iati-activities-schema')
 
         content = iati.utilities.load_as_string(path)
 
@@ -191,7 +191,7 @@ class TestResourceSchemas(object):
         This additionally involves checking that imported schemas also work.
 
         """
-        path = iati.resources.get_schema_path('iati-activities-schema')
+        path = iati.resources.create_schema_path('iati-activities-schema')
         schema = iati.utilities.load_as_tree(path)
 
         assert isinstance(schema, etree._ElementTree)  # pylint: disable=protected-access

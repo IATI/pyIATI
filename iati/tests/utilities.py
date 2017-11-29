@@ -6,7 +6,7 @@ import iati.tests.resources
 
 
 # This will need updating once test data forcing XML format is fixed
-RULESET_FOR_TESTING = iati.Ruleset(iati.utilities.load_as_string(iati.resources.get_ruleset_path('ruleset_for_tests')))
+RULESET_FOR_TESTING = iati.Ruleset(iati.utilities.load_as_string(iati.resources.create_ruleset_path('ruleset_for_tests')))
 """A working Ruleset based on the Standard Ruleset."""
 
 
