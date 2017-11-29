@@ -267,7 +267,7 @@ def create_schema_path(name, version=None):
     return path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
 
-def get_folder_path_for_version(version=None):
+def folder_path_for_version(version=None):
     """Return the path for the folder containing SSOT data (schemas, codelists etc) at the specified version of the Standard.
 
     Args:
@@ -297,7 +297,7 @@ def path_for_version(path, version=None):
         Test this directly rather than just the indirect tests that exist at present.
 
     """
-    return resource_filesystem_path(os.path.join(get_folder_path_for_version(version), path))
+    return resource_filesystem_path(os.path.join(folder_path_for_version(version), path))
 
 
 def resource_filesystem_path(path):

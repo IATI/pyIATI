@@ -53,9 +53,9 @@ class TestResourceFolders(object):
         'resources',
         'standard'
     ])
-    def test_get_folder_path_for_version(self, standard_version_optional, path_component):
+    def test_folder_path_for_version(self, standard_version_optional, path_component):
         """Check that expected components are present within folder paths."""
-        path = iati.resources.get_folder_path_for_version(*standard_version_optional)
+        path = iati.resources.folder_path_for_version(*standard_version_optional)
         assert path_component in path
 
     def test_get_test_data_paths_in_folder(self):
