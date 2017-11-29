@@ -131,7 +131,7 @@ def get_ruleset_paths(version=None):
     return paths
 
 
-def get_schema_paths(version=None):
+def get_all_schema_paths(version=None):
     """Find the paths for all Schemas at the specified version of the Standard.
 
     Args:
