@@ -161,12 +161,12 @@ class TestResourceSchemas(object):
             Handle all paths to schemas being found correctly.
 
         """
-        paths = iati.resources.create_schema_paths(*standard_version_optional)
+        paths = iati.resources.get_schema_paths(*standard_version_optional)
 
         assert len(paths) == 2
 
     @pytest.mark.parametrize('create_schema_path_function', [
-        iati.resources.create_schema_paths,
+        iati.resources.get_schema_paths,
         iati.resources.get_activity_schema_paths,
         iati.resources.get_organisation_schema_paths
     ])
