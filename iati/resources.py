@@ -78,7 +78,7 @@ def get_codelist_paths(version=None):
 
     """
     folder_path = path_for_version(PATH_CODELISTS, version)
-    files = pkg_resources.resource_listdir(PACKAGE, folder_path[len(resource_filename('')):])
+    files = pkg_resources.resource_listdir(PACKAGE, folder_path[len(resource_filesystem_path('')):])
     files_codelists_only = [file_name for file_name in files if file_name[-4:] == FILE_CODELIST_EXTENSION]
     paths = [create_codelist_path(file_name, version) for file_name in files_codelists_only]
 
@@ -199,7 +199,7 @@ def create_lib_data_path(name):
         Does not check whether the specified file actually exists.
 
     """
-    return resource_filename(os.path.join(BASE_PATH_LIB_DATA, name))
+    return resource_filesystem_path(os.path.join(BASE_PATH_LIB_DATA, name))
 
 
 def folder_name_for_version(version=None):
@@ -297,10 +297,10 @@ def path_for_version(path, version=None):
         Test this directly rather than just the indirect tests that exist at present.
 
     """
-    return resource_filename(os.path.join(get_folder_path_for_version(version), path))
+    return resource_filesystem_path(os.path.join(get_folder_path_for_version(version), path))
 
 
-def resource_filename(path):
+def resource_filesystem_path(path):
     """Find the file system path for a specified resource path.
 
     Args:
