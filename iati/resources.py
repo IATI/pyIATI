@@ -85,6 +85,52 @@ def get_codelist_paths(version=None):
     return paths
 
 
+def get_codelist_mapping_paths(version=None):
+    """Find the paths for all Codelist Mapping files at the specified version of the Standard.
+
+    Args:
+        version (str): The version of the Standard to return the Codelist Mapping file for. Defaults to None. This means that paths to the latest version of the Codelist Mapping file are returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        list(str): A list of paths to all of the Codelist Mapping files at the specified version of the Standard.
+
+    Todo:
+        Further exploration needs to be undertaken in how to handle pre-1.04 versions of the Standard.
+
+        Add tests to show that versions 1.04 and above are being correctly handled, including errors.
+
+    """
+    paths = [create_codelist_mapping_path(version)]
+
+    return paths
+
+
+def get_ruleset_paths(version=None):
+    """Find the paths for all Rulesets at the specified version of the Standard.
+
+    Args:
+        version (str): The version of the Standard to return the Rulesets for. Defaults to None. This means that paths to the latest version of the Rulesets are returned.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        list(str): A list of paths to all of the Rulesets at the specified version of the Standard.
+
+    Todo:
+        Further exploration needs to be undertaken in how to handle pre-1.04 versions of the Standard.
+
+        Add tests to show that versions 1.04 and above are being correctly handled, including errors.
+
+    """
+    paths = [create_ruleset_path(FILE_RULESET_STANDARD_NAME, version)]
+
+    return paths
+
+
 def get_all_schema_paths(version=None):
     """Find the paths for all Schemas at the specified version of the Standard.
 
@@ -202,33 +248,6 @@ def create_lib_data_path(name):
     return resource_filesystem_path(os.path.join(BASE_PATH_LIB_DATA, name))
 
 
-def folder_name_for_version(version=None):
-    """Return the folder name for a given version of the Standard.
-
-    Args:
-        version (str): The version of the Standard to return the folder path for. Defaults to None. This means that the folder name independent of any version of the Standard is returned.
-
-    Returns:
-        str: The folder name for the specified version of the Standard.
-
-    Raises:
-        ValueError: When a specified version is not a valid version of the IATI Standard.
-
-    Todo:
-        Extract magic string: 'version-independent'
-
-    """
-    if version is None:
-        return 'version-independent'
-
-    if version in iati.constants.STANDARD_VERSIONS:
-        return version.replace('.', '-')
-    elif version in [str(major_version) for major_version in iati.constants.STANDARD_VERSIONS_MAJOR]:
-        return version
-    else:
-        raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
-
-
 def create_ruleset_path(name, version=None):
     """Determine the path of a Ruleset with the given name at the specified version of the Standard.
 
@@ -270,6 +289,28 @@ def create_schema_path(name, version=None):
 
     """
     return path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
+
+
+def folder_name_for_version(version=None):
+    """Return the folder name for a given version of the Standard.
+
+    Args:
+        version (str): The version of the Standard to return the folder path for. Defaults to None. This means that the folder name corresponding to the latest version of the Standard is returned.
+
+    Returns:
+        str: The folder name for the specified version of the Standard.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    """
+    if version is None:
+        version = iati.constants.STANDARD_VERSION_LATEST
+
+    if version in iati.constants.STANDARD_VERSIONS:
+        return version.replace('.', '-')
+    else:
+        raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
 
 
 def folder_path_for_version(version=None):
