@@ -121,7 +121,7 @@ def _codelists(version=None, use_cache=False):
     """
     version = get_default_version_if_none(version)
 
-    paths = iati.resources.get_all_codelist_paths(version)
+    paths = iati.resources.get_codelist_paths(version)
 
     for path in paths:
         _, filename = os.path.split(path)
@@ -326,7 +326,7 @@ def activity_schema(version=None, populate=True):
         iati.ActivitySchema: An instantiated IATI Schema for the specified version of the Standard.
 
     """
-    return _schema(iati.resources.get_all_activity_schema_paths, iati.ActivitySchema, version, populate)
+    return _schema(iati.resources.get_activity_schema_paths, iati.ActivitySchema, version, populate)
 
 
 def organisation_schema(version=None, populate=True):
@@ -343,4 +343,4 @@ def organisation_schema(version=None, populate=True):
         iati.OrganisationSchema: An instantiated IATI Schema for the specified version of the Standard.
 
     """
-    return _schema(iati.resources.get_all_organisation_schema_paths, iati.OrganisationSchema, version, populate)
+    return _schema(iati.resources.get_organisation_schema_paths, iati.OrganisationSchema, version, populate)

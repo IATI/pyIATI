@@ -57,7 +57,7 @@ FILE_SCHEMA_ORGANISATION_NAME = 'iati-organisations-schema'
 """The name of a file containing an Organisation Schema."""
 
 
-def get_all_codelist_paths(version=None):
+def get_codelist_paths(version=None):
     """Find the paths for all Codelists at the specified version of the Standard.
 
     Args:
@@ -85,7 +85,7 @@ def get_all_codelist_paths(version=None):
     return paths
 
 
-def get_all_schema_paths(version=None):
+def get_schema_paths(version=None):
     """Find the paths for all Schemas at the specified version of the Standard.
 
     Args:
@@ -103,10 +103,10 @@ def get_all_schema_paths(version=None):
         Consider adding the IATI Codelist Schema.
 
     """
-    return get_all_activity_schema_paths(version) + get_all_organisation_schema_paths(version)
+    return get_activity_schema_paths(version) + get_organisation_schema_paths(version)
 
 
-def get_all_activity_schema_paths(version=None):
+def get_activity_schema_paths(version=None):
     """Find the paths for all Activity Schemas at the specified version of the Standard.
 
     Args:
@@ -127,7 +127,7 @@ def get_all_activity_schema_paths(version=None):
     return [get_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version)]
 
 
-def get_all_organisation_schema_paths(version=None):  # pylint: disable=invalid-name
+def get_organisation_schema_paths(version=None):  # pylint: disable=invalid-name
     """Find the paths for all Organisation Schemas at the specified version of the Standard.
 
     Args:
