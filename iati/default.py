@@ -206,7 +206,7 @@ def ruleset(version):
     """
     version = _specific_version_for(version)
 
-    path = iati.resources.get_ruleset_paths(iati.resources.FILE_RULESET_STANDARD_NAME, version)[0]
+    path = iati.resources.get_ruleset_paths(version)[0]
     ruleset_str = iati.utilities.load_as_string(path)
 
     return iati.Ruleset(ruleset_str)

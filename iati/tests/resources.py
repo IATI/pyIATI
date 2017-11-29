@@ -95,7 +95,7 @@ def get_test_ruleset_path(name, version=None):
         Might need removing. What is using it now?
 
     """
-    return os.path.join(PATH_TEST_DATA, iati.resources.get_folder_name_for_version(version), 'rulesets/{0}'.format(name) + iati.resources.FILE_RULESET_EXTENSION)
+    return os.path.join(PATH_TEST_DATA, iati.resources.folder_name_for_version(version), 'rulesets/{0}'.format(name) + iati.resources.FILE_RULESET_EXTENSION)
 
 
 def load_as_dataset(relative_path, version=None):

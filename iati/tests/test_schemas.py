@@ -220,8 +220,11 @@ class TestSchemas(SchemaTestsBase):
 
         Todo:
             Consider if this test should test against a versioned Ruleset.
+
+            Stop this being fixed to 2.02.
+
         """
-        ruleset = iati.default.ruleset()
+        ruleset = iati.default.ruleset('2.02')
 
         schema_initialised.rulesets.add(ruleset)
         schema_initialised.rulesets.add(ruleset)
@@ -233,8 +236,11 @@ class TestSchemas(SchemaTestsBase):
 
         Todo:
             Consider if this test should test against a versioned Ruleset.
+
+            Stop this being fixed to 2.02.
+
         """
-        ruleset = iati.default.ruleset()
+        ruleset = iati.default.ruleset('2.02')
         ruleset_copy = copy.deepcopy(ruleset)
 
         schema_initialised.rulesets.add(ruleset)
@@ -247,8 +253,11 @@ class TestSchemas(SchemaTestsBase):
 
         Todo:
             Consider if this test should test against a versioned Ruleset.
+
+            Stop this being fixed to 2.02.
+
         """
-        ruleset = iati.default.ruleset()
+        ruleset = iati.default.ruleset('2.02')
         ruleset_copy = copy.deepcopy(ruleset)
         ruleset_copy.rules.pop()
 

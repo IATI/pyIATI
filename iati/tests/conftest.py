@@ -66,8 +66,7 @@ def standard_version_mandatory(request):
     '3.0', '3.0.0', '3.00', '3.01', '3.1',  # the first few potential values for the next integer
     1.01, 1.02, 1.03, 1.04, 1.05, 2.01, 2.02,  # valid version numbers, but numerical rather than strings
     1, 2  # valid integer versions, but numerical rather than strings
-] + iati.tests.utilities.generate_test_types(['none'], True)  # fuzzing data
-)
+] + iati.tests.utilities.generate_test_types(['none'], True))  # fuzzing data
 def std_version_invalid(request):
     """Return a string that isn't a version number, instead being an invalid value."""
     return request.param
