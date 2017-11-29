@@ -200,7 +200,7 @@ def ruleset(version=None):
         iati.Ruleset: The default Ruleset for the specified version of the Standard.
 
     """
-    path = iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_STANDARD_NAME, version)
+    path = iati.resources.get_ruleset_paths(version)[0]
     ruleset_str = iati.utilities.load_as_string(path)
 
     return iati.Ruleset(ruleset_str)

@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Resources] Updated SSOT to latest content as of 2017-11-14. [#237]
 - [Resources] Remove SSOT organisation test files that are not valid XML. [IATI/IATI-Schemas#376, #242]
+- [Resources] Add `get_ruleset_paths()` and `get_codelist_mapping_paths()` to improve consistency of resources module. [#260]
 
 - [Utility] Non-resource files may be loaded using utility functions. [#235]
 
