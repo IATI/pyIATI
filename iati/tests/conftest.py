@@ -3,6 +3,7 @@ import collections
 import pytest
 import iati.default
 import iati.resources
+import iati.tests.utilities
 
 
 @pytest.fixture(params=[
@@ -32,7 +33,7 @@ def schema_ruleset():
         Stop this being fixed to 2.02.
 
     """
-    schema = iati.default.activity_schema(None, False)
+    schema = iati.default.activity_schema('2.02', False)
     ruleset = iati.default.ruleset('2.02')
 
     schema.rulesets.add(ruleset)
@@ -55,6 +56,27 @@ def standard_version_mandatory(request):
 
     """
     return [request.param]
+
+
+@pytest.fixture(params=[
+    '1.00', '1.0', '2.0', '2.00',  # integer with a zero decimal
+    '1.050', '2.020',  # valid version with extra 0
+    '1.06', '2.03',  # the next decimal within valid integers
+    '1.1', '1.2', '1.3', '1.4', '1.5', '2.1', '2.2',  # valid versions with the 0 after the decimal point missing
+    '3.0', '3.0.0', '3.00', '3.01', '3.1',  # the first few potential values for the next integer
+    1.01, 1.02, 1.03, 1.04, 1.05, 2.01, 2.02,  # valid version numbers, but numerical rather than strings
+    1, 2  # valid integer versions, but numerical rather than strings
+] + iati.tests.utilities.generate_test_types(['none'], True)  # fuzzing data
+)
+def std_version_invalid(request):
+    """Return a string that isn't a version number, instead being an invalid value."""
+    return request.param
+
+
+@pytest.fixture(params=iati.constants.STANDARD_VERSIONS_MAJOR)
+def standard_version_major(request):
+    """Return a major version of the IATI Standard."""
+    return str(request.param)
 
 
 @pytest.fixture(params=iati.constants.STANDARD_VERSIONS)
@@ -105,6 +127,12 @@ _CMP_FUNC_DIFFERENT_HASH = [
 @pytest.fixture(params=_CMP_FUNC_EQUAL_VAL)
 def cmp_func_equal_val(request):
     """Return a comparison function that checks whether two values are equal."""
+    return request.param
+
+
+@pytest.fixture(params=_CMP_FUNC_EQUAL_HASH)
+def cmp_func_equal_hash(request):
+    """Return a comparison function that checks whether two values have the same hash."""
     return request.param
 
 

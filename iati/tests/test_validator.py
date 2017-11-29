@@ -13,8 +13,13 @@ class ValidationTestBase(object):
 
     @pytest.fixture
     def schema_basic(self):
-        """An Activity Schema with no Codelists added."""
-        return iati.default.activity_schema(None, False)
+        """An Activity Schema with no Codelists added.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        return iati.default.activity_schema('2.02', False)
 
     @pytest.fixture
     def schema_basic_org(self):
@@ -350,9 +355,14 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_version(self):
-        """Return an Activity Schema with the Version Codelist added."""
-        schema = iati.default.activity_schema(None, False)
-        codelist = iati.default.codelist('Version')
+        """Return an Activity Schema with the Version Codelist added.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        schema = iati.default.activity_schema('2.02', False)
+        codelist = iati.default.codelist('Version', '2.02')
 
         schema.codelists.add(codelist)
 
@@ -360,9 +370,14 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_org_type(self):
-        """Return an Activity Schema with the OrganisationType Codelist added."""
-        schema = iati.default.activity_schema(None, False)
-        codelist = iati.default.codelist('OrganisationType')
+        """Return an Activity Schema with the OrganisationType Codelist added.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        schema = iati.default.activity_schema('2.02', False)
+        codelist = iati.default.codelist('OrganisationType', '2.02')
 
         schema.codelists.add(codelist)
 
@@ -370,9 +385,14 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_incomplete_codelist(self):
-        """Return an Activity Schema with an incomplete Codelist added."""
-        schema = iati.default.activity_schema(None, False)
-        codelist = iati.default.codelist('Country')
+        """Return an Activity Schema with an incomplete Codelist added.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        schema = iati.default.activity_schema('2.02', False)
+        codelist = iati.default.codelist('Country', '2.02')
 
         schema.codelists.add(codelist)
 
@@ -380,9 +400,14 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_short_mapping_codelist(self):
-        """Return an Activity Schema with a Codelist that has a short `path` in the mapping file."""
-        schema = iati.default.activity_schema(None, False)
-        codelist = iati.default.codelist('Language')
+        """Return an Activity Schema with a Codelist that has a short `path` in the mapping file.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        schema = iati.default.activity_schema('2.02', False)
+        codelist = iati.default.codelist('Language', '2.02')
 
         schema.codelists.add(codelist)
 
@@ -390,12 +415,17 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_sectors(self):
-        """Return an Activity Schema with the DAC Sector Codelists and appropriate vocabulary added."""
-        schema = iati.default.activity_schema(None, False)
+        """Return an Activity Schema with the DAC Sector Codelists and appropriate vocabulary added.
 
-        codelist_1 = iati.default.codelist('SectorVocabulary')
-        codelist_2 = iati.default.codelist('Sector')
-        codelist_3 = iati.default.codelist('SectorCategory')
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        schema = iati.default.activity_schema('2.02', False)
+
+        codelist_1 = iati.default.codelist('SectorVocabulary', '2.02')
+        codelist_2 = iati.default.codelist('Sector', '2.02')
+        codelist_3 = iati.default.codelist('SectorCategory', '2.02')
 
         schema.codelists.add(codelist_1)
         schema.codelists.add(codelist_2)
@@ -405,9 +435,14 @@ class ValidateCodelistsBase(ValidationTestBase):
 
     @pytest.fixture
     def schema_element_text_codelist(self):
-        """Return an Activity Schema with a Codelist that maps to an element rather than attribute in the mapping file."""
-        schema = iati.default.activity_schema(None, False)
-        codelist = iati.default.codelist('CRSChannelCode')
+        """Return an Activity Schema with a Codelist that maps to an element rather than attribute in the mapping file.
+
+        Todo:
+            Stop this being fixed to 2.02.
+
+        """
+        schema = iati.default.activity_schema('2.02', False)
+        codelist = iati.default.codelist('CRSChannelCode', '2.02')
 
         schema.codelists.add(codelist)
 
@@ -1112,7 +1147,7 @@ class TestValidateRulesets(object):
         data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors', '2.02')
         ruleset_1 = iati.default.ruleset('2.02')
         ruleset_2 = iati.default.ruleset('2.02')
-        schema = iati.default.activity_schema(None, False)
+        schema = iati.default.activity_schema('2.02', False)
         schema.rulesets.add(ruleset_1)
         schema.rulesets.add(ruleset_2)
 
@@ -1226,7 +1261,7 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
 
     def test_full_validation_ruleset_conformance_fail(self, schema_ruleset):
         """Perform data validation against valid IATI XML that does not conform to Rulesets."""
-        data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors')
+        data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors', '2.02')
         result = iati.validator.full_validation(data_with_multiple_rule_errors, schema_ruleset)
 
         assert len(result.get_errors_or_warnings_by_category('rule')) > 1

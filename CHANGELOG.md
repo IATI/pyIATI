@@ -23,6 +23,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Changed
 
+- [Defaults] Make `version` argument mandatory when accessing Standard content that may differ between versions. [#243]
+
 - [Codelists] `complete` attribute included in equality comparison and hash calculations. [#247]
 - [Codelists] Codes must have a value to instantiate. [#247]
 
@@ -41,6 +43,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Removed
 
+- [Defaults] Remove `get_default_version_if_none()`. [#243]
+- [Defaults] Remove `version` argument for `ruleset_schema()` since this is version-independent.
+
 - [Documentation] Stop tracking auto-generated docs templates. [#236]
 
 - [Rulesets] `ruleset` attribute removed from Rulesets. [#246]
@@ -56,6 +61,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Rulesets] `name` attribute on a Rule changed to read-only property. [#251]
 - [Rulesets] Equal Rulesets are now deemed to be equal. [#249]
+
+- [Schemas] A tree is now returned from `_change_include_to_xinclude()` when there are no includes to convert. [#244]
 
 - [Validation] Prevent `XPathEvalError`s occurring when given a Codelist Mapping XPath that identifies something other than an attribute. [#229]
 - [Validation] Datasets with an `xml:lang` attribute no longer raise a `KeyError` upon performing Codelist validation against a Schema populated with the Language Codelist. [#226]
