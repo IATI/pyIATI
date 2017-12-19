@@ -8,7 +8,8 @@ class TestConstants(object):
 
     @pytest.fixture(params=[
         iati.constants.STANDARD_VERSIONS,
-        iati.constants.STANDARD_VERSIONS_SUPPORTED
+        iati.constants.STANDARD_VERSIONS_SUPPORTED,
+        iati.constants.STANDARD_VERSIONS_MINOR
     ])
     def standard_versions_list(self, request):
         """Return a list of Version Numbers."""
