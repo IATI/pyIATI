@@ -78,6 +78,11 @@ def standard_version_major(request):
     return str(request.param)
 
 
+@pytest.fixture(params=iati.constants.STANDARD_VERSIONS_MINOR)
+def standard_version_minor(request):
+    """Return a minor version of the IATI Standard."""
+    return str(request.param)
+
 @pytest.fixture(params=iati.constants.STANDARD_VERSIONS)
 def standard_version_all(request):
     """Return a version of the IATI Standard."""

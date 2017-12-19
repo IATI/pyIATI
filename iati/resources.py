@@ -14,6 +14,7 @@ Todo:
 import os
 import pkg_resources
 import iati.constants
+import iati.utilities
 
 
 PACKAGE = __name__
@@ -221,12 +222,25 @@ def create_codelist_path(codelist_name, version=None):
 def create_codelist_mapping_path(version=None):
     """Determine the path of the Codelist mapping file.
 
-    version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename independent of any version of the Standard.
+    version (str): The version of the Standard to return the data files for.
+        Decimal: Return a path for the specified version of the Standard.
+        Integer: Return a path for the latest Decimal version within the given integer.
+
+    Raises:
+        ValueError: If an unsupported version is specified.
 
     Returns:
         str: The path to a file containing the mapping file.
 
     """
+    try:
+        if int(version) in iati.constants.STANDARD_VERSIONS_MAJOR:
+            version = max(iati.utilities.versions_for_integer(version))
+    except ValueError:
+        pass  # a non-major version has been specified
+    except TypeError:
+        raise ValueError('The version must be a Decimal or Integer version of the IATI Standrd, not {0}'.format(version))
+
     return path_for_version(FILE_CODELIST_MAPPING, version)
 
 

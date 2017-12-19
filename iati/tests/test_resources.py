@@ -4,6 +4,7 @@ import pytest
 import iati.constants
 import iati.resources
 import iati.validator
+import iati.utilities
 import iati.tests.resources
 
 
@@ -101,6 +102,27 @@ class TestResourceCreatePath(object):
 
         assert isinstance(path, str)
         assert iati.resources.folder_name_for_version(*standard_version_all_types) in path
+
+    def test_create_codelist_mapping_path_minor(self, standard_version_minor):
+        """Check that there is a single Codelist Mapping File for minor versions."""
+        path = iati.resources.create_codelist_mapping_path(standard_version_minor)
+
+        assert isinstance(path, str)
+        assert iati.resources.folder_name_for_version(standard_version_minor) in path
+
+    def test_create_codelist_mapping_path_major(self, standard_version_major):
+        """Check that requesting a Codelist Mapping File for a major version returns the same path as for the last minor within the major."""
+        standard_version_minor = max(iati.utilities.versions_for_integer(standard_version_major))
+
+        path_major = iati.resources.create_codelist_mapping_path(standard_version_major)
+        path_minor = iati.resources.create_codelist_mapping_path(standard_version_minor)
+
+        assert path_major == path_minor
+
+    def test_create_codelist_mapping_path_version_independent(self):
+        """Check that a ValueError is raised when requesting a version-independent Codelist Mapping File."""
+        with pytest.raises(ValueError):
+            iati.resources.create_codelist_mapping_path()
 
     def test_create_codelist_mapping_path_is_xml(self, standard_version_optional):
         """Check that the Codelist Mapping File path points to a valid XML file."""
