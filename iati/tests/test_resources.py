@@ -102,6 +102,15 @@ class TestResourceCreatePath(object):
         assert isinstance(path, str)
         assert iati.resources.folder_name_for_version(*standard_version_all_types) in path
 
+    def test_create_codelist_mapping_path_is_xml(self, standard_version_optional):
+        """Check that the Codelist Mapping File path points to a valid XML file."""
+        path = iati.resources.create_codelist_mapping_path(*standard_version_optional)
+
+        content = iati.utilities.load_as_string(path)
+
+        assert len(content) > 5000
+        assert iati.validator.is_xml(content)
+
 
 class TestResourceLibraryData(object):
     """A container for tests relating to pyIATI resources."""
@@ -157,15 +166,6 @@ class TestResourceCodelists(object):
         codelist_mapping_paths = iati.resources.get_codelist_mapping_paths(*standard_version_optional)
 
         assert len(codelist_mapping_paths) == 1
-
-    def test_create_codelist_mapping_path(self, standard_version_optional):
-        """Check that the Codelist Mapping File path points to a valid XML file."""
-        path = iati.resources.create_codelist_mapping_path(*standard_version_optional)
-
-        content = iati.utilities.load_as_string(path)
-
-        assert len(content) > 5000
-        assert iati.validator.is_xml(content)
 
 
 class TestResourceRulesets(object):
