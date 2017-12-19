@@ -8,7 +8,8 @@ class TestConstants(object):
 
     @pytest.fixture(params=[
         iati.constants.STANDARD_VERSIONS,
-        iati.constants.STANDARD_VERSIONS_SUPPORTED
+        iati.constants.STANDARD_VERSIONS_SUPPORTED,
+        iati.constants.STANDARD_VERSIONS_MINOR
     ])
     def standard_versions_list(self, request):
         """Return a list of Version Numbers."""
@@ -24,10 +25,15 @@ class TestConstants(object):
         assert isinstance(iati.constants.NSMAP['xsd'], str)
 
     def test_standard_versions_all_are_numbers(self, standard_versions_list):
-        """Check that each item in standard versions is a string that can be considered to be a decimal number."""
+        """Check that each item in standard versions is a string that can be considered to be a correctly formatted decimal number."""
         for version in standard_versions_list:
+            split_version = version.split('.')
+
             assert isinstance(version, str)
             assert float(version)
+            assert len(split_version) == 2
+            assert len(split_version[1]) == 2
+            assert version == version.strip()
 
     def test_standard_versions_correct_format(self, standard_versions_list):
         """Check that standard versions is in the correct format."""
@@ -49,3 +55,7 @@ class TestConstants(object):
     def test_standard_versions_major_correct_number(self):
         """Check that the correct number of major versions are detected."""
         assert len(iati.constants.STANDARD_VERSIONS_MAJOR) == 2
+
+    def test_standard_versions_minor_correct_number(self):
+        """Check that the correct number of minor versions are detected."""
+        assert len(iati.constants.STANDARD_VERSIONS_MINOR) == 7

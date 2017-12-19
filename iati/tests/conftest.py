@@ -78,10 +78,24 @@ def standard_version_major(request):
     return str(request.param)
 
 
+@pytest.fixture(params=iati.constants.STANDARD_VERSIONS_MINOR)
+def standard_version_minor(request):
+    """Return a minor version of the IATI Standard."""
+    return str(request.param)
+
 @pytest.fixture(params=iati.constants.STANDARD_VERSIONS)
 def standard_version_all(request):
     """Return a version of the IATI Standard."""
     return request.param
+
+
+@pytest.fixture(params=iati.constants.STANDARD_VERSIONS + iati.constants.STANDARD_VERSIONS_MAJOR + [None])
+def standard_version_all_types(request):
+    """Return a version of the IATI Standard. This includes all versions that pyIATI may support in some manner."""
+    if request.param is None:
+        return [None]
+
+    return [str(request.param)]
 
 
 @pytest.fixture(params=iati.constants.STANDARD_VERSIONS_SUPPORTED)
