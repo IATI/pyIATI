@@ -25,10 +25,15 @@ class TestConstants(object):
         assert isinstance(iati.constants.NSMAP['xsd'], str)
 
     def test_standard_versions_all_are_numbers(self, standard_versions_list):
-        """Check that each item in standard versions is a string that can be considered to be a decimal number."""
+        """Check that each item in standard versions is a string that can be considered to be a correctly formatted decimal number."""
         for version in standard_versions_list:
+            split_version = version.split('.')
+
             assert isinstance(version, str)
             assert float(version)
+            assert len(split_version) == 2
+            assert len(split_version[1]) == 2
+            assert version == version.strip()
 
     def test_standard_versions_correct_format(self, standard_versions_list):
         """Check that standard versions is in the correct format."""
