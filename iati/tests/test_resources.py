@@ -103,6 +103,18 @@ class TestResourceCreatePath(object):
         assert isinstance(path, str)
         assert iati.resources.folder_name_for_version(*standard_version_all_types) in path
 
+    @pytest.mark.parametrize("not_a_str", iati.tests.utilities.generate_test_types(['none', 'str'], True))
+    def test_create_codelist_path_non_str_name(self, not_a_str, standard_version_all_types):
+        """Check that a Error is raised when requesting a Codelist with a non-string name."""
+        with pytest.raises(TypeError):
+            iati.resources.create_codelist_path(not_a_str, *standard_version_all_types)
+
+    @pytest.mark.parametrize("not_a_version", iati.tests.utilities.generate_test_types(['none'], True))
+    def test_create_codelist_path_fuzzed_version(self, not_a_version):
+        """Check that a ValueError is raised when requesting a Codelist with a fuzzed version."""
+        with pytest.raises(ValueError):
+            iati.resources.create_codelist_path('a-name-for-a-codelist', not_a_version)
+
     def test_create_codelist_mapping_path_minor(self, standard_version_minor):
         """Check that there is a single Codelist Mapping File for minor versions."""
         path = iati.resources.create_codelist_mapping_path(standard_version_minor)
@@ -124,7 +136,7 @@ class TestResourceCreatePath(object):
         with pytest.raises(ValueError):
             iati.resources.create_codelist_mapping_path()
 
-    @pytest.mark.parametrize("not_a_version", iati.tests.utilities.generate_test_types([], True))
+    @pytest.mark.parametrize("not_a_version", iati.tests.utilities.generate_test_types(['none'], True))
     def test_create_codelist_mapping_path_invalid_value(self, not_a_version):
         """Check that a ValueError is raised when requesting a fuzzed Codelist Mapping File."""
         with pytest.raises(ValueError):

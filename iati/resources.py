@@ -206,6 +206,10 @@ def create_codelist_path(codelist_name, version=None):
     Returns:
         str: The path to a file containing the specified Codelist.
 
+    Raises:
+        TypeError: When the codelist name is not a string.
+        ValueError: When an invalid version is specified.
+
     Note:
         Does not check whether the specified Codelist actually exists.
 
@@ -213,6 +217,9 @@ def create_codelist_path(codelist_name, version=None):
         It needs to be determined how best to locate a user-defined Codelist that is available at a URL that needs fetching.
 
     """
+    if not isinstance(codelist_name, str):
+        raise TypeError('The name of a Codelist must be a string, not a {0}'.format(type(codelist_name)))
+
     if codelist_name[-4:] == FILE_CODELIST_EXTENSION:
         codelist_name = codelist_name[:-4]
 
@@ -227,7 +234,7 @@ def create_codelist_mapping_path(version=None):
         Integer: Return a path for the latest Decimal version within the given integer.
 
     Raises:
-        ValueError: If an unsupported version is specified.
+        ValueError: If an invalid version is specified.
 
     Returns:
         str: The path to a file containing the mapping file.
