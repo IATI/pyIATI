@@ -238,7 +238,7 @@ def create_codelist_mapping_path(version=None):
             version = max(iati.utilities.versions_for_integer(version))
     except ValueError:
         pass  # a non-major version has been specified
-    except TypeError:
+    except (OverflowError, TypeError):
         raise ValueError('The version must be a Decimal or Integer version of the IATI Standrd, not {0}'.format(version))
 
     return path_for_version(FILE_CODELIST_MAPPING, version)
