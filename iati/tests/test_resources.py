@@ -87,6 +87,22 @@ class TestResourceFolders(object):
         assert len(paths) == expected_num_paths
 
 
+class TestResourceCreateXPath(object):
+    """A container for tests relating to creating paths."""
+
+    @pytest.mark.parametrize('cl_name', [
+        'AidType', 'FlowType', 'Language',  # Codelist names that are valid at all versions
+        'BudgetStatus', 'OtherIdentifierType', 'PolicyMarkerVocabulary',  # Codelist names that are valid at some versions, but not all
+        'invalid-codelist-name'  # Codelist name that is not a valid Codelist
+    ])
+    def test_create_codelist_path_name(self, cl_name, standard_version_optional):
+        """Check that a Codelist path is correctly created."""
+        path = iati.resources.create_codelist_path(cl_name, *standard_version_optional)
+
+        assert isinstance(path, str)
+        assert iati.resources.folder_name_for_version(*standard_version_optional) in path
+
+
 class TestResourceLibraryData(object):
     """A container for tests relating to pyIATI resources."""
 

@@ -84,12 +84,6 @@ def standard_version_all(request):
     return request.param
 
 
-@pytest.fixture(params=iati.constants.STANDARD_VERSIONS + ['version-independent'])
-def standard_version_all_and_independent(request):
-    """Return a version of the IATI Standard, or a specification that something is version-independent."""
-    return request.param
-
-
 @pytest.fixture(params=iati.constants.STANDARD_VERSIONS_SUPPORTED)
 def standard_version_optional(request):
     """Return a list that can be passed to a function using the argument list unpacking functionality.
