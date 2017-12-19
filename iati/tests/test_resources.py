@@ -95,12 +95,12 @@ class TestResourceCreateXPath(object):
         'BudgetStatus', 'OtherIdentifierType', 'PolicyMarkerVocabulary',  # Codelist names that are valid at some versions, but not all
         'invalid-codelist-name'  # Codelist name that is not a valid Codelist
     ])
-    def test_create_codelist_path(self, cl_name, standard_version_optional):
+    def test_create_codelist_path(self, cl_name, standard_version_all_types):
         """Check that a Codelist path is correctly created."""
-        path = iati.resources.create_codelist_path(cl_name, *standard_version_optional)
+        path = iati.resources.create_codelist_path(cl_name, *standard_version_all_types)
 
         assert isinstance(path, str)
-        assert iati.resources.folder_name_for_version(*standard_version_optional) in path
+        assert iati.resources.folder_name_for_version(*standard_version_all_types) in path
 
 
 class TestResourceLibraryData(object):
