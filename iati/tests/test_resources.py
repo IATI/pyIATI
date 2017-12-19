@@ -87,7 +87,7 @@ class TestResourceFolders(object):
         assert len(paths) == expected_num_paths
 
 
-class TestResourceCreateXPath(object):
+class TestResourceCreatePath(object):
     """A container for tests relating to creating paths."""
 
     @pytest.mark.parametrize('cl_name', [
