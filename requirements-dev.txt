@@ -28,7 +28,7 @@ future==0.16.0 # rq.filter: <1.0
 #
 
 # documentation
-Sphinx==1.6.5 # rq.filter: <2.0
+Sphinx==1.6.6 # rq.filter: <2.0
 sphinx-rtd-theme==0.2.4 # rq.filter: <1.0
 
 # version bumping
