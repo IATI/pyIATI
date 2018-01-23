@@ -10,7 +10,7 @@
 # linters
 flake8==3.5.0 # rq.filter: <4.0
 pydocstyle==2.1.1 # rq.filter: <3.0
-pylint==1.8.1 # rq.filter: <2.0
+pylint==1.8.2 # rq.filter: <2.0
 
 # code complexity
 radon==2.2.0 # rq.filter: <3.0
