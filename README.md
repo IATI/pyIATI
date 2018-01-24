@@ -209,7 +209,7 @@ radon cc iati --no-assert -nc
 Alternatively, the Makefile can be used.
 
 ```
-make tests
+make test
 make lint
 make complexity
 make docs
