@@ -64,8 +64,10 @@ class TestResourceFolders(object):
         Todo:
             Deal with multiple versions.
 
+            Make independent of version 2.02.
+
         """
-        paths = iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail')
+        paths = iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail', '2.02')
 
         assert len(paths) == 237
 
@@ -199,7 +201,7 @@ class TestResourceSchemas(object):
 
         content = iati.utilities.load_as_string(path)
 
-        assert len(content) > 130000
+        assert len(content) > 125000
 
     def test_schema_activity_tree(self):
         """Check that the Activity schema loads into an XML Tree.
