@@ -4,7 +4,7 @@ cache:
 python:
   - 2.7
   - 3.4
-  - 3.5
+  - 3.5.2
   - 3.6
 install:
   - pip install -U pip wheel
@@ -19,7 +19,7 @@ stages:
 jobs:
     include:
         - stage: strict lint
-          python: 3.5
+          python: 3.5.2
           install:
             - pip install -U pip wheel
             - pip install -r requirements-dev.txt
