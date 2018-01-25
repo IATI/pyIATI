@@ -4,7 +4,7 @@ cache:
 python:
   - 2.7
   - 3.4
-  - 3.5.2
+  - 3.5
   - 3.6
 install:
   - pip install -U pip wheel
@@ -19,7 +19,7 @@ stages:
 jobs:
     include:
         - stage: strict lint
-          python: 3.5.2
+          python: 3.6
           install:
             - pip install -U pip wheel
             - pip install -r requirements-dev.txt
@@ -27,13 +27,13 @@ jobs:
           script: make pylint
           if: branch IN (master, dev)
         - stage: strict lint
-          python: 3.5
+          python: 3.6
           install: pip install flake8
           env: LINTER=flake8
           script: make flake8
           if: branch IN (master, dev)
         - stage: strict lint
-          python: 3.5
+          python: 3.6
           install: pip install pydocstyle
           env: LINTER=pydocstyle
           script: make pydocstyle
