@@ -9,7 +9,7 @@ class TestVersions(object):
     def test_version_no_params(self):
         """Test Version creation with no parameters."""
         with pytest.raises(TypeError):
-            iati.Version()
+            iati.Version()  # pylint: disable=E1120
 
     @pytest.mark.parametrize("not_version_str", [
         '',  # empty string
@@ -36,6 +36,5 @@ class TestVersions(object):
         assert str(type(not_str)) in str(excinfo.value)
 
     def test_version_valid_iati_versions(self, standard_version_mandatory):
-    	"""Test Version creations with IATI version numbers."""
-    	_ = iati.Version(*standard_version_mandatory)
-
+        """Test Version creations with IATI version numbers."""
+        _ = iati.Version(*standard_version_mandatory)
