@@ -1,4 +1,5 @@
 """A module containing components that describe the IATI Standard itself (rather than the parts it is made up of)."""
+import re
 import iati.constants
 
 
@@ -19,5 +20,7 @@ class Version(object):
         if not isinstance(version_string, str):
             raise TypeError('A Version object must be created from a string, not a {0}'.format(type(version_string)))
 
-        if version_string not in iati.constants.STANDARD_VERSIONS:
+        iati_version_re = re.compile(r'^([1-9])(\d+)?\.(0)([1-9])$')
+
+        if not iati_version_re.match(version_string):
             raise ValueError('A valid version number must be specified.')
