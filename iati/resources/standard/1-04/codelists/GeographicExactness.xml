@@ -1,16 +1,1 @@
-<codelist name="GeographicExactness" xml:lang="en" complete="1">
-    <metadata>
-        <name>Geographic Exactness</name>
-        <description></description>
-    </metadata>
-    <codelist-items>
-        <codelist-item>
-            <code>1</code>
-            <name>Exact</name>
-        </codelist-item>
-        <codelist-item>
-            <code>2</code>
-            <name>Approximate</name>
-        </codelist-item>
-    </codelist-items>
-</codelist>
+/home/haydenf/iati/github/pyIATI/iati/resources/standard/codelists_non_embedded/GeographicExactness.xml
