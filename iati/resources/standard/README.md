@@ -6,4 +6,4 @@ Data for a given version of the Standard is stored within a corresponding folder
 
 Currently non-embedded codelists are stored within the `codelists_non_embedded` folder. Due to the relevant modification schedule, it may be desired to nest them within a `2` or `2xx` folder.
 
-Non-Embedded Codelists must be symlinked from each version at which they occur. This can be done with: `ln -s [path/to/pyIATI]/iati/resources/standard/codelists_non_embedded/* [path/to/pyIATI]/iati/resources/standard/[versionFolder]/codelists/`
+Non-Embedded Codelists must be symlinked from each version at which they occur. This must be done from within the folder that files are to be symlinked to, so as to ensure paths are relative rather than absolute: `ln -s ../../codelists_non_embedded/* .`
