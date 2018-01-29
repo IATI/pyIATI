@@ -3,6 +3,7 @@ from lxml import etree
 import pytest
 import iati.constants
 import iati.resources
+import iati.tests.resources
 import iati.validator
 
 
@@ -27,6 +28,7 @@ class TestResourceFolders(object):
     """A container for tests relating to resource folders."""
 
     @pytest.mark.parametrize('version, expected_version_foldername', [
+        ('2.03', '2-03'),
         ('2.02', '2-02'),
         ('2.01', '2-01'),
         ('1.05', '1-05'),
