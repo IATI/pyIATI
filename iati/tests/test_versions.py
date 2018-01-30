@@ -103,11 +103,12 @@ class TestVersionInit(object):
 
     @pytest.mark.parametrize('version_str', generate_semver_list(ONE_TO_LOTS, ZERO_TO_LOTS, ZERO_TO_LOTS))
     def test_version_valid_semver_3_part(self, version_str):
-        """Test version creation with valid SemVer version numbers."""
+        """Test Version creation with valid SemVer version numbers."""
         iati.Version(version_str)
 
     @pytest.mark.parametrize('version_str', generate_semver_list([0], ZERO_TO_LOTS, ZERO_TO_LOTS))
     def semver_version_invalid_major_0(self, version_str):
+        """Test version creation with a Major version of 0."""
         with pytest.raises(ValueError) as excinfo:
             iati.Version(version_str)
 
