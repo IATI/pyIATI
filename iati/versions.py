@@ -1,6 +1,5 @@
 """A module containing components that describe the IATI Standard itself (rather than the parts it is made up of)."""
 import re
-import iati.constants
 
 
 class Version(object):

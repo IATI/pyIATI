@@ -4,13 +4,25 @@ import pytest
 import iati.tests.utilities
 
 
+ONE_TO_NINE = list(range(1, 10))
+"""A list of numbers from 1-9 inclusive."""
+ONE_TO_LOTS = list(range(1, 220, 51))
+"""A list of numbers from 1 to a large number. 1 is included."""
+TWO_TO_LOTS = list(range(2, 220, 51))
+"""A list of numbers from 2 to a large number. 2 is included."""
+TEN_TO_LOTS = list(range(10, 220, 51))
+"""A list of numbers from 10 to a large number. 10 is included."""
+NEGATIVE_NUMBERS = list(range(-10, 0))
+"""A list of negative numbers."""
+
+
 class TestVersions(object):
     """A container for tests relating to Standard Versions."""
 
     @pytest.fixture(params=[
         str(components[0]) + '.0' + str(components[1]) for components in
-            list(itertools.product(range(1, 220, 51), range(1, 10))) +  # decimals from 1-9 inclusive
-            list(itertools.product(range(2, 220, 51), range(10, 220, 51)))  # decimals from 10-up for integers from 2 up
+        list(itertools.product(ONE_TO_LOTS, ONE_TO_NINE)) +  # decimals from 1-9 inclusive
+        list(itertools.product(TWO_TO_LOTS, TEN_TO_LOTS))  # decimals from 10-up for integers from 2 up
     ])
     def standard_version_valid(self, request):
         """Return a valid IATI version number."""
@@ -18,15 +30,13 @@ class TestVersions(object):
 
     @pytest.fixture(params=[
         str(components[0]) + '.0' + str(components[1]) for components in
-            list(itertools.product([1], range(10, 220, 51))) +  # integer 1 may only decimal 01-09
-            list(itertools.product([0], range(1, 10))) +  # integer value of 0
-            list(itertools.product([0], range(10, 220, 51))) +  # integer value of 0
-            list(itertools.product(range(1, 220, 51), [0])) +  # decimal value of 0
-            list(itertools.product(range(-10, 0), range(1, 10))) +  # negative integer
-            list(itertools.product(range(1, 220, 51), range(-10, 0)))  # negative decimal
-    ] +
-    [
-        str(components[0]) + '.' + str(components[1]) for components in itertools.product(range(1, 220, 51), range(1, 10))  # non-padded Decimal
+        list(itertools.product([1], TEN_TO_LOTS)) +  # integer 1 may only decimal 01-09
+        list(itertools.product([0], ONE_TO_NINE + TEN_TO_LOTS)) +  # integer value of 0
+        list(itertools.product(ONE_TO_LOTS, [0])) +  # decimal value of 0
+        list(itertools.product(NEGATIVE_NUMBERS, ONE_TO_NINE)) +  # negative integer
+        list(itertools.product(ONE_TO_LOTS, NEGATIVE_NUMBERS))  # negative decimal
+    ] + [
+        str(components[0]) + '.' + str(components[1]) for components in itertools.product(ONE_TO_LOTS, ONE_TO_NINE)  # non-padded Decimal
     ])
     def standard_version_invalid(self, request):
         """Return an invalid IATI version number."""
