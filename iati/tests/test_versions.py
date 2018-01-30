@@ -4,6 +4,8 @@ import pytest
 import iati.tests.utilities
 
 
+ZERO_TO_LOTS = list(range(0, 220, 51))
+"""A list of numbers from 0 to a large number. 0 is included."""
 ONE_TO_NINE = list(range(1, 10))
 """A list of numbers from 1-9 inclusive."""
 ONE_TO_LOTS = list(range(1, 220, 51))
@@ -15,8 +17,21 @@ TEN_TO_LOTS = list(range(10, 220, 51))
 NEGATIVE_NUMBERS = list(range(-10, 0))
 """A list of negative numbers."""
 
+def generate_semver_list(major_components, minor_components, patch_components):
+    """Generate a list of SemVer-format values.
 
-class TestVersions(object):
+    Params:
+        major_components (list of int): List of values to use as the Major Component in the generated Version Numbers.
+        minor_components (list of int): List of values to use as the Minor Component in the generated Version Numbers.
+        patch_components (list of int): List of values to use as the Patch Component in the generated Version Numbers.
+
+    Returns:
+        list of string: List of values in the SemVer format.
+    """
+    return ['.'.join(str(component) for component in version) for version in itertools.product(major_components, minor_components, patch_components)]
+
+
+class TestVersionInit(object):
     """A container for tests relating to Standard Versions."""
 
     @pytest.fixture(params=[
@@ -72,7 +87,7 @@ class TestVersions(object):
         assert str(type(not_str)) in str(excinfo.value)
 
     def test_version_supported_iati_versions(self, standard_version_mandatory):
-        """Test Version creations with supported IATI version numbers."""
+        """Test Version creation with supported IATI version numbers."""
         iati.Version(*standard_version_mandatory)
 
     def test_version_valid_iativer(self, iativer_version_valid):
@@ -83,5 +98,17 @@ class TestVersions(object):
         """Test Version creation with a string that is not a valid IATIver version number."""
         with pytest.raises(ValueError) as excinfo:
             iati.Version(iativer_version_invalid)
+
+        assert str(excinfo.value) == 'A valid version number must be specified.'
+
+    @pytest.mark.parametrize('version_str', generate_semver_list(ONE_TO_LOTS, ZERO_TO_LOTS, ZERO_TO_LOTS))
+    def test_version_valid_semver_3_part(self, version_str):
+        """Test version creation with valid SemVer version numbers."""
+        iati.Version(version_str)
+
+    @pytest.mark.parametrize('version_str', generate_semver_list([0], ZERO_TO_LOTS, ZERO_TO_LOTS))
+    def semver_version_invalid_major_0(self, version_str):
+        with pytest.raises(ValueError) as excinfo:
+            iati.Version(version_str)
 
         assert str(excinfo.value) == 'A valid version number must be specified.'

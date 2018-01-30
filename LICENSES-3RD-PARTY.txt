@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                           The 2-Clause BSD License
 
     applies to:
+     - semantic_version, Copyright (c) The python-semanticversion project. All rights reserved.
      - Sphinx, Copyright (c) 2007-2016 by the Sphinx team. All rights reserved.
 -----------------------------------------------------------------------------
 

@@ -1,5 +1,6 @@
 """A module containing components that describe the IATI Standard itself (rather than the parts it is made up of)."""
 import re
+import semantic_version
 
 
 class Version(object):
@@ -22,5 +23,10 @@ class Version(object):
         # a regex for what makes a valid IATIver Version Number format string
         iativer_re = re.compile(r'^((1\.0[1-9])|(((1\d+)|([2-9](\d+)?))\.0[1-9](\d+)?))$')
 
+        # check to see if IATIver
         if not iativer_re.match(version_string):
-            raise ValueError('A valid version number must be specified.')
+            # check to see if SemVer with a positive major version
+            if semantic_version.validate(version_string) and semantic_version.Version(version_string).major != 0:
+                pass
+            else:
+                raise ValueError('A valid version number must be specified.')
