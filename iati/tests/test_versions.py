@@ -24,8 +24,8 @@ class TestVersions(object):
         list(itertools.product(ONE_TO_LOTS, ONE_TO_NINE)) +  # decimals from 1-9 inclusive
         list(itertools.product(TWO_TO_LOTS, TEN_TO_LOTS))  # decimals from 10-up for integers from 2 up
     ])
-    def standard_version_valid(self, request):
-        """Return a valid IATI version number."""
+    def iativer_version_valid(self, request):
+        """Return a valid IATIver-format version number."""
         return request.param
 
     @pytest.fixture(params=[
@@ -38,8 +38,8 @@ class TestVersions(object):
     ] + [
         str(components[0]) + '.' + str(components[1]) for components in itertools.product(ONE_TO_LOTS, ONE_TO_NINE)  # non-padded Decimal
     ])
-    def standard_version_invalid(self, request):
-        """Return an invalid IATI version number."""
+    def iativer_version_invalid(self, request):
+        """Return an version number that looks like it could be an IATIver-format version, but isn't."""
         return request.param
 
     def test_version_no_params(self):
@@ -73,15 +73,15 @@ class TestVersions(object):
 
     def test_version_supported_iati_versions(self, standard_version_mandatory):
         """Test Version creations with supported IATI version numbers."""
-        _ = iati.Version(*standard_version_mandatory)
+        iati.Version(*standard_version_mandatory)
 
-    def test_version_valid_iati_versions(self, standard_version_valid):
-        """Test Version creations with correctly constructed IATI version numbers."""
-        _ = iati.Version(standard_version_valid)
+    def test_version_valid_iativer(self, iativer_version_valid):
+        """Test Version creations with correctly constructed IATIver version numbers."""
+        iati.Version(iativer_version_valid)
 
-    def test_version_invalid(self, standard_version_invalid):
-        """Test Version creation with a string that is not a valid version number."""
+    def test_version_invalid_iativer(self, iativer_version_invalid):
+        """Test Version creation with a string that is not a valid IATIver version number."""
         with pytest.raises(ValueError) as excinfo:
-            iati.Version(standard_version_invalid)
+            iati.Version(iativer_version_invalid)
 
         assert str(excinfo.value) == 'A valid version number must be specified.'
