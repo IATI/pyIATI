@@ -7,20 +7,26 @@ import iati.tests.utilities
 class TestVersions(object):
     """A container for tests relating to Standard Versions."""
 
-    @pytest.fixture(params=[str(components[0]) + '.' + str(components[1]).zfill(2) for components in itertools.product(range(1, 1100, 51), range(1, 10))])
+    @pytest.fixture(params=[
+        str(components[0]) + '.0' + str(components[1]) for components in
+            list(itertools.product(range(1, 220, 51), range(1, 10))) +  # decimals from 1-9 inclusive
+            list(itertools.product(range(2, 220, 51), range(10, 220, 51)))  # decimals from 10-up for integers from 2 up
+    ])
     def standard_version_valid(self, request):
         """Return a valid IATI version number."""
         return request.param
 
     @pytest.fixture(params=[
-        str(components[0]) + '.' + str(components[1]).zfill(2) for components in
-            list(itertools.product(range(1, 1100, 51), range(10, 1000, 51))) +  # invalid Decimal
+        str(components[0]) + '.0' + str(components[1]) for components in
+            list(itertools.product([1], range(10, 220, 51))) +  # integer 1 may only decimal 01-09
             list(itertools.product([0], range(1, 10))) +  # integer value of 0
-            list(itertools.product(range(1, 1100, 51), [0])) +  # decimal value of 0
-            list(itertools.product(range(-10, 0), range(1, 10)))  # negative integer
+            list(itertools.product([0], range(10, 220, 51))) +  # integer value of 0
+            list(itertools.product(range(1, 220, 51), [0])) +  # decimal value of 0
+            list(itertools.product(range(-10, 0), range(1, 10))) +  # negative integer
+            list(itertools.product(range(1, 220, 51), range(-10, 0)))  # negative decimal
     ] +
     [
-        str(components[0]) + '.' + str(components[1]) for components in itertools.product(range(1, 1100, 51), range(1, 10))  # non-padded Decimal
+        str(components[0]) + '.' + str(components[1]) for components in itertools.product(range(1, 220, 51), range(1, 10))  # non-padded Decimal
     ])
     def standard_version_invalid(self, request):
         """Return an invalid IATI version number."""

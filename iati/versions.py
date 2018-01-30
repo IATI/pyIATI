@@ -20,7 +20,7 @@ class Version(object):
         if not isinstance(version_string, str):
             raise TypeError('A Version object must be created from a string, not a {0}'.format(type(version_string)))
 
-        iati_version_re = re.compile(r'^([1-9])(\d+)?\.(0)([1-9])$')
+        iati_version_re = re.compile(r'^((1\.0[1-9])|(((1\d+)|([2-9](\d+)?))\.0[1-9](\d+)?))$')
 
         if not iati_version_re.match(version_string):
             raise ValueError('A valid version number must be specified.')
