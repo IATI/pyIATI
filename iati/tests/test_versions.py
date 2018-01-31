@@ -322,6 +322,15 @@ class TestVersionBumping(VersionNumberTestBase):
         assert isinstance(version.next_decimal(), iati.Version)
         assert version.next_decimal() == next_minor_version
 
+
+class TestVersionImplementationDetailHiding(object):
+    """A container for tests relating to ensuring implementation detail is hidden.
+
+    The implementation of the Version class makes use of a Semantic Versioning library by inheriting from a base class.
+    The utilised base class contains attributes that are not desired.
+    Tests in this container check that attributes that are not desired have been hidden.
+    """
+
     def test_version_bump_patch(self):
         """Test that the next Patch version cannot be obtained."""
         version = iati.Version('1.0.0')
