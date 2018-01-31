@@ -286,6 +286,31 @@ class TestVersionComparison(object):
         assert result == should_pass
 
 
+class TestVersionModification(VersionNumberTestBase):
+    """A container for tests relating to modifying Version Numbers after they are instantiated."""
+
+    CHANGE_AMOUNT = 10
+    """int: The amount that Components are modified by."""
+
+    @pytest.mark.parametrize('attrib', [
+        ('major', 0),
+        ('integer', 0),
+        ('minor', 1),
+        ('decimal', 1),
+        ('patch', 2)
+    ])
+    def test_attribute_components_writable_valid_values(self, version, attrib):
+        """Test that the core Version Number Component attribute is writable."""
+        attrib_name, idx = attrib
+        components = split_semver(version.semver_str)
+        components[idx] = components[idx] + self.CHANGE_AMOUNT
+
+        version_new = iati.Version(semver(components[0], components[1], components[2]))
+        setattr(version, attrib_name, components[idx])
+
+        assert version == version_new
+
+
 class TestVersionRepresentation(VersionNumberTestBase):
     """A container for tests relating to how Standard Versions are represented when output."""
 

@@ -35,10 +35,18 @@ class Version(semantic_version.Version):
         """int: The IATIver Integer Component of the Version."""
         return self.major
 
+    @integer.setter
+    def integer(self, value):
+        self.major = value
+
     @property
     def decimal(self):
         """int: The IATIver Decimal Component of the Version."""
         return self.minor + 1
+
+    @decimal.setter
+    def decimal(self, value):
+        self.minor = value
 
     @property
     def iativer_str(self):
