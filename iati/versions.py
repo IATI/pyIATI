@@ -27,11 +27,11 @@ class Version(semantic_version.Version):
         if iativer_re.match(version_string):
             integer = version_string.split('.')[0]
             decimal = str(int(version_string.split('.')[1]) - 1)
-            super(Version, self).__init__('.'.join([integer, decimal, '0']))
+            super(Version, self).__init__('.'.join([integer, decimal, '0']), True)
         else:
             # check to see if SemVer with a positive major version
             if semantic_version.validate(version_string) and semantic_version.Version(version_string).major != 0:
-                super(Version, self).__init__(version_string)
+                super(Version, self).__init__(version_string, True)
             else:
                 raise ValueError('A valid version number must be specified.')
 

@@ -92,11 +92,20 @@ def split_semver(version_str):
 class VersionNumberTestBase(object):
     """A container for fixtures that generate Version Numbers."""
 
-    @pytest.fixture(params=[
+    IATIVER_VALID = [
         iativer(components[0], components[1]) for components in
         list(itertools.product(ONE_TO_LOTS, ONE_TO_NINE)) +  # decimals from 1-9 inclusive
         list(itertools.product(TWO_TO_LOTS, TEN_TO_LOTS))  # decimals from 10-up for integers from 2 up
-    ])
+    ]
+    """list of str: A list of valid IATIver format version numbers."""
+
+    SEMVER_VALID = generate_semver_list(ONE_TO_LOTS, ZERO_TO_LOTS, ZERO_TO_LOTS)
+    """list of str: A list of valid SemVer format version numbers."""
+
+    MIXED_VER_VALID = IATIVER_VALID + SEMVER_VALID
+    """list of str: A list of valid version numbers of any permitted format."""
+
+    @pytest.fixture(params=IATIVER_VALID)
     def iativer_version_valid(self, request):
         """Return a valid IATIver-format version number."""
         return request.param
@@ -115,10 +124,20 @@ class VersionNumberTestBase(object):
         """Return an version number that looks like it could be an IATIver-format version, but isn't."""
         return request.param
 
-    @pytest.fixture(params=generate_semver_list(ONE_TO_LOTS, ZERO_TO_LOTS, ZERO_TO_LOTS))
+    @pytest.fixture(params=SEMVER_VALID)
     def semver_3_part_valid(self, request):
         """Return a valid 3-part SemVer-format version number."""
         return request.param
+
+    @pytest.fixture(params=MIXED_VER_VALID)
+    def mixed_ver_format_valid(self, request):
+        """Return a valid version number in a valid format."""
+        return request.param
+
+    @pytest.fixture
+    def version(self, mixed_ver_format_valid):
+        """Return an instantiated IATI Version Number."""
+        return iati.Version(mixed_ver_format_valid)
 
 
 class TestVersionInit(VersionNumberTestBase):
@@ -323,7 +342,7 @@ class TestVersionBumping(VersionNumberTestBase):
         assert version.next_decimal() == next_minor_version
 
 
-class TestVersionImplementationDetailHiding(object):
+class TestVersionImplementationDetailHiding(VersionNumberTestBase):
     """A container for tests relating to ensuring implementation detail is hidden.
 
     The implementation of the Version class makes use of a Semantic Versioning library by inheriting from a base class.
@@ -331,12 +350,22 @@ class TestVersionImplementationDetailHiding(object):
     Tests in this container check that attributes that are not desired have been hidden.
     """
 
-    def test_version_bump_patch(self):
+    def test_version_bump_patch(self, version):
         """Test that the next Patch version cannot be obtained."""
-        version = iati.Version('1.0.0')
-
         with pytest.raises(AttributeError):
             version.next_patch()
 
         with pytest.raises(AttributeError):
             version.next_patch
+
+    def test_version_attrib_prerelease(self, version):
+        """Test that the 'prerelease' attribute has been set to None on initialisation."""
+        assert version.prerelease == None
+
+    def test_version_attrib_build(self, version):
+        """Test that the 'build' attribute has been set to None on initialisation."""
+        assert version.build == None
+
+    def test_version_attrib_partial(self, version):
+        """Test that the 'partial' attribute has been set to True on initialisation."""
+        assert version.partial == True
