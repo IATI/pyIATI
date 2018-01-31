@@ -279,17 +279,23 @@ class TestVersionRepresentation(VersionNumberTestBase):
     def test_iativer_string_output(self, iativer_version_valid):
         """Test that the string output for an IATIver version is as expected."""
         integer_component, decimal_component = split_iativer(iativer_version_valid)
+        semver_str = semver(integer_component, decimal_component - 1, 0)
 
         version = iati.Version(iativer_version_valid)
 
         assert str(version) == iativer_version_valid
-        assert repr(version) == "iati.Version('" + semver(integer_component, decimal_component - 1, 0) + "')"
+        assert repr(version) == "iati.Version('" + semver_str + "')"
+        assert version.iativer_str == iativer_version_valid
+        assert version.semver_str == semver_str
 
     def test_semver_string_output(self, semver_3_part_valid):
         """Test that the str() output for an SemVer version is in IATIver-format."""
         major_component, minor_component, _ = split_semver(semver_3_part_valid)
+        iativer_str = iativer(major_component, minor_component + 1)
 
         version = iati.Version(semver_3_part_valid)
 
-        assert str(version) == str(major_component) + '.0' + str(minor_component + 1)
+        assert str(version) == iativer_str
         assert repr(version) == "iati.Version('" + semver_3_part_valid + "')"
+        assert version.iativer_str == iativer_str
+        assert version.semver_str == semver_3_part_valid

@@ -45,9 +45,27 @@ class Version(semantic_version.Version):
         """int: The IATIver Decimal Component of the Version."""
         return self.minor + 1
 
+    @property
+    def iativer_str(self):
+        """string: An IATIver-format string representation of the Version Number.
+
+        Note:
+            The name of this property may change.
+        """
+        return str(self.integer) + '.0' + str(self.decimal)
+
+    @property
+    def semver_str(self):
+        """string: A SemVer-format string representation of the Version Number.
+
+        Note:
+            The name of this property may change.
+        """
+        return '.'.join([str(self.major), str(self.minor), str(self.patch)])
+
     def __repr__(self):
         """str: A representation of the Version Number that will allow a copy of this object to be instantiated."""
-        return "iati.Version('" + '.'.join([str(self.major), str(self.minor), str(self.patch)]) + "')"
+        return "iati.Version('" + self.semver_str + "')"
 
     def __str__(self):
         """str: A representation of the Version Number as would exist on the Version Codelist.
@@ -56,4 +74,4 @@ class Version(semantic_version.Version):
             At present this always results in an IATIver string. This may change should SemVer be adopted.
             The helper methods must be used if a specific format is required.
         """
-        return str(self.integer) + '.0' + str(self.decimal)
+        return self.iativer_str
