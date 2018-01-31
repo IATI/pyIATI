@@ -87,6 +87,7 @@ class Version(semantic_version.Version):
 
         Returns:
             bool: True if the provided string is a permitted in IATIver-format version number. False if not.
+
         """
         # a regex for what makes a valid IATIver Version Number format string
         iativer_re = re.compile(r'^((1\.0[1-9])|(((1\d+)|([2-9](\d+)?))\.0[1-9](\d+)?))$')
@@ -101,6 +102,7 @@ class Version(semantic_version.Version):
 
         Returns:
             bool: True if the provided string is a permitted in SemVer-format version number. False if not.
+
         """
         is_semver_format = semantic_version.validate(version_string)
         try:
@@ -115,6 +117,7 @@ class Version(semantic_version.Version):
 
         Returns:
             iati.Version: A Version object that represents the next version after a Major Upgrade.
+
         """
         next_major = super(Version, self).next_major()
 
@@ -125,6 +128,7 @@ class Version(semantic_version.Version):
 
         Returns:
             iati.Version: A Version object that represents the next version after a Minor Upgrade.
+
         """
         next_minor = super(Version, self).next_minor()
 
@@ -135,6 +139,7 @@ class Version(semantic_version.Version):
 
         Returns:
             iati.Version: A Version object that represents the next version after an Integer Upgrade.
+
         """
         return self.next_major()
 
@@ -143,6 +148,7 @@ class Version(semantic_version.Version):
 
         Returns:
             iati.Version: A Version object that represents the next version after a Decimal Upgrade.
+
         """
         return self.next_minor()
 
@@ -156,4 +162,5 @@ class Version(semantic_version.Version):
 
     Raises:
         AttributeError: An error that indicates that this attribute does not exist.
+
     """

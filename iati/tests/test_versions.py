@@ -18,6 +18,7 @@ TEN_TO_LOTS = list(range(10, 220, 51))
 NEGATIVE_NUMBERS = list(range(-10, 0))
 """A list of negative numbers."""
 
+
 def generate_semver_list(major_components, minor_components, patch_components):
     """Generate a list of SemVer-format values.
 
@@ -73,6 +74,7 @@ def split_iativer(version_str):
 
     return [integer_component, decimal_component]
 
+
 def split_semver(version_str):
     """Split a SemVer-format version number into numeric representations of its components.
 
@@ -111,14 +113,14 @@ class VersionNumberTestBase(object):
         return request.param
 
     @pytest.fixture(params=[
-        iativer(components[0], components[1]) for components in
+        iativer(components[0], components[1]) for components in  # pylint: disable=undefined-loop-variable
         list(itertools.product([1], TEN_TO_LOTS)) +  # integer 1 may only decimal 01-09
         list(itertools.product([0], ONE_TO_NINE + TEN_TO_LOTS)) +  # integer value of 0
         list(itertools.product(ONE_TO_LOTS, [0])) +  # decimal value of 0
         list(itertools.product(NEGATIVE_NUMBERS, ONE_TO_NINE)) +  # negative integer
         list(itertools.product(ONE_TO_LOTS, NEGATIVE_NUMBERS))  # negative decimal
     ] + [
-        str(components[0]) + '.' + str(components[1]) for components in itertools.product(ONE_TO_LOTS, ONE_TO_NINE)  # non-padded Decimal
+        str(components[0]) + '.' + str(components[1]) for components in itertools.product(ONE_TO_LOTS, ONE_TO_NINE)  # non-padded Decimal  # pylint: disable=undefined-loop-variable
     ])
     def iativer_version_invalid(self, request):
         """Return an version number that looks like it could be an IATIver-format version, but isn't."""
@@ -381,16 +383,16 @@ class TestVersionImplementationDetailHiding(VersionNumberTestBase):
             version.next_patch()
 
         with pytest.raises(AttributeError):
-            version.next_patch
+            version.next_patch  # pylint: disable=pointless-statement
 
     def test_version_attrib_prerelease(self, version):
         """Test that the 'prerelease' attribute has been set to None on initialisation."""
-        assert version.prerelease == None
+        assert version.prerelease is None
 
     def test_version_attrib_build(self, version):
         """Test that the 'build' attribute has been set to None on initialisation."""
-        assert version.build == None
+        assert version.build is None
 
     def test_version_attrib_partial(self, version):
         """Test that the 'partial' attribute has been set to True on initialisation."""
-        assert version.partial == True
+        assert version.partial is True
