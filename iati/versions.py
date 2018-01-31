@@ -44,3 +44,16 @@ class Version(semantic_version.Version):
     def decimal(self):
         """int: The IATIver Decimal Component of the Version."""
         return self.minor + 1
+
+    def __repr__(self):
+        """str: A representation of the Version Number that will allow a copy of this object to be instantiated."""
+        return "iati.Version('" + '.'.join([str(self.major), str(self.minor), str(self.patch)]) + "')"
+
+    def __str__(self):
+        """str: A representation of the Version Number as would exist on the Version Codelist.
+
+        Warning:
+            At present this always results in an IATIver string. This may change should SemVer be adopted.
+            The helper methods must be used if a specific format is required.
+        """
+        return str(self.integer) + '.0' + str(self.decimal)

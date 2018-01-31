@@ -29,14 +29,71 @@ def generate_semver_list(major_components, minor_components, patch_components):
     Returns:
         list of string: List of values in the SemVer format.
     """
-    return ['.'.join(str(component) for component in version) for version in itertools.product(major_components, minor_components, patch_components)]
+    return [semver(version[0], version[1], version[2]) for version in itertools.product(major_components, minor_components, patch_components)]
 
 
-class TestVersionInit(object):
-    """A container for tests relating to initialisation of Standard Versions."""
+def iativer(integer, decimal):
+    """Construct an IATIver-format version number.
+
+    Args:
+        integer (int): The integer component of the version number.
+        decimal (int): The decimal component of the version number.
+
+    Returns:
+        str: An IATIver-format version number with the specified Integer and Decimal Components.
+    """
+    return str(integer) + '.0' + str(decimal)
+
+
+def semver(major, minor, patch):
+    """Construct an SemVer-format version number.
+
+    Args:
+        major (int): The major component of the version number.
+        minor (int): The minor component of the version number.
+        patch (int): The patch component of the version number.
+
+    Returns:
+        str: A SemVer-format version number with the specified Major, Minor and Patch Components.
+    """
+    return '.'.join([str(major), str(minor), str(patch)])
+
+
+def split_iativer(version_str):
+    """Split an IATIver-format version number into numeric representations of its components.
+
+    Args:
+        version_str (string): An IATIver-format string.
+
+    Returns:
+        list of int: A list containing numeric representations of the Integer and Decimal components.
+    """
+    integer_component = int(version_str.split('.')[0])
+    decimal_component = int(version_str.split('.')[1])
+
+    return [integer_component, decimal_component]
+
+def split_semver(version_str):
+    """Split a SemVer-format version number into numeric representations of its components.
+
+    Args:
+        version_str (string): A SemVer-format string.
+
+    Returns:
+        list of int: A list containing numeric representations of the Major, Minor and Patch components.
+    """
+    major_component = int(version_str.split('.')[0])
+    minor_component = int(version_str.split('.')[1])
+    patch_component = int(version_str.split('.')[2])
+
+    return [major_component, minor_component, patch_component]
+
+
+class VersionNumberTestBase(object):
+    """A container for fixtures that generate Version Numbers."""
 
     @pytest.fixture(params=[
-        str(components[0]) + '.0' + str(components[1]) for components in
+        iativer(components[0], components[1]) for components in
         list(itertools.product(ONE_TO_LOTS, ONE_TO_NINE)) +  # decimals from 1-9 inclusive
         list(itertools.product(TWO_TO_LOTS, TEN_TO_LOTS))  # decimals from 10-up for integers from 2 up
     ])
@@ -45,7 +102,7 @@ class TestVersionInit(object):
         return request.param
 
     @pytest.fixture(params=[
-        str(components[0]) + '.0' + str(components[1]) for components in
+        iativer(components[0], components[1]) for components in
         list(itertools.product([1], TEN_TO_LOTS)) +  # integer 1 may only decimal 01-09
         list(itertools.product([0], ONE_TO_NINE + TEN_TO_LOTS)) +  # integer value of 0
         list(itertools.product(ONE_TO_LOTS, [0])) +  # decimal value of 0
@@ -57,6 +114,15 @@ class TestVersionInit(object):
     def iativer_version_invalid(self, request):
         """Return an version number that looks like it could be an IATIver-format version, but isn't."""
         return request.param
+
+    @pytest.fixture(params=generate_semver_list(ONE_TO_LOTS, ZERO_TO_LOTS, ZERO_TO_LOTS))
+    def semver_3_part_valid(self, request):
+        """Return a valid 3-part SemVer-format version number."""
+        return request.param
+
+
+class TestVersionInit(VersionNumberTestBase):
+    """A container for tests relating to initialisation of Standard Versions."""
 
     def test_version_no_params(self):
         """Test Version creation with no parameters."""
@@ -93,8 +159,7 @@ class TestVersionInit(object):
 
     def test_version_valid_iativer(self, iativer_version_valid):
         """Test Version creations with correctly constructed IATIver version numbers."""
-        integer_component = int(iativer_version_valid.split('.')[0])
-        decimal_component = int(iativer_version_valid.split('.')[1])
+        integer_component, decimal_component = split_iativer(iativer_version_valid)
 
         version = iati.Version(iativer_version_valid)
 
@@ -111,14 +176,11 @@ class TestVersionInit(object):
 
         assert str(excinfo.value) == 'A valid version number must be specified.'
 
-    @pytest.mark.parametrize('version_str', generate_semver_list(ONE_TO_LOTS, ZERO_TO_LOTS, ZERO_TO_LOTS))
-    def test_version_valid_semver_3_part(self, version_str):
+    def test_version_valid_semver_3_part(self, semver_3_part_valid):
         """Test Version creation with valid SemVer version numbers."""
-        major_component = int(version_str.split('.')[0])
-        minor_component = int(version_str.split('.')[1])
-        patch_component = int(version_str.split('.')[2])
+        major_component, minor_component, patch_component = split_semver(semver_3_part_valid)
 
-        version = iati.Version(version_str)
+        version = iati.Version(semver_3_part_valid)
 
         assert version.major == major_component
         assert version.integer == major_component
@@ -197,10 +259,37 @@ class TestVersionComparison(object):
         version_1 = iati.Version(version_relationship[0])
         version_2 = iati.Version(version_relationship[1])
         expected_relationships = version_relationship[2]
-        comparison_op = comparison_op_mapping[0]
-        op_relationships = comparison_op_mapping[1]
+        comparison_op, op_relationships = comparison_op_mapping
 
         should_pass = len([op for op in op_relationships if op in expected_relationships]) > 0
         result = comparison_op(version_1, version_2)
 
         assert result == should_pass
+
+
+class TestVersionRepresentation(VersionNumberTestBase):
+    """A container for tests relating to how Standard Versions are represented when output.
+
+    There are several functions being tested:
+    - `str` - output an IATIver string
+    - `repr` - output a constructor
+
+    """
+
+    def test_iativer_string_output(self, iativer_version_valid):
+        """Test that the string output for an IATIver version is as expected."""
+        integer_component, decimal_component = split_iativer(iativer_version_valid)
+
+        version = iati.Version(iativer_version_valid)
+
+        assert str(version) == iativer_version_valid
+        assert repr(version) == "iati.Version('" + semver(integer_component, decimal_component - 1, 0) + "')"
+
+    def test_semver_string_output(self, semver_3_part_valid):
+        """Test that the str() output for an SemVer version is in IATIver-format."""
+        major_component, minor_component, _ = split_semver(semver_3_part_valid)
+
+        version = iati.Version(semver_3_part_valid)
+
+        assert str(version) == str(major_component) + '.0' + str(minor_component + 1)
+        assert repr(version) == "iati.Version('" + semver_3_part_valid + "')"
