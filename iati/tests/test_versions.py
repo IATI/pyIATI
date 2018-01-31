@@ -92,7 +92,15 @@ class TestVersionInit(object):
 
     def test_version_valid_iativer(self, iativer_version_valid):
         """Test Version creations with correctly constructed IATIver version numbers."""
-        iati.Version(iativer_version_valid)
+        integer_component = int(iativer_version_valid.split('.')[0])
+        decimal_component = int(iativer_version_valid.split('.')[1])
+
+        version = iati.Version(iativer_version_valid)
+
+        assert version.integer == integer_component
+        assert version.major == integer_component
+        assert version.decimal == decimal_component
+        assert version.minor == decimal_component - 1
 
     def test_version_invalid_iativer(self, iativer_version_invalid):
         """Test Version creation with a string that is not a valid IATIver version number."""
@@ -104,7 +112,15 @@ class TestVersionInit(object):
     @pytest.mark.parametrize('version_str', generate_semver_list(ONE_TO_LOTS, ZERO_TO_LOTS, ZERO_TO_LOTS))
     def test_version_valid_semver_3_part(self, version_str):
         """Test Version creation with valid SemVer version numbers."""
-        iati.Version(version_str)
+        major_component = int(version_str.split('.')[0])
+        minor_component = int(version_str.split('.')[1])
+
+        version = iati.Version(version_str)
+
+        assert version.major == major_component
+        assert version.integer == major_component
+        assert version.minor == minor_component
+        assert version.decimal == minor_component + 1
 
     @pytest.mark.parametrize('version_str', generate_semver_list([0], ZERO_TO_LOTS, ZERO_TO_LOTS))
     def semver_version_invalid_major_0(self, version_str):

@@ -24,9 +24,23 @@ class Version(object):
         iativer_re = re.compile(r'^((1\.0[1-9])|(((1\d+)|([2-9](\d+)?))\.0[1-9](\d+)?))$')
 
         # check to see if IATIver
-        if not iativer_re.match(version_string):
+        if iativer_re.match(version_string):
+            self.major = int(version_string.split('.')[0])
+            self.minor = int(version_string.split('.')[1]) - 1
+        else:
             # check to see if SemVer with a positive major version
             if semantic_version.validate(version_string) and semantic_version.Version(version_string).major != 0:
-                pass
+                self.major = int(version_string.split('.')[0])
+                self.minor = int(version_string.split('.')[1])
             else:
                 raise ValueError('A valid version number must be specified.')
+
+    @property
+    def integer(self):
+        """The IATIver Integer Component of the Version."""
+        return self.major
+
+    @property
+    def decimal(self):
+        """The IATIver Decimal Component of the Version."""
+        return self.minor + 1
