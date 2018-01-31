@@ -134,6 +134,7 @@ class TestVersionInit(object):
 
         assert str(excinfo.value) == 'A valid version number must be specified.'
 
+
 class TestVersionComparison(object):
     """A container for tests relating to comparison between Standard Versions."""
 
