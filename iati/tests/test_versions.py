@@ -321,3 +321,13 @@ class TestVersionBumping(VersionNumberTestBase):
         assert version.next_minor() == next_minor_version
         assert isinstance(version.next_decimal(), iati.Version)
         assert version.next_decimal() == next_minor_version
+
+    def test_version_bump_patch(self):
+        """Test that the next Patch version cannot be obtained."""
+        version = iati.Version('1.0.0')
+
+        with pytest.raises(AttributeError):
+            version.next_patch()
+
+        with pytest.raises(AttributeError):
+            version.next_patch

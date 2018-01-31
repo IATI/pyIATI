@@ -111,3 +111,15 @@ class Version(semantic_version.Version):
             iati.Version: A Version object that represents the next version after a Decimal Upgrade.
         """
         return self.next_minor()
+
+    next_patch = property()
+    """Override the parent class's function to provide the next Patch Version.
+
+    Implementation based on https://stackoverflow.com/a/235657
+
+    Note:
+        The Error that is raised has a slightly different message than if the attribute had never existed.
+
+    Raises:
+        AttributeError: An error that indicates that this attribute does not exist.
+    """
