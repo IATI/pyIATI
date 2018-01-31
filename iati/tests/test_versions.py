@@ -1,5 +1,6 @@
 """A module containing tests for the pyIATI representation of Standard metadata."""
 import itertools
+import operator
 import pytest
 import iati.tests.utilities
 
@@ -32,7 +33,7 @@ def generate_semver_list(major_components, minor_components, patch_components):
 
 
 class TestVersionInit(object):
-    """A container for tests relating to Standard Versions."""
+    """A container for tests relating to initialisation of Standard Versions."""
 
     @pytest.fixture(params=[
         str(components[0]) + '.0' + str(components[1]) for components in
@@ -132,3 +133,73 @@ class TestVersionInit(object):
             iati.Version(version_str)
 
         assert str(excinfo.value) == 'A valid version number must be specified.'
+
+class TestVersionComparison(object):
+    """A container for tests relating to comparison between Standard Versions."""
+
+    @pytest.fixture(params=[
+        # with patch components of zero
+        ('1.01', '1.01', '='),  # equal IATIver - zero minor
+        ('1.0.0', '1.0.0', '='),  # equal SemVer - zero minor
+        ('1.01', '1.0.0', '='),  # equal IATIver and SemVer - zero minor
+        ('1.0.0', '1.01', '='),  # equal Semver and IATIVer - zero minor
+        ('1.02', '1.02', '='),  # equal IATIver - non-zero minor
+        ('1.1.0', '1.1.0', '='),  # equal SemVer - non-zero minor
+        ('1.02', '1.1.0', '='),  # equal IATIver and SemVer - non-zero minor
+        ('1.1.0', '1.02', '='),  # equal SemVer and IATIver - non-zero minor
+        ('1.01', '1.02', '<'),  # less than IATIver - minor
+        ('1.0.0', '1.1.0', '<'),  # less than SemVer - minor
+        ('1.01', '1.1.0', '<'),  # less than IATIver and SemVer - minor
+        ('1.0.0', '1.02', '<'),  # less than SemVer and IATIver - minor
+        ('1.01', '2.01', '<'),  # less than IATIver - major
+        ('1.0.0', '2.0.0', '<'),  # less than SemVer - major
+        ('1.01', '2.0.0', '<'),  # less than IATIver and SemVer - major
+        ('1.0.0', '2.01', '<'),  # less than SemVer and IATIVer - major
+        ('1.1.0', '1.0.0', '>'),  # more than SemVer - minor
+        ('1.1.0', '1.01', '>'),  # more than IATIver and SemVer - minor
+        ('1.02', '1.0.0', '>'),  # more than SemVer and IATIver - minor
+        ('2.01', '1.01', '>'),  # more than IATIver - major
+        ('2.0.0', '1.0.0', '>'),  # more than SemVer - major
+        ('2.01', '1.0.0', '>'),  # more than IATIver and SemVer - major
+        ('2.0.0', '1.01', '>'),  # more than SemVer and IATIVer - major
+        # non-zero patch components
+        ('1.02', '1.1.7', '<'),  # less than IATIver and SemVer - different patch
+        ('1.1.7', '1.02', '>'),  # more equal SemVer and IATIver - different patch
+        ('1.1.6', '1.1.7', '<'),  # less than SemVer - patch
+        ('1.1.7', '1.1.6', '>')  # more than SemVer - patch
+    ])
+    def version_relationship(self, request):
+        """Return a tuple containing a pair of Version Numbers and their relationships.
+
+        The first two items in the tuple are Version Numbers.
+        The third item is a string containing symbols indicating the relationship.
+            '=': The two values are equal.
+            '<': The first value is less than the second.
+            '>': The first value is more than the second.
+        """
+        return request.param
+
+    @pytest.fixture(params=[
+        (operator.eq, ['=']),
+        (operator.ne, ['<', '>']),
+        (operator.lt, ['<']),
+        (operator.le, ['<', '=']),
+        (operator.gt, ['>']),
+        (operator.ge, ['>', '='])
+    ])
+    def comparison_op_mapping(self, request):
+        """Return a tuple containing a comparison operator and a list of symbols it represents."""
+        return request.param
+
+    def test_comparisons(self, version_relationship, comparison_op_mapping):
+        """Test that the relationships between two Versions are correctly detected."""
+        version_1 = iati.Version(version_relationship[0])
+        version_2 = iati.Version(version_relationship[1])
+        expected_relationships = version_relationship[2]
+        comparison_op = comparison_op_mapping[0]
+        op_relationships = comparison_op_mapping[1]
+
+        should_pass = len([op for op in op_relationships if op in expected_relationships]) > 0
+        result = comparison_op(version_1, version_2)
+
+        assert result == should_pass

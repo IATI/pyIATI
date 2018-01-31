@@ -3,7 +3,7 @@ import re
 import semantic_version
 
 
-class Version(object):
+class Version(semantic_version.Version):
     """Representation of an IATI Standard Version Number."""
 
     def __init__(self, version_string):
@@ -23,6 +23,11 @@ class Version(object):
         # a regex for what makes a valid IATIver Version Number format string
         iativer_re = re.compile(r'^((1\.0[1-9])|(((1\d+)|([2-9](\d+)?))\.0[1-9](\d+)?))$')
 
+        # things for the semantic_version library
+        self.prerelease = None
+        self.build = None
+        self.partial = False
+
         # check to see if IATIver
         if iativer_re.match(version_string):
             self.major = int(version_string.split('.')[0])
@@ -39,10 +44,11 @@ class Version(object):
 
     @property
     def integer(self):
-        """The IATIver Integer Component of the Version."""
+        """int: The IATIver Integer Component of the Version."""
         return self.major
 
     @property
     def decimal(self):
-        """The IATIver Decimal Component of the Version."""
+        """int: The IATIver Decimal Component of the Version."""
         return self.minor + 1
+
