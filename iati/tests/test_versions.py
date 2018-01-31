@@ -299,19 +299,25 @@ class TestVersionBumping(VersionNumberTestBase):
     """A container for tests relating to bumping of Version Numbers."""
 
     def test_version_bump_major(self, semver_3_part_valid):
-        """Test that the next valid Major version can be located."""
+        """Test that the next valid Major/Integer version can be located."""
         major_component, _, _ = split_semver(semver_3_part_valid)
         next_major_version = iati.Version(semver(major_component + 1, 0, 0))
 
         version = iati.Version(semver_3_part_valid)
 
+        assert isinstance(version.next_major(), iati.Version)
         assert version.next_major() == next_major_version
+        assert isinstance(version.next_integer(), iati.Version)
+        assert version.next_integer() == next_major_version
 
     def test_version_bump_minor(self, semver_3_part_valid):
-        """Test that the next valid Minor version can be located."""
+        """Test that the next valid Minor/Decimal version can be located."""
         major_component, minor_component, _ = split_semver(semver_3_part_valid)
         next_minor_version = iati.Version(semver(major_component, minor_component + 1, 0))
 
         version = iati.Version(semver_3_part_valid)
 
+        assert isinstance(version.next_minor(), iati.Version)
         assert version.next_minor() == next_minor_version
+        assert isinstance(version.next_decimal(), iati.Version)
+        assert version.next_decimal() == next_minor_version

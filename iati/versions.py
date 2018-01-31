@@ -75,3 +75,39 @@ class Version(semantic_version.Version):
             The helper methods must be used if a specific format is required.
         """
         return self.iativer_str
+
+    def next_major(self):
+        """Obtain a Version object that represents the next version after a Major Upgrade.
+
+        Returns:
+            iati.Version: A Version object that represents the next version after a Major Upgrade.
+        """
+        next_major = super(Version, self).next_major()
+
+        return Version(str(next_major))
+
+    def next_minor(self):
+        """Obtain a Version object that represents the next version after a Minor Upgrade.
+
+        Returns:
+            iati.Version: A Version object that represents the next version after a Minor Upgrade.
+        """
+        next_minor = super(Version, self).next_minor()
+
+        return Version(str(next_minor))
+
+    def next_integer(self):
+        """Obtain a Version object that represents the next version after an Integer Upgrade.
+
+        Returns:
+            iati.Version: A Version object that represents the next version after an Integer Upgrade.
+        """
+        return self.next_major()
+
+    def next_decimal(self):
+        """Obtain a Version object that represents the next version after a Decimal Upgrade.
+
+        Returns:
+            iati.Version: A Version object that represents the next version after a Decimal Upgrade.
+        """
+        return self.next_minor()
