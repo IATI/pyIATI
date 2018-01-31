@@ -268,13 +268,7 @@ class TestVersionComparison(object):
 
 
 class TestVersionRepresentation(VersionNumberTestBase):
-    """A container for tests relating to how Standard Versions are represented when output.
-
-    There are several functions being tested:
-    - `str` - output an IATIver string
-    - `repr` - output a constructor
-
-    """
+    """A container for tests relating to how Standard Versions are represented when output."""
 
     def test_iativer_string_output(self, iativer_version_valid):
         """Test that the string output for an IATIver version is as expected."""
@@ -299,3 +293,25 @@ class TestVersionRepresentation(VersionNumberTestBase):
         assert repr(version) == "iati.Version('" + semver_3_part_valid + "')"
         assert version.iativer_str == iativer_str
         assert version.semver_str == semver_3_part_valid
+
+
+class TestVersionBumping(VersionNumberTestBase):
+    """A container for tests relating to bumping of Version Numbers."""
+
+    def test_version_bump_major(self, semver_3_part_valid):
+        """Test that the next valid Major version can be located."""
+        major_component, _, _ = split_semver(semver_3_part_valid)
+        next_major_version = iati.Version(semver(major_component + 1, 0, 0))
+
+        version = iati.Version(semver_3_part_valid)
+
+        assert version.next_major() == next_major_version
+
+    def test_version_bump_minor(self, semver_3_part_valid):
+        """Test that the next valid Minor version can be located."""
+        major_component, minor_component, _ = split_semver(semver_3_part_valid)
+        next_minor_version = iati.Version(semver(major_component, minor_component + 1, 0))
+
+        version = iati.Version(semver_3_part_valid)
+
+        assert version.next_minor() == next_minor_version
