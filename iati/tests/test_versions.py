@@ -141,6 +141,11 @@ class VersionNumberTestBase(object):
         """Return an instantiated IATI Version Number."""
         return iati.Version(mixed_ver_format_valid)
 
+    @pytest.fixture
+    def single_version(self):
+        """Return a single instantiated IATI Version Number."""
+        return iati.Version('1.2.3')
+
 
 class TestVersionInit(VersionNumberTestBase):
     """A container for tests relating to initialisation of Standard Versions."""
@@ -294,16 +299,20 @@ class TestVersionModification(VersionNumberTestBase):
     CHANGE_AMOUNT = 10
     """int: The amount that Components are modified by."""
 
-    @pytest.mark.parametrize('attrib', [
+    @pytest.fixture(params=[
         ('major', 0),
         ('integer', 0),
         ('minor', 1),
         ('decimal', 1),
         ('patch', 2)
     ])
-    def test_attribute_components_writable_valid_values(self, version, attrib):
-        """Test that the core Version Number Component attribute is writable."""
-        attrib_name, idx = attrib
+    def modifiable_attrib(self, request):
+        """Return a tuple containing the name of a component within a Version, plus the index it appears when components are ordered from most to least major."""
+        return request.param
+
+    def test_attribute_components_writable_valid_values(self, version, modifiable_attrib):
+        """Test that the core Version Number Component attributes are writable."""
+        attrib_name, idx = modifiable_attrib
         components = split_semver(version.semver_str)
         components[idx] = components[idx] + self.CHANGE_AMOUNT
 
@@ -311,6 +320,13 @@ class TestVersionModification(VersionNumberTestBase):
         setattr(version, attrib_name, components[idx])
 
         assert version == version_new
+
+    @pytest.mark.parametrize("not_int", iati.tests.utilities.generate_test_types(['int'], True))
+    def test_attribute_components_writable_invalid_values(self, single_version, modifiable_attrib, not_int):
+        """Test that core Version Number Components can have invalid values set."""
+        attrib_name, _ = modifiable_attrib
+
+        setattr(single_version, attrib_name, not_int)
 
 
 class TestVersionRepresentation(VersionNumberTestBase):
