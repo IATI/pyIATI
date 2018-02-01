@@ -195,7 +195,10 @@ class Dataset(object):
             # Not version 1 data, so can return the version specified in `iati-activities/@version`
             version = version_iati_root
 
-        return version
+        if version is None:
+            return version
+
+        return iati.Version(version)
 
     def source_at_line(self, line_number):
         """Return the value of the XML source at the specified line.

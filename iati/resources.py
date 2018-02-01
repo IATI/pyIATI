@@ -309,13 +309,24 @@ def folder_name_for_version(version=None):
     """
     if version is None:
         return 'version-independent'
+    elif isinstance(version, str):
+        try:
+            if int(version) in iati.constants.STANDARD_VERSIONS_MAJOR:
+                return version
+        except ValueError:
+            pass
 
-    if version in iati.constants.STANDARD_VERSIONS:
-        return version.replace('.', '-')
-    elif version in [str(major_version) for major_version in iati.constants.STANDARD_VERSIONS_MAJOR]:
-        return version
-    else:
-        raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
+        version = iati.Version(version)
+
+    try:
+        if version in iati.constants.STANDARD_VERSIONS:
+            return str(version.integer) + '-0' + str(version.decimal)
+        elif version.major in iati.constants.STANDARD_VERSIONS_MAJOR:
+            return str(version.major)
+    except AttributeError:
+        pass
+
+    raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
 
 
 def folder_path_for_version(version=None):

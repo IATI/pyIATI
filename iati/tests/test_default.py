@@ -42,7 +42,7 @@ class TestDefaultVersionConversion(object):
         assert iati.default._specific_version_for(standard_version_all) == standard_version_all
 
     @pytest.mark.parametrize('integer_version, expected_decimal', [
-        ('1', '1.05'),
+        ('1', iati.Version('1.05')),
         ('2', iati.constants.STANDARD_VERSION_LATEST)
     ])
     def test_integer_version_conversion_valid(self, integer_version, expected_decimal):

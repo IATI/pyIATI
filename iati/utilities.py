@@ -352,12 +352,7 @@ def versions_for_integer(integer):
         integer (int): The integer version to find the supported version for.
 
     Returns:
-        list of str: Containing the supported versions for the input integer.
+        list of iati.Version: Containing the supported versions for the input integer.
 
     """
-    output = list()
-    for version in iati.constants.STANDARD_VERSIONS:
-        if version.startswith(str(integer)):
-            output.append(version)
-
-    return output
+    return [version for version in iati.constants.STANDARD_VERSIONS if version.major == integer]

@@ -32,11 +32,21 @@ def _specific_version_for(version):
         str: The Decimal Version of the Standard that the input version relates to.
 
     """
+    # handle major versions
+    try:
+        if version in [True, False]:
+            raise TypeError
+        major_version = int(version)
+        version = max([v for v in iati.constants.STANDARD_VERSIONS if v.major == major_version])
+    except (ValueError, TypeError, OverflowError):
+        pass
+
+    # convert from strings to Version()s
+    if isinstance(version, str):
+        version = iati.Version(version)
+
     if version in iati.constants.STANDARD_VERSIONS:
         return version
-    elif version in [str(v) for v in iati.constants.STANDARD_VERSIONS_MAJOR]:
-        decimals_for_integer = [v for v in iati.constants.STANDARD_VERSIONS if v.split('.')[0] == version]
-        return max(decimals_for_integer)
     else:
         raise ValueError('Version {0} is not a valid version of the IATI Standard.'.format(version))
 

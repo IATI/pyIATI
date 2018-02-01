@@ -9,11 +9,12 @@ Todo:
     Allow logging constants to be user-definable.
 
 """
+import iati
 
-STANDARD_VERSIONS_SUPPORTED = ['1.04', '1.05', '2.01', '2.02']
+STANDARD_VERSIONS_SUPPORTED = [iati.Version(version) for version in ['1.04', '1.05', '2.01', '2.02']]
 """Define all versions of the Standard fully supported by pyIATI."""
 
-STANDARD_VERSIONS = ['1.01', '1.02', '1.03'] + STANDARD_VERSIONS_SUPPORTED
+STANDARD_VERSIONS = [iati.Version(version) for version in ['1.01', '1.02', '1.03']] + STANDARD_VERSIONS_SUPPORTED
 """Define all versions of the Standard.
 
 Todo:
@@ -27,9 +28,14 @@ STANDARD_VERSION_LATEST = max(STANDARD_VERSIONS)
 """The latest version of the IATI Standard."""
 
 STANDARD_VERSIONS_MAJOR = list(set([
-    int(version.split('.', 1)[0]) for version in STANDARD_VERSIONS
+    version.major for version in STANDARD_VERSIONS
 ]))
-"""The major versions of the IATI Standard."""
+"""The major versions of the IATI Standard.
+
+Todo:
+    Change from being ints to being Version()s.
+
+"""
 
 LOG_FILE_NAME = 'iatilib.log'
 """The location of the primary IATI log file.

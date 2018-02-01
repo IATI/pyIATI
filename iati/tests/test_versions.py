@@ -181,7 +181,7 @@ class TestVersionInit(VersionNumberTestBase):
 
     def test_version_supported_iati_versions(self, standard_version_mandatory):
         """Test Version creation with supported IATI version numbers."""
-        iati.Version(*standard_version_mandatory)
+        iati.Version(standard_version_mandatory[0].iativer_str)
 
     def test_version_valid_iativer(self, iativer_version_valid):
         """Test Version creations with correctly constructed IATIver version numbers."""

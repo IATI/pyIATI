@@ -212,7 +212,7 @@ class TestDefaultVersions(object):
         result = iati.utilities.versions_for_integer(major_version)
 
         for version in result:
-            assert version.startswith(str(major_version))
+            assert version.major == major_version
 
 
 class TestFileLoading(object):
