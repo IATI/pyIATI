@@ -1,4 +1,5 @@
 """A module containing components that describe the IATI Standard itself (rather than the parts it is made up of)."""
+from decimal import Decimal
 import re
 import semantic_version
 
@@ -6,28 +7,35 @@ import semantic_version
 class Version(semantic_version.Version):
     """Representation of an IATI Standard Version Number."""
 
-    def __init__(self, version_string):
+    def __init__(self, version):
         """Initialise a Version Number.
 
         Args:
-            version_string (str): A string representation of an IATI version number.
+            version (str or Decimal): A representation of an IATI version number.
 
         Raises:
-            TypeError: If an attempt to pass something that is not a string is made.
-            ValueError: If a provided string is not a version number.
+            TypeError: If an attempt to pass something that is not a string or Decimal is made.
+            ValueError: If a provided value is not a permitted version number.
 
         """
-        if not isinstance(version_string, str):
-            raise TypeError('A Version object must be created from a string, not a {0}'.format(type(version_string)))
+        if not isinstance(version, str) and not isinstance(version, Decimal):
+            raise TypeError('A Version object must be created from a string or Decimal, not a {0}'.format(type(version)))
 
         # check to see if IATIver
-        if self._is_iativer(version_string):
-            integer = version_string.split('.')[0]
-            decimal = str(int(version_string.split('.')[1]) - 1)
-            super(Version, self).__init__('.'.join([integer, decimal, '0']), True)
-        elif self._is_semver(version_string):
-            super(Version, self).__init__(version_string, True)
-        else:
+        try:
+            if self._is_iatidecimal(version):
+                integer = str(int(version))
+                decimal = str(int(version * 100) - 101)
+                super(Version, self).__init__('.'.join([integer, decimal, '0']), True)
+            elif self._is_iativer(version):
+                integer = version.split('.')[0]
+                decimal = str(int(version.split('.')[1]) - 1)
+                super(Version, self).__init__('.'.join([integer, decimal, '0']), True)
+            elif self._is_semver(version):
+                super(Version, self).__init__(version, True)
+            else:
+                raise ValueError
+        except (TypeError, ValueError):
             raise ValueError('A valid version number must be specified.')
 
     @property
@@ -78,6 +86,23 @@ class Version(semantic_version.Version):
             The helper methods must be used if a specific format is required.
         """
         return self.iativer_str
+
+    def _is_iatidecimal(self, version):
+        """Determine whether a version string is a Decimal and is a permitted value.
+
+        Args:
+            version (string or Decimal): The value to check conformance of.
+
+        Returns:
+            bool: True if the provided string is a permitted in IATIver-format version number. False if not.
+
+        """
+        if not isinstance(version, Decimal):
+            return False
+
+        valid_values = [Decimal('1.0' + str(val)) for val in range(1, 10)]
+
+        return version in valid_values
 
     def _is_iativer(self, version_string):
         """Determine whether a version string is in a IATIver format and is a permitted value.
