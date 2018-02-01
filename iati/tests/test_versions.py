@@ -486,3 +486,31 @@ class TestVersionImplementationDetailHiding(VersionNumberTestBase):
     def test_version_attrib_partial(self, version):
         """Test that the 'partial' attribute has been set to True on initialisation."""
         assert version.partial is True
+
+
+# pylint: disable=protected-access
+class TestVersionRounding(object):
+    """A container for tests relating to rounding versions to various levels of specificity."""
+
+    def test_decimal_version_conversion_valid(self, standard_version_all):
+        """Check that Decimal Versions remain unchanged."""
+        assert iati.versions._specific_version_for(standard_version_all) == standard_version_all
+
+    @pytest.mark.parametrize('integer_version, expected_decimal', [
+        ('1', iati.Version('1.05')),
+        ('2', iati.constants.STANDARD_VERSION_LATEST),
+        ('3', iati.Version('3.0.0'))
+    ])
+    def test_integer_version_conversion_valid(self, integer_version, expected_decimal):
+        """Check that valid Integer Versions return the last Decimal in the Integer."""
+        assert iati.versions._specific_version_for(integer_version) == expected_decimal
+
+    def test_version_conversion_invalid(self, std_version_invalid):
+        """Check that invalid versions cause a ValueError."""
+        with pytest.raises(ValueError):
+            iati.versions._specific_version_for(std_version_invalid)
+
+    def test_version_conversion_None(self):
+        """Check that None cause a ValueError."""
+        with pytest.raises(ValueError):
+            iati.versions._specific_version_for(None)

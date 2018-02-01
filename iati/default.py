@@ -15,72 +15,6 @@ import iati.constants
 import iati.resources
 
 
-def decimal_version(input_func):
-    """Decorate function by converting input version numbers to a standardised format Decimal Version.
-
-    In terms of value:
-    * Decimal Versions will remain unchanged.
-    * Integer Versions will return the latest Decimal Version within the Integer.
-
-    In terms of type:
-    * strings and Decimals will become iati.Versions.
-    * iati.Versions will remain unchanged.
-
-    Errors may be raised:
-    * Invalid types will cause a TypeError
-    * Invalid values will cause a ValueError
-
-    Args:
-        input_func (function): The function to decorate. Takes the `version` argument as its first argument.
-
-    Returns:
-        function: The input function, wrapped such that it is called with a iati.Version representing a Decimal Version.
-
-    """
-    def wrapper(*args, **kwargs):
-        """A wrapper that converts input version numbers to a standardised format Decimal Version."""
-        version = _specific_version_for(args[0])
-
-        return input_func(version, *args[1:], **kwargs)
-
-    return wrapper
-
-
-def _specific_version_for(version):
-    """Convert a version number into the most appropriate Decimal Version.
-
-    * Decimal Versions will remain unchanged.
-    * Integer Versions will return the latest Decimal Version within the Integer.
-
-    Args:
-        version (str / Decimal / iati.Version): The version to obtain a specific version for.
-
-    Raises:
-        ValueError: When a specified version cannot be converted to a valid version of the IATI Standard.
-
-    Returns:
-        str: The Decimal Version of the Standard that the input version relates to.
-
-    """
-    # handle major versions
-    try:
-        if version in [True, False]:
-            raise TypeError
-        major_version = int(version)
-        version = max([v for v in iati.constants.STANDARD_VERSIONS if v.major == major_version])
-    except (ValueError, TypeError, OverflowError):
-        pass
-
-    # convert from strings to Version()s
-    if isinstance(version, str):
-        version = iati.Version(version)
-
-    if version in iati.constants.STANDARD_VERSIONS:
-        return version
-    else:
-        raise ValueError('Version {0} is not a valid version of the IATI Standard.'.format(version))
-
-
 _CODELISTS = defaultdict(dict)
 """A cache of loaded Codelists.
 
@@ -140,7 +74,8 @@ def codelist(name, version):
         raise ValueError(msg)
 
 
-@decimal_version
+@iati.versions.convert_to_decimal
+@iati.versions.fully_supported_version
 def _codelists(version, use_cache=False):
     """Locate the default Codelists for the specified version of the Standard.
 
@@ -191,7 +126,8 @@ def codelists(version):
     return _codelists(version)
 
 
-@decimal_version
+@iati.versions.convert_to_decimal
+@iati.versions.fully_supported_version
 def codelist_mapping(version):
     """Define the mapping process which states where in a Dataset you should find values on a given Codelist.
 
@@ -229,7 +165,8 @@ def codelist_mapping(version):
     return mappings
 
 
-@decimal_version
+@iati.versions.convert_to_decimal
+@iati.versions.fully_supported_version
 def ruleset(version):
     """Return the Standard Ruleset for the specified version of the Standard.
 
@@ -351,7 +288,8 @@ def _schema(path_func, schema_class, version, populate=True, use_cache=False):
     return _SCHEMAS[version][population_key][schema_class.ROOT_ELEMENT_NAME]
 
 
-@decimal_version
+@iati.versions.convert_to_decimal
+@iati.versions.known_version
 def activity_schema(version, populate=True):
     """Return the default Activity Schema for the specified version of the Standard.
 
@@ -369,7 +307,8 @@ def activity_schema(version, populate=True):
     return _schema(iati.resources.get_activity_schema_paths, iati.ActivitySchema, version, populate)
 
 
-@decimal_version
+@iati.versions.convert_to_decimal
+@iati.versions.known_version
 def organisation_schema(version, populate=True):
     """Return the default Organisation Schema for the specified version of the Standard.
 

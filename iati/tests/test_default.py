@@ -28,36 +28,9 @@ class TestDefault(object):
 
     def test_major_version_matches_minor(self, standard_version_major, default_data_func_version_param):
         """Check that specifying a major version returns the same info as the corresponding decimal."""
-        minor_version = iati.default._specific_version_for(standard_version_major)  # pylint: disable=protected-access
+        minor_version = iati.versions._specific_version_for(standard_version_major)  # pylint: disable=protected-access
 
         assert default_data_func_version_param(standard_version_major) == default_data_func_version_param(minor_version)
-
-
-# pylint: disable=protected-access
-class TestDefaultVersionConversion(object):
-    """A container for tests relating to conversion of version numbers."""
-
-    def test_decimal_version_conversion_valid(self, standard_version_all):
-        """Check that Decimal Versions remain unchanged."""
-        assert iati.default._specific_version_for(standard_version_all) == standard_version_all
-
-    @pytest.mark.parametrize('integer_version, expected_decimal', [
-        ('1', iati.Version('1.05')),
-        ('2', iati.constants.STANDARD_VERSION_LATEST)
-    ])
-    def test_integer_version_conversion_valid(self, integer_version, expected_decimal):
-        """Check that valid Integer Versions return the last Decimal in the Integer."""
-        assert iati.default._specific_version_for(integer_version) == expected_decimal
-
-    def test_version_conversion_invalid(self, std_version_invalid):
-        """Check that invalid versions cause a ValueError."""
-        with pytest.raises(ValueError):
-            iati.default._specific_version_for(std_version_invalid)
-
-    def test_version_conversion_None(self):
-        """Check that None cause a ValueError."""
-        with pytest.raises(ValueError):
-            iati.default._specific_version_for(None)
 
 
 class TestDefaultCodelists(object):
