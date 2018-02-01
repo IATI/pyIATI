@@ -73,6 +73,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Validation] Prevent `XPathEvalError`s occurring when given a Codelist Mapping XPath that identifies something other than an attribute. [#229]
 - [Validation] Datasets with an `xml:lang` attribute no longer raise a `KeyError` upon performing Codelist validation against a Schema populated with the Language Codelist. [#226]
 
+- [Tools] Updated dependencies to latest version as of 2018-01-25 and fixed newly identified linting issue. [#269]
+
 ### Security
 
 
@@ -129,7 +131,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Documentation] Corrected some out-of-date documentation. [#45]
 
 - [Rulesets] Update `date_order` XPaths in Standard Ruleset. [IATI/IATI-Rulesets#31]
-
 
 ## [0.1.1] - 2017-10-25
 

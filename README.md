@@ -2,7 +2,7 @@
 
 A developers’ toolkit for IATI.
 
-[![Build Status](https://travis-ci.org/IATI/pyIATI.svg?branch=master)](https://travis-ci.com/IATI/pyIATI) [![PyPI](https://img.shields.io/pypi/v/pyIATI.svg)](https://pypi.python.org/pypi/pyIATI)
+[![Build Status](https://travis-ci.org/IATI/pyIATI.svg?branch=master)](https://travis-ci.org/IATI/pyIATI) [![PyPI](https://img.shields.io/pypi/v/pyIATI.svg)](https://pypi.python.org/pypi/pyIATI)
 
 `master`: [![Requirements Status](https://requires.io/github/IATI/pyIATI/requirements.svg?branch=master)](https://requires.io/github/IATI/pyIATI/requirements/?branch=master) `dev`: [![Requirements Status](https://requires.io/github/IATI/pyIATI/requirements.svg?branch=dev)](https://requires.io/github/IATI/pyIATI/requirements/?branch=dev)
 
@@ -214,7 +214,7 @@ radon cc iati --no-assert -nc
 Alternatively, the Makefile can be used.
 
 ```
-make tests
+make test
 make lint
 make complexity
 make docs

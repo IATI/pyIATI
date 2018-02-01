@@ -166,10 +166,10 @@ def dict_raise_on_duplicates(ordered_pairs):
 
 
 def load_as_bytes(path):
-    """Load a file at the specified path into a bytes object.
+    """Load a file at the specified absolute path into a bytes object.
 
     Args:
-        path (str): The path to the file that is to be read in.
+        path (str): An absolute (rather than relative) path to the file that is to be read in.
 
     Returns:
         bytes: The contents of the file at the specified location.
@@ -188,10 +188,10 @@ def load_as_bytes(path):
 
 
 def load_as_dataset(path):
-    """Load a file at the specified path into a Dataset.
+    """Load a file at the specified absolute path into a Dataset.
 
     Args:
-        path (str): The path to the file that is to be read in.
+        path (str): An absolute (rather than relative) path to the file that is to be read in.
 
     Returns:
         iati.Dataset: A Dataset object representing the contents of the file at the specified location.
@@ -211,10 +211,10 @@ def load_as_dataset(path):
 
 
 def load_as_string(path):
-    """Load a file at the specified path into a string.
+    """Load a file at the specified absolute path into a string.
 
     Args:
-        path (str): The path to the file that is to be read in.
+        path (str): An absolute (rather than relative) path to the file that is to be read in.
 
     Returns:
         str (python3) / unicode (python2): The contents of the file at the specified location.
@@ -243,10 +243,10 @@ def load_as_string(path):
 
 
 def load_as_tree(path):
-    """Load a schema at the specified path into an ElementTree.
+    """Load a schema at the specified absolute path into an ElementTree.
 
     Args:
-        path (str): The path to the file that is to be converted to an ElementTree. The file at the specified location must contain valid XML.
+        path (str): An absolute (rather than relative) path to the file that is to be converted to an ElementTree. The file at the specified location must contain valid XML.
 
     Returns:
         etree._ElementTree: An ElementTree representing the parsed XML.
