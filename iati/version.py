@@ -328,3 +328,31 @@ def fully_supported_version(input_func):
         return input_func(*args, **kwargs)
 
     return wrapper
+
+def standardise_decimals(input_func):
+    """Decorate function by converting an input version into an iati.Version if a Decimal value is specified.
+
+    Args:
+        input_func (function): The function to decorate. Takes the `version` argument as its first argument.
+
+    Returns:
+        function: The input function, wrapped such that it is called with an iati.Version if a Decimal version is provided.
+
+    """
+    def wrapper(*args, **kwargs):
+        """A wrapper that ensures a version number is an iati.Version if a Decimal version is specified.
+
+        Raises:
+            TypeError: If an attempt to pass something that is not a string or Decimal is made.
+            ValueError: If a provided value is not a permitted version number.
+
+        """
+        try:
+            version = iati.Version(args[0])
+        except (TypeError, ValueError):
+            return input_func(*args, **kwargs)
+
+        return input_func(version, *args[1:], **kwargs)
+
+    return wrapper
+
