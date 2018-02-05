@@ -74,8 +74,8 @@ def codelist(name, version):
         raise ValueError(msg)
 
 
-@iati.versions.convert_to_decimal
-@iati.versions.fully_supported_version
+@iati.version.convert_to_decimal
+@iati.version.fully_supported_version
 def _codelists(version, use_cache=False):
     """Locate the default Codelists for the specified version of the Standard.
 
@@ -126,8 +126,8 @@ def codelists(version):
     return _codelists(version)
 
 
-@iati.versions.convert_to_decimal
-@iati.versions.fully_supported_version
+@iati.version.convert_to_decimal
+@iati.version.fully_supported_version
 def codelist_mapping(version):
     """Define the mapping process which states where in a Dataset you should find values on a given Codelist.
 
@@ -165,8 +165,8 @@ def codelist_mapping(version):
     return mappings
 
 
-@iati.versions.convert_to_decimal
-@iati.versions.fully_supported_version
+@iati.version.convert_to_decimal
+@iati.version.fully_supported_version
 def ruleset(version):
     """Return the Standard Ruleset for the specified version of the Standard.
 
@@ -288,8 +288,8 @@ def _schema(path_func, schema_class, version, populate=True, use_cache=False):
     return _SCHEMAS[version][population_key][schema_class.ROOT_ELEMENT_NAME]
 
 
-@iati.versions.convert_to_decimal
-@iati.versions.known_version
+@iati.version.convert_to_decimal
+@iati.version.known_version
 def activity_schema(version, populate=True):
     """Return the default Activity Schema for the specified version of the Standard.
 
@@ -307,8 +307,8 @@ def activity_schema(version, populate=True):
     return _schema(iati.resources.get_activity_schema_paths, iati.ActivitySchema, version, populate)
 
 
-@iati.versions.convert_to_decimal
-@iati.versions.known_version
+@iati.version.convert_to_decimal
+@iati.version.known_version
 def organisation_schema(version, populate=True):
     """Return the default Organisation Schema for the specified version of the Standard.
 
