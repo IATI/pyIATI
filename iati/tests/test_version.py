@@ -494,7 +494,7 @@ class TestVersionRounding(object):
 
     def test_decimal_version_conversion_valid(self, standard_version_all):
         """Check that Decimal Versions remain unchanged."""
-        assert iati.versions._specific_version_for(standard_version_all) == standard_version_all
+        assert iati.version._specific_version_for(standard_version_all) == standard_version_all
 
     @pytest.mark.parametrize('integer_version, expected_decimal', [
         ('1', iati.Version('1.05')),
@@ -503,14 +503,14 @@ class TestVersionRounding(object):
     ])
     def test_integer_version_conversion_valid(self, integer_version, expected_decimal):
         """Check that valid Integer Versions return the last Decimal in the Integer."""
-        assert iati.versions._specific_version_for(integer_version) == expected_decimal
+        assert iati.version._specific_version_for(integer_version) == expected_decimal
 
     def test_version_conversion_invalid(self, std_version_invalid):
         """Check that invalid versions cause a ValueError."""
         with pytest.raises(ValueError):
-            iati.versions._specific_version_for(std_version_invalid)
+            iati.version._specific_version_for(std_version_invalid)
 
     def test_version_conversion_None(self):
         """Check that None cause a ValueError."""
         with pytest.raises(ValueError):
-            iati.versions._specific_version_for(None)
+            iati.version._specific_version_for(None)

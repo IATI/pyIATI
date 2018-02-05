@@ -5,7 +5,7 @@ import semantic_version
 # try-except to prevent errors caused by `from .versions import Version` in `__init__.py`
 try:
     import iati
-    iati.Version
+    iati.Version  # pylint: disable=pointless-statement
     import iati.constants
 except AttributeError:
     pass
@@ -222,7 +222,7 @@ def convert_to_decimal(input_func):
 
     """
     def wrapper(*args, **kwargs):
-        """A wrapper that converts input version numbers to a standardised format Decimal Version."""
+        """Act as a wrapper to convert input version numbers to a standardised format Decimal Version."""
         version = _specific_version_for(args[0])
 
         return input_func(version, *args[1:], **kwargs)
@@ -284,14 +284,15 @@ def known_version(input_func):
 
     """
     def wrapper(*args, **kwargs):
-        """A wrapper that ensures a version number is a Decimal that exists.
+        """Act as a wrapper to ensure a version number is a Decimal that exists.
 
         Raises:
             ValueError: If the input version is not a known Decimal Version.
+
         """
         version = args[0]
 
-        if not version in iati.constants.STANDARD_VERSIONS:
+        if version not in iati.constants.STANDARD_VERSIONS:
             raise ValueError('Version {0} is not a valid version of the IATI Standard.'.format(version))
 
         return input_func(*args, **kwargs)
@@ -315,19 +316,21 @@ def fully_supported_version(input_func):
 
     """
     def wrapper(*args, **kwargs):
-        """A wrapper that ensures a version number is a Decimal that is fully supported by pyIATI.
+        """Act as a wrapper to ensure a version number is a Decimal that is fully supported by pyIATI.
 
         Raises:
             ValueError: If the input version is not a Decimal Version that pyIATI fully supports.
+
         """
         version = args[0]
 
-        if not version in iati.constants.STANDARD_VERSIONS_SUPPORTED:
+        if version not in iati.constants.STANDARD_VERSIONS_SUPPORTED:
             raise ValueError('Version {0} is not a valid version of the IATI Standard.'.format(version))
 
         return input_func(*args, **kwargs)
 
     return wrapper
+
 
 def standardise_decimals(input_func):
     """Decorate function by converting an input version into an iati.Version if a Decimal value is specified.
@@ -340,13 +343,7 @@ def standardise_decimals(input_func):
 
     """
     def wrapper(*args, **kwargs):
-        """A wrapper that ensures a version number is an iati.Version if a Decimal version is specified.
-
-        Raises:
-            TypeError: If an attempt to pass something that is not a string or Decimal is made.
-            ValueError: If a provided value is not a permitted version number.
-
-        """
+        """Act as a wrapper to ensure a version number is an iati.Version if a Decimal version is specified."""
         try:
             version = iati.Version(args[0])
         except (TypeError, ValueError):
@@ -355,4 +352,3 @@ def standardise_decimals(input_func):
         return input_func(version, *args[1:], **kwargs)
 
     return wrapper
-

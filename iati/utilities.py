@@ -17,7 +17,7 @@ from lxml import etree
 # try-except to prevent errors caused by `from .versions import Version` in `__init__.py`
 try:
     import iati
-    iati.Version
+    iati.Version  # pylint: disable=pointless-statement
     import iati.constants
 except AttributeError:
     pass
