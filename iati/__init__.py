@@ -1,5 +1,5 @@
 """A top-level namespace package for IATI."""
-from .versions import Version  # noqa: F401
+from .version import Version  # noqa: F401
 from .codelists import Code, Codelist  # noqa: F401
 from .data import Dataset  # noqa: F401
 from .rulesets import Rule, Ruleset  # noqa: F401
