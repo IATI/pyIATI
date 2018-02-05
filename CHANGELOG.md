@@ -53,6 +53,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Defaults] Test and document `ValueError`s that can be raised by functions in `iati.default`. [#241]
 
+- [Documentation] Minor fixes to README. [#266, #267]
+
 - [Rulesets] `name` attribute on a Rule changed to read-only property. [#251]
 - [Rulesets] Equal Rulesets are now deemed to be equal. [#249]
 
