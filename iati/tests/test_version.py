@@ -194,6 +194,13 @@ class VersionNumberTestBase(object):
         """Return a single instantiated IATI Version Number."""
         return iati.Version('1.2.3')
 
+    @pytest.fixture(params=[
+        version for version in IATIVER_VALID if not iati.Version(version) in iati.constants.STANDARD_VERSIONS
+    ])
+    def standard_version_unknown(self, request):
+        """Return a version of the IATI Standard that is not known by pyIATI to exist."""
+        return iati.Version(request.param)
+
 
 class TestVersionInit(VersionNumberTestBase):
     """A container for tests relating to initialisation of Standard Versions."""
@@ -577,10 +584,17 @@ class TestVersionSupportChecks(VersionNumberTestBase):
         with pytest.raises(ValueError):
             decorated_func_full_support(standard_version_partial_support)
 
-    def test_fully_supported_version_known(self, standard_version_all, decorated_func_known):
-        """Check that fully supported IATI Versions are detected as such."""
+    def test_known_version_known(self, standard_version_all, decorated_func_known):
+        """Check that known IATI Versions are detected as such."""
         assert iati.version._is_known(standard_version_all) == True
         assert decorated_func_known(standard_version_all) == standard_version_all
+
+    def test_known_version_not_known(self, standard_version_unknown, decorated_func_known):
+        """Check that unknown IATI Versions are detected as such."""
+        assert iati.version._is_known(standard_version_unknown) == False
+
+        with pytest.raises(ValueError):
+            decorated_func_known(standard_version_unknown)
 
     def test_supported_version_str(self, standard_version_mandatory, func_to_test):
         """Check that Version Numbers cause an error if provided as a string."""
