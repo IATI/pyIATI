@@ -527,3 +527,68 @@ class TestVersionRounding(object):
         """Check that None cause a ValueError."""
         with pytest.raises(ValueError):
             func_to_test(None)
+
+
+# pylint: disable=protected-access
+class TestVersionSupportChecks(VersionNumberTestBase):
+    """A container for tests relating to the detection of how much pyIATI supports particular versions."""
+
+    @iati.version.fully_supported_version
+    def return_fully_supported_version(version):
+        """Return the version parameter, but only if it's fully supported by pyIATI. Check undertaken with decorator."""
+        return version
+
+    @iati.version.known_version
+    def return_known_version(version):
+        """Return the version parameter, but only if it's known of by pyIATI. Check undertaken with decorator."""
+        return version
+
+    @pytest.fixture(params=[return_fully_supported_version])
+    def decorated_func_full_support(self, request):
+        """Return a decorated function that returns a version of the IATI Standard that is fully supported by pyIATI."""
+        return request.param
+
+    @pytest.fixture(params=[return_known_version])
+    def decorated_func_known(self, request):
+        """Return a decorated function that returns a version of the IATI Standard that pyIATI knows exists."""
+        return request.param
+
+    @pytest.fixture(params=[
+        return_fully_supported_version,
+        iati.version._is_fully_supported,
+        return_known_version,
+        iati.version._is_known
+    ])
+    def func_to_test(self, request):
+        """Return a function to check for TypeErrors being raised when provided values other than iati.Versions."""
+        return request.param
+
+    def test_fully_supported_version_fully_supported(self, standard_version_mandatory, decorated_func_full_support):
+        """Check that fully supported IATI Versions are detected as such."""
+        version = standard_version_mandatory[0]
+
+        assert iati.version._is_fully_supported(version) == True
+        assert decorated_func_full_support(version) == version
+
+    def test_fully_supported_version_partially_supported(self, standard_version_partial_support, decorated_func_full_support):
+        """Check that partially supported IATI Versions are detected as not fully supported."""
+        assert iati.version._is_fully_supported(standard_version_partial_support) == False
+
+        with pytest.raises(ValueError):
+            decorated_func_full_support(standard_version_partial_support)
+
+    def test_fully_supported_version_known(self, standard_version_all, decorated_func_known):
+        """Check that fully supported IATI Versions are detected as such."""
+        assert iati.version._is_known(standard_version_all) == True
+        assert decorated_func_known(standard_version_all) == standard_version_all
+
+    def test_supported_version_str(self, standard_version_mandatory, func_to_test):
+        """Check that Version Numbers cause an error if provided as a string."""
+        with pytest.raises(TypeError):
+            func_to_test(str(*standard_version_mandatory))
+
+    @pytest.mark.parametrize('not_a_version', iati.tests.utilities.generate_test_types([], True))
+    def test_supported_version_junk_value(self, not_a_version, func_to_test):
+        """Check that fully supported IATI Versions cause an error if a junk value is provided."""
+        with pytest.raises(TypeError):
+            func_to_test(not_a_version)

@@ -81,6 +81,12 @@ def standard_version_all(request):
     return request.param
 
 
+@pytest.fixture(params=[version for version in iati.constants.STANDARD_VERSIONS if version not in iati.constants.STANDARD_VERSIONS_SUPPORTED])
+def standard_version_partial_support(request):
+    """Return a version of the IATI Standard that is partially supported by pyIATI."""
+    return request.param
+
+
 @pytest.fixture(params=iati.constants.STANDARD_VERSIONS_SUPPORTED)
 def standard_version_optional(request):
     """Return a list that can be passed to a function using the argument list unpacking functionality.
