@@ -275,6 +275,27 @@ def _specific_version_for(version):
     raise ValueError
 
 
+def _standardise_decimal_version(version):
+    """Standardise the format of Decimal Versions.
+
+    If the specified version is a value that can act as a Decimal Version of the IATI Standard, convert it to an iati.Version.
+    Any other value will be returned as-is.
+
+    Args:
+        version (Any): A value that may be a known method to represent a Decimal Version of the IATI Standard.
+
+    Returns:
+        Any: An iati.Version if the input value represents a Decimal Version of the IATI Standard. The input version in all other cases.
+
+    """
+    try:
+        version = iati.Version(version)
+    except (TypeError, ValueError):
+        pass
+
+    return version
+
+
 def convert_to_decimal(input_func):
     """Decorate function by converting input version numbers to a standardised format Decimal Version.
 
@@ -384,10 +405,7 @@ def standardise_decimals(input_func):
     """
     def wrapper(*args, **kwargs):
         """Act as a wrapper to ensure a version number is an iati.Version if a Decimal version is specified."""
-        try:
-            version = iati.Version(args[0])
-        except (TypeError, ValueError):
-            return input_func(*args, **kwargs)
+        version = _standardise_decimal_version(args[0])
 
         return input_func(version, *args[1:], **kwargs)
 

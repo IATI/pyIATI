@@ -1,6 +1,8 @@
 """A module containing tests for the pyIATI representation of Standard metadata."""
+import copy
 from decimal import Decimal
 import itertools
+import math
 import operator
 import pytest
 import iati.tests.utilities
@@ -142,8 +144,8 @@ class VersionNumberTestBase(object):
     SEMVER_VALID = generate_semver_list(ONE_TO_LOTS, ZERO_TO_LOTS, ZERO_TO_LOTS)
     """list of str: A list of valid SemVer format version numbers."""
 
-    MIXED_VER_VALID = IATIVER_VALID + SEMVER_VALID
-    """list of str: A list of valid version numbers of any permitted format."""
+    MIXED_VER_VALID = IATIVER_VALID + SEMVER_VALID + DECIMAL_VALID
+    """list of (str / Decimal): A list of valid version numbers of any permitted format."""
 
     @pytest.fixture(params=DECIMAL_VALID)
     def decimal_version_valid(self, request):
@@ -185,7 +187,7 @@ class VersionNumberTestBase(object):
         return request.param
 
     @pytest.fixture
-    def version(self, mixed_ver_format_valid):
+    def instantiated_version(self, mixed_ver_format_valid):
         """Return an instantiated IATI Version Number."""
         return iati.Version(mixed_ver_format_valid)
 
@@ -391,16 +393,16 @@ class TestVersionModification(VersionNumberTestBase):
         """Return a tuple containing the name of a component within a Version, plus the index it appears when components are ordered from most to least major."""
         return request.param
 
-    def test_attribute_components_writable_valid_values(self, version, modifiable_attrib):
+    def test_attribute_components_writable_valid_values(self, instantiated_version, modifiable_attrib):
         """Test that the core Version Number Component attributes are writable."""
         attrib_name, idx = modifiable_attrib
-        components = split_semver(version.semver_str)
+        components = split_semver(instantiated_version.semver_str)
         components[idx] = components[idx] + self.CHANGE_AMOUNT
 
         version_new = iati.Version(semver(components[0], components[1], components[2]))
-        setattr(version, attrib_name, components[idx])
+        setattr(instantiated_version, attrib_name, components[idx])
 
-        assert version == version_new
+        assert instantiated_version == version_new
 
     @pytest.mark.parametrize("not_int", iati.tests.utilities.generate_test_types(['int'], True))
     def test_attribute_components_writable_invalid_values(self, single_version, modifiable_attrib, not_int):
@@ -474,25 +476,25 @@ class TestVersionImplementationDetailHiding(VersionNumberTestBase):
     Tests in this container check that attributes that are not desired have been hidden.
     """
 
-    def test_version_bump_patch(self, version):
+    def test_version_bump_patch(self, instantiated_version):
         """Test that the next Patch version cannot be obtained."""
         with pytest.raises(AttributeError):
-            version.next_patch()
+            instantiated_version.next_patch()
 
         with pytest.raises(AttributeError):
-            version.next_patch  # pylint: disable=pointless-statement
+            instantiated_version.next_patch  # pylint: disable=pointless-statement
 
-    def test_version_attrib_prerelease(self, version):
+    def test_version_attrib_prerelease(self, instantiated_version):
         """Test that the 'prerelease' attribute has been set to None on initialisation."""
-        assert version.prerelease is None
+        assert instantiated_version.prerelease is None
 
-    def test_version_attrib_build(self, version):
+    def test_version_attrib_build(self, instantiated_version):
         """Test that the 'build' attribute has been set to None on initialisation."""
-        assert version.build is None
+        assert instantiated_version.build is None
 
-    def test_version_attrib_partial(self, version):
+    def test_version_attrib_partial(self, instantiated_version):
         """Test that the 'partial' attribute has been set to True on initialisation."""
-        assert version.partial is True
+        assert instantiated_version.partial is True
 
 
 # pylint: disable=protected-access
@@ -606,3 +608,48 @@ class TestVersionSupportChecks(VersionNumberTestBase):
         """Check that fully supported IATI Versions cause an error if a junk value is provided."""
         with pytest.raises(TypeError):
             func_to_test(not_a_version)
+
+
+class TestVersionStandardisation(VersionNumberTestBase):
+    """A container for tests relating to standardising how versions are passed into functions."""
+
+    @iati.version.standardise_decimals
+    def return_standardised_decimal(version):
+        """Return the version parameter, but converted to an iati.Version if something that can be treated as a Decimal Version is provided."""
+        return version
+
+    @pytest.fixture(params=[
+        return_standardised_decimal,
+        iati.version._standardise_decimal_version
+    ])
+    def func_to_test(self, request):
+        """Return a function to check the return value of."""
+        return request.param
+
+    def test_decimal_versions_standardised(self, mixed_ver_format_valid, func_to_test):
+        """Check that values that represent Decimal Versions of the IATI Standard are converted to iati.Versions."""
+        assert func_to_test(mixed_ver_format_valid) == iati.Version(mixed_ver_format_valid)
+
+    @pytest.mark.parametrize('integer_val', range(-10, 10))
+    def test_integer_versions_not_standardised(self, integer_val, func_to_test):
+        """Check that values that represent Integer Versions of the IATI Standard are returned as-is when standardising Decimal Versions."""
+        assert func_to_test(integer_val) == integer_val
+        assert func_to_test(str(integer_val)) == str(integer_val)
+
+    @pytest.mark.parametrize('not_a_version', iati.tests.utilities.generate_test_types([], True))
+    def test_junk_values_not_standardised(self, not_a_version, func_to_test):
+        """Check that junk values are returned as-is when standardising Decimal Versions.
+
+        An `is` check is performed to check that the same object is returned.
+        An `==` check is performed to check that the value is not modified.
+
+        """
+        try:
+            original_value = copy.deepcopy(not_a_version)
+        except TypeError:
+            original_value = not_a_version
+
+        result = func_to_test(not_a_version)
+
+        assert result is not_a_version
+        assert (result == original_value) or isinstance(original_value, type(iter([]))) or math.isnan(original_value)
