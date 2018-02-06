@@ -199,103 +199,6 @@ class Version(semantic_version.Version):
     """
 
 
-def _is_fully_supported(version):
-    """Detect whether a Version is fully supported by pyIATI.
-
-    Args:
-        version (iati.Version): The Version to check support of.
-
-    Returns:
-        bool: True if the Version is fully supported. False if the Version is not fully supported.
-
-    Raises:
-        TypeError: If anything other than an iati.Version is provided.
-
-    """
-    if not isinstance(version, Version):
-        raise TypeError('The version must be provided as an iati.Version')
-
-    return version in iati.constants.STANDARD_VERSIONS_SUPPORTED
-
-
-def _is_known(version):
-    """Detect whether a Version is a version of the Standard that pyIATI knows to exist.
-
-    Args:
-        version (iati.Version): The Version to check support of.
-
-    Returns:
-        bool: True if the Version is known by pyIATI. False if the Version is not known.
-
-    Raises:
-        TypeError: If anything other than an iati.Version is provided.
-
-    """
-    if not isinstance(version, Version):
-        raise TypeError('The version must be provided as an iati.Version')
-
-    return version in iati.constants.STANDARD_VERSIONS
-
-
-def _specific_version_for(version):
-    """Convert a version number into the most appropriate Decimal Version.
-
-    * Decimal Versions will remain unchanged.
-    * Integer Versions will return the latest Decimal Version within the Integer. If the Integer is invalid, returns the first Decimal that would exist in the Integer.
-
-    Args:
-        version (str / Decimal / iati.Version): The version to obtain a specific version for.
-
-    Raises:
-        ValueError: When a specified version cannot be converted to a valid version of the IATI Standard.
-
-    Returns:
-        str: The Decimal Version of the Standard that the input version relates to.
-
-    """
-    # handle major versions
-    try:
-        if version in [True, False]:
-            raise TypeError
-        major_version = int(version)
-        if major_version in iati.constants.STANDARD_VERSIONS_MAJOR:
-            version = max(iati.utilities.versions_for_integer(major_version))
-        elif str(major_version) == version:  # specifying only a major component
-            version = Version(str(major_version) + '.0.0')
-    except (ValueError, TypeError, OverflowError):
-        pass
-
-    # convert from strings to Version()s
-    if isinstance(version, str):
-        version = Version(version)
-
-    if isinstance(version, Version):
-        return version
-
-    raise ValueError
-
-
-def _standardise_decimal_version(version):
-    """Standardise the format of Decimal Versions.
-
-    If the specified version is a value that can act as a Decimal Version of the IATI Standard, convert it to an iati.Version.
-    Any other value will be returned as-is.
-
-    Args:
-        version (Any): A value that may be a known method to represent a Decimal Version of the IATI Standard.
-
-    Returns:
-        Any: An iati.Version if the input value represents a Decimal Version of the IATI Standard. The input version in all other cases.
-
-    """
-    try:
-        version = iati.Version(version)
-    except (TypeError, ValueError):
-        pass
-
-    return version
-
-
 def convert_to_decimal(input_func):
     """Decorate function by converting input version numbers to a standardised format Decimal Version.
 
@@ -410,3 +313,97 @@ def standardise_decimals(input_func):
         return input_func(version, *args[1:], **kwargs)
 
     return wrapper
+
+
+def _is_fully_supported(version):
+    """Detect whether a Version is fully supported by pyIATI.
+
+    Args:
+        version (iati.Version): The Version to check support of.
+
+    Returns:
+        bool: True if the Version is fully supported. False if the Version is not fully supported.
+
+    Raises:
+        TypeError: If anything other than an iati.Version is provided.
+
+    """
+    if not isinstance(version, Version):
+        raise TypeError('The version must be provided as an iati.Version')
+
+    return version in iati.constants.STANDARD_VERSIONS_SUPPORTED
+
+
+def _is_known(version):
+    """Detect whether a Version is a version of the Standard that pyIATI knows to exist.
+
+    Args:
+        version (iati.Version): The Version to check support of.
+
+    Returns:
+        bool: True if the Version is known by pyIATI. False if the Version is not known.
+
+    Raises:
+        TypeError: If anything other than an iati.Version is provided.
+
+    """
+    if not isinstance(version, Version):
+        raise TypeError('The version must be provided as an iati.Version')
+
+    return version in iati.constants.STANDARD_VERSIONS
+
+
+@standardise_decimals
+def _specific_version_for(version):
+    """Convert a version number into the most appropriate Decimal Version.
+
+    * Decimal Versions will remain unchanged.
+    * Integer Versions will return the latest Decimal Version within the Integer. If the Integer is invalid, returns the first Decimal that would exist in the Integer.
+
+    Args:
+        version (str / Decimal / iati.Version): The version to obtain a specific version for.
+
+    Raises:
+        ValueError: When a specified version cannot be converted to a valid version of the IATI Standard.
+
+    Returns:
+        str: The Decimal Version of the Standard that the input version relates to.
+
+    """
+    # handle major versions
+    try:
+        if version in [True, False]:
+            raise TypeError
+        major_version = int(version)
+        if major_version in iati.constants.STANDARD_VERSIONS_MAJOR:
+            version = max(iati.utilities.versions_for_integer(major_version))
+        elif str(major_version) == version:  # specifying only a major component
+            version = Version(str(major_version) + '.0.0')
+    except (ValueError, TypeError, OverflowError):
+        pass
+
+    if isinstance(version, Version):
+        return version
+
+    raise ValueError
+
+
+def _standardise_decimal_version(version):
+    """Standardise the format of Decimal Versions.
+
+    If the specified version is a value that can act as a Decimal Version of the IATI Standard, convert it to an iati.Version.
+    Any other value will be returned as-is.
+
+    Args:
+        version (Any): A value that may be a known method to represent a Decimal Version of the IATI Standard.
+
+    Returns:
+        Any: An iati.Version if the input value represents a Decimal Version of the IATI Standard. The input version in all other cases.
+
+    """
+    try:
+        version = iati.Version(version)
+    except (TypeError, ValueError):
+        pass
+
+    return version

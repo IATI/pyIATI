@@ -186,6 +186,13 @@ class VersionNumberTestBase(object):
         """Return a valid version number in a valid format."""
         return request.param
 
+    @pytest.fixture(params=[
+        version for version in MIXED_VER_VALID if iati.Version(version) in iati.constants.STANDARD_VERSIONS
+    ])
+    def uninstantiated_known_version(self, request):
+        """Return a value that can be used to instantiate a known IATI Standard version."""
+        return request.param
+
     @pytest.fixture
     def instantiated_version(self, mixed_ver_format_valid):
         """Return an instantiated IATI Version Number."""
@@ -498,7 +505,7 @@ class TestVersionImplementationDetailHiding(VersionNumberTestBase):
 
 
 # pylint: disable=protected-access
-class TestVersionRounding(object):
+class TestVersionRounding(VersionNumberTestBase):
     """A container for tests relating to rounding versions to various levels of specificity."""
 
     @iati.version.convert_to_decimal
@@ -514,9 +521,13 @@ class TestVersionRounding(object):
         """Return a function to check the return value of."""
         return request.param
 
-    def test_decimal_version_conversion_valid(self, standard_version_all, func_to_test):
-        """Check that Decimal Versions remain unchanged."""
+    def test_decimal_version_conversion_valid_version(self, standard_version_all, func_to_test):
+        """Check that known Decimal Versions remain unchanged."""
         assert func_to_test(standard_version_all) == standard_version_all
+
+    def test_decimal_version_conversion_valid_decimal_representation(self, uninstantiated_known_version, func_to_test):
+        """Check that values that can be used to create actual Decimal Versions lead to an iati.Version representing that Decimal Version being returned."""
+        assert func_to_test(uninstantiated_known_version) == iati.Version(uninstantiated_known_version)
 
     @pytest.mark.parametrize('integer_version, expected_decimal', [
         ('1', iati.Version('1.05')),
