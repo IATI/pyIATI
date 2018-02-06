@@ -222,7 +222,13 @@ def convert_to_decimal(input_func):
 
     """
     def wrapper(*args, **kwargs):
-        """Act as a wrapper to convert input version numbers to a standardised format Decimal Version."""
+        """Act as a wrapper to convert input version numbers to a standardised format Decimal Version.
+
+        Raises:
+            TypeError: When a version is of a type that cannot be converted to a version of the IATI Standard.
+            ValueError: When a specified version of the correct type cannot be converted to a version of the IATI Standard.
+
+        """
         version = _specific_version_for(args[0])
 
         return input_func(version, *args[1:], **kwargs)
@@ -364,7 +370,8 @@ def _specific_version_for(version):
         version (str / Decimal / iati.Version): The version to obtain a specific version for.
 
     Raises:
-        ValueError: When a specified version cannot be converted to a valid version of the IATI Standard.
+        TypeError: When a version is of a type that cannot be converted to a version of the IATI Standard.
+        ValueError: When a specified version of the correct type cannot be converted to a version of the IATI Standard.
 
     Returns:
         str: The Decimal Version of the Standard that the input version relates to.
@@ -372,7 +379,7 @@ def _specific_version_for(version):
     """
     # handle major versions
     try:
-        if version in [True, False]:
+        if version in [True, False] or isinstance(version, Decimal):
             raise TypeError
         major_version = int(version)
         if major_version in iati.constants.STANDARD_VERSIONS_MAJOR:
@@ -384,6 +391,10 @@ def _specific_version_for(version):
 
     if isinstance(version, Version):
         return version
+    elif isinstance(version, Decimal):
+        raise ValueError
+    elif version is None:
+        raise ValueError
 
     raise ValueError
 

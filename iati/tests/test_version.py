@@ -538,10 +538,21 @@ class TestVersionRounding(VersionNumberTestBase):
         """Check that valid Integer Versions return the last Decimal in the Integer."""
         assert func_to_test(integer_version) == expected_decimal
 
-    def test_version_conversion_invalid(self, std_version_invalid, func_to_test):
-        """Check that invalid versions cause a ValueError."""
+    def test_version_conversion_invalid_decimal(self, decimal_version_invalid, func_to_test):
+        """Check that Decimals which do not represent Standard Versions cause ValueErrors."""
         with pytest.raises(ValueError):
-            func_to_test(std_version_invalid)
+            func_to_test(decimal_version_invalid)
+
+    @pytest.mark.parametrize('invalid_type', iati.tests.utilities.generate_test_types(['str', 'none'], True))
+    def test_version_conversion_invalid_numeric(self, invalid_type, func_to_test):
+        """Check that values of types which do not represent Standard Versions cause TypeErrors.
+
+        Todo:
+            Change to expect a TypeError.
+
+        """
+        with pytest.raises(ValueError):
+            func_to_test(invalid_type)
 
     def test_version_conversion_None(self, func_to_test):
         """Check that None cause a ValueError."""
@@ -663,4 +674,11 @@ class TestVersionStandardisation(VersionNumberTestBase):
         result = func_to_test(not_a_version)
 
         assert result is not_a_version
-        assert (result == original_value) or isinstance(original_value, type(iter([]))) or math.isnan(original_value)
+        try:
+            assert (result == original_value) or isinstance(original_value, type(iter([]))) or math.isnan(original_value)
+        except TypeError:
+            # python 2/3 compatibility - identical context managers are not deemed to be equal at Python 2
+            import decimal
+            import sys
+            if not (sys.version_info[0] == 2 and isinstance(original_value, type(decimal.localcontext()))):
+                assert False
