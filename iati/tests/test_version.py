@@ -492,25 +492,38 @@ class TestVersionImplementationDetailHiding(VersionNumberTestBase):
 class TestVersionRounding(object):
     """A container for tests relating to rounding versions to various levels of specificity."""
 
-    def test_decimal_version_conversion_valid(self, standard_version_all):
+    @iati.version.convert_to_decimal
+    def return_decimalised_version(version):
+        """Return the version parameter, converted to the latest Decimal through use of a decorator."""
+        return version
+
+    @pytest.fixture(params=[
+        return_decimalised_version,
+        iati.version._specific_version_for
+    ])
+    def func_to_test(self, request):
+        """Return a function to check the return value of."""
+        return request.param
+
+    def test_decimal_version_conversion_valid(self, standard_version_all, func_to_test):
         """Check that Decimal Versions remain unchanged."""
-        assert iati.version._specific_version_for(standard_version_all) == standard_version_all
+        assert func_to_test(standard_version_all) == standard_version_all
 
     @pytest.mark.parametrize('integer_version, expected_decimal', [
         ('1', iati.Version('1.05')),
         ('2', iati.constants.STANDARD_VERSION_LATEST),
         ('3', iati.Version('3.0.0'))
     ])
-    def test_integer_version_conversion_valid(self, integer_version, expected_decimal):
+    def test_integer_version_conversion_valid(self, integer_version, expected_decimal, func_to_test):
         """Check that valid Integer Versions return the last Decimal in the Integer."""
-        assert iati.version._specific_version_for(integer_version) == expected_decimal
+        assert func_to_test(integer_version) == expected_decimal
 
-    def test_version_conversion_invalid(self, std_version_invalid):
+    def test_version_conversion_invalid(self, std_version_invalid, func_to_test):
         """Check that invalid versions cause a ValueError."""
         with pytest.raises(ValueError):
-            iati.version._specific_version_for(std_version_invalid)
+            func_to_test(std_version_invalid)
 
-    def test_version_conversion_None(self):
+    def test_version_conversion_None(self, func_to_test):
         """Check that None cause a ValueError."""
         with pytest.raises(ValueError):
-            iati.version._specific_version_for(None)
+            func_to_test(None)
