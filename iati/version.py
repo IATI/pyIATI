@@ -236,7 +236,7 @@ def convert_to_decimal(input_func):
     return wrapper
 
 
-def fully_supported_version(input_func):
+def allow_fully_supported_version(input_func):
     """Decorate function by ensuring versions are fully supported by pyIATI.
 
     In terms of value:
@@ -269,7 +269,7 @@ def fully_supported_version(input_func):
     return wrapper
 
 
-def known_version(input_func):
+def allow_known_version(input_func):
     """Decorate function by ensuring versions are Decimal Versions of IATI that pyIATI knows exists.
 
     In terms of value:
@@ -303,7 +303,7 @@ def known_version(input_func):
 
 
 def standardise_decimals(input_func):
-    """Decorate function by converting an input version into an iati.Version if a Decimal value is specified.
+    """Decorate function by converting an input version into an iati.Version if a value is specified that is a permitted way to represent a Decimal Version.
 
     Args:
         input_func (function): The function to decorate. Takes the `version` argument as its first argument.

@@ -564,12 +564,12 @@ class TestVersionRounding(VersionNumberTestBase):
 class TestVersionSupportChecks(VersionNumberTestBase):
     """A container for tests relating to the detection of how much pyIATI supports particular versions."""
 
-    @iati.version.fully_supported_version
+    @iati.version.allow_fully_supported_version
     def return_fully_supported_version(version):
         """Return the version parameter, but only if it's fully supported by pyIATI. Check undertaken with decorator."""
         return version
 
-    @iati.version.known_version
+    @iati.version.allow_known_version
     def return_known_version(version):
         """Return the version parameter, but only if it's known of by pyIATI. Check undertaken with decorator."""
         return version
