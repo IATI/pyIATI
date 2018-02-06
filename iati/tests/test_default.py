@@ -28,7 +28,7 @@ class TestDefault(object):
 
     def test_major_version_matches_minor(self, standard_version_major, default_data_func_version_param):
         """Check that specifying a major version returns the same info as the corresponding decimal."""
-        minor_version = iati.version._specific_version_for(standard_version_major)  # pylint: disable=protected-access
+        minor_version = iati.version._decimalise_integer(standard_version_major)  # pylint: disable=protected-access
 
         assert default_data_func_version_param(standard_version_major) == default_data_func_version_param(minor_version)
 

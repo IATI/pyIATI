@@ -505,62 +505,6 @@ class TestVersionImplementationDetailHiding(VersionNumberTestBase):
 
 
 # pylint: disable=protected-access
-class TestVersionRounding(VersionNumberTestBase):
-    """A container for tests relating to rounding versions to various levels of specificity."""
-
-    @iati.version.convert_to_decimal
-    def return_decimalised_version(version):
-        """Return the version parameter, converted to the latest Decimal through use of a decorator."""
-        return version
-
-    @pytest.fixture(params=[
-        return_decimalised_version,
-        iati.version._specific_version_for
-    ])
-    def func_to_test(self, request):
-        """Return a function to check the return value of."""
-        return request.param
-
-    def test_decimal_version_conversion_valid_version(self, standard_version_all, func_to_test):
-        """Check that known Decimal Versions remain unchanged."""
-        assert func_to_test(standard_version_all) == standard_version_all
-
-    def test_decimal_version_conversion_valid_decimal_representation(self, uninstantiated_known_version, func_to_test):
-        """Check that values that can be used to create actual Decimal Versions lead to an iati.Version representing that Decimal Version being returned."""
-        assert func_to_test(uninstantiated_known_version) == iati.Version(uninstantiated_known_version)
-
-    @pytest.mark.parametrize('integer_version, expected_decimal', [
-        ('1', iati.Version('1.05')),
-        ('2', iati.constants.STANDARD_VERSION_LATEST),
-        ('3', iati.Version('3.0.0'))
-    ])
-    def test_integer_version_conversion_valid(self, integer_version, expected_decimal, func_to_test):
-        """Check that valid Integer Versions return the last Decimal in the Integer."""
-        assert func_to_test(integer_version) == expected_decimal
-
-    def test_version_conversion_invalid_decimal(self, decimal_version_invalid, func_to_test):
-        """Check that Decimals which do not represent Standard Versions cause ValueErrors."""
-        with pytest.raises(ValueError):
-            func_to_test(decimal_version_invalid)
-
-    @pytest.mark.parametrize('invalid_type', iati.tests.utilities.generate_test_types(['str', 'none'], True))
-    def test_version_conversion_invalid_numeric(self, invalid_type, func_to_test):
-        """Check that values of types which do not represent Standard Versions cause TypeErrors.
-
-        Todo:
-            Change to expect a TypeError.
-
-        """
-        with pytest.raises(ValueError):
-            func_to_test(invalid_type)
-
-    def test_version_conversion_None(self, func_to_test):
-        """Check that None cause a ValueError."""
-        with pytest.raises(ValueError):
-            func_to_test(None)
-
-
-# pylint: disable=protected-access
 class TestVersionSupportChecks(VersionNumberTestBase):
     """A container for tests relating to the detection of how much pyIATI supports particular versions."""
 
@@ -625,7 +569,7 @@ class TestVersionSupportChecks(VersionNumberTestBase):
         with pytest.raises(TypeError):
             func_to_test(str(*standard_version_mandatory))
 
-    @pytest.mark.parametrize('not_a_version', iati.tests.utilities.generate_test_types([], True))
+    @pytest.mark.parametrize('not_a_version', iati.tests.utilities.generate_test_types(['str'], True))
     def test_supported_version_junk_value(self, not_a_version, func_to_test):
         """Check that fully supported IATI Versions cause an error if a junk value is provided."""
         with pytest.raises(TypeError):
@@ -635,31 +579,72 @@ class TestVersionSupportChecks(VersionNumberTestBase):
 class TestVersionStandardisation(VersionNumberTestBase):
     """A container for tests relating to standardising how versions are passed into functions."""
 
+    @iati.version.decimalise_integer
+    def return_decimalised_integer(version):
+        """Return the version parameter, but converted to an iati.Version representing the newest Decimal Version in the given Integer Version if something that can be treated as an Integer Version is provided."""
+        return version
+
     @iati.version.standardise_decimals
     def return_standardised_decimal(version):
         """Return the version parameter, but converted to an iati.Version if something that can be treated as a Decimal Version is provided."""
         return version
 
-    @pytest.fixture(params=[
-        return_standardised_decimal,
-        iati.version._standardise_decimal_version
-    ])
-    def func_to_test(self, request):
+    INTEGER_TO_DECIMAL_FUNCTIONS = [
+        return_decimalised_integer,
+        iati.version._decimalise_integer
+    ]
+
+    @pytest.fixture(params=INTEGER_TO_DECIMAL_FUNCTIONS)
+    def integer_decimalisation_func(self, request):
         """Return a function to check the return value of."""
         return request.param
 
-    def test_decimal_versions_standardised(self, mixed_ver_format_valid, func_to_test):
+    DECIMAL_S13N_FUNCTIONS = [
+        return_standardised_decimal,
+        iati.version._standardise_decimal_version
+    ]
+
+    @pytest.fixture(params=DECIMAL_S13N_FUNCTIONS)
+    def decimal_standardisation_func(self, request):
+        """Return a function to check the return value of."""
+        return request.param
+
+    @pytest.fixture(params=INTEGER_TO_DECIMAL_FUNCTIONS + DECIMAL_S13N_FUNCTIONS)
+    def junk_ignoring_func(self, request):
+        """Return a function that does not modify junk values before returning them."""
+        return request.param
+
+    # decimal standardisation
+    def test_decimal_versions_standardised(self, mixed_ver_format_valid, decimal_standardisation_func):
         """Check that values that represent Decimal Versions of the IATI Standard are converted to iati.Versions."""
-        assert func_to_test(mixed_ver_format_valid) == iati.Version(mixed_ver_format_valid)
+        assert decimal_standardisation_func(mixed_ver_format_valid) == iati.Version(mixed_ver_format_valid)
 
     @pytest.mark.parametrize('integer_val', range(-10, 10))
-    def test_integer_versions_not_standardised(self, integer_val, func_to_test):
+    def test_integer_versions_not_standardised(self, integer_val, decimal_standardisation_func):
         """Check that values that represent Integer Versions of the IATI Standard are returned as-is when standardising Decimal Versions."""
-        assert func_to_test(integer_val) == integer_val
-        assert func_to_test(str(integer_val)) == str(integer_val)
+        assert decimal_standardisation_func(integer_val) == integer_val
+        assert decimal_standardisation_func(str(integer_val)) == str(integer_val)
+
+    # integer decimalisation
+    def test_decimal_version_conversion_valid_version(self, standard_version_all, integer_decimalisation_func):
+        """Check that known Decimal Versions remain unchanged."""
+        assert integer_decimalisation_func(standard_version_all) == standard_version_all
+
+    def test_decimal_version_conversion_valid_decimal_representation(self, uninstantiated_known_version, integer_decimalisation_func):
+        """Check that values that can be used to create actual Decimal Versions are left alone."""
+        assert integer_decimalisation_func(uninstantiated_known_version) == uninstantiated_known_version
+
+    @pytest.mark.parametrize('integer_version, expected_decimal', [
+        ('1', iati.Version('1.05')),
+        ('2', iati.constants.STANDARD_VERSION_LATEST),
+        ('3', iati.Version('3.0.0'))
+    ])
+    def test_integer_version_conversion_valid(self, integer_version, expected_decimal, integer_decimalisation_func):
+        """Check that valid Integer Versions return the last Decimal in the Integer."""
+        assert integer_decimalisation_func(integer_version) == expected_decimal
 
     @pytest.mark.parametrize('not_a_version', iati.tests.utilities.generate_test_types([], True))
-    def test_junk_values_not_standardised(self, not_a_version, func_to_test):
+    def test_junk_values_not_modified(self, not_a_version, junk_ignoring_func):
         """Check that junk values are returned as-is when standardising Decimal Versions.
 
         An `is` check is performed to check that the same object is returned.
@@ -671,7 +656,7 @@ class TestVersionStandardisation(VersionNumberTestBase):
         except TypeError:
             original_value = not_a_version
 
-        result = func_to_test(not_a_version)
+        result = junk_ignoring_func(not_a_version)
 
         assert result is not_a_version
         try:
