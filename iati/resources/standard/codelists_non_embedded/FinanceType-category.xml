@@ -12,13 +12,14 @@
         <codelist-item>
             <code>100</code>
             <name>
-                <narrative>GRANT</narrative>
+                <narrative>GRANTS</narrative>
+                <narrative xml:lang="fr">DONS</narrative>
             </name>
             <description>
                 <narrative>Transfers in cash or in kind for which no legal debt is incurred by the recipient.</narrative>
             </description>
         </codelist-item>
-        <codelist-item>
+        <codelist-item status="withdrawn">
             <code>200</code>
             <name>
                 <narrative>INTEREST SUBSIDY</narrative>
@@ -27,7 +28,7 @@
                 <narrative>Subsidies to soften the terms of private export credits, or loans or credits by the banking sector.</narrative>
             </description>
         </codelist-item>
-        <codelist-item>
+        <codelist-item status="withdrawn">
             <code>300</code>
             <name>
                 <narrative>CAPITAL SUBSCRIPTION</narrative>
@@ -36,7 +37,7 @@
                 <narrative>Payments to multilateral agencies in the form of notes and similar instruments, unconditionally cashable at sight by the recipient institutions.</narrative>
             </description>
         </codelist-item>
-        <codelist-item>
+        <codelist-item status="withdrawn">
             <code>400</code>
             <name>
                 <narrative>LOAN</narrative>
@@ -46,6 +47,26 @@
             </description>
         </codelist-item>
         <codelist-item>
+            <code>420</code>
+            <name>
+                <narrative>DEBT INSTRUMENTS</narrative>
+                <narrative xml:lang="fr">INSTRUMENTS DE DETTE</narrative>
+            </name>
+            <description>
+                <narrative/>
+            </description>
+        </codelist-item>
+        <codelist-item>
+            <code>430</code>
+            <name>
+                <narrative>MEZZANINE FINANCE INSTRUMENTS</narrative>
+                <narrative xml:lang="fr">INSTRUMENTS FINANCIERS EN MEZZANINE</narrative>
+            </name>
+            <description>
+                <narrative/>
+            </description>
+        </codelist-item>
+        <codelist-item status="withdrawn">
             <code>450</code>
             <name>
                 <narrative>EXPORT CREDIT</narrative>
@@ -57,7 +78,8 @@
         <codelist-item>
             <code>500</code>
             <name>
-                <narrative>EQUITY</narrative>
+                <narrative>EQUITY AND SHARES IN COLLECTIVE INVESTMENT VEHICLES</narrative>
+                <narrative xml:lang="fr">ACTIONS ET PARTS DANS DES VEHICULES COLLECTIFS D'INVESTISSEMENT</narrative>
             </name>
             <description>
                 <narrative>Investment in a country on the DAC List of ODA Recipients that is not made to acquire a lasting interest in an enterprise.</narrative>
@@ -67,12 +89,13 @@
             <code>600</code>
             <name>
                 <narrative>DEBT RELIEF</narrative>
+                <narrative xml:lang="fr">DEBT RELIEF</narrative>
             </name>
             <description>
                 <narrative>Debt cancellations, debt conversions, debt rescheduling within or outside the framework of the Paris Club.</narrative>
             </description>
         </codelist-item>
-        <codelist-item>
+        <codelist-item status="withdrawn">
             <code>700</code>
             <name>
                 <narrative>INVESTMENT</narrative>
@@ -81,7 +104,7 @@
                 <narrative>Investment made by a private entity resident in a reporting country to acquire or add to a lasting interest(1) in an enterprise in a country on the DAC List of ODA Recipients.</narrative>
             </description>
         </codelist-item>
-        <codelist-item>
+        <codelist-item status="withdrawn">
             <code>800</code>
             <name>
                 <narrative>BONDS</narrative>
@@ -90,10 +113,20 @@
                 <narrative>Acquisition of bonds issued by developing countries.</narrative>
             </description>
         </codelist-item>
-        <codelist-item>
+        <codelist-item status="withdrawn">
             <code>900</code>
             <name>
                 <narrative>OTHER SECURITIES/CLAIMS</narrative>
+            </name>
+            <description>
+                <narrative/>
+            </description>
+        </codelist-item>
+        <codelist-item>
+            <code>1000</code>
+            <name>
+                <narrative>GUARANTEES AND OTHER UNFUNDED CONTINGENT LIABILITIES</narrative>
+                <narrative xml:lang="fr">GUARANTEES AND OTHER UNFUNDED CONTINGENT LIABILITIES</narrative>
             </name>
             <description>
                 <narrative/>

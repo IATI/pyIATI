@@ -5,27 +5,27 @@
         </name>
         <description>
             <narrative>
-        Organisation registry agencies and their code. These can be used as the
-        prefix for an organisation identifier.
-
-        For general guidance about constructing Organisation Identifiers, please see http://iatistandard.org/organisation-identifiers/
-
-        In this list, description contains IATI specific usage notes, rather
-        than a general description of the regsitration agency.
-
-        The categories on this list are ISO Country codes, except for XM which
-        is used to indicate Multilateral/International Agency, and XI which is 
-        used to indicate International Organisations. This follows ISO's 
-        convention of reserving codes starting with X for "private use".
-
-        This list is maintained by the IATI Secretariat, but is a "NonEmbedded"
-        codelist - which means changes and additions may be made at short
-        notice, outside of published decimal and integer upgrade schedules.  If
-        a Registation Agency that you wish to use is not on this list, please
-        contact support@iatistandard.org
+               
+        Organization identifier lists (formerly Organization Registration Agency).
+        The values from this codelist are used to identify the particular list that
+        an organization identifier was drawn from. The codelist provides a list of 
+        known identifier lists, including national company registers, NGO lists and
+        international and multilateral lists - along with links to sources where 
+        specific organization numbers and identifiers can be looked up.
         
-        This list was previously located at:
-        https://docs.google.com/spreadsheet/ccc?key=0AnWngmdQt3stdFppMWdkcXJqVTRWTk9menR1N0FXNGc&amp;usp=drive_web#gid=0
+        As of 17th of July 2017 the Organisation Registration Agency codelist (now organisation
+        identifier list) is maintained centrally by org-id.guide. org-id.guide provides
+        a register of organisation identifier lists that allows open data
+        publishers to locate organisation identifiers. IATI replicates the
+        list directly from org-id.guide with the exception of the XI-IATI codelist.
+        IATI still maintains the XI-IATI organisation identifier list, which is used 
+        when there are no other available lists that might be used to provide
+        a stable organisation identifier. 
+                
+        If an organisation identifier list that you wish to use cannot be found in org-id.guide,
+        you can submit a direct request on Github
+        (https://github.com/org-id/register/issues) or email contact@org-id.guide
+
     </narrative>
         </description>
     </metadata>
@@ -51,6 +51,17 @@
             </description>
             <category>AF</category>
             <url>http://moec.gov.af/en</url>
+        </codelist-item>
+        <codelist-item public-database="1">
+            <code>AR-CENOC</code>
+            <name>
+                <narrative>The National Centre of Community Organisations (CENOC)</narrative>
+            </name>
+            <description>
+                <narrative>The National Centre of Community Organisations oversees and manages the accreditation and categorization of Civil Society Organizations in Argentian.</narrative>
+            </description>
+            <category>AF</category>
+            <url>http://www.cenoc.gob.ar/</url>
         </codelist-item>
         <codelist-item public-database="1">
             <code>AU-ABN</code>
@@ -108,6 +119,17 @@
             <url>http://www.juridat.be/tribunal_commerce/bruxelles/index.htm</url>
         </codelist-item>
         <codelist-item public-database="1">
+            <code>BW-CIPA</code>
+            <name>
+                <narrative>The Companies and Intellectual Property Authority (CIPA)</narrative>
+            </name>
+            <description>
+                <narrative>The Companies and Intellectual Property Authority (CIPA) of the Ministry of Trade and Industry in Botswana is mandated to register businesses and protect intellectual property rights through the administration of four pieces of legislation.</narrative>
+            </description>
+            <category>BW</category>
+            <url>http://www.mtinamesearch.gov.bw/search</url>
+        </codelist-item>
+        <codelist-item public-database="1">
             <code>CA-CRA_ACR</code>
             <name>
                 <narrative>Canadian Revenue Agency / Agence du revenu du Canada</narrative>
@@ -117,6 +139,17 @@
             </description>
             <category>CA</category>
             <url>http://www.cra-arc.gc.ca/</url>
+        </codelist-item>
+        <codelist-item public-database="1">
+            <code>CH-FDJP</code>
+            <name>
+                <narrative>Commercial Registry, Federal Office of Justice, Switzerland</narrative>
+            </name>
+            <description>
+                <narrative>The Swiss Commercial Register is administered by the cantons under the supervision of the Swiss Confederation. All the commercial register entries made by the cantonal register offices are published in the Swiss Official Gazette of Commerce (SOGC) after having been checked and approved by the Federal Commercial Registry Office.</narrative>
+            </description>
+            <category>CH</category>
+            <url>http://www.zefix.ch/</url>
         </codelist-item>
         <codelist-item public-database="1">
             <code>CN-SAIC</code>
@@ -173,6 +206,17 @@
             <category>EE</category>
             <url>http://www.rik.ee/en/e-business-register</url>
         </codelist-item>
+        <codelist-item public-database="0">
+            <code>EG-MOSS</code>
+            <name>
+                <narrative>Ministry of Social Solidarity and Justice</narrative>
+            </name>
+            <description>
+                <narrative>The Ministry of Social Solidarity and Justice is the main registration body for associations and foundations in Egypt.</narrative>
+            </description>
+            <category>EG</category>
+            <url>http://www.moss.gov.eg/misa/ar-eg/</url>
+        </codelist-item>
         <codelist-item public-database="1">
             <code>ES-DIR3</code>
             <name>
@@ -195,6 +239,17 @@
             </description>
             <category>ET</category>
             <url>http://www.mfa.gov.et/</url>
+        </codelist-item>
+        <codelist-item public-database="0">
+            <code>ET-MOT</code>
+            <name>
+                <narrative>Ministry of Trade (MOT)</narrative>
+            </name>
+            <description>
+                <narrative>The Ministry of Trade is the official ministry to register a business in Ethiopia.</narrative>
+            </description>
+            <category>ET</category>
+            <url>http://www.mot.gov.et</url>
         </codelist-item>
         <codelist-item public-database="1">
             <code>FI-PRO</code>
@@ -261,6 +316,17 @@
             </description>
             <category>GB</category>
             <url>http://www.education.gov.uk/edubase/home.xhtml</url>
+        </codelist-item>
+        <codelist-item public-database="1">
+            <code>GB-GOR</code>
+            <name>
+                <narrative>UK Government Organisation Register</narrative>
+            </name>
+            <description>
+                <narrative>The Government Organisation Register is an authoritative source of government organisations who have a presence on GOV.UK. This register includes ministerial departments and executive agencies but does not include classifications (e.g. arms length bodies) or any form of organisational hierarchy.</narrative>
+            </description>
+            <category>GB</category>
+            <url>http://government-organisation.alpha.openregister.org</url>
         </codelist-item>
         <codelist-item public-database="1">
             <code>GB-GOV</code>
@@ -349,6 +415,17 @@
             </description>
             <category>GH</category>
             <url/>
+        </codelist-item>
+        <codelist-item public-database="1">
+            <code>HK-CR</code>
+            <name>
+                <narrative>Hong Kong Companies Registry</narrative>
+            </name>
+            <description>
+                <narrative>Hong Kong Companies Registry registers local and non-Hong Kong companies and statutory returns, de-registers defunct solvent companies and provides the public with services and facilities for inspecting and obtaining company information kept by the Registry.</narrative>
+            </description>
+            <category>HK</category>
+            <url>http://www.cr.gov.hk/en/home</url>
         </codelist-item>
         <codelist-item public-database="1">
             <code>ID-KDN</code>
@@ -450,6 +527,17 @@
             <url>http://www.mca.gov.in/</url>
         </codelist-item>
         <codelist-item public-database="1">
+            <code>IN-MHA</code>
+            <name>
+                <narrative>Ministry of Home Affairs, Government of India</narrative>
+            </name>
+            <description>
+                <narrative>Government of India Ministry of Home Affairs Foreigners Division provides registration under the Foreign Contribution (Regulation) Act (FCRA).</narrative>
+            </description>
+            <category>IN</category>
+            <url>https://fcraonline.nic.in/home/index.aspx</url>
+        </codelist-item>
+        <codelist-item public-database="1">
             <code>JE-CR</code>
             <name>
                 <narrative>Jersey Companies Registry</narrative>
@@ -505,6 +593,17 @@
             <url>http://www.attorney-general.go.ke/</url>
         </codelist-item>
         <codelist-item public-database="0">
+            <code>LB-MOI</code>
+            <name>
+                <narrative>Ministry of Interior</narrative>
+            </name>
+            <description>
+                <narrative>The Ministry of Interior is the main registration body in Lebanon. All NGOs are required to register with the Ministry of Interior.</narrative>
+            </description>
+            <category>LB</category>
+            <url>http://www.interior.gov.lb/</url>
+        </codelist-item>
+        <codelist-item public-database="0">
             <code>LS-LCN</code>
             <name>
                 <narrative>Lesotho Council of Non Governmental Organisations</narrative>
@@ -525,6 +624,28 @@
             </description>
             <category>LV</category>
             <url>http://www.ur.gov.lv/</url>
+        </codelist-item>
+        <codelist-item public-database="0">
+            <code>ML-CCIM</code>
+            <name>
+                <narrative>Chambre de Commerce et d'Industrie du Mali (CCIM)</narrative>
+            </name>
+            <description>
+                <narrative>The Chamber of Commerce and Industry of Mali (CCIM) is responsible for the organization and professional representation of organisations and legal persons working in the various branches of commercial, industrial and service activities in Mali.</narrative>
+            </description>
+            <category>ML</category>
+            <url>http://www.cci.ml/</url>
+        </codelist-item>
+        <codelist-item public-database="0">
+            <code>ML-NIF</code>
+            <name>
+                <narrative>Numero d’Identification Fiscale </narrative>
+            </name>
+            <description>
+                <narrative>Malian organisations use Numero-d-Identification-Fiscale (NIF) to identify taxpayers and facilitate the administration of the Malian tax affairs.</narrative>
+            </description>
+            <category>ML</category>
+            <url>http://demarchesadministratives.gouv.ml/demarches/afficher/Numero-d-Identification-Fiscale-NIF</url>
         </codelist-item>
         <codelist-item public-database="0">
             <code>MM-MHA</code>
@@ -648,6 +769,17 @@
             <url>http://www.swc.org.np/</url>
         </codelist-item>
         <codelist-item public-database="1">
+            <code>PH-SEC</code>
+            <name>
+                <narrative>Securities and Exchange Commission Philippines</narrative>
+            </name>
+            <description>
+                <narrative>The Securities and Exchange Commission in the Philippines provides licenses so that corporations, partnerships or associations can transact business in the Philippines.</narrative>
+            </description>
+            <category>PH</category>
+            <url>http://www.sec.gov.ph/online-services/search-registered-companies/</url>
+        </codelist-item>
+        <codelist-item public-database="1">
             <code>PK-PCP</code>
             <name>
                 <narrative>Pakistan Centre for Philanthropy</narrative>
@@ -703,6 +835,17 @@
             <url>https://ems.ms.gov.pl/krs/wyszukiwaniepodmiotu</url>
         </codelist-item>
         <codelist-item public-database="1">
+            <code>PS-MOI</code>
+            <name>
+                <narrative>Ministry of Interior (MOI)</narrative>
+            </name>
+            <description>
+                <narrative>It’s the official body to register Non-governmental organization in Palestine.</narrative>
+            </description>
+            <category>PS</category>
+            <url>http://www.moi.pna.ps/NGOs/List</url>
+        </codelist-item>
+        <codelist-item public-database="1">
             <code>RS-APR</code>
             <name>
                 <narrative>Serbian Business Registrations Agency (APR)</narrative>
@@ -756,6 +899,17 @@
             </description>
             <category>SK</category>
             <url>http://www.zrsr.sk/default.aspx?LANG=en</url>
+        </codelist-item>
+        <codelist-item public-database="0">
+            <code>SS-RRC</code>
+            <name>
+                <narrative>South Sudan Relief and Rehabilitation Commission</narrative>
+            </name>
+            <description>
+                <narrative>The South Sudan Relief and Rehabilitation Commission (SSRRC) is an agency of the Government of South Sudan. It is the operational arm of the Ministry of Humanitarian Affairs and Disaster Management. The NGO Act 2016 added additional powers to the agency to register any NGO interested in operating in South Sudan.</narrative>
+            </description>
+            <category>SS</category>
+            <url>http://www.goss-online.org/</url>
         </codelist-item>
         <codelist-item public-database="1">
             <code>TZ-BRLA</code>

@@ -8,16 +8,121 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
+- [Datasets] A Dataset `xml_tree` may be set with an ElementTree. [#235]
+
+- [Resources] Updated SSOT to latest content as of 2017-11-14. [#237]
+- [Resources] Remove SSOT organisation test files that are not valid XML. [IATI/IATI-Schemas#376, #242]
+- [Resources] Add `get_ruleset_paths()` and `get_codelist_mapping_paths()` to improve consistency of resources module. [#260]
+- [Resources] Add Schemas, Codelists and Rulesets for v2.03. [#272]
+
+- [Schemas] Test that multiple Rulesets can be added to a Schema. [#254]
+
+- [Utility] Non-resource files may be loaded using utility functions. [#235]
+
+- [Validation] `full_validation()` now checks whether a Dataset is IATI XML. [#239]
+- [Validation] Test that SSOT organisation test files are valid IATI XML. [#242]
+
 ### Changed
+
+- [Codelists] `complete` attribute included in equality comparison and hash calculations. [#247]
+- [Codelists] Codes must have a value to instantiate. [#247]
+- [Codelists] A number of Codelists have changed from Embedded to Non-Embedded. [IATI/IATI-Codelists-NonEmbedded#220, #272]
+
+- [Defaults] When a specific version is not requested, it will now assume v2.03 rather than v2.02. [#272]
+
+- [Resources] Move `load_as_x` functions to `iati.utilities`. [#235]
+- [Resources] Rename version-specific resource folders to reduce ambiguity. [#217]
+- [Resources] Rename various resource functions to improve clarity. [#259]
+
+- [Rulesets] `validate_ruleset()` changed from public to private function. [#246]
+- [Rulesets] `case` attribute on a Rule changed from public to private. [#252]
+- [Rulesets] `context` attribute on a Rule changed to read-only property. [#253]
+
+- [Validation] `_check_is_iati_xml()` will raise a `TypeError` when given a non-dataset. This replaces an undocumented `AttributeError`. [#239]
 
 ### Deprecated
 
 ### Removed
 
+- [Documentation] Stop tracking auto-generated docs templates. [#236]
+
+- [Rulesets] `ruleset` attribute removed from Rulesets. [#246]
+
+- [Tests] `iati.tests.resources.get_test_ruleset_path()` removed due to no calls to function. [#256]
+
 ### Fixed
+
+- [Codelists] Fixed impossible XPath in Codelist Mapping File. [IATI/IATI-Codelists#119, #229]
+- [Codelists] Sort Codes in a Codelist before hashing so that Codelists with the same Codes always have the same hash. [#247]
+
+- [Defaults] Test and document `ValueError`s that can be raised by functions in `iati.default`. [#241]
+
+- [Documentation] Minor fixes to README. [#266, #267]
+
+- [Rulesets] `name` attribute on a Rule changed to read-only property. [#251]
+- [Rulesets] Equal Rulesets are now deemed to be equal. [#249]
+
+- [Validation] Prevent `XPathEvalError`s occurring when given a Codelist Mapping XPath that identifies something other than an attribute. [#229]
+- [Validation] Datasets with an `xml:lang` attribute no longer raise a `KeyError` upon performing Codelist validation against a Schema populated with the Language Codelist. [#226]
+
+- [Tools] Updated dependencies to latest version as of 2018-01-25 and fixed newly identified linting issue. [#269]
 
 ### Security
 
+
+## [0.2.0] - 2017-11-07
+
+### Added
+
+- [Codelists] Implement the `complete` attribute. [#45]
+- [Codelists] Codes may have equality compared with strings - the `value` of a Code is compared. [#45]
+- [Codelists] Add v2.02 Codelist mapping file. [#45]
+
+- [Documentation] Clarify version support in README. [#216]
+
+- [Exceptions] Add an `error_log` attribute to ValidationErrors. [#45]
+
+- [Resources] Add method to load data files relating to pyIATI (rather than the IATI Standard, or tests). [#45]
+- [Resources] Allow test files to be located within sub-folders by including slashes (`/`) in the name. [#45]
+- [Resources] Detect encoding of files that are not UTF-8. [#45]
+
+- [Validation] Change from `validate.py` to `validator.py` to improve readability of code using this module. [#86]
+- [Validation] Add a YAML file containing error information. [#117]
+- [Validation] Check whether a string is valid XML - truthy. [#45]
+- [Validation] Check whether a string is valid XML - detailed error information. [#45]
+- [Validation] Provide custom error messages when lxml returns errors for a string that is not XML. [#90]
+- [Validation] Check whether a Dataset is valid against an IATI Schema - truthy. [#45]
+- [Validation] Check whether a Dataset is valid against an IATI Schema - detailed error information. [#45]
+- [Validation] Provide custom error messages when lxml returns errors for Datasets that do not contain valid IATI XML. [#92]
+- [Validation] Check whether attributes in a Dataset have values from Codelists where required - truthy. [#45]
+- [Validation] Check whether attributes in a Dataset have values from Codelists where required - detailed error information. [#45]
+- [Validation] Check whether a Dataset conforms with Rules in a Ruleset - truthy. [#58]
+- [Validation] Check whether a Dataset conforms with Rules in a Ruleset - basic information about which Rules fail. [#58]
+- [Validation] Add a `ValidationErrorLog` containing `ValidationError`s to track validation errors. [#87]
+- [Validation] Rudimentary differentiation of errors and warnings. [#45]
+
+- [Tests] Add a range of test XML files. [#45]
+- [Tests] Add some missing tests. [#45]
+- [Tests] Add a somewhat normal-looking string to use for fuzzing. [#113]
+
+### Changed
+
+- [Codelists] The default name for a Code is now an empty string. [#45]
+- [Codelists] The name of a Code is no longer included when computing the hash. [#45]
+
+- [Datasets] pyIATI validation functionality used to determine whether a string is XML. This changes the types of Error that may be raised when updating the XML that a Dataset represents. [#95]
+
+- [Tests] Re-organise test data to use folders to separate logical groups. [#58]
+- [Tests] Functions for locating and loading test data moved from `iati.resources` and `iati.tests.utilities` to `iati.tests.resources`. [#215]
+- [Tests] Re-organise test data to use folders to separate logical groups. [#58]
+
+### Fixed
+
+- [Codelists] The names of Codes are detected in CLv2 XML Codelists (when there are no `<narrative>` elements).
+
+- [Documentation] Corrected some out-of-date documentation. [#45]
+
+- [Rulesets] Update `date_order` XPaths in Standard Ruleset. [IATI/IATI-Rulesets#31]
 
 ## [0.1.1] - 2017-10-25
 

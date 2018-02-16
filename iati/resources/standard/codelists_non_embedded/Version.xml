@@ -5,7 +5,7 @@
         </name>
         <description>
             <narrative>
-       Version of the IATI Standard 
+       Version of the IATI Standard
     </narrative>
         </description>
     </metadata>
@@ -37,6 +37,10 @@
         <codelist-item>
             <code>2.02</code>
             <url>http://iatistandard.org/202/</url>
+        </codelist-item>
+        <codelist-item>
+            <code>2.03</code>
+            <url>http://iatistandard.org/203/</url>
         </codelist-item>
     </codelist-items>
 </codelist>

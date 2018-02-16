@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!--Elements marked as such as required for Ruleset checks. Others are to make the file valid IATI XML.-->
+<iati-activities version="2.02">
+  <iati-activity>
+    <iati-identifier>////////</iati-identifier><!--ruleset check--><!-- iati-identifier does not meet the specified regex. -->
+    <reporting-org type="40" ref="AA-AAA-123456789">
+      <narrative>Organisation name</narrative>
+    </reporting-org>
+    <title>
+      <narrative>Xxxxxxx</narrative>
+    </title>
+    <description>
+      <narrative>Xxxxxxx</narrative>
+    </description>
+    <participating-org role="2"></participating-org><!--ruleset check--><!-- Missing `participating-org/@ref` or `participating-org/narrative` -->
+    <activity-status code="2"/><!--ruleset check-->
+    <activity-date type="1" iso-date="2016-09-04" /><!--ruleset check-->
+    <activity-date type="3" iso-date="2017-12-31" /><!--ruleset check-->
+    <recipient-country code="AF" percentage="25" /><!--ruleset check-->
+    <recipient-country code="AX" percentage="75" /><!--ruleset check-->
+    <transaction><!--ruleset check-->
+      <transaction-type code="1" />
+      <transaction-date iso-date="2016-09-04" /><!--ruleset check-->
+      <value currency="EUR" value-date="2012-01-01">1000</value>
+      <sector code="11111" /><!--ruleset check-->
+    </transaction><!--ruleset check-->
+  </iati-activity>
+</iati-activities>

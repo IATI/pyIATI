@@ -9,6 +9,7 @@ class Codelist(object):
     """Representation of a Codelist as defined within the IATI SSOT.
 
     Attributes:
+        complete (bool): Whether the Codelist is complete or not. If complete, attributes making use of this Codelist must only contain values present on the Codelist. If not complete, this is merely strongly advised.
         codes (:obj:`set` of :obj:`iati.Code`): The codes demonstrating the range of values that the Codelist may represent.
         name (str): The name of the Codelist.
 
@@ -63,7 +64,7 @@ class Codelist(object):
             self.name = tree.attrib['name']
             for code_el in tree.findall('codelist-items/codelist-item'):
                 value = code_el.findtext('code')
-                name = code_el.findtext('name/narrative')
+                name = code_el.findtext('name/narrative') or code_el.findtext('name')
 
                 if (value is None) and (name is None):
                     msg = "The provided Codelist ({0}) has a Code that does not contain a name or value.".format(self.name)
@@ -75,6 +76,12 @@ class Codelist(object):
                     name = ''
                 self.codes.add(iati.Code(value, name))
 
+            try:
+                self.complete = True if tree.attrib['complete'] == '1' else False
+            except KeyError:
+                pass
+
+        self.complete = None
         self.codes = set()
         self.name = name
 
@@ -85,7 +92,6 @@ class Codelist(object):
         self._url = None
         self._ref = None
         self._category_codelist = None
-        self._complete = None
 
         if xml:
             parse_from_xml(xml)
@@ -99,15 +105,10 @@ class Codelist(object):
             Utilise all attributes as part of the equality process.
 
         """
-        return ((self.name) == (other.name)) and (collections.Counter(self.codes) == collections.Counter(other.codes))
+        return (self.name == other.name) and (self.complete == other.complete) and (collections.Counter(self.codes) == collections.Counter(other.codes))
 
     def __ne__(self, other):
-        """Check Codelist inequality.
-
-        Note:
-            This is required since there are no implicit relationships when comparing objects. https://docs.python.org/2/reference/datamodel.html#object.__ne__
-
-        """
+        """Check Codelist inequality."""
         return not self == other
 
     def __hash__(self):
@@ -119,7 +120,9 @@ class Codelist(object):
             Utilise all attributes as part of the equality process.
 
         """
-        return hash((self.name, tuple(self.codes)))
+        sorted_codes = sorted(self.codes, key=lambda x: x.value)
+
+        return hash((self.name, self.complete, tuple(sorted_codes)))
 
     @property
     def xsd_restriction(self):
@@ -175,12 +178,12 @@ class Code(object):
     """
 
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, value=None, name=None):
+    def __init__(self, value, name=''):
         """Initialise a Code.
 
         Args:
-            name (str): The name of the code being initialised.
             value (str): The value of the code being initialised.
+            name (str): The name of the code being initialised.
 
         Note:
             Instances of a Code should remain independent of a particular version of the IATI Standard. Versioning should be handled elsewhere.
@@ -209,16 +212,16 @@ class Code(object):
         Todo:
             Utilise all attributes as part of the equality process.
 
+            Test comparison with strings.
+
         """
-        return ((self.name) == (other.name)) and ((self.value) == (other.value))
+        try:
+            return ((self.name) == (other.name)) and ((self.value) == (other.value))
+        except AttributeError:
+            return self.value == other
 
     def __ne__(self, other):
-        """Check Code inequality.
-
-        Note:
-            This is required since there are no implicit relationships when comparing objects. https://docs.python.org/2/reference/datamodel.html#object.__ne__
-
-        """
+        """Check Code inequality."""
         return not self == other
 
     def __hash__(self):
@@ -229,8 +232,10 @@ class Code(object):
         Todo:
             Utilise all attributes as part of the hashing process.
 
+            Be able to deal with checks against both Codes and strings.
+
         """
-        return hash((self.name, self.value))
+        return hash((self.value))
 
     @property
     def xsd_enumeration(self):

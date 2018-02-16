@@ -6,6 +6,7 @@ Todo:
     Handle multiple versions of the Standard rather than limiting to the latest.
     Implement more than Codelists.
 """
+
 import json
 import os
 from collections import defaultdict
@@ -120,13 +121,13 @@ def _codelists(version=None, use_cache=False):
     """
     version = get_default_version_if_none(version)
 
-    paths = iati.resources.get_all_codelist_paths(version)
+    paths = iati.resources.get_codelist_paths(version)
 
     for path in paths:
         _, filename = os.path.split(path)
         name = filename[:-len(iati.resources.FILE_CODELIST_EXTENSION)]  # Get the name of the codelist, without the '.xml' file extension
         if (name not in _CODELISTS[version].keys()) or not use_cache:
-            xml_str = iati.resources.load_as_string(path)
+            xml_str = iati.utilities.load_as_string(path)
             codelist_found = iati.Codelist(name, xml=xml_str)
             _CODELISTS[version][name] = codelist_found
 
@@ -139,11 +140,51 @@ def codelists(version=None):
     Args:
         version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelists are returned.
 
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
     Returns:
         dict: A dictionary containing all the Codelists at the specified version of the Standard. All Non-Embedded Codelists are included. Keys are Codelist names. Values are iati.Codelist() instances, populated with the relevant Codes.
 
     """
     return _codelists(version)
+
+
+def codelist_mapping(version=None):
+    """Define the mapping process which states where in a Dataset you should find values on a given Codelist.
+
+    Args:
+        version (str): The version of the Standard to return the mapping file for. Defaults to None. This means that the mapping file is returned for the latest version of the Standard.
+
+    Raises:
+        ValueError: When a specified version is not a valid version of the IATI Standard.
+
+    Returns:
+        dict of dict: A dictionary containing mapping information. Keys in the first dictionary are Codelist names. Keys in the second dictionary are `xpath` and `condition`. The condition is `None` if there is no condition.
+
+    Todo:
+        Make use of the `version` parameter.
+
+    """
+    path = iati.resources.create_codelist_mapping_path(version)
+    mapping_tree = iati.utilities.load_as_tree(path)
+    mappings = defaultdict(list)
+
+    for mapping in mapping_tree.getroot().xpath('//mapping'):
+        codelist_name = mapping.find('codelist').attrib['ref']
+        codelist_location = mapping.find('path').text
+
+        try:
+            condition = mapping.find('condition').text
+        except AttributeError:  # there is no condition
+            condition = None
+
+        mappings[codelist_name].append({
+            'xpath': codelist_location,
+            'condition': condition
+        })
+
+    return mappings
 
 
 def ruleset(version=None):
@@ -152,15 +193,15 @@ def ruleset(version=None):
     Args:
         version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that the latest Standard Ruleset is returned.
 
-    Returns:
-        iati.Ruleset: The default Ruleset for the specified version of the Standard.
-
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
 
+    Returns:
+        iati.Ruleset: The default Ruleset for the specified version of the Standard.
+
     """
-    path = iati.resources.get_ruleset_path(iati.resources.FILE_RULESET_STANDARD_NAME, version)
-    ruleset_str = iati.resources.load_as_string(path)
+    path = iati.resources.get_ruleset_paths(version)[0]
+    ruleset_str = iati.utilities.load_as_string(path)
 
     return iati.Ruleset(ruleset_str)
 
@@ -171,15 +212,15 @@ def ruleset_schema(version=None):
     Args:
         version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that the latest Ruleset schema is returned.
 
-    Returns:
-        dict: A dictionary representing the Ruleset schema for the specified version of the Standard.
-
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
 
+    Returns:
+        dict: A dictionary representing the Ruleset schema for the specified version of the Standard.
+
     """
-    path = iati.resources.get_ruleset_path(iati.resources.FILE_RULESET_SCHEMA_NAME, version)
-    schema_str = iati.resources.load_as_string(path)
+    path = iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_SCHEMA_NAME, version)
+    schema_str = iati.utilities.load_as_string(path)
 
     return json.loads(schema_str)
 
@@ -285,7 +326,7 @@ def activity_schema(version=None, populate=True):
         iati.ActivitySchema: An instantiated IATI Schema for the specified version of the Standard.
 
     """
-    return _schema(iati.resources.get_all_activity_schema_paths, iati.ActivitySchema, version, populate)
+    return _schema(iati.resources.get_activity_schema_paths, iati.ActivitySchema, version, populate)
 
 
 def organisation_schema(version=None, populate=True):
@@ -302,4 +343,4 @@ def organisation_schema(version=None, populate=True):
         iati.OrganisationSchema: An instantiated IATI Schema for the specified version of the Standard.
 
     """
-    return _schema(iati.resources.get_all_organisation_schema_paths, iati.OrganisationSchema, version, populate)
+    return _schema(iati.resources.get_organisation_schema_paths, iati.OrganisationSchema, version, populate)
