@@ -8,6 +8,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+
+## [0.3.0] - 2018-02-16
+
+### Added
+
 - [Datasets] A Dataset `xml_tree` may be set with an ElementTree. [#235]
 
 - [Resources] Updated SSOT to latest content as of 2017-11-14. [#237]
@@ -40,8 +55,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Validation] `_check_is_iati_xml()` will raise a `TypeError` when given a non-dataset. This replaces an undocumented `AttributeError`. [#239]
 
-### Deprecated
-
 ### Removed
 
 - [Documentation] Stop tracking auto-generated docs templates. [#236]
@@ -66,8 +79,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Validation] Datasets with an `xml:lang` attribute no longer raise a `KeyError` upon performing Codelist validation against a Schema populated with the Language Codelist. [#226]
 
 - [Tools] Updated dependencies to latest version as of 2018-01-25 and fixed newly identified linting issue. [#269]
-
-### Security
 
 
 ## [0.2.0] - 2017-11-07
