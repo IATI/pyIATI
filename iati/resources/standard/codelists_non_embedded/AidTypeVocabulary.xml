@@ -1,0 +1,18 @@
+<codelist name="AidTypeVocabulary" xml:lang="en" complete="1">
+  <metadata>
+    <name>
+      <narrative>Aid Type Vocabulary</narrative>
+    </name>
+    <description>
+      <narrative>The AidTypeVocabulary codelist defines a range of external codelists which themselves provide codes and descriptions for aid type.</narrative>
+    </description>
+  </metadata>
+  <codelist-items>
+    <codelist-item>
+      <code>1</code>
+      <name>
+        <narrative>OECD DAC</narrative>
+      </name>
+    </codelist-item>
+  </codelist-items>
+</codelist>

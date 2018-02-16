@@ -45,6 +45,17 @@
     info: |-
         {code} is not a valid Code on the {codelist.name} Codelist.
 
+- err-code-not-on-codelist-element-text:
+    base_exception: ValueError
+    category: codelist
+    description: |-
+        An element that requires a Code from a particular complete Codelist contained a value not on the Codelist.
+    help: |-
+        Text in the `{el_name}` element must match a value on the `{codelist.name}` Codelist.
+        See http://iatistandard.org/202/codelists/{codelist.name} for permitted values.
+    info: |-
+        {code} is not a valid Code on the {codelist.name} Codelist.
+
 - warn-code-not-on-codelist:
     base_exception: Warning
     category: codelist
@@ -53,6 +64,17 @@
     help: |-
         The `{attr_name}` attribute should contain a value on the `{codelist.name}` Codelist. Note that values not on the Codelist may be valid in particular circumstances.
         See http://iatistandard.org/202/codelists/{codelist.name} for values on the Codelist.
+    info: |-
+        {code} is not a Code on the {codelist.name} Codelist.
+
+- warn-code-not-on-codelist-element-text:
+    base_exception: ValueError
+    category: codelist
+    description: |-
+        An element that should contain a Code from a particular incomplete Codelist contained a value not on the Codelist.
+    help: |-
+        Text in the `{el_name}` element should match a value on the `{codelist.name}` Codelist. Note that values not on the Codelist may be valid in particular circumstances.
+        See http://iatistandard.org/202/codelists/{codelist.name} for permitted values.
     info: |-
         {code} is not a Code on the {codelist.name} Codelist.
 

@@ -11,12 +11,6 @@
     </metadata>
     <codelist-items>
         <codelist-item>
-            <code>1-1</code>
-            <name>
-                <narrative>UN OCHA FTS</narrative>
-            </name>
-        </codelist-item>
-        <codelist-item>
             <code>1-2</code>
             <name>
                 <narrative>Glide</narrative>
@@ -28,7 +22,7 @@
             <name>
                 <narrative>Humanitarian Plan</narrative>
             </name>
-            <url>http://fts.unocha.org/docs/IATICodelist_HS2-1.csv</url>
+            <url>http://ftsarchive.unocha.org/docs/IATICodelist_HS2-1.csv</url>
         </codelist-item>
         <codelist-item>
             <code>99</code>

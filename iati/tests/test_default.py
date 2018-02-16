@@ -14,6 +14,9 @@ class TestDefault(object):
     @pytest.mark.parametrize("func_to_check", [
         iati.default.get_default_version_if_none,
         iati.default.codelists,
+        iati.default.codelist_mapping,
+        iati.default.ruleset,
+        iati.default.ruleset_schema,
         iati.default.activity_schema,
         iati.default.organisation_schema
     ])
@@ -65,17 +68,19 @@ class TestDefaultCodelists(object):
         ('1.05', 'AidTypeFlag', iati.Codelist),
         ('2.01', 'AidTypeFlag', ValueError),
         ('2.02', 'AidTypeFlag', ValueError),
+        ('2.03', 'AidTypeFlag', ValueError),
         ('1.04', 'BudgetStatus', ValueError),
         ('1.05', 'BudgetStatus', ValueError),
         ('2.01', 'BudgetStatus', ValueError),
-        ('2.02', 'BudgetStatus', iati.Codelist)
+        ('2.02', 'BudgetStatus', iati.Codelist),
+        ('2.03', 'BudgetStatus', iati.Codelist)
     ])
     def test_default_codelist_valid_only_at_some_versions(self, codelist_name, version, expected_type):
         """Check that a codelist that is valid at some version/s is not valid in other versions.
 
         Example:
             AidTypeFlag was an embedded codelist in v1.04 and v1.05, but is not valid at any version after this.
-            For example, BudgetStatus was added as an embedded codelist in v2.02, so is not valid prior to this.
+            BudgetStatus was added as an embedded codelist in v2.02, so is not valid prior to this.
         """
         try:  # Note pytest.raises() is not used here in order to keep this test flexible for parameterization.
             result = iati.default.codelist(codelist_name, version)
@@ -193,7 +198,7 @@ class TestDefaultRulesets(object):
 
     def test_default_ruleset_validation_rules_valid(self, schema_ruleset):
         """Check that a fully valid IATI file does not raise any type of error (including rules/rulesets)."""
-        data = iati.tests.utilities.load_as_dataset('valid_std_ruleset')
+        data = iati.tests.resources.load_as_dataset('valid_std_ruleset')
         result = iati.validator.full_validation(data, schema_ruleset)
 
         assert iati.validator.is_xml(data.xml_str)
@@ -236,7 +241,7 @@ class TestDefaultRulesets(object):
             Check that the expected missing elements appear the the help text for the given element.
 
         """
-        data = iati.tests.utilities.load_as_dataset(invalid_dataset_name)
+        data = iati.tests.resources.load_as_dataset(invalid_dataset_name)
         result = iati.validator.full_validation(data, schema_ruleset)
         errors_for_rule_error = result.get_errors_or_warnings_by_name(rule_error)
         errors_for_ruleset = result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')

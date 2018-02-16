@@ -2,11 +2,11 @@
 
 A developers’ toolkit for IATI.
 
-[![Build Status](https://travis-ci.org/IATI/pyIATI.svg?branch=master)](https://travis-ci.com/IATI/pyIATI)
+[![Build Status](https://travis-ci.org/IATI/pyIATI.svg?branch=master)](https://travis-ci.org/IATI/pyIATI) [![PyPI](https://img.shields.io/pypi/v/pyIATI.svg)](https://pypi.python.org/pypi/pyIATI)
 
 `master`: [![Requirements Status](https://requires.io/github/IATI/pyIATI/requirements.svg?branch=master)](https://requires.io/github/IATI/pyIATI/requirements/?branch=master) `dev`: [![Requirements Status](https://requires.io/github/IATI/pyIATI/requirements.svg?branch=dev)](https://requires.io/github/IATI/pyIATI/requirements/?branch=dev)
 
-Varying between: [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges) and [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges) (see docstrings)
+Varying between: ![experimental](https://img.shields.io/badge/stability-experimental-orange.svg) and ![unstable](https://img.shields.io/badge/stability-unstable-yellow.svg) (see docstrings)
 
 General Information
 ===================
@@ -52,7 +52,7 @@ The file `docs/build/index.html` serves as the documentation home page.
 IATI Version Support
 ====================
 
-pyIATI fully supports versions `1.04`, `1.05`, `2.01` and `2.02` of the IATI Standard.
+pyIATI fully supports versions `1.04`, `1.05`, `2.01`, `2.02` and `2.03` of the IATI Standard.
 
 Schemas for versions `1.01`, `1.02` and `1.03` are included in the `iati/resources/standard` directory but are not yet accessible using the available pyIATI functions to return default schemas.
 
@@ -116,10 +116,10 @@ If you wish to load your own Ruleset you can do this using:
 
 ```python
 import iati.rulesets
+import iati.utilities
 
 # Load a local Ruleset
-with open('path/to/ruleset.json', 'r') as json_file_object:
-    ruleset_str = json_file_object.read()
+ruleset_str = iati.utilities.load_as_string('/absolute/path/to/ruleset.json')
 
 # To create a Ruleset object from your ruleset_str:
 iati.Ruleset(ruleset_str)
@@ -127,14 +127,19 @@ iati.Ruleset(ruleset_str)
 
 ### Working with IATI Datasets
 
-#### Loading a dataset
+#### Loading a dataset - local
+
+```python
+import iati.utilities
+
+# Load a local file
+dataset = iati.utilities.load_as_dataset('/absolute/path/to/iati-activites.xml')
+```
+
+#### Loading a dataset - remote
 
 ```python
 import iati.data
-
-# Load a local file
-with open('path/to/iati-activites.xml', 'r') as xml_file_object:
-    dataset_as_string = xml_file_object.read()
 
 # Load a remote file
 # Assumes the Requests library is installed: http://docs.python-requests.org/
@@ -209,7 +214,7 @@ radon cc iati --no-assert -nc
 Alternatively, the Makefile can be used.
 
 ```
-make tests
+make test
 make lint
 make complexity
 make docs

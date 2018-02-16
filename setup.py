@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'pyIATI',
-    version = '0.2.0',
+    version = '0.3.0',
     description = 'Python library representing the IATI Schemas, Codelists and Rulesets',
     author = 'IATI Technical Team and other authors',
     author_email = 'code@iatistandard.org',
@@ -15,7 +15,7 @@ setup(
         # JSON schema parsing validation
         'jsonschema==2.6.0',
         # XML handling library
-        'lxml==4.1.0',
+        'lxml==4.1.1',
         # YAML parsing for validation error codes
         'PyYAML==3.12',
         # python2/python3 compatibility library

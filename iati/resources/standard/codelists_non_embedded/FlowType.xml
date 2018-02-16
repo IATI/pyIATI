@@ -20,7 +20,7 @@
                 <narrative xml:lang="fr">Aide Publique au Développement</narrative>
             </description>
         </codelist-item>
-        <codelist-item>
+        <codelist-item status="withdrawn" withdrawal-date="2017-03-17">
             <code>20</code>
             <name>
                 <narrative>OOF</narrative>
@@ -29,6 +29,28 @@
             <description>
                 <narrative>Other Official Flows</narrative>
                 <narrative xml:lang="fr">Autres Apports du Secteur Public</narrative>
+            </description>
+        </codelist-item>
+        <codelist-item>
+            <code>21</code>
+            <name>
+                <narrative>Non-export credit OOF</narrative>
+                <narrative xml:lang="fr">AASP hors crédits-export</narrative>
+            </name>
+            <description>
+                <narrative>Other Official Flows, excl. export credits.</narrative>
+                <narrative xml:lang="fr">Autres Apports du Secteur Public, à l'exclusion des crédits à  l'exportation</narrative>
+            </description>
+        </codelist-item>
+        <codelist-item>
+            <code>22</code>
+            <name>
+                <narrative>Officially supported export credits</narrative>
+                <narrative xml:lang="fr">AASP dont crédits export</narrative>
+            </name>
+            <description>
+                <narrative>Officially supported export credits. Covers both official direct export credits and private export credits under official guarantee or insurance.</narrative>
+                <narrative xml:lang="fr">Autres Apports du Secteur Public. comprenant les crédits à  l'exportation soutenus par le secteur public et les exportations privées bénéficiant de garantie ou d'assurance publiques.</narrative>
             </description>
         </codelist-item>
         <codelist-item>
@@ -45,12 +67,34 @@
         <codelist-item>
             <code>35</code>
             <name>
-                <narrative>Private Market</narrative>
+                <narrative>Private market</narrative>
                 <narrative xml:lang="fr">Apports privés aux conditions du marché</narrative>
             </name>
             <description>
                 <narrative>Private market</narrative>
                 <narrative xml:lang="fr">Apports privés aux conditions du marché</narrative>
+            </description>
+        </codelist-item>
+        <codelist-item>
+            <code>36</code>
+            <name>
+                <narrative>Private Foreign Direct Investment</narrative>
+                <narrative xml:lang="fr">IDE</narrative>
+            </name>
+            <description>
+                <narrative>Private Foreign Direct Investment.</narrative>
+                <narrative xml:lang="fr">Investissements directs à l'étranger</narrative>
+            </description>
+        </codelist-item>
+        <codelist-item>
+            <code>37</code>
+            <name>
+                <narrative>Other Private flows at market terms</narrative>
+                <narrative xml:lang="fr">Autres apports privés aux conditions du marché</narrative>
+            </name>
+            <description>
+                <narrative>Private long-term (i.e. over one-year maturity) capital transactions made by residents of DAC countries.</narrative>
+                <narrative xml:lang="fr">Apports privés de long-terme (i.e. dont la maturité est  supérieure à un an), transactions en capital faites par des résidents de pays du CAD.</narrative>
             </description>
         </codelist-item>
         <codelist-item>
