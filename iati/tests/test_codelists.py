@@ -68,11 +68,11 @@ class TestCodelists(object):
         xml_str = iati.utilities.load_as_string(path)
         codelist = iati.Codelist(name_to_set, xml=xml_str)
 
-        code_names = ['ODA', 'OOF', 'Private grants', 'Private Market', 'Non flow', 'Other flows']
-        code_values = ['10', '20', '30', '35', '40', '50']
+        code_names = ['ODA', 'OOF', 'Non-export credit OOF', 'Officially supported export credits', 'Private grants', 'Private market', 'Private Foreign Direct Investment', 'Other Private flows at market terms', 'Non flow', 'Other flows']
+        code_values = ['10', '20', '21', '22', '30', '35', '36', '37', '40', '50']
 
         assert codelist.name == 'FlowType'
-        assert len(codelist.codes) == 6
+        assert len(codelist.codes) == 10
         for code in codelist.codes:
             assert code.name in code_names
             assert code.value in code_values

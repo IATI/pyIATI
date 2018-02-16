@@ -3,6 +3,7 @@ from lxml import etree
 import pytest
 import iati.constants
 import iati.resources
+import iati.tests.resources
 import iati.validator
 
 
@@ -27,6 +28,7 @@ class TestResourceFolders(object):
     """A container for tests relating to resource folders."""
 
     @pytest.mark.parametrize('version, expected_version_foldername', [
+        ('2.03', '2-03'),
         ('2.02', '2-02'),
         ('2.01', '2-01'),
         ('1.05', '1-05'),
@@ -64,8 +66,10 @@ class TestResourceFolders(object):
         Todo:
             Deal with multiple versions.
 
+            Make independent of version 2.02.
+
         """
-        paths = iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail')
+        paths = iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail', '2.02')
 
         assert len(paths) == 237
 
@@ -199,7 +203,7 @@ class TestResourceSchemas(object):
 
         content = iati.utilities.load_as_string(path)
 
-        assert len(content) > 130000
+        assert len(content) > 125000
 
     def test_schema_activity_tree(self):
         """Check that the Activity schema loads into an XML Tree.
