@@ -17,7 +17,6 @@ Steps to follow to release a new version of pyIATI.
             3. There **MUST NOT** be a `major` version increase (to `1.0.0`) until a suitable amount of functionality is stable and tested.
         2. Move content under `Unreleased` in `CHANGELOG.md` to a new section, with a heading in the format: `[version-number] - yyyy-mm-dd`.
         3. Ensure a blank `Unreleased` section is left in `CHANGELOG.md` (see later in doc for template).
-        4. Run `make docs` to update documentation and commit updated templates to the repository.
     8. Merge `dev` into `master`.
 2. On the `master` branch.
     1. Create a new [Github Release](https://github.com/IATI/pyIATI/releases).
