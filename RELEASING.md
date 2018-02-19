@@ -33,10 +33,13 @@ Steps to follow to release a new version of pyIATI.
     3. From within the folder extracted from the zip file:
         1. Package the release ready to upload to PyPi: `python setup.py sdist`
         2. Upload to the PyPi test server: `twine upload dist/* -r pypi-test`
-    4. Test installation from the PyPi test server – this will install `pyIATI` from the test PyPi, but other dependencies (e.g. `lxml` and others) from the production server:
-    `pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pyIATI`
-    5. Check that all is well by running `pip freeze`. If the latest version is present, all is well.
-    6. Upload to the PyPi production server: `twine upload dist/* -r pypi-production`
+    4. Test installation from the PyPi test server:
+        1. Create and activate a clean virtualenv: `deactivate; mkdir pyIATItest; cd pyIATItest; virtualenv -p python3 pyenv;source pyenv/bin/activate`
+        2. Install pyIATI: `pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pyIATI` – this will install `pyIATI` from the test PyPi, but other dependencies (e.g. `lxml` and others) from the production server
+        3. Ensure that all is well by running `pip freeze`. If the latest version of pyIATI is present, all is well.
+    6. Publish to production PyPi:
+        1. Change back to the virtualenv from the unzipped folder.
+        2. Upload to the PyPi production server: `twine upload dist/* -r pypi-production`
     7. The package is now published and you can now run `pip install pyIATI` to download pyIATI!
 
 
