@@ -27,10 +27,12 @@ Steps to follow to release a new version of pyIATI.
     1. Download the `.zip` or `.tar.gz` source code for the release on the [Releases page](https://github.com/IATI/pyIATI/releases).
     2. Unzip/uncompress, enter into the folder, [follow the instructions to set-up a development environment](https://github.com/IATI/pyIATI#dev-installation).
     3. Run the tests to check that the package is safe for release, [how to run the tests](https://github.com/IATI/pyIATI#tests).
-4. Publish to PyPi
-    1. Check that you have a the login credentials for the PyPi test and production instances in a `~/.pypirc` file. [See here](https://docs.python.org/3.6/distutils/packageindex.html#pypirc) for an example.
-    2. Package the release ready to upload to PyPi: `python setup.py sdist`
-    3. Upload to the PyPi test server: `twine upload dist/* -r pypi-test`
+4. If the tests passed: Publish to PyPi
+    1. Install tools required for deployment: `apt-get install twine`
+    2. Check that you have a the login credentials for the PyPi test and production instances in a `~/.pypirc` file. [See here](https://docs.python.org/3.6/distutils/packageindex.html#pypirc) for an example.
+    3. From within the folder extracted from the zip file:
+        1. Package the release ready to upload to PyPi: `python setup.py sdist`
+        2. Upload to the PyPi test server: `twine upload dist/* -r pypi-test`
     4. Test installation from the PyPi test server – this will install `pyIATI` from the test PyPi, but other dependencies (e.g. `lxml` and others) from the production server:
     `pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pyIATI`
     5. Check that all is well by running `pip freeze`. If the latest version is present, all is well.
