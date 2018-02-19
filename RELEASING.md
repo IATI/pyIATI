@@ -29,7 +29,7 @@ Steps to follow to release a new version of pyIATI.
     3. Run the tests to check that the package is safe for release, [how to run the tests](https://github.com/IATI/pyIATI#tests).
 4. If the tests passed: Publish to PyPi
     1. Install tools required for deployment: `apt-get install python3-setuptools twine`
-    2. Check that you have a the login credentials for the PyPi test and production instances in a `~/.pypirc` file. [See here](https://docs.python.org/3.6/distutils/packageindex.html#pypirc) for an example.
+    2. Check that you have a the iati login credentials for the PyPi test and production instances in a `~/.pypirc` file. A template file is below. [See here](https://docs.python.org/3.6/distutils/packageindex.html#pypirc) for an explanation of the file.
     3. From within the folder extracted from the zip file:
         1. Package the release ready to upload to PyPi: `python setup.py sdist`
         2. Upload to the PyPi test server: `twine upload dist/* -r pypi-test`
@@ -60,4 +60,23 @@ This template should be used to keep track of unreleased changes in `CHANGELOG.m
 
 ### Security
 
+```
+
+Template for .pypirc
+--------------------
+
+```
+[distutils]
+index-servers =
+  pypi-production
+  pypi-test
+
+[pypi-production]
+username=iati
+password=[PASSWORD_HERE]
+
+[pypi-test]
+repository: https://test.pypi.org/legacy/
+username=iati
+password=[PASSWORD_HERE]
 ```
