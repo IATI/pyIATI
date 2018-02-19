@@ -29,6 +29,8 @@ Steps to follow to release a new version of pyIATI.
     3. Run the tests to check that the package is safe for release, [how to run the tests](https://github.com/IATI/pyIATI#tests).
 4. If the tests passed: Publish to PyPi
     1. Install tools required for deployment: `apt-get install python3-setuptools twine`
+        1. Ensure you have at least version 1.8 of twine: `twine --version`
+        2. If you have an older version of twine (eg. when using Ubuntu 16.04 LTS), obtain a more recent version
     2. Check that you have a the iati login credentials for the PyPi test and production instances in a `~/.pypirc` file. A template file is below. [See here](https://docs.python.org/3.6/distutils/packageindex.html#pypirc) for an explanation of the file.
     3. From within the folder extracted from the zip file:
         1. Package the release ready to upload to PyPi: `python setup.py sdist`
