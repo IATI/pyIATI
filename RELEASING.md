@@ -26,7 +26,7 @@ Steps to follow to release a new version of pyIATI.
 3. Download and check that the release is safe to be published
     1. Download the `.zip` or `.tar.gz` source code for the release on the [Releases page](https://github.com/IATI/pyIATI/releases).
     2. Unzip/uncompress, enter into the folder, [follow the instructions to set-up a development environment](https://github.com/IATI/pyIATI#dev-installation).
-    3. Run the tests to check that the package is safe for release.
+    3. Run the tests to check that the package is safe for release, [how to run the tests](https://github.com/IATI/pyIATI#tests).
 4. Publish to PyPi
     1. Check that you have a the login credentials for the PyPi test and production instances in a `~/.pypirc` file. [See here](https://docs.python.org/3.6/distutils/packageindex.html#pypirc) for an example.
     2. Package the release ready to upload to PyPi: `python setup.py sdist`
