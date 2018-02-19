@@ -28,13 +28,13 @@ Steps to follow to release a new version of pyIATI.
     2. Unzip/uncompress, enter into the folder, [follow the instructions to set-up a development environment](https://github.com/IATI/pyIATI#dev-installation).
     3. Run the tests to check that the package is safe for release, [how to run the tests](https://github.com/IATI/pyIATI#tests).
 4. If the tests passed: Publish to PyPi
-    1. Install tools required for deployment: `apt-get install python3-setuptools twine`
-        1. Ensure you have at least version 1.8 of twine: `twine --version`
-        2. If you have an older version of twine (eg. when using Ubuntu 16.04 LTS), obtain a more recent version
+    1. Install tools required for deployment: `apt-get install python3-setuptools; pip install twine`
     2. Check that you have a the iati login credentials for the PyPi test and production instances in a `~/.pypirc` file. A template file is below. [See here](https://docs.python.org/3.6/distutils/packageindex.html#pypirc) for an explanation of the file.
     3. From within the folder extracted from the zip file:
-        1. Package the release ready to upload to PyPi: `python setup.py sdist`
-        2. Upload to the PyPi test server: `twine upload dist/* -r pypi-test`
+        1. Ensure you have at least version 1.8 of twine: `twine --version`
+            1. If you have an older version of twine (eg. when using Ubuntu 16.04 LTS), obtain a more recent version
+        2. Package the release ready to upload to PyPi: `python setup.py sdist`
+        3. Upload to the PyPi test server: `twine upload dist/* -r pypi-test`
     4. Test installation from the PyPi test server:
         1. Create and activate a clean virtualenv: `deactivate; mkdir pyIATItest; cd pyIATItest; virtualenv -p python3 pyenv;source pyenv/bin/activate`
         2. Install pyIATI: `pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pyIATI` – this will install `pyIATI` from the test PyPi, but other dependencies (e.g. `lxml` and others) from the production server
