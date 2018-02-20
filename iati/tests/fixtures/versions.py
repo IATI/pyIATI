@@ -1,6 +1,191 @@
 """Pytest fixtures for specifying versions."""
+from decimal import Decimal
+import itertools
 import pytest
 import iati.constants
+
+
+def generate_semver_list(major_components, minor_components, patch_components):
+    """Generate a list of SemVer-format values.
+
+    Params:
+        major_components (list of int): List of values to use as the Major Component in the generated Version Numbers.
+        minor_components (list of int): List of values to use as the Minor Component in the generated Version Numbers.
+        patch_components (list of int): List of values to use as the Patch Component in the generated Version Numbers.
+
+    Returns:
+        list of string: List of values in the SemVer format.
+    """
+    return [semver(version[0], version[1], version[2]) for version in itertools.product(major_components, minor_components, patch_components)]
+
+
+def iativer(integer, decimal):
+    """Construct an IATIver-format version number.
+
+    Args:
+        integer (int): The integer component of the version number.
+        decimal (int): The decimal component of the version number.
+
+    Returns:
+        str: An IATIver-format version number with the specified Integer and Decimal Components.
+    """
+    return str(integer) + '.0' + str(decimal)
+
+
+def semver(major, minor, patch):
+    """Construct an SemVer-format version number.
+
+    Args:
+        major (int): The major component of the version number.
+        minor (int): The minor component of the version number.
+        patch (int): The patch component of the version number.
+
+    Returns:
+        str: A SemVer-format version number with the specified Major, Minor and Patch Components.
+    """
+    return '.'.join([str(major), str(minor), str(patch)])
+
+
+def split_decimal(version_decimal):
+    """Split a Decimal version number into numeric representations of its components.
+
+    Args:
+        version_decimal (Decimal): A Decimal containing an IATI version number.
+
+    Returns:
+        list of int: A list containing numeric representations of the Integer and Decimal components.
+    """
+    integer_component = int(version_decimal)
+    decimal_component = int(version_decimal * 100) - 100
+
+    return [integer_component, decimal_component]
+
+
+def split_iativer(version_str):
+    """Split an IATIver-format version number into numeric representations of its components.
+
+    Args:
+        version_str (string): An IATIver-format string.
+
+    Returns:
+        list of int: A list containing numeric representations of the Integer and Decimal components.
+    """
+    integer_component = int(version_str.split('.')[0])
+    decimal_component = int(version_str.split('.')[1])
+
+    return [integer_component, decimal_component]
+
+
+def split_semver(version_str):
+    """Split a SemVer-format version number into numeric representations of its components.
+
+    Args:
+        version_str (string): A SemVer-format string.
+
+    Returns:
+        list of int: A list containing numeric representations of the Major, Minor and Patch components.
+    """
+    major_component = int(version_str.split('.')[0])
+    minor_component = int(version_str.split('.')[1])
+    patch_component = int(version_str.split('.')[2])
+
+    return [major_component, minor_component, patch_component]
+
+
+ZERO_TO_LOTS = list(range(0, 220, 51))
+"""A list of numbers from 0 to a large number. 0 is included."""
+ONE_TO_NINE = list(range(1, 10))
+"""A list of numbers from 1-9 inclusive."""
+ONE_TO_LOTS = list(range(1, 220, 51))
+"""A list of numbers from 1 to a large number. 1 is included."""
+TWO_TO_LOTS = list(range(2, 220, 51))
+"""A list of numbers from 2 to a large number. 2 is included."""
+TEN_TO_LOTS = list(range(10, 220, 51))
+"""A list of numbers from 10 to a large number. 10 is included."""
+NEGATIVE_NUMBERS = list(range(-10, 0))
+"""A list of negative numbers."""
+NON_POSITIVE_NUMBERS = NEGATIVE_NUMBERS + [0]
+"""A list of negative numbers and zero."""
+
+
+DECIMAL_VALID = [
+    Decimal('1.0' + str(minor)) for minor in ONE_TO_NINE  # base permitted values
+] + [
+    Decimal('1.010')  # equivalent to `Decimal('1.01')`
+]
+"""list of Decimal: A list of valid Decimal version numbers."""
+
+DECIMAL_INVALID = [
+    Decimal('1.0' + str(minor + 1)) for minor in TEN_TO_LOTS  # values greater than 10
+] + [
+    Decimal('1.00')  # lower boundary case
+] + [
+    Decimal('1.' + str(minor)) for minor in TEN_TO_LOTS  # no zero after decimal point
+] + [
+    Decimal(iativer(components[0], components[1])) for components in
+    list(itertools.product(TWO_TO_LOTS, ONE_TO_LOTS)) +  # major versions above 1
+    list(itertools.product(NON_POSITIVE_NUMBERS, ONE_TO_LOTS))  # major versions below 1
+]
+"""list of Decimal: A list of invalid Decimal version numbers."""
+
+IATIVER_VALID = [
+    iativer(components[0], components[1]) for components in
+    list(itertools.product(ONE_TO_LOTS, ONE_TO_NINE)) +  # decimals from 1-9 inclusive
+    list(itertools.product(TWO_TO_LOTS, TEN_TO_LOTS))  # decimals from 10-up for integers from 2 up
+]
+"""list of str: A list of valid IATIver format version numbers."""
+
+IATIVER_INVALID = [
+    iativer(components[0], components[1]) for components in  # pylint: disable=undefined-loop-variable
+    list(itertools.product([1], TEN_TO_LOTS)) +  # integer 1 may only have decimal 01-09
+    list(itertools.product([0], ONE_TO_NINE + TEN_TO_LOTS)) +  # integer value of 0
+    list(itertools.product(ONE_TO_LOTS, [0])) +  # decimal value of 0
+    list(itertools.product(NEGATIVE_NUMBERS, ONE_TO_NINE)) +  # negative integer
+    list(itertools.product(ONE_TO_LOTS, NEGATIVE_NUMBERS))  # negative decimal
+] + [
+    str(components[0]) + '.' + str(components[1]) for components in itertools.product(ONE_TO_LOTS, ONE_TO_NINE)  # non-padded Decimal  # pylint: disable=undefined-loop-variable
+]
+"""list of str: A list of values that look like they could be an IATIver-format version number, but are not."""
+
+SEMVER_VALID = generate_semver_list(ONE_TO_LOTS, ZERO_TO_LOTS, ZERO_TO_LOTS)
+"""list of str: A list of valid SemVer format version numbers."""
+
+MIXED_VER_VALID = IATIVER_VALID + SEMVER_VALID + DECIMAL_VALID
+"""list of (str / Decimal): A list of valid version numbers of any permitted format."""
+
+
+@pytest.fixture(params=[
+    ver.iativer_str for ver in iati.constants.STANDARD_VERSIONS_SUPPORTED
+] + [
+    ver.semver_str for ver in iati.constants.STANDARD_VERSIONS_SUPPORTED
+])
+def std_ver_minor_uninst_valid_fullsupport(request):
+    """Return an uninstantiated valid minor version number that has full support in pyIATI."""
+    return request.param
+
+
+@pytest.fixture(params=DECIMAL_VALID)
+def std_ver_minor_uninst_valid_decimal_possible(request):
+    """Return a decimal value that is a valid representation of a minor version number."""
+    return request.param
+
+
+@pytest.fixture(params=DECIMAL_INVALID)
+def std_ver_minor_uninst_valueerr_decimal(request):
+    """Return a decimal value that is not a valid value to represent a minor version number."""
+    return request.param
+
+
+@pytest.fixture(params=IATIVER_VALID)
+def std_ver_minor_uninst_valid_iativer_possible(request):
+    """Return a string that is a correctly constructed IATIver minor version number."""
+    return request.param
+
+
+@pytest.fixture(params=IATIVER_INVALID)
+def std_ver_minor_uninst_valueerr_iativer(request):
+    """Return a string that looks like it coule be a valid IATIver minor version number, but is not."""
+    return request.param
 
 
 @pytest.fixture(params=[

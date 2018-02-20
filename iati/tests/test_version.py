@@ -6,146 +6,11 @@ import math
 import operator
 import pytest
 import iati.tests.utilities
-
-
-ZERO_TO_LOTS = list(range(0, 220, 51))
-"""A list of numbers from 0 to a large number. 0 is included."""
-ONE_TO_NINE = list(range(1, 10))
-"""A list of numbers from 1-9 inclusive."""
-ONE_TO_LOTS = list(range(1, 220, 51))
-"""A list of numbers from 1 to a large number. 1 is included."""
-TWO_TO_LOTS = list(range(2, 220, 51))
-"""A list of numbers from 2 to a large number. 2 is included."""
-TEN_TO_LOTS = list(range(10, 220, 51))
-"""A list of numbers from 10 to a large number. 10 is included."""
-NEGATIVE_NUMBERS = list(range(-10, 0))
-"""A list of negative numbers."""
-NON_POSITIVE_NUMBERS = NEGATIVE_NUMBERS + [0]
-"""A list of negative numbers and zero."""
-
-
-def generate_semver_list(major_components, minor_components, patch_components):
-    """Generate a list of SemVer-format values.
-
-    Params:
-        major_components (list of int): List of values to use as the Major Component in the generated Version Numbers.
-        minor_components (list of int): List of values to use as the Minor Component in the generated Version Numbers.
-        patch_components (list of int): List of values to use as the Patch Component in the generated Version Numbers.
-
-    Returns:
-        list of string: List of values in the SemVer format.
-    """
-    return [semver(version[0], version[1], version[2]) for version in itertools.product(major_components, minor_components, patch_components)]
-
-
-def iativer(integer, decimal):
-    """Construct an IATIver-format version number.
-
-    Args:
-        integer (int): The integer component of the version number.
-        decimal (int): The decimal component of the version number.
-
-    Returns:
-        str: An IATIver-format version number with the specified Integer and Decimal Components.
-    """
-    return str(integer) + '.0' + str(decimal)
-
-
-def semver(major, minor, patch):
-    """Construct an SemVer-format version number.
-
-    Args:
-        major (int): The major component of the version number.
-        minor (int): The minor component of the version number.
-        patch (int): The patch component of the version number.
-
-    Returns:
-        str: A SemVer-format version number with the specified Major, Minor and Patch Components.
-    """
-    return '.'.join([str(major), str(minor), str(patch)])
-
-
-def split_decimal(version_decimal):
-    """Split a Decimal version number into numeric representations of its components.
-
-    Args:
-        version_decimal (Decimal): A Decimal containing an IATI version number.
-
-    Returns:
-        list of int: A list containing numeric representations of the Integer and Decimal components.
-    """
-    integer_component = int(version_decimal)
-    decimal_component = int(version_decimal * 100) - 100
-
-    return [integer_component, decimal_component]
-
-
-def split_iativer(version_str):
-    """Split an IATIver-format version number into numeric representations of its components.
-
-    Args:
-        version_str (string): An IATIver-format string.
-
-    Returns:
-        list of int: A list containing numeric representations of the Integer and Decimal components.
-    """
-    integer_component = int(version_str.split('.')[0])
-    decimal_component = int(version_str.split('.')[1])
-
-    return [integer_component, decimal_component]
-
-
-def split_semver(version_str):
-    """Split a SemVer-format version number into numeric representations of its components.
-
-    Args:
-        version_str (string): A SemVer-format string.
-
-    Returns:
-        list of int: A list containing numeric representations of the Major, Minor and Patch components.
-    """
-    major_component = int(version_str.split('.')[0])
-    minor_component = int(version_str.split('.')[1])
-    patch_component = int(version_str.split('.')[2])
-
-    return [major_component, minor_component, patch_component]
+from iati.tests.fixtures.versions import *  # TODO: Remove need to import these
 
 
 class VersionNumberTestBase(object):
     """A container for fixtures that generate Version Numbers."""
-
-    DECIMAL_VALID = [
-        Decimal('1.0' + str(minor)) for minor in ONE_TO_NINE  # base permitted values
-    ] + [
-        Decimal('1.010')  # equivalent to `Decimal('1.01')`
-    ]
-    """list of Decimal: A list of valid Decimal version numbers."""
-
-    DECIMAL_INVALID = [
-        Decimal('1.0' + str(minor + 1)) for minor in TEN_TO_LOTS  # values greater than 10
-    ] + [
-        Decimal('1.00')  # lower boundary case
-    ] + [
-        Decimal('1.' + str(minor)) for minor in TEN_TO_LOTS  # no zero after decimal point
-    ] + [
-        Decimal(iativer(components[0], components[1])) for components in
-        list(itertools.product(TWO_TO_LOTS, ONE_TO_LOTS)) +  # major versions above 1
-        list(itertools.product(NON_POSITIVE_NUMBERS, ONE_TO_LOTS))  # major versions below 1
-    ]
-    """list of Decimal: A list of invalid Decimal version numbers."""
-
-    IATIVER_VALID = [
-        iativer(components[0], components[1]) for components in
-        list(itertools.product(ONE_TO_LOTS, ONE_TO_NINE)) +  # decimals from 1-9 inclusive
-        list(itertools.product(TWO_TO_LOTS, TEN_TO_LOTS))  # decimals from 10-up for integers from 2 up
-    ]
-    """list of str: A list of valid IATIver format version numbers."""
-
-    SEMVER_VALID = generate_semver_list(ONE_TO_LOTS, ZERO_TO_LOTS, ZERO_TO_LOTS)
-    """list of str: A list of valid SemVer format version numbers."""
-
-    MIXED_VER_VALID = IATIVER_VALID + SEMVER_VALID + DECIMAL_VALID
-    """list of (str / Decimal): A list of valid version numbers of any permitted format."""
 
     @pytest.fixture(params=DECIMAL_VALID)
     def decimal_version_valid(self, request):
@@ -160,20 +25,6 @@ class VersionNumberTestBase(object):
     @pytest.fixture(params=IATIVER_VALID)
     def iativer_version_valid(self, request):
         """Return a valid IATIver-format version number."""
-        return request.param
-
-    @pytest.fixture(params=[
-        iativer(components[0], components[1]) for components in  # pylint: disable=undefined-loop-variable
-        list(itertools.product([1], TEN_TO_LOTS)) +  # integer 1 may only decimal 01-09
-        list(itertools.product([0], ONE_TO_NINE + TEN_TO_LOTS)) +  # integer value of 0
-        list(itertools.product(ONE_TO_LOTS, [0])) +  # decimal value of 0
-        list(itertools.product(NEGATIVE_NUMBERS, ONE_TO_NINE)) +  # negative integer
-        list(itertools.product(ONE_TO_LOTS, NEGATIVE_NUMBERS))  # negative decimal
-    ] + [
-        str(components[0]) + '.' + str(components[1]) for components in itertools.product(ONE_TO_LOTS, ONE_TO_NINE)  # non-padded Decimal  # pylint: disable=undefined-loop-variable
-    ])
-    def iativer_version_invalid(self, request):
-        """Return an version number that looks like it could be an IATIver-format version, but isn't."""
         return request.param
 
     @pytest.fixture(params=SEMVER_VALID)
@@ -243,15 +94,15 @@ class TestVersionInit(VersionNumberTestBase):
         assert 'A Version object must be created from a string or Decimal, not a ' in str(excinfo.value)
         assert str(type(not_str)) in str(excinfo.value)
 
-    def test_version_supported_iati_versions(self, standard_version_mandatory):
+    def test_version_supported_iati_versions(self, std_ver_minor_uninst_valid_fullsupport):
         """Test Version creation with supported IATI version numbers."""
-        iati.Version(standard_version_mandatory[0].iativer_str)
+        iati.Version(std_ver_minor_uninst_valid_fullsupport)
 
-    def test_version_valid_decimal(self, decimal_version_valid):
+    def test_version_valid_decimal(self, std_ver_minor_uninst_valid_decimal_possible):
         """Test Version creations with valid decimal version numbers."""
-        integer_component, decimal_component = split_decimal(decimal_version_valid)
+        integer_component, decimal_component = split_decimal(std_ver_minor_uninst_valid_decimal_possible)
 
-        version = iati.Version(decimal_version_valid)
+        version = iati.Version(std_ver_minor_uninst_valid_decimal_possible)
 
         assert version.integer == integer_component
         assert version.major == integer_component
@@ -259,25 +110,25 @@ class TestVersionInit(VersionNumberTestBase):
         assert version.minor == decimal_component - 1
         assert version.patch == 0
 
-    def test_version_invalid_float(self, decimal_version_valid):
+    def test_version_invalid_float(self, std_ver_minor_uninst_valid_decimal_possible):
         """Test Version creation with a float that would be valid as a Decimal."""
-        float_version = float(decimal_version_valid)
+        float_version = float(std_ver_minor_uninst_valid_decimal_possible)
 
         with pytest.raises(TypeError):
             iati.Version(float_version)
 
-    def test_version_invalid_decimal(self, decimal_version_invalid):
+    def test_version_invalid_decimal(self, std_ver_minor_uninst_valueerr_decimal):
         """Test Version creation with a Decimal that is not a valid decimal version number."""
         with pytest.raises(ValueError) as excinfo:
-            iati.Version(decimal_version_invalid)
+            iati.Version(std_ver_minor_uninst_valueerr_decimal)
 
         assert str(excinfo.value) == 'A valid version number must be specified.'
 
-    def test_version_valid_iativer(self, iativer_version_valid):
+    def test_version_valid_iativer(self, std_ver_minor_uninst_valid_iativer_possible):
         """Test Version creations with correctly constructed IATIver version numbers."""
-        integer_component, decimal_component = split_iativer(iativer_version_valid)
+        integer_component, decimal_component = split_iativer(std_ver_minor_uninst_valid_iativer_possible)
 
-        version = iati.Version(iativer_version_valid)
+        version = iati.Version(std_ver_minor_uninst_valid_iativer_possible)
 
         assert version.integer == integer_component
         assert version.major == integer_component
@@ -285,10 +136,10 @@ class TestVersionInit(VersionNumberTestBase):
         assert version.minor == decimal_component - 1
         assert version.patch == 0
 
-    def test_version_invalid_iativer(self, iativer_version_invalid):
-        """Test Version creation with a string that is not a valid IATIver version number."""
+    def test_version_invalid_iativer(self, std_ver_minor_uninst_valueerr_iativer):
+        """Test Version creation with a string that is not a valid IATIver version number, but looks like it could be."""
         with pytest.raises(ValueError) as excinfo:
-            iati.Version(iativer_version_invalid)
+            iati.Version(std_ver_minor_uninst_valueerr_iativer)
 
         assert str(excinfo.value) == 'A valid version number must be specified.'
 
@@ -656,10 +507,10 @@ class TestVersionSupportChecks(VersionNumberTestBase):
         with pytest.raises(ValueError):
             possibly_version_func(integer_not_a_version)
 
-    def test_non_version_representation_invalid_val(self, iativer_version_invalid, possibly_version_func):
+    def test_non_version_representation_invalid_val(self, std_ver_minor_uninst_valueerr_iativer, possibly_version_func):
         """Test that values that are a correct type but cannot be a Decimal Version are detected as a ValueError."""
         with pytest.raises(ValueError):
-            possibly_version_func(iativer_version_invalid)
+            possibly_version_func(std_ver_minor_uninst_valueerr_iativer)
 
     @pytest.mark.parametrize('not_a_version', iati.tests.utilities.generate_test_types(['str', 'none', 'int'], True))
     def test_non_version_representation_invalid_type(self, not_a_version, possibly_version_func):
