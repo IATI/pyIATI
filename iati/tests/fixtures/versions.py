@@ -108,14 +108,14 @@ NON_POSITIVE_NUMBERS = NEGATIVE_NUMBERS + [0]
 """A list of negative numbers and zero."""
 
 
-DECIMAL_VALID = [
+MINOR_DECIMAL_VALID = [
     Decimal('1.0' + str(minor)) for minor in ONE_TO_NINE  # base permitted values
 ] + [
     Decimal('1.010')  # equivalent to `Decimal('1.01')`
 ]
 """list of Decimal: A list of valid Decimal version numbers."""
 
-DECIMAL_INVALID = [
+MINOR_DECIMAL_INVALID = [
     Decimal('1.0' + str(minor + 1)) for minor in TEN_TO_LOTS  # values greater than 10
 ] + [
     Decimal('1.00')  # lower boundary case
@@ -128,14 +128,14 @@ DECIMAL_INVALID = [
 ]
 """list of Decimal: A list of invalid Decimal version numbers."""
 
-IATIVER_VALID = [
+MINOR_IATIVER_VALID = [
     iativer(components[0], components[1]) for components in
     list(itertools.product(ONE_TO_LOTS, ONE_TO_NINE)) +  # decimals from 1-9 inclusive
     list(itertools.product(TWO_TO_LOTS, TEN_TO_LOTS))  # decimals from 10-up for integers from 2 up
 ]
 """list of str: A list of valid IATIver format version numbers."""
 
-IATIVER_INVALID = [
+MINOR_IATIVER_INVALID = [
     iativer(components[0], components[1]) for components in  # pylint: disable=undefined-loop-variable
     list(itertools.product([1], TEN_TO_LOTS)) +  # integer 1 may only have decimal 01-09
     list(itertools.product([0], ONE_TO_NINE + TEN_TO_LOTS)) +  # integer value of 0
@@ -147,10 +147,10 @@ IATIVER_INVALID = [
 ]
 """list of str: A list of values that look like they could be an IATIver-format version number, but are not."""
 
-SEMVER_VALID = generate_semver_list(ONE_TO_LOTS, ZERO_TO_LOTS, ZERO_TO_LOTS)
+MINOR_SEMVER_VALID = generate_semver_list(ONE_TO_LOTS, ZERO_TO_LOTS, ZERO_TO_LOTS)
 """list of str: A list of valid SemVer format version numbers."""
 
-MIXED_VER_VALID = IATIVER_VALID + SEMVER_VALID + DECIMAL_VALID
+MINOR_MIXED_VER_VALID = MINOR_IATIVER_VALID + MINOR_SEMVER_VALID + MINOR_DECIMAL_VALID
 """list of (str / Decimal): A list of valid version numbers of any permitted format."""
 
 MAJOR_VALID_INT = list(range(1, 100, 17))
@@ -175,31 +175,55 @@ MAJOR_INVALID = MAJOR_INVALID_NEGATIVE + MAJOR_INVALID_WHITESPACE + MAJOR_INVALI
 """list of (int / str): A list of values that look like they could be valid representations of valid major versions numbers, but are not."""
 
 
-@pytest.fixture(params=DECIMAL_VALID)
+@pytest.fixture(params=iati.tests.utilities.generate_test_types(['str'], True))
+def std_ver_minor_uninst_typeerr(request):
+    """Return a value of the wrong type to represent a minor version number."""
+    return request.param
+
+
+@pytest.fixture(params=iati.tests.utilities.generate_test_types([], True))
+def std_ver_minor_uninst_impossible(request):
+    """Return a value that does not represent a minor version number."""
+    return request.param
+
+
+@pytest.fixture(params=iati.tests.utilities.generate_test_types(['str', 'none', 'int'], True))
+def std_ver_all_uninst_typeerr(request):
+    """Return a value of the wrong type to represent a version number.
+
+    Todo:
+        Change magic value to be something other than `None`.
+        See: https://github.com/IATI/pyIATI/issues/218#issuecomment-364086162
+
+    """
+    return request.param
+
+
+@pytest.fixture(params=MINOR_DECIMAL_VALID)
 def std_ver_minor_uninst_valid_decimal_possible(request):
     """Return a decimal value that is a valid representation of a minor version number."""
     return request.param
 
 
-@pytest.fixture(params=DECIMAL_INVALID)
+@pytest.fixture(params=MINOR_DECIMAL_INVALID)
 def std_ver_minor_uninst_valueerr_decimal(request):
     """Return a decimal value that is not a valid value to represent a minor version number."""
     return request.param
 
 
-@pytest.fixture(params=IATIVER_VALID)
+@pytest.fixture(params=MINOR_IATIVER_VALID)
 def std_ver_minor_uninst_valid_iativer_possible(request):
     """Return a string that is a correctly constructed IATIver minor version number."""
     return request.param
 
 
-@pytest.fixture(params=IATIVER_INVALID)
+@pytest.fixture(params=MINOR_IATIVER_INVALID)
 def std_ver_minor_uninst_valueerr_iativer(request):
     """Return a string that looks like it coule be a valid IATIver minor version number, but is not."""
     return request.param
 
 
-@pytest.fixture(params=SEMVER_VALID)
+@pytest.fixture(params=MINOR_SEMVER_VALID)
 def std_ver_minor_uninst_valid_semver_possible(request):
     """Return a string that is a correctly constructed SemVer minor version number."""
     return request.param
@@ -216,7 +240,7 @@ def str_ver_minor_uninst_valueerr_v0(request):
     return request.param
 
 
-@pytest.fixture(params=MIXED_VER_VALID)
+@pytest.fixture(params=MINOR_MIXED_VER_VALID)
 def std_ver_minor_uninst_valid_possible(request):
     """Return a valid version number in a valid format."""
     return request.param
@@ -239,7 +263,12 @@ def std_ver_minor_uninst_valid_known(request):
     ver.semver_str for ver in iati.constants.STANDARD_VERSIONS_SUPPORTED
 ])
 def std_ver_minor_uninst_valid_fullsupport(request):
-    """Return an uninstantiated valid minor version number that has full support in pyIATI."""
+    """Return an uninstantiated valid minor version number that has full support in pyIATI.
+
+    Todo:
+        Add decimal representations where possible.
+
+    """
     return request.param
 
 
@@ -250,7 +279,7 @@ def std_ver_minor_inst_valid_known(request):
 
 
 @pytest.fixture(params=[
-    version for version in IATIVER_VALID if not iati.Version(version) in iati.constants.STANDARD_VERSIONS
+    version for version in MINOR_IATIVER_VALID if not iati.Version(version) in iati.constants.STANDARD_VERSIONS
 ])
 def std_ver_minor_inst_valid_unknown(request):
     """Return a version of the IATI Standard that is not known by pyIATI to exist."""
@@ -278,7 +307,7 @@ def std_ver_minor_inst_valid_possible(std_ver_minor_uninst_valid_possible):
 @pytest.fixture
 def std_ver_minor_inst_valid_single():
     """Return a single instantiated IATI Version Number."""
-    return iati.Version(IATIVER_VALID[0])
+    return iati.Version(MINOR_IATIVER_VALID[0])
 
 
 @pytest.fixture(params=MAJOR_VALID)

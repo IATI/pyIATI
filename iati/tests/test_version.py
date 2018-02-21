@@ -17,29 +17,13 @@ class TestVersionInit(object):
         with pytest.raises(TypeError):
             iati.Version()  # pylint: disable=E1120
 
-    @pytest.mark.parametrize("not_version_str", [
-        '',  # empty string
-        ' ',  # whitespace
-        'not a version',  # letters
-        ':)',  # symbols
-        '.',  # only a separator
-        '+'  # only a build number separator
-    ])
-    def test_version_invalid_string(self, not_version_str):
-        """Test Version creation with a string that is not a version number."""
-        with pytest.raises(ValueError) as excinfo:
-            iati.Version(not_version_str)
-
-        assert str(excinfo.value) == 'A valid version number must be specified.'
-
-    @pytest.mark.parametrize("not_str", iati.tests.utilities.generate_test_types(['str'], True))
-    def test_version_not_string(self, not_str):
+    def test_version_not_string(self, std_ver_minor_uninst_typeerr):
         """Test Version creation with a non-string."""
         with pytest.raises(TypeError) as excinfo:
-            iati.Version(not_str)
+            iati.Version(std_ver_minor_uninst_typeerr)
 
         assert 'A Version object must be created from a string or Decimal, not a ' in str(excinfo.value)
-        assert str(type(not_str)) in str(excinfo.value)
+        assert str(type(std_ver_minor_uninst_typeerr)) in str(excinfo.value)
 
     def test_version_supported_iati_versions(self, std_ver_minor_uninst_valid_fullsupport):
         """Test Version creation with supported IATI version numbers."""
@@ -397,13 +381,12 @@ class TestVersionSupportChecks(object):
         with pytest.raises(ValueError):
             decorated_func(std_ver_minor_uninst_valid_possible)
 
-    @pytest.mark.parametrize('not_a_version', iati.tests.utilities.generate_test_types(['str'], True))
-    def test_supported_version_junk_value(self, not_a_version, truthy_func, decorated_func):
+    def test_supported_version_junk_value(self, std_ver_minor_uninst_typeerr, truthy_func, decorated_func):
         """Check that supported IATI Versions cause an error if a junk value is provided."""
-        assert truthy_func(not_a_version) is False
+        assert truthy_func(std_ver_minor_uninst_typeerr) is False
 
         with pytest.raises(ValueError):
-            decorated_func(not_a_version)
+            decorated_func(std_ver_minor_uninst_typeerr)
 
     def test_non_version_representation_valid_version_obj(self, std_ver_minor_inst_valid_possible, possibly_version_func):
         """Test that instantiated iati.Versions are detected as being valid representations of an IATI Version Number."""
@@ -433,7 +416,13 @@ class TestVersionSupportChecks(object):
         assert version is std_ver_major_uninst_valid_possible
 
     def test_non_version_representation_valid_val_none(self, possibly_version_func):
-        """Test that None detected as being valid representations of an IATI Version Number."""
+        """Test that None detected as being valid representations of an IATI Version Number.
+
+        Todo:
+            Change magic value to be something other than `None`.
+            See: https://github.com/IATI/pyIATI/issues/218#issuecomment-364086162
+
+        """
         version = possibly_version_func(None)
 
         assert version is None
@@ -448,11 +437,10 @@ class TestVersionSupportChecks(object):
         with pytest.raises(ValueError):
             possibly_version_func(std_ver_minor_uninst_valueerr_iativer)
 
-    @pytest.mark.parametrize('not_a_version', iati.tests.utilities.generate_test_types(['str', 'none', 'int'], True))
-    def test_non_version_representation_invalid_type(self, not_a_version, possibly_version_func):
+    def test_non_version_representation_invalid_type(self, std_ver_all_uninst_typeerr, possibly_version_func):
         """Test that values of a type that cannot represent a Version cause a TypeError."""
         with pytest.raises(TypeError):
-            possibly_version_func(not_a_version)
+            possibly_version_func(std_ver_all_uninst_typeerr)
 
 
 class TestVersionStandardisation(object):
@@ -520,8 +508,7 @@ class TestVersionStandardisation(object):
         """Check that valid Integer Versions return the last Decimal in the Integer."""
         assert integer_decimalisation_func(integer_version) == expected_decimal
 
-    @pytest.mark.parametrize('not_a_version', iati.tests.utilities.generate_test_types([], True))
-    def test_junk_values_not_modified(self, not_a_version, junk_ignoring_func):
+    def test_junk_values_not_modified(self, std_ver_minor_uninst_impossible, junk_ignoring_func):
         """Check that junk values are returned as-is when standardising Decimal Versions.
 
         An `is` check is performed to check that the same object is returned.
@@ -529,13 +516,13 @@ class TestVersionStandardisation(object):
 
         """
         try:
-            original_value = copy.deepcopy(not_a_version)
+            original_value = copy.deepcopy(std_ver_minor_uninst_impossible)
         except TypeError:
-            original_value = not_a_version
+            original_value = std_ver_minor_uninst_impossible
 
-        result = junk_ignoring_func(not_a_version)
+        result = junk_ignoring_func(std_ver_minor_uninst_impossible)
 
-        assert result is not_a_version
+        assert result is std_ver_minor_uninst_impossible
         try:
             assert (result == original_value) or isinstance(original_value, type(iter([]))) or math.isnan(original_value)
         except TypeError:
