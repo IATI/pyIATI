@@ -508,7 +508,7 @@ class TestVersionStandardisation(object):
         """Check that valid Integer Versions return the last Decimal in the Integer."""
         assert integer_decimalisation_func(integer_version) == expected_decimal
 
-    def test_junk_values_not_modified(self, std_ver_minor_uninst_impossible, junk_ignoring_func):
+    def test_junk_values_not_modified(self, std_ver_minor_uninst_mixederr, junk_ignoring_func):
         """Check that junk values are returned as-is when standardising Decimal Versions.
 
         An `is` check is performed to check that the same object is returned.
@@ -516,13 +516,13 @@ class TestVersionStandardisation(object):
 
         """
         try:
-            original_value = copy.deepcopy(std_ver_minor_uninst_impossible)
+            original_value = copy.deepcopy(std_ver_minor_uninst_mixederr)
         except TypeError:
-            original_value = std_ver_minor_uninst_impossible
+            original_value = std_ver_minor_uninst_mixederr
 
-        result = junk_ignoring_func(std_ver_minor_uninst_impossible)
+        result = junk_ignoring_func(std_ver_minor_uninst_mixederr)
 
-        assert result is std_ver_minor_uninst_impossible
+        assert result is std_ver_minor_uninst_mixederr
         try:
             assert (result == original_value) or isinstance(original_value, type(iter([]))) or math.isnan(original_value)
         except TypeError:

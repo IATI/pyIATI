@@ -1,4 +1,45 @@
-"""Pytest fixtures for specifying versions."""
+"""Pytest fixtures for specifying versions.
+
+---
+
+There is a standard method of defining fixtures that return version numbers. This is:
+
+    `std_ver_[component_level]_[instantiation_status]_[validity]_[type(s)]_[knowledge]`
+
+Each of these sections has a number of values that they may take. It is not necessary to state all sections for every fixture. Some sections may have multiple values.
+
+* Component levels
+  * `major` - major / integer versions
+  * `minor` - minor / decimal versions
+  * `all` - both major and minor versions
+  * `independent` - a value that represents every single version
+* Instantiation Status
+  * `inst` - an iati.Version instance
+  * `uninst` - something that is not an iati.Version instance
+  * `mixedinst` - a mix of iati.Version instances and other types
+* Validity
+  * `valid` - a value that represents a version number
+  * `valueerr` - a value of a type that could represent a version number, but the value is not in the correct format or range
+  * `typeerr` - a value of a type that cannot represent a version number
+  * `mixederr` - a mix of values that cause each Value and Type errors
+* Type(s) (for uninstantiated values)
+  * `str` - strings
+  * `int` - integers
+  * `iativer` - strings in the IATIver format
+  * `semver` - strings in the SemVer format
+  * `decimal` - decimal.Decimal instances
+* Knowledge
+  * `known` - pyIATI knows that this is an approved version of the IATI Standard that exists
+  * `unknown` - pyIATI does not that this is an approved version of the IATI Standard that exists
+  * `possible` - a known or unknown version number
+  * `fullsupport` - pyIATI fully supports this version - this includes Schemas, Codelists, Rulesets, validation and more
+  * `partsupport` - pyIATI partially supports this version - this may mean that there is a Schema, but not the other components
+  * `single` - a fixture that will only parameterize with a single value
+  * `v0` - a version number with a major component of 0
+  * `v1` - a version number with a major component of 1
+  * `v2` - a version number with a major component of 2
+
+"""
 from decimal import Decimal
 import itertools
 import pytest
@@ -182,7 +223,7 @@ def std_ver_minor_uninst_typeerr(request):
 
 
 @pytest.fixture(params=iati.tests.utilities.generate_test_types([], True))
-def std_ver_minor_uninst_impossible(request):
+def std_ver_minor_uninst_mixederr(request):
     """Return a value that does not represent a minor version number."""
     return request.param
 
