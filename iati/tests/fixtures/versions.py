@@ -194,6 +194,14 @@ MINOR_SEMVER_VALID = generate_semver_list(ONE_TO_LOTS, ZERO_TO_LOTS, ZERO_TO_LOT
 MINOR_MIXED_VER_VALID = MINOR_IATIVER_VALID + MINOR_SEMVER_VALID + MINOR_DECIMAL_VALID
 """list of (str / Decimal): A list of valid version numbers of any permitted format."""
 
+MINOR_MIXED_VER_INVALID = MINOR_IATIVER_INVALID + MINOR_DECIMAL_INVALID + iati.tests.utilities.generate_test_types(['str'])
+"""list of (str / Decimal): A list of values that look like they could be valid IATI version numbers, but are not.
+
+Todo:
+    Add invalid SemVer values.
+
+"""
+
 MAJOR_VALID_INT = list(range(1, 100, 17))
 """list of int: A list of valid major version numbers represented as integers."""
 
@@ -202,6 +210,9 @@ MAJOR_VALID_STR = [str(ver) for ver in MAJOR_VALID_INT]
 
 MAJOR_VALID = MAJOR_VALID_INT + MAJOR_VALID_STR
 """list of (int / str): A list of values that are valid representations of valid major version numbers."""
+
+MAJOR_KNOWN = iati.constants.STANDARD_VERSIONS_MAJOR + [str(ver) for ver in iati.constants.STANDARD_VERSIONS_MAJOR]
+"""list of (int / str): A list of values that are valid representations of known major version numbers."""
 
 MAJOR_INVALID_NEGATIVE = NEGATIVE_NUMBERS + [str(val) for val in NEGATIVE_NUMBERS]
 """list of (int / str): A list of invalid major version numbers. Invalid because they are negative values."""
@@ -287,6 +298,12 @@ def std_ver_minor_uninst_valid_possible(request):
     return request.param
 
 
+@pytest.fixture(params=MINOR_MIXED_VER_INVALID)
+def std_ver_minor_uninst_valueerr_str_decimal(request):
+    """Return a valid version number in a valid format."""
+    return request.param
+
+
 @pytest.fixture(params=iati.constants.STANDARD_VERSIONS)
 def std_ver_minor_uninst_valid_known(request):
     """Return an uninstantiated IATI version number that pyIATI knows to exist.
@@ -305,6 +322,37 @@ def std_ver_minor_uninst_valid_known(request):
 ])
 def std_ver_minor_uninst_valid_fullsupport(request):
     """Return an uninstantiated valid minor version number that has full support in pyIATI.
+
+    Todo:
+        Add decimal representations where possible.
+        Create a function that makes generation of this type of fixture input easier.
+
+    """
+    return request.param
+
+
+@pytest.fixture(params=[
+    ver.iativer_str for ver in iati.constants.STANDARD_VERSIONS_SUPPORTED
+] + [
+    ver.semver_str for ver in iati.constants.STANDARD_VERSIONS_SUPPORTED
+] + iati.constants.STANDARD_VERSIONS_SUPPORTED)
+def std_ver_minor_mixedinst_valid_fullsupport(request):
+    """Return an valid minor version number that has full support in pyIATI.
+
+    Todo:
+        Add decimal representations where possible.
+
+    """
+    return request.param
+
+
+@pytest.fixture(params=[
+    ver.iativer_str for ver in iati.constants.STANDARD_VERSIONS
+] + [
+    ver.semver_str for ver in iati.constants.STANDARD_VERSIONS
+] + iati.constants.STANDARD_VERSIONS)
+def std_ver_minor_mixedinst_valid_partsupport(request):
+    """Return an valid minor version number that has partial support in pyIATI.
 
     Todo:
         Add decimal representations where possible.
@@ -367,6 +415,13 @@ def std_ver_minor_inst_valid_single():
 def std_ver_major_uninst_valid_possible(request):
     """Return a value that is a correctly formatted representation of a major version number."""
     return request.param
+
+
+@pytest.fixture(params=MAJOR_KNOWN)
+def std_ver_major_uninst_valid_known(request):
+    """Return a value that is a correctly formatted representation of a known major version number."""
+    return request.param
+
 
 @pytest.fixture(params=MAJOR_INVALID)
 def std_ver_major_uninst_valueerr(request):
