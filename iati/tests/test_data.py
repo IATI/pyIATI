@@ -470,8 +470,7 @@ class TestDatasetVersionDetection(object):
         output = collections.namedtuple('output', 'root_element child_element')
         return output(root_element=request.param[0], child_element=request.param[1])
 
-    @pytest.mark.parametrize("version", iati.utilities.versions_for_integer(1))
-    def test_detect_version_v1_simple(self, iati_tag_names, version):
+    def test_detect_version_v1_simple(self, iati_tag_names, std_ver_minor_inst_valid_known_v1):
         """Check that a version 1 Dataset is detected correctly.
         Also checks that version numbers containing whitespace do not affect version detection.
         """
@@ -482,10 +481,10 @@ class TestDatasetVersionDetection(object):
             <{1} version="   {2}"></{1}>
             <{1} version="   {2}   "></{1}>
         </{0}>
-        """.format(iati_tag_names.root_element, iati_tag_names.child_element, version))
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element, std_ver_minor_inst_valid_known_v1))
         result = data.version
 
-        assert result == version
+        assert result == std_ver_minor_inst_valid_known_v1
 
     def test_detect_version_explicit_parent_mismatch_explicit_child(self, iati_tag_names):
         """Check that no version is detected for a v1 Dataset where a version within the `iati-activities` element does not match the versions specified within all `iati-activity` child elements."""
@@ -559,18 +558,17 @@ class TestDatasetVersionDetection(object):
 
         assert result is None
 
-    @pytest.mark.parametrize("version", iati.utilities.versions_for_integer(2))
-    def test_detect_version_v2_simple(self, iati_tag_names, version):
+    def test_detect_version_v2_simple(self, iati_tag_names, std_ver_minor_inst_valid_known_v2):
         """Check that a version 2 Dataset is detected correctly."""
         data = iati.Dataset("""
         <{0} version="{2}">
             <{1}></{1}>
             <{1}></{1}>
         </{0}>
-        """.format(iati_tag_names.root_element, iati_tag_names.child_element, version))
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element, std_ver_minor_inst_valid_known_v2))
         result = data.version
 
-        assert result == version
+        assert result == std_ver_minor_inst_valid_known_v2
 
     def test_cannot_assign_to_version_property(self):
         """Check that it is not possible to assign to the `version` property.

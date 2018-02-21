@@ -345,6 +345,18 @@ def std_ver_minor_inst_valid_possible(std_ver_minor_uninst_valid_possible):
     return iati.Version(std_ver_minor_uninst_valid_possible)
 
 
+@pytest.fixture(params=iati.utilities.versions_for_integer(1))
+def std_ver_minor_inst_valid_known_v1(request):
+    """Return an instantiated known minor version number within major version 1."""
+    return request.param
+
+
+@pytest.fixture(params=iati.utilities.versions_for_integer(2))
+def std_ver_minor_inst_valid_known_v2(request):
+    """Return an instantiated known minor version number within major version 2."""
+    return request.param
+
+
 @pytest.fixture
 def std_ver_minor_inst_valid_single():
     """Return a single instantiated IATI Version Number."""
