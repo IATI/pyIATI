@@ -24,7 +24,7 @@ class SchemaTestsBase(object):
             "schema_class": iati.OrganisationSchema
         }
     ])
-    def schema_initialised(self, request, standard_version_optional):
+    def schema_initialised(self, request, std_ver_minor_mixedinst_valid_fullsupport):
         """Create and return a single ActivitySchema or OrganisationSchema object.
 
         For use where both ActivitySchema and OrganisationSchema must produce the same result.
@@ -33,7 +33,7 @@ class SchemaTestsBase(object):
             iati.Schema: An activity or organisation Schema that has been initialised.
 
         """
-        schema_path = request.param['path_func'](*standard_version_optional)[0]
+        schema_path = request.param['path_func'](std_ver_minor_mixedinst_valid_fullsupport)[0]
         return request.param['schema_class'](schema_path)
 
 
@@ -44,9 +44,9 @@ class TestSchemas(SchemaTestsBase):
         (iati.default.activity_schema, 'iati-activities'),
         (iati.default.organisation_schema, 'iati-organisations')
     ])
-    def test_schema_default_attributes(self, standard_version_optional, schema_func, expected_root_element_name):
+    def test_schema_default_attributes(self, std_ver_minor_mixedinst_valid_fullsupport, schema_func, expected_root_element_name):
         """Check a Schema's default attributes are correct."""
-        schema = schema_func(*standard_version_optional)
+        schema = schema_func(std_ver_minor_mixedinst_valid_fullsupport)
 
         assert schema.ROOT_ELEMENT_NAME == expected_root_element_name
         assert expected_root_element_name in schema._source_path
