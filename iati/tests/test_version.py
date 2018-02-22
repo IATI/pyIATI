@@ -360,7 +360,7 @@ class TestVersionSupportChecks(object):
         assert iati.version._is_fully_supported(std_ver_minor_inst_valid_partsupport) is False
 
         with pytest.raises(ValueError):
-            decorated_func_full_support(standard_version_partial_support)
+            decorated_func_full_support(std_ver_minor_inst_valid_partsupport)
 
     def test_known_version_known(self, std_ver_minor_inst_valid_known, decorated_func_known):
         """Check that known IATI Versions are detected as such."""
