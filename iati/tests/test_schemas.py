@@ -62,13 +62,19 @@ class TestSchemas(SchemaTestsBase):
         iati.default.activity_schema,
         iati.default.organisation_schema
     ])
-    @pytest.mark.parametrize('version', iati.constants.STANDARD_VERSIONS_SUPPORTED)
-    def test_schema_get_version(self, schema_func, version):
-        """Check that the correct version number is returned by the base classes of iati.schemas.schema._get_version()."""
-        schema = schema_func(version)
+    def test_schema_get_version(self, schema_func, std_ver_minor_mixedinst_valid_fullsupport):
+        """Check that the correct version number is returned by the base classes of iati.schemas.schema._get_version().
+
+        Todo:
+            Determine whether the private function that is accessed should be public.
+
+        """
+        version_instance = iati.version._standardise_decimal_version(std_ver_minor_mixedinst_valid_fullsupport)
+
+        schema = schema_func(std_ver_minor_mixedinst_valid_fullsupport)
         result = schema._get_version()
 
-        assert result == version
+        assert result == version_instance
 
     def test_schema_unmodified_includes(self, schema_initialised):
         """Check that local elements can be accessed, but imported elements within unmodified Schema includes cannot be accessed.

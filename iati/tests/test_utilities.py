@@ -206,13 +206,12 @@ class TestUtilities(object):
 class TestDefaultVersions(object):
     """A container for tests relating to default versions."""
 
-    @pytest.mark.parametrize("major_version", iati.constants.STANDARD_VERSIONS_MAJOR)
-    def test_versions_for_integer(self, major_version):
+    def test_versions_for_integer(self, std_ver_major_uninst_valid_known):
         """Check that the each of the decimal versions returned by versions_for_integer starts with the input major version."""
-        result = iati.utilities.versions_for_integer(major_version)
+        result = iati.utilities.versions_for_integer(std_ver_major_uninst_valid_known)
 
         for version in result:
-            assert version.major == major_version
+            assert version.major == std_ver_major_uninst_valid_known
 
 
 class TestFileLoading(object):
