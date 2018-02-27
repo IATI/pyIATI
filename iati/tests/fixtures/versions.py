@@ -56,6 +56,7 @@ def generate_semver_list(major_components, minor_components, patch_components):
 
     Returns:
         list of string: List of values in the SemVer format.
+
     """
     return [semver(version[0], version[1], version[2]) for version in itertools.product(major_components, minor_components, patch_components)]
 
@@ -69,6 +70,7 @@ def iativer(integer, decimal):
 
     Returns:
         str: An IATIver-format version number with the specified Integer and Decimal Components.
+
     """
     return str(integer) + '.0' + str(decimal)
 
@@ -83,6 +85,7 @@ def semver(major, minor, patch):
 
     Returns:
         str: A SemVer-format version number with the specified Major, Minor and Patch Components.
+
     """
     return '.'.join([str(major), str(minor), str(patch)])
 
@@ -95,6 +98,7 @@ def split_decimal(version_decimal):
 
     Returns:
         list of int: A list containing numeric representations of the Integer and Decimal components.
+
     """
     integer_component = int(version_decimal)
     decimal_component = int(version_decimal * 100) - 100
@@ -110,6 +114,7 @@ def split_iativer(version_str):
 
     Returns:
         list of int: A list containing numeric representations of the Integer and Decimal components.
+
     """
     integer_component = int(version_str.split('.')[0])
     decimal_component = int(version_str.split('.')[1])
@@ -125,6 +130,7 @@ def split_semver(version_str):
 
     Returns:
         list of int: A list containing numeric representations of the Major, Minor and Patch components.
+
     """
     major_component = int(version_str.split('.')[0])
     minor_component = int(version_str.split('.')[1])
@@ -347,11 +353,11 @@ def std_ver_minor_mixedinst_valid_fullsupport(request):
 
 
 @pytest.fixture(params=[
-    ver.iativer_str for ver in iati.constants.STANDARD_VERSIONS if not ver in iati.constants.STANDARD_VERSIONS_SUPPORTED
+    ver.iativer_str for ver in iati.constants.STANDARD_VERSIONS if ver not in iati.constants.STANDARD_VERSIONS_SUPPORTED
 ] + [
-    ver.semver_str for ver in iati.constants.STANDARD_VERSIONS if not ver in iati.constants.STANDARD_VERSIONS_SUPPORTED
+    ver.semver_str for ver in iati.constants.STANDARD_VERSIONS if ver not in iati.constants.STANDARD_VERSIONS_SUPPORTED
 ] + [
-    ver for ver in iati.constants.STANDARD_VERSIONS if not ver in iati.constants.STANDARD_VERSIONS_SUPPORTED
+    ver for ver in iati.constants.STANDARD_VERSIONS if ver not in iati.constants.STANDARD_VERSIONS_SUPPORTED
 ])
 def std_ver_minor_mixedinst_valid_partsupport(request):
     """Return an valid minor version number that has partial support in pyIATI.

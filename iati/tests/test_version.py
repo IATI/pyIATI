@@ -1,12 +1,10 @@
 """A module containing tests for the pyIATI representation of Standard metadata."""
 import copy
-from decimal import Decimal
-import itertools
 import math
 import operator
 import pytest
 import iati.tests.utilities
-from iati.tests.fixtures.versions import *  # TODO: Remove need to import these
+from iati.tests.fixtures.versions import iativer, semver, split_decimal, split_iativer, split_semver  # TODO: Remove need to import these
 
 
 class TestVersionInit(object):
