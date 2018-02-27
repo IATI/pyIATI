@@ -14,7 +14,13 @@ import os
 from io import StringIO
 import chardet
 from lxml import etree
-import iati.constants
+# try-except to prevent errors caused by `from .versions import Version` in `__init__.py`
+try:
+    import iati
+    iati.Version  # pylint: disable=pointless-statement
+    import iati.constants
+except AttributeError:
+    pass
 
 
 def add_namespace(tree, new_ns_name, new_ns_uri):

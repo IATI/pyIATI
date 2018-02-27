@@ -1,4 +1,5 @@
 """A module containing tests for the library implementation of accessing resources."""
+from decimal import Decimal
 from lxml import etree
 import pytest
 import iati.constants
@@ -34,6 +35,18 @@ class TestResourceFolders(object):
         ('1.03', '1-03'),
         ('1.02', '1-02'),
         ('1.01', '1-01'),
+        (Decimal('1.05'), '1-05'),
+        (Decimal('1.04'), '1-04'),
+        (Decimal('1.03'), '1-03'),
+        (Decimal('1.02'), '1-02'),
+        (Decimal('1.01'), '1-01'),
+        (iati.Version('2.02'), '2-02'),
+        (iati.Version('2.01'), '2-01'),
+        (iati.Version('1.05'), '1-05'),
+        (iati.Version('1.04'), '1-04'),
+        (iati.Version('1.03'), '1-03'),
+        (iati.Version('1.02'), '1-02'),
+        (iati.Version('1.01'), '1-01'),
         ('1', '1'),
         ('2', '2'),
         (None, 'version-independent')

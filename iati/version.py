@@ -2,6 +2,14 @@
 from decimal import Decimal
 import re
 import semantic_version
+# try-except to prevent errors caused by `from .versions import Version` in `__init__.py`
+try:
+    import iati
+    iati.Version  # pylint: disable=pointless-statement
+    import iati.constants
+except AttributeError:
+    pass
+import iati.utilities
 
 
 class Version(semantic_version.Version):
@@ -11,7 +19,7 @@ class Version(semantic_version.Version):
         """Initialise a Version Number.
 
         Args:
-            version (str or Decimal): A representation of an IATI version number.
+            version (str / Decimal): A representation of an IATI version number.
 
         Raises:
             TypeError: If an attempt to pass something that is not a string or Decimal is made.
@@ -189,3 +197,254 @@ class Version(semantic_version.Version):
         AttributeError: An error that indicates that this attribute does not exist.
 
     """
+
+
+def allow_fully_supported_version(input_func):
+    """Decorate function by ensuring versions are fully supported by pyIATI.
+
+    In terms of value:
+    * Valid Decimal Versions will remain unchanged.
+    * Invalid Decimal Versions will cause an error to be raised.
+    * Other values will cause an error to be raised.
+
+    Args:
+        input_func (function): The function to decorate. Takes the `version` argument as its first argument.
+
+    Returns:
+        function: The input function, wrapped such that it is called with a fully supported iati.Version representing a Decimal Version.
+
+    """
+    def wrap_allow_fully_supported_version(*args, **kwargs):
+        """Act as a wrapper to ensure a version number is a Decimal that is fully supported by pyIATI.
+
+        Raises:
+            ValueError: If the input version is not a Decimal iati.Version that pyIATI fully supports.
+
+        """
+        version = args[0]
+
+        if not _is_fully_supported(version):
+            raise ValueError('{0} is not a fully supported version of the IATI Standard in a standardised representation.'.format(repr(version)))
+
+        return input_func(*args, **kwargs)
+
+    return wrap_allow_fully_supported_version
+
+
+def allow_known_version(input_func):
+    """Decorate function by ensuring versions are Decimal Versions of IATI that pyIATI knows exists.
+
+    In terms of value:
+    * Valid Decimal Versions will remain unchanged.
+    * Invalid Decimal Versions will cause an error to be raised.
+    * Other values will cause an error to be raised.
+
+    Args:
+        input_func (function): The function to decorate. Takes the `version` argument as its first argument.
+
+    Returns:
+        function: The input function, wrapped such that it is called with an iati.Version representing a real Decimal Version.
+
+    """
+    def wrap_allow_known_version(*args, **kwargs):
+        """Act as a wrapper to ensure a version number is a Decimal that exists.
+
+        Raises:
+            ValueError: If the input version is not a known Decimal iati.Version.
+
+        """
+        version = args[0]
+
+        if not _is_known(version):
+            raise ValueError('{0} is not a known version of the IATI Standard in a standardised representation.'.format(repr(version)))
+
+        return input_func(*args, **kwargs)
+
+    return wrap_allow_known_version
+
+
+def allow_possible_version(input_func):
+    """Decorate function by ensuring values specified to represent a Version can actually do so.
+
+    In terms of value:
+    * Permitted values representing an Integer or Decimal Version in a known format will remain unchanged.
+    * None will remain unchanged, as a way of representing all versions.
+    * strings, integers and Decimals with values that cannot represent a Version will cause a ValueError.
+    * Values of types other than string, Decimal, integer and iati.Version will cause a TypeError.
+
+    Args:
+        input_func (function): The function to decorate. Takes the `version` argument as its first argument.
+
+    Returns:
+        function: The input function, wrapped such that the return value is known to represent some IATI Version Number.
+
+    """
+    def wrap_allow_possible_version(*args, **kwargs):
+        """Act as a wrapper to ensure a value represents a possible version number.
+
+        Raises:
+            TypeError: If the input version is not an iati.Version, string, Decimal or integer.
+            ValueError: If the input version is a string, Decimal or Integer, but the value cannot represent a Version Number.
+
+        """
+        version = args[0]
+
+        _prevent_non_version_representations(version)
+
+        return input_func(*args, **kwargs)
+
+    return wrap_allow_possible_version
+
+
+def decimalise_integer(input_func):
+    """Decorate function by converting input version numbers to a standardised format Decimal Version.
+
+    In terms of value:
+    * Decimal Versions will remain unchanged.
+    * Integer Versions will return the latest Decimal Version within the Integer.
+
+    In terms of type:
+    * strings and Decimals will become iati.Versions.
+    * iati.Versions will remain unchanged.
+
+    Args:
+        input_func (function): The function to decorate. Takes the `version` argument as its first argument.
+
+    Returns:
+        function: The input function, wrapped such that it is called with a iati.Version representing a Decimal Version.
+
+    """
+    def wrap_decimalise_integer(*args, **kwargs):
+        """Act as a wrapper to convert input Integer Version numbers to a standardised format Decimal Version."""
+        version = _decimalise_integer(args[0])
+
+        return input_func(version, *args[1:], **kwargs)
+
+    return wrap_decimalise_integer
+
+
+def standardise_decimals(input_func):
+    """Decorate function by converting an input version into an iati.Version if a value is specified that is a permitted way to represent a Decimal Version.
+
+    Args:
+        input_func (function): The function to decorate. Takes the `version` argument as its first argument.
+
+    Returns:
+        function: The input function, wrapped such that it is called with an iati.Version if a Decimal version is provided.
+
+    """
+    def wrap_standardise_decimals(*args, **kwargs):
+        """Act as a wrapper to ensure a version number is an iati.Version if a Decimal version is specified."""
+        version = _standardise_decimal_version(args[0])
+
+        return input_func(version, *args[1:], **kwargs)
+
+    return wrap_standardise_decimals
+
+
+def _decimalise_integer(version):
+    """Convert a version number into the most appropriate Decimal Version.
+
+    * Integer Versions will return the latest Decimal Version within the Integer. If the Integer is invalid, returns the first Decimal that would exist in the Integer.
+    * All other inputs will remain unchanged.
+
+    Args:
+        version (Any): The value to convert to a Decimal Version if it represents an Integer Version.
+
+    Returns:
+        Any: The Decimal Version of the Standard that the input version relates to, or the input unchanged.
+
+    """
+    # handle major versions
+    try:
+        if not isinstance(version, (int, str)) or isinstance(version, bool):
+            raise TypeError
+        major_version = int(version)
+        if major_version in iati.constants.STANDARD_VERSIONS_MAJOR:
+            version = max(iati.utilities.versions_for_integer(major_version))
+        elif str(major_version) == version:  # specifying only a major component
+            version = Version(str(major_version) + '.0.0')
+    except (ValueError, TypeError, OverflowError):
+        pass
+
+    return version
+
+
+def _is_fully_supported(version):
+    """Detect whether a Version is fully supported by pyIATI.
+
+    Args:
+        version (Any): The Version to check support of.
+
+    Returns:
+        bool: True if version is a fully supported iati.Version. False in all other cases.
+
+    """
+    return version in iati.constants.STANDARD_VERSIONS_SUPPORTED
+
+
+def _is_known(version):
+    """Detect whether a Version is a version of the Standard that pyIATI knows to exist.
+
+    Args:
+        version (iati.Version): The Version to check support of.
+
+    Returns:
+        bool: True if version is an iati.Version known by pyIATI to be a released version. False in all other cases.
+
+    """
+    return version in iati.constants.STANDARD_VERSIONS
+
+
+def _prevent_non_version_representations(version):
+    """Detect whether a value specified to be a Version could possibly represent a Version.
+
+    In terms of value:
+    * Permitted values representing an Integer or Decimal Version in a known format will remain unchanged.
+    * None will remain unchanged, as a way of representing all versions.
+    * strings, integers and Decimals with values that cannot represent a Version will cause a ValueError.
+    * Values of types other than string, Decimal, integer and iati.Version will cause a TypeError.
+
+    Args:
+        version (Any): The value to check to see whether it may represent a Version in a known manner.
+
+    Raises:
+        TypeError: If anything other than an iati.Version, string, Decimal or integer is provided.
+        ValueError: If a string, Decimal or integer has a value that is not in a format that is known to represent an IATI Version Number.
+
+    """
+    if not isinstance(version, (str, Decimal, int, iati.Version, type(None))) or isinstance(version, bool):
+        raise TypeError('IATI Version Numbers may only be represented as a string, Decimal, int or iati.Version. A {0} was provided.'.format(type(version)))
+
+    try:
+        iati.Version(version)
+    except ValueError:
+        if version == '0' or not version.isdigit():  # accept string representations of positive numbers
+            raise ValueError('{0} is not a known representation of a potential IATI Version Number'.format(version))
+    except TypeError:
+        # will be an int or None or iati.Version if reaching this point
+        if version is not None and not isinstance(version, iati.Version) and version < 1:
+            raise ValueError('IATI Integer Versions are all positive. {0} is a non-positive number.'.format(version))
+
+    return version
+
+
+def _standardise_decimal_version(version):
+    """Standardise the format of Decimal Versions.
+
+    If the specified version is a value that can act as a Decimal Version of the IATI Standard, convert it to an iati.Version.
+    Any other value will be returned as-is.
+
+    Args:
+        version (Any): A value that may be a known method to represent a Decimal Version of the IATI Standard.
+
+    Returns:
+        Any: An iati.Version if the input value represents a Decimal Version of the IATI Standard. The input version in all other cases.
+
+    """
+    try:
+        version = iati.Version(version)
+    except (TypeError, ValueError):
+        pass
+
+    return version
