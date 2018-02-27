@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 
 - [Constants] `STANDARD_VERSIONS_SUPPORTED` lists all versions of the Standard that are fully supported by pyIATI. [#223]
+- [Constants] `STANDARD_VERSIONS_MINOR` lists all Minor versions of the IATI Standard. [#264]
 
 - [Datasets] A Dataset `xml_tree` may be set with an ElementTree. [#235]
 
