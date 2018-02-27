@@ -4,7 +4,7 @@ import math
 import operator
 import pytest
 import iati.tests.utilities
-from iati.tests.fixtures.versions import iativer, semver, split_decimal, split_iativer, split_semver  # TODO: Remove need to import these
+from iati.tests.fixtures.versions import iativer, semver, split_decimal, split_iativer, split_semver
 
 
 class TestVersionInit(object):
@@ -284,21 +284,24 @@ class TestVersionImplementationDetailHiding(object):
 
 
 # pylint: disable=protected-access
-class TestVersionSupportChecks(object):
-    """A container for tests relating to the detection of how much pyIATI supports particular versions."""
+class VersionSupportChecksBase(object):
+    """A container for functions and fixtures used to check version support.
+
+    In their own class to reduce the number of public methods in the parent class below the linting limit of 20.
+    """
 
     @iati.version.allow_fully_supported_version
-    def return_fully_supported_version(version):
+    def return_fully_supported_version(version):  # pylint: disable=no-self-argument
         """Return the version parameter, but only if it's fully supported by pyIATI. Check undertaken with decorator."""
         return version
 
     @iati.version.allow_known_version
-    def return_known_version(version):
+    def return_known_version(version):  # pylint: disable=no-self-argument
         """Return the version parameter, but only if it's known of by pyIATI. Check undertaken with decorator."""
         return version
 
     @iati.version.allow_possible_version
-    def return_possibly_version(version):
+    def return_possibly_version(version):  # pylint: disable=no-self-argument
         """Return the version parameter, but only if it's known of by pyIATI. Check undertaken with decorator."""
         return version
 
@@ -345,6 +348,10 @@ class TestVersionSupportChecks(object):
     def func_to_test(self, request):
         """Return a function to check for TypeErrors being raised when provided values other than iati.Versions."""
         return request.param
+
+
+class TestVersionSupportChecks(VersionSupportChecksBase):
+    """A container for tests relating to the detection of how much pyIATI supports particular versions."""
 
     def test_fully_supported_version_fully_supported(self, std_ver_minor_inst_valid_fullsupport, decorated_func_full_support):
         """Check that fully supported IATI Versions are detected as such."""
@@ -445,12 +452,12 @@ class TestVersionStandardisation(object):
     """A container for tests relating to standardising how versions are passed into functions."""
 
     @iati.version.decimalise_integer
-    def return_decimalised_integer(version):
+    def return_decimalised_integer(version):  # pylint: disable=no-self-argument
         """Return the version parameter, but converted to an iati.Version representing the newest Decimal Version in the given Integer Version if something that can be treated as an Integer Version is provided."""
         return version
 
     @iati.version.standardise_decimals
-    def return_standardised_decimal(version):
+    def return_standardised_decimal(version):  # pylint: disable=no-self-argument
         """Return the version parameter, but converted to an iati.Version if something that can be treated as a Decimal Version is provided."""
         return version
 

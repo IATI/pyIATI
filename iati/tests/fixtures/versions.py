@@ -75,19 +75,19 @@ def iativer(integer, decimal):
     return str(integer) + '.0' + str(decimal)
 
 
-def semver(major, minor, patch):
+def semver(major_component, minor_component, patch_component):
     """Construct an SemVer-format version number.
 
     Args:
-        major (int): The major component of the version number.
-        minor (int): The minor component of the version number.
-        patch (int): The patch component of the version number.
+        major_component (int): The major component of the version number.
+        minor_component (int): The minor component of the version number.
+        patch_component (int): The patch component of the version number.
 
     Returns:
         str: A SemVer-format version number with the specified Major, Minor and Patch Components.
 
     """
-    return '.'.join([str(major), str(minor), str(patch)])
+    return '.'.join([str(major_component), str(minor_component), str(patch_component)])
 
 
 def split_decimal(version_decimal):
@@ -211,13 +211,13 @@ Todo:
 MAJOR_VALID_INT = list(range(1, 100, 17))
 """list of int: A list of valid major version numbers represented as integers."""
 
-MAJOR_VALID_STR = [str(ver) for ver in MAJOR_VALID_INT]
+MAJOR_VALID_STR = [str(major_ver) for major_ver in MAJOR_VALID_INT]
 """list of str: A list of valid major version numbers represented as strings."""
 
 MAJOR_VALID = MAJOR_VALID_INT + MAJOR_VALID_STR
 """list of (int / str): A list of values that are valid representations of valid major version numbers."""
 
-MAJOR_KNOWN = iati.constants.STANDARD_VERSIONS_MAJOR + [str(ver) for ver in iati.constants.STANDARD_VERSIONS_MAJOR]
+MAJOR_KNOWN = iati.constants.STANDARD_VERSIONS_MAJOR + [str(major_ver) for major_ver in iati.constants.STANDARD_VERSIONS_MAJOR]
 """list of (int / str): A list of values that are valid representations of known major version numbers."""
 
 MAJOR_INVALID_NEGATIVE = NEGATIVE_NUMBERS + [str(val) for val in NEGATIVE_NUMBERS]
@@ -396,7 +396,7 @@ def std_ver_minor_inst_valid_partsupport(request):
 
 
 @pytest.fixture
-def std_ver_minor_inst_valid_possible(std_ver_minor_uninst_valid_possible):
+def std_ver_minor_inst_valid_possible(std_ver_minor_uninst_valid_possible):  # pylint: disable=redefined-outer-name
     """Return an instantiated IATI Version Number."""
     return iati.Version(std_ver_minor_uninst_valid_possible)
 
