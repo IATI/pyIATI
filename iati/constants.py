@@ -37,6 +37,9 @@ Todo:
 
 """
 
+STANDARD_VERSIONS_MINOR = STANDARD_VERSIONS
+"""The minor versions of the IATI Standard."""
+
 LOG_FILE_NAME = 'iatilib.log'
 """The location of the primary IATI log file.
 
