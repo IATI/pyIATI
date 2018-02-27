@@ -14,13 +14,7 @@ import os
 from io import StringIO
 import chardet
 from lxml import etree
-# try-except to prevent errors caused by `from .versions import Version` in `__init__.py`
-try:
-    import iati
-    iati.Version  # pylint: disable=pointless-statement
-    import iati.constants
-except AttributeError:
-    pass
+import iati
 
 
 def add_namespace(tree, new_ns_name, new_ns_uri):
@@ -349,16 +343,3 @@ def log_warning(msg, *args, **kwargs):
 
     """
     log(logging.WARN, msg, *args, **kwargs)
-
-
-def versions_for_integer(integer):
-    """Return a list containing the supported versions for the input integer version.
-
-    Args:
-        integer (int): The integer version to find the supported version for.
-
-    Returns:
-        list of iati.Version: Containing the supported versions for the input integer.
-
-    """
-    return [version for version in iati.constants.STANDARD_VERSIONS if version.major == integer]

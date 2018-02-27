@@ -43,7 +43,7 @@ Each of these sections has a number of values that they may take. It is not nece
 from decimal import Decimal
 import itertools
 import pytest
-import iati.constants
+import iati.version
 
 
 def generate_semver_list(major_components, minor_components, patch_components):
@@ -217,7 +217,7 @@ MAJOR_VALID_STR = [str(major_ver) for major_ver in MAJOR_VALID_INT]
 MAJOR_VALID = MAJOR_VALID_INT + MAJOR_VALID_STR
 """list of (int / str): A list of values that are valid representations of valid major version numbers."""
 
-MAJOR_KNOWN = iati.constants.STANDARD_VERSIONS_MAJOR + [str(major_ver) for major_ver in iati.constants.STANDARD_VERSIONS_MAJOR]
+MAJOR_KNOWN = iati.version.STANDARD_VERSIONS_MAJOR + [str(major_ver) for major_ver in iati.version.STANDARD_VERSIONS_MAJOR]
 """list of (int / str): A list of values that are valid representations of known major version numbers."""
 
 MAJOR_INVALID_NEGATIVE = NEGATIVE_NUMBERS + [str(val) for val in NEGATIVE_NUMBERS]
@@ -310,7 +310,7 @@ def std_ver_minor_uninst_valueerr_str_decimal(request):
     return request.param
 
 
-@pytest.fixture(params=iati.constants.STANDARD_VERSIONS_MINOR)
+@pytest.fixture(params=iati.version.STANDARD_VERSIONS_MINOR)
 def std_ver_minor_uninst_valid_known(request):
     """Return an uninstantiated IATI version number that pyIATI knows to exist.
 
@@ -322,9 +322,9 @@ def std_ver_minor_uninst_valid_known(request):
 
 
 @pytest.fixture(params=[
-    ver.iativer_str for ver in iati.constants.STANDARD_VERSIONS_SUPPORTED
+    ver.iativer_str for ver in iati.version.STANDARD_VERSIONS_SUPPORTED
 ] + [
-    ver.semver_str for ver in iati.constants.STANDARD_VERSIONS_SUPPORTED
+    ver.semver_str for ver in iati.version.STANDARD_VERSIONS_SUPPORTED
 ])
 def std_ver_minor_uninst_valid_fullsupport(request):
     """Return an uninstantiated valid minor version number that has full support in pyIATI.
@@ -338,10 +338,10 @@ def std_ver_minor_uninst_valid_fullsupport(request):
 
 
 @pytest.fixture(params=[
-    ver.iativer_str for ver in iati.constants.STANDARD_VERSIONS_SUPPORTED
+    ver.iativer_str for ver in iati.version.STANDARD_VERSIONS_SUPPORTED
 ] + [
-    ver.semver_str for ver in iati.constants.STANDARD_VERSIONS_SUPPORTED
-] + iati.constants.STANDARD_VERSIONS_SUPPORTED)
+    ver.semver_str for ver in iati.version.STANDARD_VERSIONS_SUPPORTED
+] + iati.version.STANDARD_VERSIONS_SUPPORTED)
 def std_ver_minor_mixedinst_valid_fullsupport(request):
     """Return an valid minor version number that has full support in pyIATI.
 
@@ -353,11 +353,11 @@ def std_ver_minor_mixedinst_valid_fullsupport(request):
 
 
 @pytest.fixture(params=[
-    ver.iativer_str for ver in iati.constants.STANDARD_VERSIONS if ver not in iati.constants.STANDARD_VERSIONS_SUPPORTED
+    ver.iativer_str for ver in iati.version.STANDARD_VERSIONS if ver not in iati.version.STANDARD_VERSIONS_SUPPORTED
 ] + [
-    ver.semver_str for ver in iati.constants.STANDARD_VERSIONS if ver not in iati.constants.STANDARD_VERSIONS_SUPPORTED
+    ver.semver_str for ver in iati.version.STANDARD_VERSIONS if ver not in iati.version.STANDARD_VERSIONS_SUPPORTED
 ] + [
-    ver for ver in iati.constants.STANDARD_VERSIONS if ver not in iati.constants.STANDARD_VERSIONS_SUPPORTED
+    ver for ver in iati.version.STANDARD_VERSIONS if ver not in iati.version.STANDARD_VERSIONS_SUPPORTED
 ])
 def std_ver_minor_mixedinst_valid_partsupport(request):
     """Return an valid minor version number that has partial support in pyIATI.
@@ -369,27 +369,27 @@ def std_ver_minor_mixedinst_valid_partsupport(request):
     return request.param
 
 
-@pytest.fixture(params=iati.constants.STANDARD_VERSIONS_MINOR)
+@pytest.fixture(params=iati.version.STANDARD_VERSIONS_MINOR)
 def std_ver_minor_inst_valid_known(request):
     """Return an IATI version number that pyIATI knows to exist."""
     return request.param
 
 
 @pytest.fixture(params=[
-    version for version in MINOR_IATIVER_VALID if not iati.Version(version) in iati.constants.STANDARD_VERSIONS_MINOR
+    version for version in MINOR_IATIVER_VALID if not iati.Version(version) in iati.version.STANDARD_VERSIONS_MINOR
 ])
 def std_ver_minor_inst_valid_unknown(request):
     """Return a version of the IATI Standard that is not known by pyIATI to exist."""
     return iati.Version(request.param)
 
 
-@pytest.fixture(params=iati.constants.STANDARD_VERSIONS_SUPPORTED)
+@pytest.fixture(params=iati.version.STANDARD_VERSIONS_SUPPORTED)
 def std_ver_minor_inst_valid_fullsupport(request):
     """Return a fully supported IATI version number."""
     return request.param
 
 
-@pytest.fixture(params=[version for version in iati.constants.STANDARD_VERSIONS if version not in iati.constants.STANDARD_VERSIONS_SUPPORTED])
+@pytest.fixture(params=[version for version in iati.version.STANDARD_VERSIONS if version not in iati.version.STANDARD_VERSIONS_SUPPORTED])
 def std_ver_minor_inst_valid_partsupport(request):
     """Return a partially supported IATI version number."""
     return request.param
@@ -401,13 +401,13 @@ def std_ver_minor_inst_valid_possible(std_ver_minor_uninst_valid_possible):  # p
     return iati.Version(std_ver_minor_uninst_valid_possible)
 
 
-@pytest.fixture(params=iati.utilities.versions_for_integer(1))
+@pytest.fixture(params=iati.version.versions_for_integer(1))
 def std_ver_minor_inst_valid_known_v1(request):
     """Return an instantiated known minor version number within major version 1."""
     return request.param
 
 
-@pytest.fixture(params=iati.utilities.versions_for_integer(2))
+@pytest.fixture(params=iati.version.versions_for_integer(2))
 def std_ver_minor_inst_valid_known_v2(request):
     """Return an instantiated known minor version number within major version 2."""
     return request.param

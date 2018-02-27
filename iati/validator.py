@@ -377,7 +377,7 @@ def _check_codes(dataset, codelist):
     error_log = ValidationErrorLog()
 
     # clunky workaround due to pre-#230 behavior of `iati.Dataset().version`
-    if dataset.version in iati.constants.STANDARD_VERSIONS:
+    if dataset.version in iati.version.STANDARD_VERSIONS:
         mappings = iati.default.codelist_mapping(dataset.version)
     else:
         # rather than attempting general checks, ensure version number errors occur

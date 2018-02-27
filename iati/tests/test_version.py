@@ -283,6 +283,49 @@ class TestVersionImplementationDetailHiding(object):
         assert std_ver_minor_inst_valid_possible.partial is True
 
 
+class TestVersionConstants(object):
+    """A container for tests relating to constants that define useful groups of IATI version numbers."""
+
+    @pytest.fixture(params=[
+        iati.version.STANDARD_VERSIONS,
+        iati.version.STANDARD_VERSIONS_SUPPORTED,
+        iati.version.STANDARD_VERSIONS_MINOR
+    ])
+    def standard_versions_list(self, request):
+        """Return a list of Version Numbers."""
+        return request.param
+
+    def test_standard_versions_all_are_versions(self, standard_versions_list):
+        """Check that each item in standard versions is a Version instance."""
+        for version in standard_versions_list:
+            assert isinstance(version, iati.Version)
+
+    def test_standard_versions_correct_format(self, standard_versions_list):
+        """Check that standard versions is in the correct format."""
+        assert isinstance(standard_versions_list, list)
+
+    def test_standard_versions_correct_number(self):
+        """Check that standard versions has the expected number of items."""
+        assert len(iati.version.STANDARD_VERSIONS) == 7
+
+    def test_standard_versions_correct_number_supported(self):
+        """Check that supported standard versions has the expected number of items."""
+        assert len(iati.version.STANDARD_VERSIONS_SUPPORTED) == 4
+
+    def test_standard_versions_major_all_are_integers(self):
+        """Check that each major version is an integer."""
+        for major_version in iati.version.STANDARD_VERSIONS_MAJOR:
+            assert isinstance(major_version, int)
+
+    def test_standard_versions_major_correct_number(self):
+        """Check that the correct number of major versions are detected."""
+        assert len(iati.version.STANDARD_VERSIONS_MAJOR) == 2
+
+    def test_standard_versions_minor_correct_number(self):
+        """Check that the correct number of minor versions are detected."""
+        assert len(iati.version.STANDARD_VERSIONS_MINOR) == 7
+
+
 # pylint: disable=protected-access
 class VersionSupportChecksBase(object):
     """A container for functions and fixtures used to check version support.
@@ -506,7 +549,7 @@ class TestVersionStandardisation(object):
 
     @pytest.mark.parametrize('integer_version, expected_decimal', [
         ('1', iati.Version('1.05')),
-        ('2', iati.constants.STANDARD_VERSION_LATEST),
+        ('2', iati.version.STANDARD_VERSION_LATEST),
         ('3', iati.Version('3.0.0'))
     ])
     def test_integer_version_conversion_valid(self, integer_version, expected_decimal, integer_decimalisation_func):
@@ -536,3 +579,14 @@ class TestVersionStandardisation(object):
             import sys
             if not (sys.version_info[0] == 2 and isinstance(original_value, type(decimal.localcontext()))):
                 assert False
+
+
+class TestVersionMajorMinorRelationship(object):
+    """A container for tests relating to the relationship between major and minor versions."""
+
+    def test_versions_for_integer(self, std_ver_major_uninst_valid_known):
+        """Check that the each of the decimal versions returned by versions_for_integer starts with the input major version."""
+        result = iati.version.versions_for_integer(std_ver_major_uninst_valid_known)
+
+        for version in result:
+            assert version.major == std_ver_major_uninst_valid_known
