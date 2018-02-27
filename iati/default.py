@@ -98,6 +98,8 @@ def _codelists(version, use_cache=False):
         This is a private function so as to prevent the (dangerous) `use_cache` parameter being part of the public API.
 
     """
+    version = _specific_version_for(version)
+
     paths = iati.resources.get_codelist_paths(version)
 
     for path in paths:
@@ -135,6 +137,7 @@ def codelist_mapping(version):
 
     Args:
         version (str / Decimal / iati.Version): The Integer or Decimal version of the Standard to return the Codelist Mapping File for. If an Integer Version is specified, uses the most recent Decimal Version within the Integer Version.
+        version (str): The Integer or Decimal version of the Standard to return the Codelist Mapping File for. If an Integer Version is specified, uses the most recent Decimal Version within the Integer Version.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -146,6 +149,8 @@ def codelist_mapping(version):
         Make use of the `version` parameter.
 
     """
+    version = _specific_version_for(version)
+
     path = iati.resources.create_codelist_mapping_path(version)
     mapping_tree = iati.utilities.load_as_tree(path)
     mappings = defaultdict(list)
@@ -183,6 +188,8 @@ def ruleset(version):
         iati.Ruleset: The default Ruleset for the specified version of the Standard.
 
     """
+    version = _specific_version_for(version)
+
     path = iati.resources.get_ruleset_paths(version)[0]
     ruleset_str = iati.utilities.load_as_string(path)
 
