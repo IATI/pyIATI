@@ -147,7 +147,7 @@ class TestResourceCreatePath(object):
     def test_create_codelist_mapping_path_version_independent(self):
         """Check that a ValueError is raised when requesting a version-independent Codelist Mapping File."""
         with pytest.raises(ValueError):
-            iati.resources.create_codelist_mapping_path()
+            iati.resources.create_codelist_mapping_path(iati.version.STANDARD_VERSION_ANY)
 
     @pytest.mark.parametrize("not_a_version", iati.tests.utilities.generate_test_types(['int'], True))
     def test_create_codelist_mapping_path_invalid_value(self, not_a_version):
