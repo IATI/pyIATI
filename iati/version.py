@@ -1,4 +1,4 @@
-"""A module containing components that describe the IATI Standard itself (rather than the parts it is made up of).
+"""A module containing a core representation of IATI Version Numbers, plus how they are handled and compared.
 
 Todo:
     Check whether there is any other version-related functionality to bring into this module.
