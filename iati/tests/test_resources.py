@@ -5,6 +5,7 @@ import pytest
 import iati.constants
 import iati.resources
 import iati.validator
+import iati.version
 
 
 class TestResources(object):
@@ -49,7 +50,7 @@ class TestResourceFolders(object):
         (iati.Version('1.01'), '1-01'),
         ('1', '1'),
         ('2', '2'),
-        (None, 'version-independent')
+        (iati.version.STANDARD_VERSION_ANY, 'version-independent')
     ])
     def test_folder_name_for_version(self, version, expected_version_foldername):
         """Check that expected components are present within folder paths."""

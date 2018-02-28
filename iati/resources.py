@@ -57,11 +57,11 @@ FILE_SCHEMA_ORGANISATION_NAME = 'iati-organisations-schema'
 """The name of a file containing an Organisation Schema."""
 
 
-def get_codelist_paths(version=None):
+def get_codelist_paths(version=iati.version.STANDARD_VERSION_ANY):
     """Find the paths for all Codelists at the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that paths to a version-independent version of the Codelists are returned.
+        version (str): The version of the Standard to return the Codelists for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -85,11 +85,11 @@ def get_codelist_paths(version=None):
     return paths
 
 
-def get_codelist_mapping_paths(version=None):
+def get_codelist_mapping_paths(version=iati.version.STANDARD_VERSION_ANY):
     """Find the paths for all Codelist Mapping files at the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Codelist Mapping file for. Defaults to None. This means that paths to the latest version of the Codelist Mapping file are returned.
+        version (str): The version of the Standard to return the Codelist Mapping file for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -108,11 +108,11 @@ def get_codelist_mapping_paths(version=None):
     return paths
 
 
-def get_ruleset_paths(version=None):
+def get_ruleset_paths(version=iati.version.STANDARD_VERSION_ANY):
     """Find the paths for all Rulesets at the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Rulesets for. Defaults to None. This means that paths to the latest version of the Rulesets are returned.
+        version (str): The version of the Standard to return the Rulesets for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -131,11 +131,11 @@ def get_ruleset_paths(version=None):
     return paths
 
 
-def get_all_schema_paths(version=None):
+def get_all_schema_paths(version=iati.version.STANDARD_VERSION_ANY):
     """Find the paths for all Schemas at the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Schemas for. Defaults to None. This means that paths to a version-independent version of the Schemas are returned.
+        version (str): The version of the Standard to return the Schemas for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -152,11 +152,11 @@ def get_all_schema_paths(version=None):
     return get_activity_schema_paths(version) + get_organisation_schema_paths(version)
 
 
-def get_activity_schema_paths(version=None):
+def get_activity_schema_paths(version=iati.version.STANDARD_VERSION_ANY):
     """Find the paths for all Activity Schemas at the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the activity schemas for. Defaults to None. This means that paths to a version-independent version of the Activity Schemas are returned.
+        version (str): The version of the Standard to return the activity schemas for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -173,11 +173,11 @@ def get_activity_schema_paths(version=None):
     return [create_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version)]
 
 
-def get_organisation_schema_paths(version=None):  # pylint: disable=invalid-name
+def get_organisation_schema_paths(version=iati.version.STANDARD_VERSION_ANY):  # pylint: disable=invalid-name
     """Find the paths for all Organisation Schemas at the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Organisation schemas for. Defaults to None. This means that paths to a version-independent version of the Organisation Schemas are returned.
+        version (str): The version of the Standard to return the Organisation schemas for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -195,12 +195,12 @@ def get_organisation_schema_paths(version=None):  # pylint: disable=invalid-name
     return [create_schema_path(FILE_SCHEMA_ORGANISATION_NAME, version)]
 
 
-def create_codelist_path(codelist_name, version=None):
+def create_codelist_path(codelist_name, version=iati.version.STANDARD_VERSION_ANY):
     """Determine the path of a Codelist with the given name at the specified version of the Standard.
 
     Args:
         codelist_name (str): The name of the codelist to locate. Should the name end in `.xml`, this shall be removed to determine the name.
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that a path to a version-independent version of the Codelist is returned.
+        version (str): The version of the Standard to return the Codelists for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Returns:
         str: The path to a file containing the specified Codelist.
@@ -218,10 +218,10 @@ def create_codelist_path(codelist_name, version=None):
     return path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
 
 
-def create_codelist_mapping_path(version=None):
+def create_codelist_mapping_path(version=iati.version.STANDARD_VERSION_ANY):
     """Determine the path of the Codelist mapping file.
 
-    version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename independent of any version of the Standard.
+    version (str): The version of the Standard to return the data files for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Returns:
         str: The path to a file containing the mapping file.
@@ -248,12 +248,12 @@ def create_lib_data_path(name):
     return resource_filesystem_path(os.path.join(BASE_PATH_LIB_DATA, name))
 
 
-def create_ruleset_path(name, version=None):
+def create_ruleset_path(name, version=iati.version.STANDARD_VERSION_ANY):
     """Determine the path of a Ruleset with the given name at the specified version of the Standard.
 
     Args:
         name (str): The name of the Ruleset to locate.
-        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that paths to a version-independent version of the Ruleset are returned.
+        version (str): The version of the Standard to return the Ruleset for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Returns:
         str: The path to a file containing the specified ruleset.
@@ -268,12 +268,12 @@ def create_ruleset_path(name, version=None):
     return path_for_version(os.path.join(PATH_RULESETS, '{0}'.format(name) + FILE_RULESET_EXTENSION), version)
 
 
-def create_schema_path(name, version=None):
+def create_schema_path(name, version=iati.version.STANDARD_VERSION_ANY):
     """Determine the path of a Schema with the given name at the specified version of the Standard.
 
     Args:
         name (str): The name of the Schema to locate.
-        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that paths to a version-independent version of the Schema is returned.
+        version (str): The version of the Standard to return the Schema for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Returns:
         str: The path to a file containing the specified Schema.
@@ -292,11 +292,11 @@ def create_schema_path(name, version=None):
 
 
 @iati.version.standardise_decimals
-def folder_name_for_version(version=None):
+def folder_name_for_version(version=iati.version.STANDARD_VERSION_ANY):
     """Return the folder name for a given version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the folder path for. Defaults to None. This means that the folder name independent of any version of the Standard is returned.
+        version (str): The version of the Standard to return the folder path for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Returns:
         str: The folder name for the specified version of the Standard.
@@ -308,7 +308,7 @@ def folder_name_for_version(version=None):
         Extract magic string: 'version-independent'
 
     """
-    if version is None:
+    if version == iati.version.STANDARD_VERSION_ANY:
         return 'version-independent'
     elif isinstance(version, str):
         try:
@@ -330,11 +330,11 @@ def folder_name_for_version(version=None):
     raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
 
 
-def folder_path_for_version(version=None):
+def folder_path_for_version(version=iati.version.STANDARD_VERSION_ANY):
     """Return the path for the folder containing SSOT data (schemas, codelists etc) at the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the folder path for. Defaults to None. This means that the path independent of any version of the Standard is returned.
+        version (str): The version of the Standard to return the folder path for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Returns:
         str: The relative path to the folder for containing SSOT data the specified version of the Standard.
@@ -343,12 +343,12 @@ def folder_path_for_version(version=None):
     return os.path.join(BASE_PATH_STANDARD, folder_name_for_version(version))
 
 
-def path_for_version(path, version=None):
+def path_for_version(path, version=iati.version.STANDARD_VERSION_ANY):
     """Return the relative location of a specified path at the specified version of the Standard.
 
     Args:
         path (str): The path to the file that is to be read in.
-        version (str): The version of the Standard to return the folder path for. Defaults to None. This means that the path independent of any version of the Standard is returned.
+        version (str): The version of the Standard to return the folder path for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Returns:
         str: The relative path to a file at the specified version of the Standard.

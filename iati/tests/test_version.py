@@ -325,6 +325,10 @@ class TestVersionConstants(object):
         """Check that the correct number of minor versions are detected."""
         assert len(iati.version.STANDARD_VERSIONS_MINOR) == 7
 
+    def test_standard_version_any_has_length(self):
+        """Check that the value to represent any version is a value with length."""
+        assert len(iati.version.STANDARD_VERSION_ANY)
+
 
 # pylint: disable=protected-access
 class VersionSupportChecksBase(object):
@@ -345,7 +349,7 @@ class VersionSupportChecksBase(object):
 
     @iati.version.allow_possible_version
     def return_possibly_version(version):  # pylint: disable=no-self-argument
-        """Return the version parameter, but only if it's known of by pyIATI. Check undertaken with decorator."""
+        """Return the version parameter, but only if it's a possible representation of a version number. Check undertaken with decorator."""
         return version
 
     @pytest.fixture(params=[return_fully_supported_version])
@@ -463,17 +467,11 @@ class TestVersionSupportChecks(VersionSupportChecksBase):
         assert version == original_value
         assert version is std_ver_major_uninst_valid_possible
 
-    def test_non_version_representation_valid_val_none(self, possibly_version_func):
-        """Test that None detected as being valid representations of an IATI Version Number.
+    def test_non_version_representation_valid_val_any(self, possibly_version_func):
+        """Test that the specified ANY_VERSION value detected as being valid representations of an IATI Version Number."""
+        version = possibly_version_func(iati.version.STANDARD_VERSION_ANY)
 
-        Todo:
-            Change magic value to be something other than `None`.
-            See: https://github.com/IATI/pyIATI/issues/218#issuecomment-364086162
-
-        """
-        version = possibly_version_func(None)
-
-        assert version is None
+        assert version == iati.version.STANDARD_VERSION_ANY
 
     def test_non_version_representation_invalid_val_integer(self, std_ver_major_uninst_valueerr, possibly_version_func):
         """Test that non-positive integers are detected as not being valid representations of an IATI Version Number."""

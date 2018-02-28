@@ -11,12 +11,12 @@ PATH_TEST_DATA = os.path.join(iati.resources.BASE_PATH, 'test_data')
 """The relative location of the folder containing IATI data files."""
 
 
-def get_test_data_path(name, version=None):
+def get_test_data_path(name, version=iati.version.STANDARD_VERSION_ANY):
     """Determine the path of an IATI data file with the given filename at the specified version of the Standard.
 
     Args:
         name (str): The name of the data file to locate. The name may contain forward slashes (`/`) to indicate a directory. Data files must be `.xml` files.
-        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename independent of any version of the Standard.
+        version (str): The version of the Standard to return the data files for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Returns:
         str: The path to a file containing the specified data.
@@ -42,12 +42,12 @@ def get_test_data_path(name, version=None):
     return iati.resources.resource_filesystem_path(relative_path)
 
 
-def get_test_data_paths_in_folder(folder_name, version=None):
+def get_test_data_paths_in_folder(folder_name, version=iati.version.STANDARD_VERSION_ANY):
     """Determine the paths of all IATI data files in the specified folder under the root test folder.
 
     Args:
         name (str): The name of the folder within which to locate data files.
-        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename independent of any version of the Standard.
+        version (str): The version of the Standard to return the data files for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Returns:
         list of str: The paths to data files in the specified folders.
@@ -73,12 +73,12 @@ def get_test_data_paths_in_folder(folder_name, version=None):
     return deresourced_paths
 
 
-def get_test_ruleset_path(name, version=None):
+def get_test_ruleset_path(name, version=iati.version.STANDARD_VERSION_ANY):
     """Determine the path of an IATI test Ruleset file with the given filename at the specified version of the Standard.
 
     Args:
         name (str): The name of the data file to locate. The filename must not contain the '.xml' file extension.
-        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename independent of any version of the Standard.
+        version (str): The version of the Standard to return the data files for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Returns:
         str: The path to a file containing the specified test Ruleset.
@@ -98,12 +98,12 @@ def get_test_ruleset_path(name, version=None):
     return os.path.join(PATH_TEST_DATA, iati.resources.folder_name_for_version(version), 'rulesets/{0}'.format(name) + iati.resources.FILE_RULESET_EXTENSION)
 
 
-def load_as_dataset(relative_path, version=None):
+def load_as_dataset(relative_path, version=iati.version.STANDARD_VERSION_ANY):
     """Load a specified test data file as a Dataset.
 
     Args:
         relative_path (str): The path of the file, relative to the root test data folder. Folders should be separated by a forward-slash (`/`).
-        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename independent of any version of the Standard.
+        version (str): The version of the Standard to return the data files for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Returns:
         dataset: A Dataset containing the contents of the file at the specified location.
@@ -117,12 +117,12 @@ def load_as_dataset(relative_path, version=None):
     return iati.utilities.load_as_dataset(path)
 
 
-def load_as_string(relative_path, version=None):
+def load_as_string(relative_path, version=iati.version.STANDARD_VERSION_ANY):
     """Load a specified test data file as a string.
 
     Args:
         relative_path (str): The path of the file, relative to the root test data folder. Folders should be separated by a forward-slash (`/`).
-        version (str): The version of the Standard to return the data files for. Defaults to None. This means that the path is returned for a filename independent of any version of the Standard.
+        version (str): The version of the Standard to return the data files for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Returns:
         str (python3) / unicode (python2): The contents of the file at the specified location.

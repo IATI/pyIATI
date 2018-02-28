@@ -229,6 +229,15 @@ STANDARD_VERSIONS_MINOR = STANDARD_VERSIONS
 """The minor versions of the IATI Standard."""
 
 
+STANDARD_VERSION_ANY = '*'
+"""A value to represent that something is applicable to all versions of the IATI Standard - it is version independent.
+
+Warning:
+    Assumptions should not be made as to the value of this constant other than it: `is not None`
+
+"""
+
+
 def allow_fully_supported_version(input_func):
     """Decorate function by ensuring versions are fully supported by pyIATI.
 
@@ -298,7 +307,7 @@ def allow_possible_version(input_func):
 
     In terms of value:
     * Permitted values representing an Integer or Decimal Version in a known format will remain unchanged.
-    * None will remain unchanged, as a way of representing all versions.
+    * STANDARD_VERSION_ANY will remain unchanged, as a way of representing all versions.
     * strings, integers and Decimals with values that cannot represent a Version will cause a ValueError.
     * Values of types other than string, Decimal, integer and iati.Version will cause a TypeError.
 
@@ -444,7 +453,7 @@ def _prevent_non_version_representations(version):
 
     In terms of value:
     * Permitted values representing an Integer or Decimal Version in a known format will remain unchanged.
-    * None will remain unchanged, as a way of representing all versions.
+    * STANDARD_VERSION_ANY will remain unchanged, as a way of representing all versions.
     * strings, integers and Decimals with values that cannot represent a Version will cause a ValueError.
     * Values of types other than string, Decimal, integer and iati.Version will cause a TypeError.
 
@@ -456,17 +465,17 @@ def _prevent_non_version_representations(version):
         ValueError: If a string, Decimal or integer has a value that is not in a format that is known to represent an IATI Version Number.
 
     """
-    if not isinstance(version, (str, Decimal, int, Version, type(None))) or isinstance(version, bool):
+    if not isinstance(version, (str, Decimal, int, Version)) or isinstance(version, bool):
         raise TypeError('IATI Version Numbers may only be represented as a string, Decimal, int or iati.Version. A {0} was provided.'.format(type(version)))
 
     try:
         Version(version)
     except ValueError:
-        if version == '0' or not version.isdigit():  # accept string representations of positive numbers
+        if version == '0' or (not version.isdigit() and version != STANDARD_VERSION_ANY):  # accept string representations of positive numbers
             raise ValueError('{0} is not a known representation of a potential IATI Version Number'.format(version))
     except TypeError:
         # will be an int or None or iati.Version if reaching this point
-        if version is not None and not isinstance(version, Version) and version < 1:
+        if not isinstance(version, Version) and version < 1:
             raise ValueError('IATI Integer Versions are all positive. {0} is a non-positive number.'.format(version))
 
     return version
