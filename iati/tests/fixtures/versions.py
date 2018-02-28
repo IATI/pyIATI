@@ -49,7 +49,7 @@ import iati.version
 def generate_semver_list(major_components, minor_components, patch_components):
     """Generate a list of SemVer-format values.
 
-    Params:
+    Args:
         major_components (list of int): List of values to use as the Major Component in the generated Version Numbers.
         minor_components (list of int): List of values to use as the Minor Component in the generated Version Numbers.
         patch_components (list of int): List of values to use as the Patch Component in the generated Version Numbers.
