@@ -391,7 +391,7 @@ def versions_for_integer(integer):
         list of iati.Version: Containing the supported versions for the input integer.
 
     """
-    return [version for version in iati.version.STANDARD_VERSIONS if version.major == integer]
+    return [version for version in iati.version.STANDARD_VERSIONS if version.major == int(integer)]
 
 
 def _decimalise_integer(version):

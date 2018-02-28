@@ -586,5 +586,6 @@ class TestVersionMajorMinorRelationship(object):
         """Check that the each of the decimal versions returned by versions_for_integer starts with the input major version."""
         result = iati.version.versions_for_integer(std_ver_major_uninst_valid_known)
 
+        assert len(result) > 0
         for version in result:
-            assert version.major == std_ver_major_uninst_valid_known
+            assert version.major == int(std_ver_major_uninst_valid_known)

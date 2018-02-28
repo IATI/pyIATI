@@ -12,6 +12,7 @@ Each of these sections has a number of values that they may take. It is not nece
   * `major` - major / integer versions
   * `minor` - minor / decimal versions
   * `all` - both major and minor versions
+  * `any` - both major and minor versions, plus the value that represents every single version
   * `independent` - a value that represents every single version
 * Instantiation Status
   * `inst` - an iati.Version instance
@@ -250,6 +251,23 @@ def std_ver_all_uninst_typeerr(request):
     Todo:
         Change magic value to be something other than `None`.
         See: https://github.com/IATI/pyIATI/issues/218#issuecomment-364086162
+
+    """
+    return request.param
+
+
+@pytest.fixture(params=[
+    ver.iativer_str for ver in iati.version.STANDARD_VERSIONS_MINOR
+] + [
+    ver.semver_str for ver in iati.version.STANDARD_VERSIONS_MINOR
+] + [
+    iati.version.STANDARD_VERSION_ANY
+] + iati.version.STANDARD_VERSIONS_MINOR + MAJOR_KNOWN)
+def std_ver_any_mixedinst_valid_known(request):
+    """Return a value that can represent some known version number at any level of granularity.
+
+    Todo:
+        Add decimal representations where possible.
 
     """
     return request.param

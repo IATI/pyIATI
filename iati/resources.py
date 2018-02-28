@@ -13,8 +13,6 @@ Todo:
 """
 import os
 import pkg_resources
-import iati.constants
-import iati.utilities
 import iati.version
 
 
@@ -242,12 +240,15 @@ def create_codelist_mapping_path(version=iati.version.STANDARD_VERSION_ANY):
 
     """
     try:
-        if int(version) in iati.constants.STANDARD_VERSIONS_MAJOR:
-            version = max(iati.utilities.versions_for_integer(version))
+        if version == iati.version.STANDARD_VERSION_ANY or isinstance(version, bool):
+            raise TypeError
+        elif int(version) in iati.version.STANDARD_VERSIONS_MAJOR:
+            version = max(iati.version.versions_for_integer(version))
     except ValueError:
         pass  # a non-major version has been specified
     except (OverflowError, TypeError):
-        raise ValueError('The version must be a Decimal or Integer version of the IATI Standrd, not {0}'.format(version))
+        if not isinstance(version, iati.Version):
+            raise ValueError('The version must be a Decimal or Integer version of the IATI Standrd, not {0}'.format(repr(version)))
 
     return path_for_version(FILE_CODELIST_MAPPING, version)
 
@@ -332,10 +333,10 @@ def folder_name_for_version(version=iati.version.STANDARD_VERSION_ANY):
     """
     if version == iati.version.STANDARD_VERSION_ANY:
         return 'version-independent'
-    elif isinstance(version, str):
+    elif isinstance(version, (str, int)) and not isinstance(version, bool):
         try:
             if int(version) in iati.version.STANDARD_VERSIONS_MAJOR:
-                return version
+                return str(version)
         except ValueError:
             pass
 
