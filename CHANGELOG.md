@@ -34,7 +34,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Codelists] `complete` attribute included in equality comparison and hash calculations. [#247]
 - [Codelists] Codes must have a value to instantiate. [#247]
 
-- [Constants] Move lists of versions to `version` module.
+- [Constants] Move lists of versions to `version` module. [#280]
 
 - [General] Change default behavior of `version` argument as per proposal in #218. [#223]
 
@@ -46,7 +46,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Rulesets] `case` attribute on a Rule changed from public to private. [#252]
 - [Rulesets] `context` attribute on a Rule changed to read-only property. [#253]
 
-- [Utility] Move function acting on versions to `version` module.
+- [Utility] Move function acting on versions to `version` module. [#280]
 
 - [Validation] `_check_is_iati_xml()` will raise a `TypeError` when given a non-dataset. This replaces an undocumented `AttributeError`. [#239]
 
