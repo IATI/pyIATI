@@ -478,10 +478,10 @@ class TestVersionSupportChecks(VersionSupportChecksBase):
         with pytest.raises(ValueError):
             possibly_version_func(std_ver_major_uninst_valueerr)
 
-    def test_non_version_representation_invalid_val(self, std_ver_minor_uninst_valueerr_iativer, possibly_version_func):
+    def test_non_version_representation_invalid_val(self, std_ver_minor_uninst_valueerr_str_decimal, possibly_version_func):
         """Test that values that are a correct type but cannot be a Decimal Version are detected as a ValueError."""
         with pytest.raises(ValueError):
-            possibly_version_func(std_ver_minor_uninst_valueerr_iativer)
+            possibly_version_func(std_ver_minor_uninst_valueerr_str_decimal)
 
     def test_non_version_representation_invalid_type(self, std_ver_all_uninst_typeerr, possibly_version_func):
         """Test that values of a type that cannot represent a Version cause a TypeError."""
