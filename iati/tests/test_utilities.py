@@ -160,19 +160,16 @@ class TestUtilities(object):
         assert tree.getchildren()[0].tag == 'child'
         assert not tree.getchildren()[0].getchildren()
 
-    def test_convert_xml_to_tree_invalid_str(self):
+    @pytest.mark.parametrize("not_xml", iati.tests.utilities.generate_test_types(['bytes', 'str']))
+    def test_convert_xml_to_tree_invalid_str(self, not_xml):
         """Check that an invalid string raises an error when an attempt is made to convert it to an etree."""
-        not_xml = "this is not XML"
-
-        with pytest.raises(etree.XMLSyntaxError) as excinfo:
+        with pytest.raises(etree.XMLSyntaxError):
             iati.utilities.convert_xml_to_tree(not_xml)
 
-        assert excinfo.typename == 'XMLSyntaxError'
-
-    @pytest.mark.parametrize("not_xml", iati.tests.utilities.generate_test_types(['str'], True))
+    @pytest.mark.parametrize("not_xml", iati.tests.utilities.generate_test_types(['bytes', 'str'], True))
     def test_convert_xml_to_tree_not_str(self, not_xml):
         """Check that an invalid string raises an error when an attempt is made to convert it to an etree."""
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(TypeError) as excinfo:
             iati.utilities.convert_xml_to_tree(not_xml)
 
         assert 'To parse XML into a tree, the XML must be a string, not a' in str(excinfo.value)
