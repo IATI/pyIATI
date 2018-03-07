@@ -467,7 +467,7 @@ def _check_is_xml(maybe_xml):
     """Check whether a given parameter is valid XML.
 
     Args:
-        maybe_xml (str): An string that may or may not contain valid XML.
+        maybe_xml (str / bytes): A string that may or may not contain valid XML.
 
     Returns:
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
