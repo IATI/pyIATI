@@ -69,7 +69,7 @@ class TestSchemas(SchemaTestsBase):
             Determine whether the private function that is accessed should be public.
 
         """
-        version_instance = iati.version._standardise_decimal_version(std_ver_minor_mixedinst_valid_fullsupport)
+        version_instance = iati.version._normalise_decimal_version(std_ver_minor_mixedinst_valid_fullsupport)
 
         schema = schema_func(std_ver_minor_mixedinst_valid_fullsupport)
         result = schema._get_version()

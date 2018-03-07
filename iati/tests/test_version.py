@@ -497,8 +497,8 @@ class TestVersionStandardisation(object):
         """Return the version parameter, but converted to an iati.Version representing the newest Decimal Version in the given Integer Version if something that can be treated as an Integer Version is provided."""
         return version
 
-    @iati.version.standardise_decimals
-    def return_standardised_decimal(version):  # pylint: disable=no-self-argument
+    @iati.version.normalise_decimals
+    def return_normalised_decimal(version):  # pylint: disable=no-self-argument
         """Return the version parameter, but converted to an iati.Version if something that can be treated as a Decimal Version is provided."""
         return version
 
@@ -513,12 +513,12 @@ class TestVersionStandardisation(object):
         return request.param
 
     DECIMAL_S13N_FUNCTIONS = [
-        return_standardised_decimal,
-        iati.version._standardise_decimal_version
+        return_normalised_decimal,
+        iati.version._normalise_decimal_version
     ]
 
     @pytest.fixture(params=DECIMAL_S13N_FUNCTIONS)
-    def decimal_standardisation_func(self, request):
+    def decimal_normalisation_func(self, request):
         """Return a function to check the return value of."""
         return request.param
 
@@ -528,13 +528,13 @@ class TestVersionStandardisation(object):
         return request.param
 
     # decimal standardisation
-    def test_decimal_versions_standardised(self, std_ver_minor_uninst_valid_possible, decimal_standardisation_func):
+    def test_decimal_versions_normalised(self, std_ver_minor_uninst_valid_possible, decimal_normalisation_func):
         """Check that values that represent Decimal Versions of the IATI Standard are converted to iati.Versions."""
-        assert decimal_standardisation_func(std_ver_minor_uninst_valid_possible) == iati.Version(std_ver_minor_uninst_valid_possible)
+        assert decimal_normalisation_func(std_ver_minor_uninst_valid_possible) == iati.Version(std_ver_minor_uninst_valid_possible)
 
-    def test_integer_versions_not_standardised(self, std_ver_major_uninst_valid_possible, decimal_standardisation_func):
-        """Check that values that represent Integer Versions of the IATI Standard are returned as-is when standardising Decimal Versions."""
-        assert decimal_standardisation_func(std_ver_major_uninst_valid_possible) == std_ver_major_uninst_valid_possible
+    def test_integer_versions_not_normalised(self, std_ver_major_uninst_valid_possible, decimal_normalisation_func):
+        """Check that values that represent Integer Versions of the IATI Standard are returned as-is when normalising Decimal Versions."""
+        assert decimal_normalisation_func(std_ver_major_uninst_valid_possible) == std_ver_major_uninst_valid_possible
 
     # integer decimalisation
     def test_decimal_version_conversion_valid_version(self, std_ver_minor_inst_valid_known, integer_decimalisation_func):

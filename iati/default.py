@@ -75,7 +75,7 @@ def codelist(name, version):
 
 
 @iati.version.decimalise_integer
-@iati.version.standardise_decimals
+@iati.version.normalise_decimals
 @iati.version.allow_fully_supported_version
 def _codelists(version, use_cache=False):
     """Locate the default Codelists for the specified version of the Standard.
@@ -128,7 +128,7 @@ def codelists(version):
 
 
 @iati.version.decimalise_integer
-@iati.version.standardise_decimals
+@iati.version.normalise_decimals
 @iati.version.allow_fully_supported_version
 def codelist_mapping(version):
     """Define the mapping process which states where in a Dataset you should find values on a given Codelist.
@@ -168,7 +168,7 @@ def codelist_mapping(version):
 
 
 @iati.version.decimalise_integer
-@iati.version.standardise_decimals
+@iati.version.normalise_decimals
 @iati.version.allow_fully_supported_version
 def ruleset(version):
     """Return the Standard Ruleset for the specified version of the Standard.
@@ -292,7 +292,7 @@ def _schema(path_func, schema_class, version, populate=True, use_cache=False):
 
 
 @iati.version.decimalise_integer
-@iati.version.standardise_decimals
+@iati.version.normalise_decimals
 @iati.version.allow_known_version
 def activity_schema(version, populate=True):
     """Return the default Activity Schema for the specified version of the Standard.
@@ -312,7 +312,7 @@ def activity_schema(version, populate=True):
 
 
 @iati.version.decimalise_integer
-@iati.version.standardise_decimals
+@iati.version.normalise_decimals
 @iati.version.allow_known_version
 def organisation_schema(version, populate=True):
     """Return the default Organisation Schema for the specified version of the Standard.
