@@ -314,7 +314,7 @@ def create_schema_path(name, version=iati.version.STANDARD_VERSION_ANY):
     return path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
 
-@iati.version.standardise_decimals
+@iati.version.normalise_decimals
 def folder_name_for_version(version=iati.version.STANDARD_VERSION_ANY):
     """Return the folder name for a given version of the Standard.
 
