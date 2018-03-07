@@ -14,7 +14,7 @@ import os
 from io import StringIO
 import chardet
 from lxml import etree
-import iati.constants
+import iati
 
 
 def add_namespace(tree, new_ns_name, new_ns_uri):
@@ -343,21 +343,3 @@ def log_warning(msg, *args, **kwargs):
 
     """
     log(logging.WARN, msg, *args, **kwargs)
-
-
-def versions_for_integer(integer):
-    """Return a list containing the supported versions for the input integer version.
-
-    Args:
-        integer (int): The integer version to find the supported version for.
-
-    Returns:
-        list of str: Containing the supported versions for the input integer.
-
-    """
-    output = list()
-    for version in iati.constants.STANDARD_VERSIONS:
-        if version.startswith(str(integer)):
-            output.append(version)
-
-    return output

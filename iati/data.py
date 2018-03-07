@@ -170,7 +170,7 @@ class Dataset(object):
         """Return the version of the Standard that this Dataset is specified against.
 
         Returns:
-            str or None: The version of the Standard that this Dataset is specified against. None if the version cannot be detected.
+            iati.Version / None: The version of the Standard that this Dataset is specified against. None if the version cannot be detected.
 
         Todo:
             Consider if this should raise an error if the Dataset is specified at a version of the Standard that does not exist.
@@ -195,7 +195,10 @@ class Dataset(object):
             # Not version 1 data, so can return the version specified in `iati-activities/@version`
             version = version_iati_root
 
-        return version
+        if version is None:
+            return version
+
+        return iati.Version(version)
 
     def source_at_line(self, line_number):
         """Return the value of the XML source at the specified line.

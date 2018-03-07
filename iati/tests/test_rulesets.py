@@ -3,7 +3,7 @@
 Todo:
     Check all tests are still necessary/relevant.
     Condense tests for individual Rules.
-    Try to standardise Rule arrays for extraction.
+    Try to normalise Rule arrays for extraction.
 
 """
 # pylint: disable=protected-access,too-many-lines
