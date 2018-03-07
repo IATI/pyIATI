@@ -483,8 +483,11 @@ def _prevent_non_version_representations(version):
     try:
         Version(version)
     except ValueError:
-        if version == '0' or not version.isdigit():  # accept string representations of positive numbers
-            raise ValueError('{0} is not a known representation of a potential IATI Version Number'.format(version))
+        try:
+            if version == '0' or not version.isdigit():  # accept string representations of positive numbers
+                raise ValueError('{0} is not a known representation of a potential IATI Version Number'.format(version))
+        except AttributeError:  # invalid decimal
+            raise ValueError('Only permitted versions at major version 1 may be represented using `decimal.Decimals` - {0} is not a permitted v1.0x version.'.format(version))
     except TypeError:
         # will be an int or None or iati.Version if reaching this point
         if version is not None and not isinstance(version, Version) and version < 1:
