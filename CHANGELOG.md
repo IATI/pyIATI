@@ -11,6 +11,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Constants] `STANDARD_VERSIONS_SUPPORTED` lists all versions of the Standard that are fully supported by pyIATI. [#223]
 - [Constants] `STANDARD_VERSIONS_MINOR` lists all Minor versions of the IATI Standard. [#264]
 
+- [Tests] Separate testing of `bytes` and `str` type values for Python 3+. [#286]
+
+### Changed
+
+- [Utilities] Raise a TypeError rather than a ValueError when `convert_xml_to_tree()` is given a value of incorrect type. [#286]
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+- [Tests] Correct some very old test fixtures and documentation. [#286]
+
+### Security
+
+
+## [0.3.0] - 2018-02-16
+
+### Added
+
 - [Datasets] A Dataset `xml_tree` may be set with an ElementTree. [#235]
 
 - [Resources] Add ability to define resource files that are version-independent. [#223]
