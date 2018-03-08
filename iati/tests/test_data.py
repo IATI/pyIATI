@@ -63,9 +63,9 @@ class TestDatasets(object):
 
         assert excinfo.value.error_log.contains_error_called('err-not-xml-empty-document')
 
-    @pytest.mark.parametrize("not_xml", iati.tests.utilities.generate_test_types(['str'], True))
-    def test_dataset_number_not_xml(self, not_xml):
-        """Test Dataset creation when it's passed a number rather than a string or etree."""
+    @pytest.mark.parametrize("not_xml", iati.tests.utilities.generate_test_types(['bytes', 'str'], True))
+    def test_dataset_not_xml(self, not_xml):
+        """Test Dataset creation when it's passed a type that is not a string or etree."""
         with pytest.raises(TypeError) as excinfo:
             iati.Dataset(not_xml)
 
@@ -120,13 +120,21 @@ class TestDatasets(object):
 
         assert str(excinfo.value) == 'If setting a Dataset with an ElementTree, use the xml_tree property, not the xml_str property.'
 
-    @pytest.mark.parametrize("invalid_value", iati.tests.utilities.generate_test_types(['str'], True))
+    @pytest.mark.parametrize("invalid_value", iati.tests.utilities.generate_test_types(['bytes', 'str']))
     def test_dataset_xml_str_assignment_invalid_value(self, dataset_initialised, invalid_value):
         """Test assignment to the xml_str property with a value that is very much not valid."""
         data = dataset_initialised
 
-        with pytest.raises(TypeError) as excinfo:
+        with pytest.raises(ValueError):
             data.xml_str = invalid_value
+
+    @pytest.mark.parametrize("invalid_type", iati.tests.utilities.generate_test_types(['bytes', 'str'], True))
+    def test_dataset_xml_str_assignment_invalid_type(self, dataset_initialised, invalid_type):
+        """Test assignment to the xml_str property with a value that is very much not valid."""
+        data = dataset_initialised
+
+        with pytest.raises(TypeError) as excinfo:
+            data.xml_str = invalid_type
 
         assert 'Datasets can only be ElementTrees or strings containing valid XML, using the xml_tree and xml_str attributes respectively. Actual type:' in str(excinfo.value)
 

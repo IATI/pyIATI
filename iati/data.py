@@ -86,14 +86,14 @@ class Dataset(object):
             try:
                 value_stripped = value.strip()
 
+                validation_error_log = iati.validator.validate_is_xml(value_stripped)
+
                 # Convert the input to bytes, as etree.fromstring works most consistently with bytes objects, especially if an XML encoding declaration has been used.
                 if (isinstance(value_stripped, str) and
                         sys.version_info.major > 2):  # Python v2 treats strings as byte objects by default
                     value_stripped_bytes = value_stripped.encode()
                 else:
                     value_stripped_bytes = value_stripped
-
-                validation_error_log = iati.validator.validate_is_xml(value_stripped_bytes)
 
                 if not validation_error_log.contains_errors():
                     self.xml_tree = etree.fromstring(value_stripped_bytes)

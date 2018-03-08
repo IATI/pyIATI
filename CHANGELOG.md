@@ -8,13 +8,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
+- [Tests] Separate testing of `bytes` and `str` type values for Python 3+. [#286]
+
 ### Changed
+
+- [Utilities] Raise a TypeError rather than a ValueError when `convert_xml_to_tree()` is given a value of incorrect type. [#286]
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+
+- [Tests] Correct some very old test fixtures and documentation. [#286]
 
 ### Security
 
