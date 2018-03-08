@@ -13,7 +13,7 @@ Todo:
 """
 import os
 import pkg_resources
-import iati.constants
+import iati.version
 
 
 PACKAGE = __name__
@@ -291,7 +291,7 @@ def create_schema_path(name, version=None):
     return path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
 
-@iati.version.standardise_decimals
+@iati.version.normalise_decimals
 def folder_name_for_version(version=None):
     """Return the folder name for a given version of the Standard.
 
@@ -312,7 +312,7 @@ def folder_name_for_version(version=None):
         return 'version-independent'
     elif isinstance(version, str):
         try:
-            if int(version) in iati.constants.STANDARD_VERSIONS_MAJOR:
+            if int(version) in iati.version.STANDARD_VERSIONS_MAJOR:
                 return version
         except ValueError:
             pass
@@ -320,9 +320,9 @@ def folder_name_for_version(version=None):
         version = iati.Version(version)
 
     try:
-        if version in iati.constants.STANDARD_VERSIONS:
+        if version in iati.version.STANDARD_VERSIONS:
             return str(version.integer) + '-0' + str(version.decimal)
-        elif version.major in iati.constants.STANDARD_VERSIONS_MAJOR:
+        elif version.major in iati.version.STANDARD_VERSIONS_MAJOR:
             return str(version.major)
     except AttributeError:
         pass

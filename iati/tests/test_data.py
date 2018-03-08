@@ -63,9 +63,9 @@ class TestDatasets(object):
 
         assert excinfo.value.error_log.contains_error_called('err-not-xml-empty-document')
 
-    @pytest.mark.parametrize("not_xml", iati.tests.utilities.generate_test_types(['str'], True))
-    def test_dataset_number_not_xml(self, not_xml):
-        """Test Dataset creation when it's passed a number rather than a string or etree."""
+    @pytest.mark.parametrize("not_xml", iati.tests.utilities.generate_test_types(['bytes', 'str'], True))
+    def test_dataset_not_xml(self, not_xml):
+        """Test Dataset creation when it's passed a type that is not a string or etree."""
         with pytest.raises(TypeError) as excinfo:
             iati.Dataset(not_xml)
 
@@ -120,13 +120,21 @@ class TestDatasets(object):
 
         assert str(excinfo.value) == 'If setting a Dataset with an ElementTree, use the xml_tree property, not the xml_str property.'
 
-    @pytest.mark.parametrize("invalid_value", iati.tests.utilities.generate_test_types(['str'], True))
+    @pytest.mark.parametrize("invalid_value", iati.tests.utilities.generate_test_types(['bytes', 'str']))
     def test_dataset_xml_str_assignment_invalid_value(self, dataset_initialised, invalid_value):
         """Test assignment to the xml_str property with a value that is very much not valid."""
         data = dataset_initialised
 
-        with pytest.raises(TypeError) as excinfo:
+        with pytest.raises(ValueError):
             data.xml_str = invalid_value
+
+    @pytest.mark.parametrize("invalid_type", iati.tests.utilities.generate_test_types(['bytes', 'str'], True))
+    def test_dataset_xml_str_assignment_invalid_type(self, dataset_initialised, invalid_type):
+        """Test assignment to the xml_str property with a value that is very much not valid."""
+        data = dataset_initialised
+
+        with pytest.raises(TypeError) as excinfo:
+            data.xml_str = invalid_type
 
         assert 'Datasets can only be ElementTrees or strings containing valid XML, using the xml_tree and xml_str attributes respectively. Actual type:' in str(excinfo.value)
 
@@ -470,8 +478,7 @@ class TestDatasetVersionDetection(object):
         output = collections.namedtuple('output', 'root_element child_element')
         return output(root_element=request.param[0], child_element=request.param[1])
 
-    @pytest.mark.parametrize("version", iati.utilities.versions_for_integer(1))
-    def test_detect_version_v1_simple(self, iati_tag_names, version):
+    def test_detect_version_v1_simple(self, iati_tag_names, std_ver_minor_inst_valid_known_v1):
         """Check that a version 1 Dataset is detected correctly.
         Also checks that version numbers containing whitespace do not affect version detection.
         """
@@ -482,10 +489,10 @@ class TestDatasetVersionDetection(object):
             <{1} version="   {2}"></{1}>
             <{1} version="   {2}   "></{1}>
         </{0}>
-        """.format(iati_tag_names.root_element, iati_tag_names.child_element, version))
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element, std_ver_minor_inst_valid_known_v1))
         result = data.version
 
-        assert result == version
+        assert result == std_ver_minor_inst_valid_known_v1
 
     def test_detect_version_explicit_parent_mismatch_explicit_child(self, iati_tag_names):
         """Check that no version is detected for a v1 Dataset where a version within the `iati-activities` element does not match the versions specified within all `iati-activity` child elements."""
@@ -559,18 +566,17 @@ class TestDatasetVersionDetection(object):
 
         assert result is None
 
-    @pytest.mark.parametrize("version", iati.utilities.versions_for_integer(2))
-    def test_detect_version_v2_simple(self, iati_tag_names, version):
+    def test_detect_version_v2_simple(self, iati_tag_names, std_ver_minor_inst_valid_known_v2):
         """Check that a version 2 Dataset is detected correctly."""
         data = iati.Dataset("""
         <{0} version="{2}">
             <{1}></{1}>
             <{1}></{1}>
         </{0}>
-        """.format(iati_tag_names.root_element, iati_tag_names.child_element, version))
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element, std_ver_minor_inst_valid_known_v2))
         result = data.version
 
-        assert result == version
+        assert result == std_ver_minor_inst_valid_known_v2
 
     def test_cannot_assign_to_version_property(self):
         """Check that it is not possible to assign to the `version` property.

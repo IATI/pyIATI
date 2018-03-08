@@ -1,217 +1,13 @@
 """A module containing tests for the pyIATI representation of Standard metadata."""
 import copy
-from decimal import Decimal
-import itertools
 import math
 import operator
 import pytest
 import iati.tests.utilities
+from iati.tests.fixtures.versions import iativer, semver, split_decimal, split_iativer, split_semver
 
 
-ZERO_TO_LOTS = list(range(0, 220, 51))
-"""A list of numbers from 0 to a large number. 0 is included."""
-ONE_TO_NINE = list(range(1, 10))
-"""A list of numbers from 1-9 inclusive."""
-ONE_TO_LOTS = list(range(1, 220, 51))
-"""A list of numbers from 1 to a large number. 1 is included."""
-TWO_TO_LOTS = list(range(2, 220, 51))
-"""A list of numbers from 2 to a large number. 2 is included."""
-TEN_TO_LOTS = list(range(10, 220, 51))
-"""A list of numbers from 10 to a large number. 10 is included."""
-NEGATIVE_NUMBERS = list(range(-10, 0))
-"""A list of negative numbers."""
-NON_POSITIVE_NUMBERS = NEGATIVE_NUMBERS + [0]
-"""A list of negative numbers and zero."""
-
-
-def generate_semver_list(major_components, minor_components, patch_components):
-    """Generate a list of SemVer-format values.
-
-    Params:
-        major_components (list of int): List of values to use as the Major Component in the generated Version Numbers.
-        minor_components (list of int): List of values to use as the Minor Component in the generated Version Numbers.
-        patch_components (list of int): List of values to use as the Patch Component in the generated Version Numbers.
-
-    Returns:
-        list of string: List of values in the SemVer format.
-    """
-    return [semver(version[0], version[1], version[2]) for version in itertools.product(major_components, minor_components, patch_components)]
-
-
-def iativer(integer, decimal):
-    """Construct an IATIver-format version number.
-
-    Args:
-        integer (int): The integer component of the version number.
-        decimal (int): The decimal component of the version number.
-
-    Returns:
-        str: An IATIver-format version number with the specified Integer and Decimal Components.
-    """
-    return str(integer) + '.0' + str(decimal)
-
-
-def semver(major, minor, patch):
-    """Construct an SemVer-format version number.
-
-    Args:
-        major (int): The major component of the version number.
-        minor (int): The minor component of the version number.
-        patch (int): The patch component of the version number.
-
-    Returns:
-        str: A SemVer-format version number with the specified Major, Minor and Patch Components.
-    """
-    return '.'.join([str(major), str(minor), str(patch)])
-
-
-def split_decimal(version_decimal):
-    """Split a Decimal version number into numeric representations of its components.
-
-    Args:
-        version_decimal (Decimal): A Decimal containing an IATI version number.
-
-    Returns:
-        list of int: A list containing numeric representations of the Integer and Decimal components.
-    """
-    integer_component = int(version_decimal)
-    decimal_component = int(version_decimal * 100) - 100
-
-    return [integer_component, decimal_component]
-
-
-def split_iativer(version_str):
-    """Split an IATIver-format version number into numeric representations of its components.
-
-    Args:
-        version_str (string): An IATIver-format string.
-
-    Returns:
-        list of int: A list containing numeric representations of the Integer and Decimal components.
-    """
-    integer_component = int(version_str.split('.')[0])
-    decimal_component = int(version_str.split('.')[1])
-
-    return [integer_component, decimal_component]
-
-
-def split_semver(version_str):
-    """Split a SemVer-format version number into numeric representations of its components.
-
-    Args:
-        version_str (string): A SemVer-format string.
-
-    Returns:
-        list of int: A list containing numeric representations of the Major, Minor and Patch components.
-    """
-    major_component = int(version_str.split('.')[0])
-    minor_component = int(version_str.split('.')[1])
-    patch_component = int(version_str.split('.')[2])
-
-    return [major_component, minor_component, patch_component]
-
-
-class VersionNumberTestBase(object):
-    """A container for fixtures that generate Version Numbers."""
-
-    DECIMAL_VALID = [
-        Decimal('1.0' + str(minor)) for minor in ONE_TO_NINE  # base permitted values
-    ] + [
-        Decimal('1.010')  # equivalent to `Decimal('1.01')`
-    ]
-    """list of Decimal: A list of valid Decimal version numbers."""
-
-    DECIMAL_INVALID = [
-        Decimal('1.0' + str(minor + 1)) for minor in TEN_TO_LOTS  # values greater than 10
-    ] + [
-        Decimal('1.00')  # lower boundary case
-    ] + [
-        Decimal('1.' + str(minor)) for minor in TEN_TO_LOTS  # no zero after decimal point
-    ] + [
-        Decimal(iativer(components[0], components[1])) for components in
-        list(itertools.product(TWO_TO_LOTS, ONE_TO_LOTS)) +  # major versions above 1
-        list(itertools.product(NON_POSITIVE_NUMBERS, ONE_TO_LOTS))  # major versions below 1
-    ]
-    """list of Decimal: A list of invalid Decimal version numbers."""
-
-    IATIVER_VALID = [
-        iativer(components[0], components[1]) for components in
-        list(itertools.product(ONE_TO_LOTS, ONE_TO_NINE)) +  # decimals from 1-9 inclusive
-        list(itertools.product(TWO_TO_LOTS, TEN_TO_LOTS))  # decimals from 10-up for integers from 2 up
-    ]
-    """list of str: A list of valid IATIver format version numbers."""
-
-    SEMVER_VALID = generate_semver_list(ONE_TO_LOTS, ZERO_TO_LOTS, ZERO_TO_LOTS)
-    """list of str: A list of valid SemVer format version numbers."""
-
-    MIXED_VER_VALID = IATIVER_VALID + SEMVER_VALID + DECIMAL_VALID
-    """list of (str / Decimal): A list of valid version numbers of any permitted format."""
-
-    @pytest.fixture(params=DECIMAL_VALID)
-    def decimal_version_valid(self, request):
-        """Return a valid decimal version number."""
-        return request.param
-
-    @pytest.fixture(params=DECIMAL_INVALID)
-    def decimal_version_invalid(self, request):
-        """Return an invalid decimal version number."""
-        return request.param
-
-    @pytest.fixture(params=IATIVER_VALID)
-    def iativer_version_valid(self, request):
-        """Return a valid IATIver-format version number."""
-        return request.param
-
-    @pytest.fixture(params=[
-        iativer(components[0], components[1]) for components in  # pylint: disable=undefined-loop-variable
-        list(itertools.product([1], TEN_TO_LOTS)) +  # integer 1 may only decimal 01-09
-        list(itertools.product([0], ONE_TO_NINE + TEN_TO_LOTS)) +  # integer value of 0
-        list(itertools.product(ONE_TO_LOTS, [0])) +  # decimal value of 0
-        list(itertools.product(NEGATIVE_NUMBERS, ONE_TO_NINE)) +  # negative integer
-        list(itertools.product(ONE_TO_LOTS, NEGATIVE_NUMBERS))  # negative decimal
-    ] + [
-        str(components[0]) + '.' + str(components[1]) for components in itertools.product(ONE_TO_LOTS, ONE_TO_NINE)  # non-padded Decimal  # pylint: disable=undefined-loop-variable
-    ])
-    def iativer_version_invalid(self, request):
-        """Return an version number that looks like it could be an IATIver-format version, but isn't."""
-        return request.param
-
-    @pytest.fixture(params=SEMVER_VALID)
-    def semver_3_part_valid(self, request):
-        """Return a valid 3-part SemVer-format version number."""
-        return request.param
-
-    @pytest.fixture(params=MIXED_VER_VALID)
-    def mixed_ver_format_valid(self, request):
-        """Return a valid version number in a valid format."""
-        return request.param
-
-    @pytest.fixture(params=[
-        version for version in MIXED_VER_VALID if iati.Version(version) in iati.constants.STANDARD_VERSIONS
-    ])
-    def uninstantiated_known_version(self, request):
-        """Return a value that can be used to instantiate a known IATI Standard version."""
-        return request.param
-
-    @pytest.fixture
-    def instantiated_version(self, mixed_ver_format_valid):
-        """Return an instantiated IATI Version Number."""
-        return iati.Version(mixed_ver_format_valid)
-
-    @pytest.fixture
-    def single_version(self):
-        """Return a single instantiated IATI Version Number."""
-        return iati.Version('1.2.3')
-
-    @pytest.fixture(params=[
-        version for version in IATIVER_VALID if not iati.Version(version) in iati.constants.STANDARD_VERSIONS
-    ])
-    def standard_version_unknown(self, request):
-        """Return a version of the IATI Standard that is not known by pyIATI to exist."""
-        return iati.Version(request.param)
-
-
-class TestVersionInit(VersionNumberTestBase):
+class TestVersionInit(object):
     """A container for tests relating to initialisation of Standard Versions."""
 
     def test_version_no_params(self):
@@ -219,39 +15,23 @@ class TestVersionInit(VersionNumberTestBase):
         with pytest.raises(TypeError):
             iati.Version()  # pylint: disable=E1120
 
-    @pytest.mark.parametrize("not_version_str", [
-        '',  # empty string
-        ' ',  # whitespace
-        'not a version',  # letters
-        ':)',  # symbols
-        '.',  # only a separator
-        '+'  # only a build number separator
-    ])
-    def test_version_invalid_string(self, not_version_str):
-        """Test Version creation with a string that is not a version number."""
-        with pytest.raises(ValueError) as excinfo:
-            iati.Version(not_version_str)
-
-        assert str(excinfo.value) == 'A valid version number must be specified.'
-
-    @pytest.mark.parametrize("not_str", iati.tests.utilities.generate_test_types(['str'], True))
-    def test_version_not_string(self, not_str):
+    def test_version_not_string(self, std_ver_minor_uninst_typeerr):
         """Test Version creation with a non-string."""
         with pytest.raises(TypeError) as excinfo:
-            iati.Version(not_str)
+            iati.Version(std_ver_minor_uninst_typeerr)
 
         assert 'A Version object must be created from a string or Decimal, not a ' in str(excinfo.value)
-        assert str(type(not_str)) in str(excinfo.value)
+        assert str(type(std_ver_minor_uninst_typeerr)) in str(excinfo.value)
 
-    def test_version_supported_iati_versions(self, standard_version_mandatory):
+    def test_version_supported_iati_versions(self, std_ver_minor_uninst_valid_fullsupport):
         """Test Version creation with supported IATI version numbers."""
-        iati.Version(standard_version_mandatory[0].iativer_str)
+        iati.Version(std_ver_minor_uninst_valid_fullsupport)
 
-    def test_version_valid_decimal(self, decimal_version_valid):
+    def test_version_valid_decimal(self, std_ver_minor_uninst_valid_decimal_possible):
         """Test Version creations with valid decimal version numbers."""
-        integer_component, decimal_component = split_decimal(decimal_version_valid)
+        integer_component, decimal_component = split_decimal(std_ver_minor_uninst_valid_decimal_possible)
 
-        version = iati.Version(decimal_version_valid)
+        version = iati.Version(std_ver_minor_uninst_valid_decimal_possible)
 
         assert version.integer == integer_component
         assert version.major == integer_component
@@ -259,25 +39,25 @@ class TestVersionInit(VersionNumberTestBase):
         assert version.minor == decimal_component - 1
         assert version.patch == 0
 
-    def test_version_invalid_float(self, decimal_version_valid):
+    def test_version_invalid_float(self, std_ver_minor_uninst_valid_decimal_possible):
         """Test Version creation with a float that would be valid as a Decimal."""
-        float_version = float(decimal_version_valid)
+        float_version = float(std_ver_minor_uninst_valid_decimal_possible)
 
         with pytest.raises(TypeError):
             iati.Version(float_version)
 
-    def test_version_invalid_decimal(self, decimal_version_invalid):
+    def test_version_invalid_decimal(self, std_ver_minor_uninst_valueerr_decimal):
         """Test Version creation with a Decimal that is not a valid decimal version number."""
         with pytest.raises(ValueError) as excinfo:
-            iati.Version(decimal_version_invalid)
+            iati.Version(std_ver_minor_uninst_valueerr_decimal)
 
         assert str(excinfo.value) == 'A valid version number must be specified.'
 
-    def test_version_valid_iativer(self, iativer_version_valid):
+    def test_version_valid_iativer(self, std_ver_minor_uninst_valid_iativer_possible):
         """Test Version creations with correctly constructed IATIver version numbers."""
-        integer_component, decimal_component = split_iativer(iativer_version_valid)
+        integer_component, decimal_component = split_iativer(std_ver_minor_uninst_valid_iativer_possible)
 
-        version = iati.Version(iativer_version_valid)
+        version = iati.Version(std_ver_minor_uninst_valid_iativer_possible)
 
         assert version.integer == integer_component
         assert version.major == integer_component
@@ -285,18 +65,18 @@ class TestVersionInit(VersionNumberTestBase):
         assert version.minor == decimal_component - 1
         assert version.patch == 0
 
-    def test_version_invalid_iativer(self, iativer_version_invalid):
-        """Test Version creation with a string that is not a valid IATIver version number."""
+    def test_version_invalid_iativer(self, std_ver_minor_uninst_valueerr_iativer):
+        """Test Version creation with a string that is not a valid IATIver version number, but looks like it could be."""
         with pytest.raises(ValueError) as excinfo:
-            iati.Version(iativer_version_invalid)
+            iati.Version(std_ver_minor_uninst_valueerr_iativer)
 
         assert str(excinfo.value) == 'A valid version number must be specified.'
 
-    def test_version_valid_semver_3_part(self, semver_3_part_valid):
+    def test_version_valid_semver_3_part(self, std_ver_minor_uninst_valid_semver_possible):
         """Test Version creation with valid SemVer version numbers."""
-        major_component, minor_component, patch_component = split_semver(semver_3_part_valid)
+        major_component, minor_component, patch_component = split_semver(std_ver_minor_uninst_valid_semver_possible)
 
-        version = iati.Version(semver_3_part_valid)
+        version = iati.Version(std_ver_minor_uninst_valid_semver_possible)
 
         assert version.major == major_component
         assert version.integer == major_component
@@ -304,11 +84,10 @@ class TestVersionInit(VersionNumberTestBase):
         assert version.decimal == minor_component + 1
         assert version.patch == patch_component
 
-    @pytest.mark.parametrize('version_str', generate_semver_list([0], ZERO_TO_LOTS, ZERO_TO_LOTS))
-    def semver_version_invalid_major_0(self, version_str):
+    def semver_version_invalid_major_0(self, str_ver_minor_uninst_valueerr_v0):
         """Test version creation with a Major version of 0."""
         with pytest.raises(ValueError) as excinfo:
-            iati.Version(version_str)
+            iati.Version(str_ver_minor_uninst_valueerr_v0)
 
         assert str(excinfo.value) == 'A valid version number must be specified.'
 
@@ -383,7 +162,7 @@ class TestVersionComparison(object):
         assert result == should_pass
 
 
-class TestVersionModification(VersionNumberTestBase):
+class TestVersionModification(object):
     """A container for tests relating to modifying Version Numbers after they are instantiated."""
 
     CHANGE_AMOUNT = 10
@@ -400,74 +179,74 @@ class TestVersionModification(VersionNumberTestBase):
         """Return a tuple containing the name of a component within a Version, plus the index it appears when components are ordered from most to least major."""
         return request.param
 
-    def test_attribute_components_writable_valid_values(self, instantiated_version, modifiable_attrib):
+    def test_attribute_components_writable_valid_values(self, std_ver_minor_inst_valid_possible, modifiable_attrib):
         """Test that the core Version Number Component attributes are writable."""
         attrib_name, idx = modifiable_attrib
-        components = split_semver(instantiated_version.semver_str)
+        components = split_semver(std_ver_minor_inst_valid_possible.semver_str)
         components[idx] = components[idx] + self.CHANGE_AMOUNT
 
         version_new = iati.Version(semver(components[0], components[1], components[2]))
-        setattr(instantiated_version, attrib_name, components[idx])
+        setattr(std_ver_minor_inst_valid_possible, attrib_name, components[idx])
 
-        assert instantiated_version == version_new
+        assert std_ver_minor_inst_valid_possible == version_new
 
     @pytest.mark.parametrize("not_int", iati.tests.utilities.generate_test_types(['int'], True))
-    def test_attribute_components_writable_invalid_values(self, single_version, modifiable_attrib, not_int):
+    def test_attribute_components_writable_invalid_values(self, std_ver_minor_inst_valid_single, modifiable_attrib, not_int):
         """Test that core Version Number Components can have invalid values set."""
         attrib_name, _ = modifiable_attrib
 
-        setattr(single_version, attrib_name, not_int)
+        setattr(std_ver_minor_inst_valid_single, attrib_name, not_int)
 
 
-class TestVersionRepresentation(VersionNumberTestBase):
+class TestVersionRepresentation(object):
     """A container for tests relating to how Standard Versions are represented when output."""
 
-    def test_iativer_string_output(self, iativer_version_valid):
+    def test_iativer_string_output(self, std_ver_minor_uninst_valid_iativer_possible):
         """Test that the string output for an IATIver version is as expected."""
-        integer_component, decimal_component = split_iativer(iativer_version_valid)
+        integer_component, decimal_component = split_iativer(std_ver_minor_uninst_valid_iativer_possible)
         semver_str = semver(integer_component, decimal_component - 1, 0)
 
-        version = iati.Version(iativer_version_valid)
+        version = iati.Version(std_ver_minor_uninst_valid_iativer_possible)
 
-        assert str(version) == iativer_version_valid
+        assert str(version) == std_ver_minor_uninst_valid_iativer_possible
         assert repr(version) == "iati.Version('" + semver_str + "')"
-        assert version.iativer_str == iativer_version_valid
+        assert version.iativer_str == std_ver_minor_uninst_valid_iativer_possible
         assert version.semver_str == semver_str
 
-    def test_semver_string_output(self, semver_3_part_valid):
+    def test_semver_string_output(self, std_ver_minor_uninst_valid_semver_possible):
         """Test that the str() output for an SemVer version is in IATIver-format."""
-        major_component, minor_component, _ = split_semver(semver_3_part_valid)
+        major_component, minor_component, _ = split_semver(std_ver_minor_uninst_valid_semver_possible)
         iativer_str = iativer(major_component, minor_component + 1)
 
-        version = iati.Version(semver_3_part_valid)
+        version = iati.Version(std_ver_minor_uninst_valid_semver_possible)
 
         assert str(version) == iativer_str
-        assert repr(version) == "iati.Version('" + semver_3_part_valid + "')"
+        assert repr(version) == "iati.Version('" + std_ver_minor_uninst_valid_semver_possible + "')"
         assert version.iativer_str == iativer_str
-        assert version.semver_str == semver_3_part_valid
+        assert version.semver_str == std_ver_minor_uninst_valid_semver_possible
 
 
-class TestVersionBumping(VersionNumberTestBase):
+class TestVersionBumping(object):
     """A container for tests relating to bumping of Version Numbers."""
 
-    def test_version_bump_major(self, semver_3_part_valid):
+    def test_version_bump_major(self, std_ver_minor_uninst_valid_semver_possible):
         """Test that the next valid Major/Integer version can be located."""
-        major_component, _, _ = split_semver(semver_3_part_valid)
+        major_component, _, _ = split_semver(std_ver_minor_uninst_valid_semver_possible)
         next_major_version = iati.Version(semver(major_component + 1, 0, 0))
 
-        version = iati.Version(semver_3_part_valid)
+        version = iati.Version(std_ver_minor_uninst_valid_semver_possible)
 
         assert isinstance(version.next_major(), iati.Version)
         assert version.next_major() == next_major_version
         assert isinstance(version.next_integer(), iati.Version)
         assert version.next_integer() == next_major_version
 
-    def test_version_bump_minor(self, semver_3_part_valid):
+    def test_version_bump_minor(self, std_ver_minor_uninst_valid_semver_possible):
         """Test that the next valid Minor/Decimal version can be located."""
-        major_component, minor_component, _ = split_semver(semver_3_part_valid)
+        major_component, minor_component, _ = split_semver(std_ver_minor_uninst_valid_semver_possible)
         next_minor_version = iati.Version(semver(major_component, minor_component + 1, 0))
 
-        version = iati.Version(semver_3_part_valid)
+        version = iati.Version(std_ver_minor_uninst_valid_semver_possible)
 
         assert isinstance(version.next_minor(), iati.Version)
         assert version.next_minor() == next_minor_version
@@ -475,7 +254,7 @@ class TestVersionBumping(VersionNumberTestBase):
         assert version.next_decimal() == next_minor_version
 
 
-class TestVersionImplementationDetailHiding(VersionNumberTestBase):
+class TestVersionImplementationDetailHiding(object):
     """A container for tests relating to ensuring implementation detail is hidden.
 
     The implementation of the Version class makes use of a Semantic Versioning library by inheriting from a base class.
@@ -483,43 +262,89 @@ class TestVersionImplementationDetailHiding(VersionNumberTestBase):
     Tests in this container check that attributes that are not desired have been hidden.
     """
 
-    def test_version_bump_patch(self, instantiated_version):
+    def test_version_bump_patch(self, std_ver_minor_inst_valid_possible):
         """Test that the next Patch version cannot be obtained."""
         with pytest.raises(AttributeError):
-            instantiated_version.next_patch()
+            std_ver_minor_inst_valid_possible.next_patch()
 
         with pytest.raises(AttributeError):
-            instantiated_version.next_patch  # pylint: disable=pointless-statement
+            std_ver_minor_inst_valid_possible.next_patch  # pylint: disable=pointless-statement
 
-    def test_version_attrib_prerelease(self, instantiated_version):
+    def test_version_attrib_prerelease(self, std_ver_minor_inst_valid_possible):
         """Test that the 'prerelease' attribute has been set to None on initialisation."""
-        assert instantiated_version.prerelease is None
+        assert std_ver_minor_inst_valid_possible.prerelease is None
 
-    def test_version_attrib_build(self, instantiated_version):
+    def test_version_attrib_build(self, std_ver_minor_inst_valid_possible):
         """Test that the 'build' attribute has been set to None on initialisation."""
-        assert instantiated_version.build is None
+        assert std_ver_minor_inst_valid_possible.build is None
 
-    def test_version_attrib_partial(self, instantiated_version):
+    def test_version_attrib_partial(self, std_ver_minor_inst_valid_possible):
         """Test that the 'partial' attribute has been set to True on initialisation."""
-        assert instantiated_version.partial is True
+        assert std_ver_minor_inst_valid_possible.partial is True
+
+
+class TestVersionConstants(object):
+    """A container for tests relating to constants that define useful groups of IATI version numbers."""
+
+    @pytest.fixture(params=[
+        iati.version.STANDARD_VERSIONS,
+        iati.version.STANDARD_VERSIONS_SUPPORTED,
+        iati.version.STANDARD_VERSIONS_MINOR
+    ])
+    def standard_versions_list(self, request):
+        """Return a list of Version Numbers."""
+        return request.param
+
+    def test_standard_versions_all_are_versions(self, standard_versions_list):
+        """Check that each item in standard versions is a Version instance."""
+        for version in standard_versions_list:
+            assert isinstance(version, iati.Version)
+
+    def test_standard_versions_correct_format(self, standard_versions_list):
+        """Check that standard versions is in the correct format."""
+        assert isinstance(standard_versions_list, list)
+
+    def test_standard_versions_correct_number(self):
+        """Check that standard versions has the expected number of items."""
+        assert len(iati.version.STANDARD_VERSIONS) == 7
+
+    def test_standard_versions_correct_number_supported(self):
+        """Check that supported standard versions has the expected number of items."""
+        assert len(iati.version.STANDARD_VERSIONS_SUPPORTED) == 4
+
+    def test_standard_versions_major_all_are_integers(self):
+        """Check that each major version is an integer."""
+        for major_version in iati.version.STANDARD_VERSIONS_MAJOR:
+            assert isinstance(major_version, int)
+
+    def test_standard_versions_major_correct_number(self):
+        """Check that the correct number of major versions are detected."""
+        assert len(iati.version.STANDARD_VERSIONS_MAJOR) == 2
+
+    def test_standard_versions_minor_correct_number(self):
+        """Check that the correct number of minor versions are detected."""
+        assert len(iati.version.STANDARD_VERSIONS_MINOR) == 7
 
 
 # pylint: disable=protected-access
-class TestVersionSupportChecks(VersionNumberTestBase):
-    """A container for tests relating to the detection of how much pyIATI supports particular versions."""
+class VersionSupportChecksBase(object):
+    """A container for functions and fixtures used to check version support.
+
+    In their own class to reduce the number of public methods in the parent class below the linting limit of 20.
+    """
 
     @iati.version.allow_fully_supported_version
-    def return_fully_supported_version(version):
+    def return_fully_supported_version(version):  # pylint: disable=no-self-argument
         """Return the version parameter, but only if it's fully supported by pyIATI. Check undertaken with decorator."""
         return version
 
     @iati.version.allow_known_version
-    def return_known_version(version):
+    def return_known_version(version):  # pylint: disable=no-self-argument
         """Return the version parameter, but only if it's known of by pyIATI. Check undertaken with decorator."""
         return version
 
     @iati.version.allow_possible_version
-    def return_possibly_version(version):
+    def return_possibly_version(version):  # pylint: disable=no-self-argument
         """Return the version parameter, but only if it's known of by pyIATI. Check undertaken with decorator."""
         return version
 
@@ -567,117 +392,115 @@ class TestVersionSupportChecks(VersionNumberTestBase):
         """Return a function to check for TypeErrors being raised when provided values other than iati.Versions."""
         return request.param
 
-    def test_fully_supported_version_fully_supported(self, standard_version_mandatory, decorated_func_full_support):
+
+class TestVersionSupportChecks(VersionSupportChecksBase):
+    """A container for tests relating to the detection of how much pyIATI supports particular versions."""
+
+    def test_fully_supported_version_fully_supported(self, std_ver_minor_inst_valid_fullsupport, decorated_func_full_support):
         """Check that fully supported IATI Versions are detected as such."""
-        version = standard_version_mandatory[0]
+        version = std_ver_minor_inst_valid_fullsupport
 
         assert iati.version._is_fully_supported(version) is True
         assert decorated_func_full_support(version) == version
 
-    def test_fully_supported_version_partially_supported(self, standard_version_partial_support, decorated_func_full_support):
+    def test_fully_supported_version_partially_supported(self, std_ver_minor_inst_valid_partsupport, decorated_func_full_support):
         """Check that partially supported IATI Versions are detected as not fully supported."""
-        assert iati.version._is_fully_supported(standard_version_partial_support) is False
+        assert iati.version._is_fully_supported(std_ver_minor_inst_valid_partsupport) is False
 
         with pytest.raises(ValueError):
-            decorated_func_full_support(standard_version_partial_support)
+            decorated_func_full_support(std_ver_minor_inst_valid_partsupport)
 
-    def test_known_version_known(self, standard_version_all, decorated_func_known):
+    def test_known_version_known(self, std_ver_minor_inst_valid_known, decorated_func_known):
         """Check that known IATI Versions are detected as such."""
-        assert iati.version._is_known(standard_version_all) is True
-        assert decorated_func_known(standard_version_all) == standard_version_all
+        assert iati.version._is_known(std_ver_minor_inst_valid_known) is True
+        assert decorated_func_known(std_ver_minor_inst_valid_known) == std_ver_minor_inst_valid_known
 
-    def test_known_version_not_known(self, standard_version_unknown, decorated_func_known):
+    def test_known_version_not_known(self, std_ver_minor_inst_valid_unknown, decorated_func_known):
         """Check that unknown IATI Versions are detected as such."""
-        assert iati.version._is_known(standard_version_unknown) is False
+        assert iati.version._is_known(std_ver_minor_inst_valid_unknown) is False
 
         with pytest.raises(ValueError):
-            decorated_func_known(standard_version_unknown)
+            decorated_func_known(std_ver_minor_inst_valid_unknown)
 
-    def test_supported_version_str(self, standard_version_mandatory, truthy_func, decorated_func):
-        """Check that Version Numbers cause an error if provided as a string."""
-        assert truthy_func(str(*standard_version_mandatory)) is False
+    def test_supported_version_str(self, std_ver_minor_uninst_valid_possible, truthy_func, decorated_func):
+        """Check that Version Numbers cause an error if provided as anything other than an iati.Version."""
+        assert truthy_func(std_ver_minor_uninst_valid_possible) is False
 
         with pytest.raises(ValueError):
-            decorated_func(str(*standard_version_mandatory))
+            decorated_func(std_ver_minor_uninst_valid_possible)
 
-    @pytest.mark.parametrize('not_a_version', iati.tests.utilities.generate_test_types(['str'], True))
-    def test_supported_version_junk_value(self, not_a_version, truthy_func, decorated_func):
+    def test_supported_version_junk_value(self, std_ver_minor_uninst_typeerr, truthy_func, decorated_func):
         """Check that supported IATI Versions cause an error if a junk value is provided."""
-        assert truthy_func(not_a_version) is False
+        assert truthy_func(std_ver_minor_uninst_typeerr) is False
 
         with pytest.raises(ValueError):
-            decorated_func(not_a_version)
+            decorated_func(std_ver_minor_uninst_typeerr)
 
-    def test_non_version_representation_valid_version_obj(self, instantiated_version, possibly_version_func):
+    def test_non_version_representation_valid_version_obj(self, std_ver_minor_inst_valid_possible, possibly_version_func):
         """Test that instantiated iati.Versions are detected as being valid representations of an IATI Version Number."""
-        original_value = copy.deepcopy(instantiated_version)
+        original_value = copy.deepcopy(std_ver_minor_inst_valid_possible)
 
-        version = possibly_version_func(instantiated_version)
+        version = possibly_version_func(std_ver_minor_inst_valid_possible)
 
         assert version == original_value
-        assert version is instantiated_version
+        assert version is std_ver_minor_inst_valid_possible
 
-    def test_non_version_representation_valid_val_decimal(self, mixed_ver_format_valid, possibly_version_func):
+    def test_non_version_representation_valid_val_decimal(self, std_ver_minor_uninst_valid_possible, possibly_version_func):
         """Test that values that can become iati.Versions are detected as being valid representations of an IATI Version Number."""
-        original_value = copy.deepcopy(mixed_ver_format_valid)
+        original_value = copy.deepcopy(std_ver_minor_uninst_valid_possible)
 
-        version = possibly_version_func(mixed_ver_format_valid)
+        version = possibly_version_func(std_ver_minor_uninst_valid_possible)
 
         assert version == original_value
-        assert version is mixed_ver_format_valid
+        assert version is std_ver_minor_uninst_valid_possible
 
-    @pytest.mark.parametrize('integer_version',
-        list(range(1, 100, 17)) +  # positive integers
-        [str(val) for val in range(1, 100, 17)]  # strings that are positive integers
-    )
-    def test_non_version_representation_valid_val_integer(self, integer_version, possibly_version_func):
+    def test_non_version_representation_valid_val_integer(self, std_ver_major_uninst_valid_possible, possibly_version_func):
         """Test that positive integers are detected as being valid representations of an IATI Version Number."""
-        original_value = copy.deepcopy(integer_version)
+        original_value = copy.deepcopy(std_ver_major_uninst_valid_possible)
 
-        version = possibly_version_func(integer_version)
+        version = possibly_version_func(std_ver_major_uninst_valid_possible)
 
         assert version == original_value
-        assert version is integer_version
+        assert version is std_ver_major_uninst_valid_possible
 
     def test_non_version_representation_valid_val_none(self, possibly_version_func):
-        """Test that None detected as being valid representations of an IATI Version Number."""
+        """Test that None detected as being valid representations of an IATI Version Number.
+
+        Todo:
+            Change magic value to be something other than `None`.
+            See: https://github.com/IATI/pyIATI/issues/218#issuecomment-364086162
+
+        """
         version = possibly_version_func(None)
 
         assert version is None
 
-    @pytest.mark.parametrize('integer_not_a_version',
-        list(range(-100, 0, 17)) +  # negative integers
-        [str(val) for val in range(-100, 0, 17)] +  # strings that are negative integers
-        [' ' + str(val) + ' ' for val in range(1, 100, 17)] +  # whitespace around positive integers
-        [0, '0']  # zero
-    )
-    def test_non_version_representation_invalid_val_integer(self, integer_not_a_version, possibly_version_func):
+    def test_non_version_representation_invalid_val_integer(self, std_ver_major_uninst_valueerr, possibly_version_func):
         """Test that non-positive integers are detected as not being valid representations of an IATI Version Number."""
         with pytest.raises(ValueError):
-            possibly_version_func(integer_not_a_version)
+            possibly_version_func(std_ver_major_uninst_valueerr)
 
-    def test_non_version_representation_invalid_val(self, iativer_version_invalid, possibly_version_func):
+    def test_non_version_representation_invalid_val(self, std_ver_minor_uninst_valueerr_str_decimal, possibly_version_func):
         """Test that values that are a correct type but cannot be a Decimal Version are detected as a ValueError."""
         with pytest.raises(ValueError):
-            possibly_version_func(iativer_version_invalid)
+            possibly_version_func(std_ver_minor_uninst_valueerr_str_decimal)
 
-    @pytest.mark.parametrize('not_a_version', iati.tests.utilities.generate_test_types(['str', 'none', 'int'], True))
-    def test_non_version_representation_invalid_type(self, not_a_version, possibly_version_func):
+    def test_non_version_representation_invalid_type(self, std_ver_all_uninst_typeerr, possibly_version_func):
         """Test that values of a type that cannot represent a Version cause a TypeError."""
         with pytest.raises(TypeError):
-            possibly_version_func(not_a_version)
+            possibly_version_func(std_ver_all_uninst_typeerr)
 
 
-class TestVersionStandardisation(VersionNumberTestBase):
+class TestVersionStandardisation(object):
     """A container for tests relating to standardising how versions are passed into functions."""
 
     @iati.version.decimalise_integer
-    def return_decimalised_integer(version):
+    def return_decimalised_integer(version):  # pylint: disable=no-self-argument
         """Return the version parameter, but converted to an iati.Version representing the newest Decimal Version in the given Integer Version if something that can be treated as an Integer Version is provided."""
         return version
 
-    @iati.version.standardise_decimals
-    def return_standardised_decimal(version):
+    @iati.version.normalise_decimals
+    def return_normalised_decimal(version):  # pylint: disable=no-self-argument
         """Return the version parameter, but converted to an iati.Version if something that can be treated as a Decimal Version is provided."""
         return version
 
@@ -692,12 +515,12 @@ class TestVersionStandardisation(VersionNumberTestBase):
         return request.param
 
     DECIMAL_S13N_FUNCTIONS = [
-        return_standardised_decimal,
-        iati.version._standardise_decimal_version
+        return_normalised_decimal,
+        iati.version._normalise_decimal_version
     ]
 
     @pytest.fixture(params=DECIMAL_S13N_FUNCTIONS)
-    def decimal_standardisation_func(self, request):
+    def decimal_normalisation_func(self, request):
         """Return a function to check the return value of."""
         return request.param
 
@@ -707,36 +530,33 @@ class TestVersionStandardisation(VersionNumberTestBase):
         return request.param
 
     # decimal standardisation
-    def test_decimal_versions_standardised(self, mixed_ver_format_valid, decimal_standardisation_func):
+    def test_decimal_versions_normalised(self, std_ver_minor_uninst_valid_possible, decimal_normalisation_func):
         """Check that values that represent Decimal Versions of the IATI Standard are converted to iati.Versions."""
-        assert decimal_standardisation_func(mixed_ver_format_valid) == iati.Version(mixed_ver_format_valid)
+        assert decimal_normalisation_func(std_ver_minor_uninst_valid_possible) == iati.Version(std_ver_minor_uninst_valid_possible)
 
-    @pytest.mark.parametrize('integer_val', range(-10, 10))
-    def test_integer_versions_not_standardised(self, integer_val, decimal_standardisation_func):
-        """Check that values that represent Integer Versions of the IATI Standard are returned as-is when standardising Decimal Versions."""
-        assert decimal_standardisation_func(integer_val) == integer_val
-        assert decimal_standardisation_func(str(integer_val)) == str(integer_val)
+    def test_integer_versions_not_normalised(self, std_ver_major_uninst_valid_possible, decimal_normalisation_func):
+        """Check that values that represent Integer Versions of the IATI Standard are returned as-is when normalising Decimal Versions."""
+        assert decimal_normalisation_func(std_ver_major_uninst_valid_possible) == std_ver_major_uninst_valid_possible
 
     # integer decimalisation
-    def test_decimal_version_conversion_valid_version(self, standard_version_all, integer_decimalisation_func):
+    def test_decimal_version_conversion_valid_version(self, std_ver_minor_inst_valid_known, integer_decimalisation_func):
         """Check that known Decimal Versions remain unchanged."""
-        assert integer_decimalisation_func(standard_version_all) == standard_version_all
+        assert integer_decimalisation_func(std_ver_minor_inst_valid_known) == std_ver_minor_inst_valid_known
 
-    def test_decimal_version_conversion_valid_decimal_representation(self, uninstantiated_known_version, integer_decimalisation_func):
+    def test_decimal_version_conversion_valid_decimal_representation(self, std_ver_minor_uninst_valid_known, integer_decimalisation_func):
         """Check that values that can be used to create actual Decimal Versions are left alone."""
-        assert integer_decimalisation_func(uninstantiated_known_version) == uninstantiated_known_version
+        assert integer_decimalisation_func(std_ver_minor_uninst_valid_known) == std_ver_minor_uninst_valid_known
 
     @pytest.mark.parametrize('integer_version, expected_decimal', [
         ('1', iati.Version('1.05')),
-        ('2', iati.constants.STANDARD_VERSION_LATEST),
+        ('2', iati.version.STANDARD_VERSION_LATEST),
         ('3', iati.Version('3.0.0'))
     ])
     def test_integer_version_conversion_valid(self, integer_version, expected_decimal, integer_decimalisation_func):
         """Check that valid Integer Versions return the last Decimal in the Integer."""
         assert integer_decimalisation_func(integer_version) == expected_decimal
 
-    @pytest.mark.parametrize('not_a_version', iati.tests.utilities.generate_test_types([], True))
-    def test_junk_values_not_modified(self, not_a_version, junk_ignoring_func):
+    def test_junk_values_not_modified(self, std_ver_minor_uninst_mixederr, junk_ignoring_func):
         """Check that junk values are returned as-is when standardising Decimal Versions.
 
         An `is` check is performed to check that the same object is returned.
@@ -744,13 +564,13 @@ class TestVersionStandardisation(VersionNumberTestBase):
 
         """
         try:
-            original_value = copy.deepcopy(not_a_version)
+            original_value = copy.deepcopy(std_ver_minor_uninst_mixederr)
         except TypeError:
-            original_value = not_a_version
+            original_value = std_ver_minor_uninst_mixederr
 
-        result = junk_ignoring_func(not_a_version)
+        result = junk_ignoring_func(std_ver_minor_uninst_mixederr)
 
-        assert result is not_a_version
+        assert result is std_ver_minor_uninst_mixederr
         try:
             assert (result == original_value) or isinstance(original_value, type(iter([]))) or math.isnan(original_value)
         except TypeError:
@@ -759,3 +579,14 @@ class TestVersionStandardisation(VersionNumberTestBase):
             import sys
             if not (sys.version_info[0] == 2 and isinstance(original_value, type(decimal.localcontext()))):
                 assert False
+
+
+class TestVersionMajorMinorRelationship(object):
+    """A container for tests relating to the relationship between major and minor versions."""
+
+    def test_versions_for_integer(self, std_ver_major_uninst_valid_known):
+        """Check that the each of the decimal versions returned by versions_for_integer starts with the input major version."""
+        result = iati.version.versions_for_integer(std_ver_major_uninst_valid_known)
+
+        for version in result:
+            assert version.major == std_ver_major_uninst_valid_known

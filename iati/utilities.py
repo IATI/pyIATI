@@ -14,13 +14,7 @@ import os
 from io import StringIO
 import chardet
 from lxml import etree
-# try-except to prevent errors caused by `from .versions import Version` in `__init__.py`
-try:
-    import iati
-    iati.Version  # pylint: disable=pointless-statement
-    import iati.constants
-except AttributeError:
-    pass
+import iati
 
 
 def add_namespace(tree, new_ns_name, new_ns_uri):
@@ -117,7 +111,7 @@ def convert_xml_to_tree(xml):
     """Convert an XML string into an etree.
 
     Args:
-        xml (str): An XML string to be converted.
+        xml (str / bytes): An XML string to be converted.
 
     Returns:
         etree._Element: An lxml element tree representing the provided XML.
@@ -126,7 +120,7 @@ def convert_xml_to_tree(xml):
         Does not fully hide the lxml internal workings.
 
     Raises:
-        ValueError: The XML provided was something other than a string.
+        TypeError: The XML provided was something other than a string.
         lxml.etree.XMLSyntaxError: There was an error with the syntax of the provided XML.
 
     """
@@ -140,7 +134,7 @@ def convert_xml_to_tree(xml):
     except ValueError:
         msg = "To parse XML into a tree, the XML must be a string, not a {0}.".format(type(xml))
         iati.utilities.log_error(msg)
-        raise ValueError(msg)
+        raise TypeError(msg)
 
 
 def dict_raise_on_duplicates(ordered_pairs):
@@ -349,16 +343,3 @@ def log_warning(msg, *args, **kwargs):
 
     """
     log(logging.WARN, msg, *args, **kwargs)
-
-
-def versions_for_integer(integer):
-    """Return a list containing the supported versions for the input integer version.
-
-    Args:
-        integer (int): The integer version to find the supported version for.
-
-    Returns:
-        list of iati.Version: Containing the supported versions for the input integer.
-
-    """
-    return [version for version in iati.constants.STANDARD_VERSIONS if version.major == integer]
