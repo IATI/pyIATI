@@ -211,8 +211,11 @@ class TestDatasetWithEncoding(object):
         BASE_XML_NEEDING_ENCODING + '\n',  # trailing newline
         BASE_XML_NEEDING_ENCODING + ' '  # trailing space
     ])
-    def xml_needing_encoding_leading_whitespace(self, request):
-        """An XML string with a placeholder for an encoding through use of `str.format()`"""
+    def xml_needing_encoding_use_as_str(self, request):
+        """An XML string with a placeholder for an encoding through use of `str.format()`.
+
+        Some values work when used as a `str`, but not as `bytes`.
+        """
         return request.param
 
     def test_instantiation_dataset_from_string(self):
@@ -229,9 +232,9 @@ class TestDatasetWithEncoding(object):
         assert isinstance(dataset, iati.data.Dataset)
         assert dataset.xml_str == xml_str
 
-    def test_instantiation_dataset_from_string_with_encoding(self, xml_needing_encoding_leading_whitespace):
+    def test_instantiation_dataset_from_string_with_encoding(self, xml_needing_encoding_use_as_str):
         """Test that an encoded Dataset instantiated directly from a string (rather than a file or bytes object) correctly creates an iati.data.Dataset and the input data is contained within the object."""
-        xml = xml_needing_encoding_leading_whitespace.format('UTF-8')
+        xml = xml_needing_encoding_use_as_str.format('UTF-8')
 
         if sys.version_info.major > 2:
             with pytest.raises(iati.exceptions.ValidationError) as validation_err:
