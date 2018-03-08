@@ -275,7 +275,7 @@ def std_ver_minor_uninst_valid_iativer_possible(request):
 
 @pytest.fixture(params=MINOR_IATIVER_INVALID)
 def std_ver_minor_uninst_valueerr_iativer(request):
-    """Return a string that looks like it coule be a valid IATIver minor version number, but is not."""
+    """Return a string that looks like it could be a valid IATIver minor version number, but is not."""
     return request.param
 
 

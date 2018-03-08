@@ -111,7 +111,7 @@ def convert_xml_to_tree(xml):
     """Convert an XML string into an etree.
 
     Args:
-        xml (str): An XML string to be converted.
+        xml (str / bytes): An XML string to be converted.
 
     Returns:
         etree._Element: An lxml element tree representing the provided XML.
@@ -120,7 +120,7 @@ def convert_xml_to_tree(xml):
         Does not fully hide the lxml internal workings.
 
     Raises:
-        ValueError: The XML provided was something other than a string.
+        TypeError: The XML provided was something other than a string.
         lxml.etree.XMLSyntaxError: There was an error with the syntax of the provided XML.
 
     """
@@ -134,7 +134,7 @@ def convert_xml_to_tree(xml):
     except ValueError:
         msg = "To parse XML into a tree, the XML must be a string, not a {0}.".format(type(xml))
         iati.utilities.log_error(msg)
-        raise ValueError(msg)
+        raise TypeError(msg)
 
 
 def dict_raise_on_duplicates(ordered_pairs):
