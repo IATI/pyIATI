@@ -244,6 +244,12 @@ def std_ver_minor_uninst_mixederr(request):
     return request.param
 
 
+@pytest.fixture(params=MINOR_MIXED_VER_INVALID + MAJOR_INVALID)
+def std_ver_all_uninst_valueerr(request):
+    """Return a value of the correct type to represent a version number, but has an invalid value."""
+    return request.param
+
+
 @pytest.fixture(params=iati.tests.utilities.generate_test_types(['str', 'int'], True))
 def std_ver_all_uninst_typeerr(request):
     """Return a value of the wrong type to represent a version number.
@@ -311,7 +317,7 @@ def std_ver_minor_uninst_valid_possible(request):
 
 @pytest.fixture(params=MINOR_MIXED_VER_INVALID)
 def std_ver_minor_uninst_valueerr_str_decimal(request):
-    """Return a valid version number in a valid format."""
+    """Return an invalid version number in a valid format."""
     return request.param
 
 

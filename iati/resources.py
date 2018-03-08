@@ -225,6 +225,7 @@ def create_codelist_path(codelist_name, version=iati.version.STANDARD_VERSION_AN
     return path_for_version(os.path.join(PATH_CODELISTS, '{0}'.format(codelist_name) + FILE_CODELIST_EXTENSION), version)
 
 
+@iati.version.decimalise_integer
 def create_codelist_mapping_path(version):
     """Determine the path of the Codelist mapping file.
 
@@ -233,22 +234,15 @@ def create_codelist_mapping_path(version):
         Integer: Return a path for the latest Decimal version within the given integer.
 
     Raises:
+        TypeError: If a version of an incorrect type is specified.
         ValueError: If an invalid version is specified.
 
     Returns:
         str: The path to a file containing the mapping file.
 
     """
-    try:
-        if version == iati.version.STANDARD_VERSION_ANY or isinstance(version, bool):
-            raise TypeError
-        elif int(version) in iati.version.STANDARD_VERSIONS_MAJOR:
-            version = max(iati.version.versions_for_integer(version))
-    except ValueError:
-        pass  # a non-major version has been specified
-    except (OverflowError, TypeError):
-        if not isinstance(version, iati.Version):
-            raise ValueError('The version must be a Decimal or Integer version of the IATI Standrd, not {0}'.format(repr(version)))
+    if version == iati.version.STANDARD_VERSION_ANY:
+        raise ValueError('There is no Codelist mapping file that is independent of particular versions of the IATI Standard.')
 
     return path_for_version(FILE_CODELIST_MAPPING, version)
 
@@ -314,6 +308,7 @@ def create_schema_path(name, version=iati.version.STANDARD_VERSION_ANY):
     return path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
 
+@iati.version.allow_possible_version
 @iati.version.normalise_decimals
 def folder_name_for_version(version=iati.version.STANDARD_VERSION_ANY):
     """Return the folder name for a given version of the Standard.
