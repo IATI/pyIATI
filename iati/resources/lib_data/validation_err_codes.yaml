@@ -219,7 +219,7 @@
     description: |-
         The tool used to parse XML does not support strings with encoding declarations.
     help: |-
-        pyIATI uses another tool to parse XML. This tool does not support Unicode strings with encoding delcarations.
+        pyIATI uses another tool to parse XML. This tool does not support Unicode strings with encoding declarations.
         To work around this, use bytes input or remove the specification of the encoding from the XML.
         For more information about encoding strings as bytes, see: https://docs.python.org/3/howto/unicode.html#converting-to-bytes
     info: |-

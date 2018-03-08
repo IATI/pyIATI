@@ -1,5 +1,6 @@
 """A module containing tests for data validation."""
 # pylint: disable=too-many-lines
+import sys
 import pytest
 import iati.data
 import iati.default
@@ -529,7 +530,11 @@ class TestValidateIsXML(ValidationTestBase):
         """
         result = iati.validator.validate_is_xml(xml_str_explicit_encoding)
 
-        assert result.contains_error_called('err-encoding-in-str')
+        if sys.version_info.major > 2:
+            assert len(result) == 1
+            assert result.contains_error_called('err-encoding-in-str')
+        else:
+            assert not len(result)
 
     def test_xml_check_valid_xml_comments_after_detailed_output(self, xml_str, str_not_xml, error_log_empty):
         """Perform check to see string a parameter is valid XML.

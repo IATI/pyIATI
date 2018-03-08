@@ -5,6 +5,7 @@ Todo:
 """
 import collections
 import math
+import sys
 from future.standard_library import install_aliases
 from lxml import etree
 import pytest
@@ -232,11 +233,17 @@ class TestDatasetWithEncoding(object):
         """Test that an encoded Dataset instantiated directly from a string (rather than a file or bytes object) correctly creates an iati.data.Dataset and the input data is contained within the object."""
         xml = xml_needing_encoding_leading_whitespace.format('UTF-8')
 
-        with pytest.raises(iati.exceptions.ValidationError) as validation_err:
-            iati.data.Dataset(xml)
+        if sys.version_info.major > 2:
+            with pytest.raises(iati.exceptions.ValidationError) as validation_err:
+                iati.data.Dataset(xml)
 
-        assert len(validation_err.value.error_log) == 1
-        assert validation_err.value.error_log.contains_error_called('err-encoding-in-str')
+            assert len(validation_err.value.error_log) == 1
+            assert validation_err.value.error_log.contains_error_called('err-encoding-in-str')
+        else:
+            dataset = iati.data.Dataset(xml)
+
+            assert isinstance(dataset, iati.data.Dataset)
+            assert dataset.xml_str == xml.strip()
 
     @pytest.mark.parametrize("encoding", [
         "UTF-8",
