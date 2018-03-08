@@ -213,6 +213,18 @@
     info: |-
         {err}
 
+- err-encoding-in-str:
+    base_exception: NotImplementedError
+    category: tool-lxml
+    description: |-
+        The tool used to parse XML does not support strings with encoding declarations.
+    help: |-
+        pyIATI uses another tool to parse XML. This tool does not support Unicode strings with encoding delcarations.
+        To work around this, use bytes input or remove the specification of the encoding from the XML.
+        For more information about encoding strings as bytes, see: https://docs.python.org/3/howto/unicode.html#converting-to-bytes
+    info: |-
+        {err}
+
 - err-encoding-invalid:
     base_exception: ValueError
     category: file

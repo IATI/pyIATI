@@ -42,6 +42,23 @@ class ValidationTestBase(object):
         return request.param
 
     @pytest.fixture
+    def xml_str_explicit_encoding(self, request):
+        """A valid XML string with an explicit encoding declaration.
+
+        Todo:
+            Move this into a file as part of a shuffle towards a permanent 2.03 solution.
+
+        """
+        xml_str_explicit_encoding = """<?xml version="1.0" encoding="UTF-8"?>
+        <iati-activities version="xx">
+          <iati-activity>
+             <iati-identifier></iati-identifier>
+         </iati-activity>
+        </iati-activities>"""
+
+        return xml_str_explicit_encoding
+
+    @pytest.fixture
     def xml_str_no_text_decl(self, xml_str):
         """A valid XML string with the text declaration removed."""
         return '\n'.join(xml_str.strip().split('\n')[1:])
@@ -503,6 +520,16 @@ class TestValidateIsXML(ValidationTestBase):
         result = iati.validator.validate_is_xml(xml_str)
 
         assert result == error_log_empty
+
+    def test_xml_check_explicit_encoding_in_str_detailed_output(self, xml_str_explicit_encoding):
+        """Perform check to see whether a parameter is valid XML.
+
+        The parameter is valid XML, but in a format that lxml does not support.
+        Obtain detailed error output.
+        """
+        result = iati.validator.validate_is_xml(xml_str_explicit_encoding)
+
+        assert result.contains_error_called('err-encoding-in-str')
 
     def test_xml_check_valid_xml_comments_after_detailed_output(self, xml_str, str_not_xml, error_log_empty):
         """Perform check to see string a parameter is valid XML.
