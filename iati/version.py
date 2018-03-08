@@ -411,10 +411,12 @@ def _decimalise_integer(version):
     try:
         if not isinstance(version, (int, str)) or isinstance(version, bool):
             raise TypeError
+        elif isinstance(version, str) and str(int(version)) != version:  # detect strings containing numbers and whitespace
+            raise ValueError
         major_version = int(version)
         if major_version in iati.version.STANDARD_VERSIONS_MAJOR:
             version = max(versions_for_integer(major_version))
-        elif str(major_version) == version:  # specifying only a major component
+        elif str(major_version) == str(version):  # specifying only a major component
             version = Version(str(major_version) + '.0.0')
     except (ValueError, TypeError, OverflowError):
         pass

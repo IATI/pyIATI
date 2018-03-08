@@ -157,12 +157,12 @@ class TestResourceCreatePath(object):
         with pytest.raises(ValueError):
             iati.resources.create_codelist_mapping_path(iati.version.STANDARD_VERSION_ANY)
 
-    def test_create_codelist_mapping_path_invalid_value(self, std_ver_all_uninst_valueerr):
+    def test_create_codelist_mapping_path_valueerr(self, std_ver_all_uninst_valueerr):
         """Check that a ValueError is raised when requesting with a version of the correct type, but that cannot represent a version."""
         with pytest.raises(ValueError):
             iati.resources.create_codelist_mapping_path(std_ver_all_uninst_valueerr)
 
-    def test_create_codelist_mapping_path_invalid_value(self, std_ver_all_uninst_typeerr):
+    def test_create_codelist_mapping_path_typeerr(self, std_ver_all_uninst_typeerr):
         """Check that a ValueError is raised when requesting with a version of the wrong type."""
         with pytest.raises(TypeError):
             iati.resources.create_codelist_mapping_path(std_ver_all_uninst_typeerr)

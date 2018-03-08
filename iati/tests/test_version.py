@@ -473,15 +473,10 @@ class TestVersionSupportChecks(VersionSupportChecksBase):
 
         assert version == iati.version.STANDARD_VERSION_ANY
 
-    def test_non_version_representation_invalid_val_integer(self, std_ver_major_uninst_valueerr, possibly_version_func):
+    def test_non_version_representation_invalid_val_integer(self, std_ver_all_uninst_valueerr, possibly_version_func):
         """Test that non-positive integers are detected as not being valid representations of an IATI Version Number."""
         with pytest.raises(ValueError):
-            possibly_version_func(std_ver_major_uninst_valueerr)
-
-    def test_non_version_representation_invalid_val(self, std_ver_minor_uninst_valueerr_str_decimal, possibly_version_func):
-        """Test that values that are a correct type but cannot be a Decimal Version are detected as a ValueError."""
-        with pytest.raises(ValueError):
-            possibly_version_func(std_ver_minor_uninst_valueerr_str_decimal)
+            possibly_version_func(std_ver_all_uninst_valueerr)
 
     def test_non_version_representation_invalid_type(self, std_ver_all_uninst_typeerr, possibly_version_func):
         """Test that values of a type that cannot represent a Version cause a TypeError."""
@@ -489,8 +484,8 @@ class TestVersionSupportChecks(VersionSupportChecksBase):
             possibly_version_func(std_ver_all_uninst_typeerr)
 
 
-class TestVersionStandardisation(object):
-    """A container for tests relating to standardising how versions are passed into functions."""
+class TestVersionNormalisation(object):
+    """A container for tests relating to normalising how versions are passed into functions."""
 
     @iati.version.decimalise_integer
     def return_decimalised_integer(version):  # pylint: disable=no-self-argument
@@ -527,7 +522,7 @@ class TestVersionStandardisation(object):
         """Return a function that does not modify junk values before returning them."""
         return request.param
 
-    # decimal standardisation
+    # decimal normalisation
     def test_decimal_versions_normalised(self, std_ver_minor_uninst_valid_possible, decimal_normalisation_func):
         """Check that values that represent Decimal Versions of the IATI Standard are converted to iati.Versions."""
         assert decimal_normalisation_func(std_ver_minor_uninst_valid_possible) == iati.Version(std_ver_minor_uninst_valid_possible)
@@ -548,13 +543,16 @@ class TestVersionStandardisation(object):
     @pytest.mark.parametrize('integer_version, expected_decimal', [
         ('1', iati.Version('1.05')),
         ('2', iati.version.STANDARD_VERSION_LATEST),
-        ('3', iati.Version('3.0.0'))
+        ('3', iati.Version('3.0.0')),
+        (1, iati.Version('1.05')),
+        (2, iati.version.STANDARD_VERSION_LATEST),
+        (3, iati.Version('3.0.0'))
     ])
     def test_integer_version_conversion_valid(self, integer_version, expected_decimal, integer_decimalisation_func):
         """Check that valid Integer Versions return the last Decimal in the Integer."""
         assert integer_decimalisation_func(integer_version) == expected_decimal
 
-    def test_junk_values_not_modified(self, std_ver_minor_uninst_mixederr, junk_ignoring_func):
+    def test_junk_values_not_modified(self, std_ver_all_uninst_mixederr, junk_ignoring_func):
         """Check that junk values are returned as-is when standardising Decimal Versions.
 
         An `is` check is performed to check that the same object is returned.
@@ -562,13 +560,13 @@ class TestVersionStandardisation(object):
 
         """
         try:
-            original_value = copy.deepcopy(std_ver_minor_uninst_mixederr)
+            original_value = copy.deepcopy(std_ver_all_uninst_mixederr)
         except TypeError:
-            original_value = std_ver_minor_uninst_mixederr
+            original_value = std_ver_all_uninst_mixederr
 
-        result = junk_ignoring_func(std_ver_minor_uninst_mixederr)
+        result = junk_ignoring_func(std_ver_all_uninst_mixederr)
 
-        assert result is std_ver_minor_uninst_mixederr
+        assert result is std_ver_all_uninst_mixederr
         try:
             assert (result == original_value) or isinstance(original_value, type(iter([]))) or math.isnan(original_value)
         except TypeError:

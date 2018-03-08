@@ -238,7 +238,7 @@ def std_ver_minor_uninst_typeerr(request):
     return request.param
 
 
-@pytest.fixture(params=iati.tests.utilities.generate_test_types([], True))
+@pytest.fixture(params=MINOR_MIXED_VER_INVALID + MAJOR_INVALID + MAJOR_VALID + iati.tests.utilities.generate_test_types([], True))
 def std_ver_minor_uninst_mixederr(request):
     """Return a value that does not represent a minor version number."""
     return request.param
@@ -259,6 +259,12 @@ def std_ver_all_uninst_typeerr(request):
         See: https://github.com/IATI/pyIATI/issues/218#issuecomment-364086162
 
     """
+    return request.param
+
+
+@pytest.fixture(params=MINOR_MIXED_VER_INVALID + MAJOR_INVALID + iati.tests.utilities.generate_test_types(['int'], True))
+def std_ver_all_uninst_mixederr(request):
+    """Return a value that does not represent a version number."""
     return request.param
 
 
