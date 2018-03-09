@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Constants] `STANDARD_VERSIONS_MINOR` lists all Minor versions of the IATI Standard. [#264]
 
 - [Tests] Separate testing of `bytes` and `str` type values for Python 3+. [#286]
+- [Tests] Mark tests requiring updates when adding a new version. [#288]
 - [Tests] Add another build stage to check that docs build when merging to dev or master. [#292]
 
 ### Changed
