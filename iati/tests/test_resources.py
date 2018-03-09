@@ -51,7 +51,7 @@ class TestResourceFolders(object):
         ('2', '2'),
         (None, 'version-independent')
     ])
-    @pytest.mark.usefixtures('latest_version_202')
+    @pytest.mark.latest_version('2.02')
     def test_folder_name_for_version(self, version, expected_version_foldername):
         """Check that expected components are present within folder paths."""
         path = iati.resources.folder_name_for_version(version)

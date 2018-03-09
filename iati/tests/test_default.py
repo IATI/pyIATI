@@ -79,7 +79,7 @@ class TestDefaultCodelists(object):
         ('2.01', 'BudgetStatus', ValueError),
         ('2.02', 'BudgetStatus', iati.Codelist)
     ])
-    @pytest.mark.usefixtures('latest_version_202')
+    @pytest.mark.latest_version('2.02')
     def test_default_codelist_valid_only_at_some_versions(self, codelist_name, version, expected_type):
         """Check that a codelist that is valid at some version/s is not valid in other versions.
 
