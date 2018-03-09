@@ -23,6 +23,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Fixed
 
+- [Validation] The `_check_codes()` implementation is no longer fixed to version 2.02. [#291]
+
 - [Tests] Correct some very old test fixtures and documentation. [#286]
 
 ### Security
