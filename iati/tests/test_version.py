@@ -304,10 +304,12 @@ class TestVersionConstants(object):
         """Check that standard versions is in the correct format."""
         assert isinstance(standard_versions_list, list)
 
+    @pytest.mark.latest_version('2.02')
     def test_standard_versions_correct_number(self):
         """Check that standard versions has the expected number of items."""
         assert len(iati.version.STANDARD_VERSIONS) == 7
 
+    @pytest.mark.latest_version('2.02')
     def test_standard_versions_correct_number_supported(self):
         """Check that supported standard versions has the expected number of items."""
         assert len(iati.version.STANDARD_VERSIONS_SUPPORTED) == 4
@@ -317,10 +319,12 @@ class TestVersionConstants(object):
         for major_version in iati.version.STANDARD_VERSIONS_MAJOR:
             assert isinstance(major_version, int)
 
+    @pytest.mark.latest_version('2.02')
     def test_standard_versions_major_correct_number(self):
         """Check that the correct number of major versions are detected."""
         assert len(iati.version.STANDARD_VERSIONS_MAJOR) == 2
 
+    @pytest.mark.latest_version('2.02')
     def test_standard_versions_minor_correct_number(self):
         """Check that the correct number of minor versions are detected."""
         assert len(iati.version.STANDARD_VERSIONS_MINOR) == 7
@@ -550,6 +554,7 @@ class TestVersionStandardisation(object):
         ('2', iati.version.STANDARD_VERSION_LATEST),
         ('3', iati.Version('3.0.0'))
     ])
+    @pytest.mark.latest_version('2.02')
     def test_integer_version_conversion_valid(self, integer_version, expected_decimal, integer_decimalisation_func):
         """Check that valid Integer Versions return the last Decimal in the Integer."""
         assert integer_decimalisation_func(integer_version) == expected_decimal
