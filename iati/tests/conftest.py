@@ -9,7 +9,6 @@ import iati
 
 pytest_plugins = [  # name required by pytest  # pylint: disable=invalid-name
     'iati.tests.fixtures.comparison',
-    'iati.tests.fixtures.utility',
     'iati.tests.fixtures.versions'
 ]
 
