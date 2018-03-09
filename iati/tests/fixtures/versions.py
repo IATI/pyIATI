@@ -243,7 +243,7 @@ def std_ver_minor_uninst_mixederr(request):
     return request.param
 
 
-@pytest.fixture(params=iati.tests.utilities.generate_test_types(['str', 'none', 'int'], True))
+@pytest.fixture(params=iati.tests.utilities.generate_test_types(['str', 'int'], True))
 def std_ver_all_uninst_typeerr(request):
     """Return a value of the wrong type to represent a version number.
 

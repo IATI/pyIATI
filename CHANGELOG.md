@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Constants] `STANDARD_VERSIONS_MINOR` lists all Minor versions of the IATI Standard. [#264]
 
 - [Tests] Separate testing of `bytes` and `str` type values for Python 3+. [#286]
+- [Tests] Mark tests requiring updates when adding a new version. [#288]
 
 ### Changed
 
@@ -70,6 +71,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Utility] Move function acting on versions to `version` module. [#280]
 
 - [Validation] `_check_is_iati_xml()` will raise a `TypeError` when given a non-dataset. This replaces an undocumented `AttributeError`. [#239]
+
+- [Versions] The value to represent 'version independent' has been changed to be a value that is `not None`, and a constant added to specify the exact value. [#281]
 
 ### Deprecated
 
