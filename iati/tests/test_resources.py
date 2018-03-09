@@ -1,5 +1,7 @@
 """A module containing tests for the library implementation of accessing resources."""
 from decimal import Decimal
+import os
+import re
 from lxml import etree
 import pytest
 import iati.constants
@@ -10,21 +12,124 @@ import iati.version
 import iati.tests.resources
 
 
-class TestResources(object):
-    """A container for tests relating to resources in general."""
+@pytest.mark.new_tests
+class TestResourceConstants(object):
+    """A container for tests relating to checks of resource constants."""
 
-    def test_resource_filesystem_path(self):
-        """Check that resource file names are found correctly.
+    @pytest.mark.parametrize('folder_path', [
+        iati.resources.BASE_PATH_STANDARD,
+        iati.resources.BASE_PATH_LIB_DATA
+    ])
+    def test_base_folders_valid_values(self, folder_path):
+        """Test that constants that should be folder paths 2-levels deep are paths that are 2-levels deep, rooted at the base folder.
 
-        Todo:
-            Implement better assertions.
-
+        The contents of the second component is tested in test_folder_names_valid_values()
         """
-        path = iati.resources.PATH_SCHEMAS
-        filename = iati.resources.resource_filesystem_path(path)
+        path_components = folder_path.split(os.path.sep)
 
-        assert len(filename) > len(path)
-        assert filename.endswith(path)
+        assert len(path_components) == 2
+        assert path_components[0] == iati.resources.BASE_PATH
+
+    @pytest.mark.parametrize('folder_name', [
+        iati.resources.BASE_PATH,
+        iati.resources.BASE_PATH_STANDARD.split(os.path.sep).pop(),
+        iati.resources.BASE_PATH_LIB_DATA.split(os.path.sep).pop(),
+        iati.resources.PATH_CODELISTS,
+        iati.resources.PATH_SCHEMAS,
+        iati.resources.PATH_RULESETS
+    ])
+    def test_folder_names_valid_values(self, folder_name):
+        """Test that constants that should be folder names are lower case strings separated by underscores."""
+        folder_name_regex = re.compile('^([a-z]+_)*[a-z]+$')
+
+        assert re.match(folder_name_regex, folder_name)
+
+    @pytest.mark.parametrize('file_name', [
+        iati.resources.FILE_CODELIST_MAPPING,
+        iati.resources.FILE_RULESET_SCHEMA_NAME,
+        iati.resources.FILE_RULESET_STANDARD_NAME,
+        iati.resources.FILE_SCHEMA_ACTIVITY_NAME,
+        iati.resources.FILE_SCHEMA_ORGANISATION_NAME
+    ])
+    def test_file_names_valid_values(self, file_name):
+        """Test that constants that should be file names are lower case strings separated by hyphens or underscores."""
+        file_name_regex = re.compile('^([a-z]+[\-_])*[a-z]+$')
+
+        assert re.match(file_name_regex, file_name)
+
+    @pytest.mark.parametrize('file_extension', [
+        iati.resources.FILE_CODELIST_EXTENSION,
+        iati.resources.FILE_DATA_EXTENSION,
+        iati.resources.FILE_RULESET_EXTENSION,
+        iati.resources.FILE_SCHEMA_EXTENSION
+    ])
+    def test_file_extensions_valid_values(self, file_extension):
+        """Test that constants that should be file extensions are a dot followed by a lower case string."""
+        file_extension_regex = re.compile('^\.[a-z]+$')
+
+        assert re.match(file_extension_regex, file_extension)
+
+
+@pytest.mark.new_tests
+class TestResourceFilesystemPaths(object):
+    """A container for tests relating to specific filesystem paths."""
+
+    def test_resource_filesystem_path(self, filename_no_meaning):
+        """Check that resource file names are found correctly."""
+        base_path = iati.resources.resource_filesystem_path('')
+        full_path = iati.resources.resource_filesystem_path(filename_no_meaning)
+
+        assert len(full_path) > len(filename_no_meaning)
+        assert full_path.startswith(base_path)
+        assert full_path.endswith(filename_no_meaning)
+        assert os.path.abspath(full_path) == full_path
+
+    def test_resource_filesystem_path_empty_path(self, filepath_empty):
+        """Check that the base resource folder is located when given an empty filepath."""
+        full_path = iati.resources.resource_filesystem_path(filepath_empty)
+
+        assert len(full_path)
+        assert os.path.isdir(full_path)
+
+
+@pytest.mark.new_tests
+class TestResourceLibData(object):
+    """A container for tests relating to handling paths for pyIATI library-specific data."""
+
+    def test_create_lib_data_path(self, filename_no_meaning):
+        """Check that library data can be located."""
+        full_path = iati.resources.create_lib_data_path(filename_no_meaning)
+
+        assert iati.resources.BASE_PATH_LIB_DATA in full_path
+        assert full_path.endswith(filename_no_meaning)
+
+
+@pytest.mark.new_tests
+class TestResourceHandlingInvalidPaths(object):
+    """A container for tests relating to handling paths that are invalid for one reason or another."""
+
+    @pytest.fixture(params=[
+        iati.resources.create_lib_data_path,
+        iati.resources.resource_filesystem_path
+    ])
+    def resource_func(self, request):
+        """A resource function that takes in file paths as an input."""
+        return request.param
+
+    def test_create_lib_data_path_empty_path(self, filepath_empty):
+        """Check that a ValueError is raised when given an empty filepath."""
+        with pytest.raises(ValueError):
+            iati.resources.create_lib_data_path(filepath_empty)
+
+    def test_create_lib_data_path_valueerr(self, filepath_invalid_value, resource_func):
+        """Check that functions cause a value error when given a string that cannot be a filepath."""
+        with pytest.raises(ValueError):
+            resource_func(filepath_invalid_value)
+
+    def test_create_lib_data_path_typeerr(self, filepath_invalid_type, resource_func):
+        """Check that functions cause a type error when given a path of an incorrect type."""
+        with pytest.raises(TypeError):
+            resource_func(filepath_invalid_type)
 
 
 class TestResourceFolders(object):
@@ -176,22 +281,6 @@ class TestResourceCreatePath(object):
 
         assert len(content) > 5000
         assert iati.validator.is_xml(content)
-
-
-class TestResourceLibraryData(object):
-    """A container for tests relating to pyIATI resources."""
-
-    @pytest.mark.parametrize('file_name', [
-        'name',
-        'Name.xml',
-    ])
-    def test_create_lib_data_path(self, file_name):
-        """Check that library data can be located."""
-        path = iati.resources.create_lib_data_path(file_name)
-
-        assert iati.resources.BASE_PATH_LIB_DATA != ''
-        assert iati.resources.BASE_PATH_LIB_DATA in path
-        assert file_name == path[-len(file_name):]
 
 
 class TestResourceCodelists(object):

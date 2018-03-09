@@ -13,6 +13,7 @@ Todo:
 """
 import os
 import pkg_resources
+import re
 import iati.version
 
 
@@ -38,8 +39,6 @@ PATH_RULESETS = 'rulesets'
 
 FILE_CODELIST_EXTENSION = '.xml'
 """The expected extension of a file containing a Codelist."""
-FILE_CODELIST_MAPPING = 'codelist-mapping.xml'
-"""The name of a file containing definitions of how Codelist values map to data."""
 FILE_DATA_EXTENSION = '.xml'
 """The expected extension of a file containing IATI data."""
 FILE_RULESET_EXTENSION = '.json'
@@ -47,6 +46,8 @@ FILE_RULESET_EXTENSION = '.json'
 FILE_SCHEMA_EXTENSION = '.xsd'
 """The expected extension of a file containing a Schema."""
 
+FILE_CODELIST_MAPPING = 'codelist-mapping'
+"""The name of a file containing definitions of how Codelist values map to data."""
 FILE_RULESET_SCHEMA_NAME = 'ruleset_schema'
 """The name of a file containing the Ruleset schema."""
 FILE_RULESET_STANDARD_NAME = 'standard_ruleset'
@@ -244,7 +245,7 @@ def create_codelist_mapping_path(version):
     if version == iati.version.STANDARD_VERSION_ANY:
         raise ValueError('There is no Codelist mapping file that is independent of particular versions of the IATI Standard.')
 
-    return path_for_version(FILE_CODELIST_MAPPING, version)
+    return path_for_version(FILE_CODELIST_MAPPING + FILE_CODELIST_EXTENSION, version)
 
 
 def create_lib_data_path(name):
@@ -258,10 +259,16 @@ def create_lib_data_path(name):
     Returns:
         str: The path to the specified file.
 
+    Raises:
+        TypeError: If the given path is of a type that cannot be a filepath.
+        ValueError: If the given path is a string that cannot be a useful component of a filepath.
+
     Note:
         Does not check whether the specified file actually exists.
 
     """
+    _ensure_portable_filepath(name)  # required for python2 compatibility
+
     return resource_filesystem_path(os.path.join(BASE_PATH_LIB_DATA, name))
 
 
@@ -390,11 +397,47 @@ def resource_filesystem_path(path):
     Returns:
         str: A reference to the specified file that works however the package is distributed.
 
+    Raises:
+        TypeError: If the given path is of a type that cannot be a filepath.
+        ValueError: If the given path is a string that cannot be a useful component of a filepath.
+
     Note:
         Does not check to see that the specified file exists.
 
-    Warning:
-        When other functions in this module are reviewed, this will be too.
+    """
+    try:
+        _ensure_portable_filepath(path)
+    except ValueError:
+        if len(path):
+            raise
+
+    return pkg_resources.resource_filename(PACKAGE, path)
+
+
+def _ensure_portable_filepath(maybe_filepath):
+    """Determine whether a string could be a portable filepath.
+
+    A portable filepath is one that meets the POSIX fully portable filename character restrictions:
+
+    * Consists only of: A-Z a-z 0-9 . _ -
+    * Does not have a leading hyphen.
+
+    Args:
+        maybe_filepath (str): A string that might be considered a valid filepath.
+
+    Raises:
+        TypeError: If the input value is of a type that cannot be a filepath.
+        ValueError: If the input value is a string that cannot be a useful component of a filepath.
+
+    Todo:
+        Consider utilising the Python3.6 concept of path-like objects.
 
     """
-    return pkg_resources.resource_filename(PACKAGE, path)
+    if not isinstance(maybe_filepath, str):
+        raise TypeError('A filesystem path must be a string. The provided value is a {0}.'.format(type(maybe_filepath)))
+
+    path_components = maybe_filepath.split(os.path.sep)
+    permitted_component_regex = re.compile('^[_.A-Za-z0-9][-_.A-Za-z0-9]*$')
+    for component in path_components:
+        if re.match(permitted_component_regex, component) is None:
+            raise ValueError('Each component in a permitted filepath must only include the following characters: A-Z a-z 0-9 . _ -')
