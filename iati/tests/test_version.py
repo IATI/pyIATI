@@ -131,9 +131,10 @@ class TestVersionComparison(object):
 
         The first two items in the tuple are Version Numbers.
         The third item is a string containing symbols indicating the relationship.
-            '=': The two values are equal.
-            '<': The first value is less than the second.
-            '>': The first value is more than the second.
+
+        * =: The two values are equal.
+        * <: The first value is less than the second.
+        * >: The first value is more than the second.
         """
         return request.param
 

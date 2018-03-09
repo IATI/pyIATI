@@ -198,9 +198,9 @@ class TestRulesetValidityChecks(RulesetFixtures):
         ('ruleset/invalid_sum', 'sum', {'paths': ['element42'], 'sum': 50}),
     ])
     def test_ruleset_is_invalid_for_valueerror(self, dataset_name, rule_type, case):
-        """Check that `ValueError`s are correctly handled when checking a Ruleset.
+        """Check that ValueErrors are correctly handled when checking a Ruleset.
 
-        Rulesets should absorb them and return `False` rather than passing them on to the caller.
+        Rulesets should absorb them and return False rather than passing them on to the caller.
 
         """
         invalid_dataset = iati.tests.resources.load_as_dataset(dataset_name)
@@ -1377,7 +1377,7 @@ class TestRuleSum(RuleSubclassTestBase):
     """A container for tests relating to RuleSum.
 
     Todo:
-        **Determine if assumption that double counting of elements should be not permitted when duplicate paths specified, but should when multiple elements exist, is correct.
+        Determine if assumption that double counting of elements should be not permitted when duplicate paths specified, but should when multiple elements exist, is correct.
 
     """
 

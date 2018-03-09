@@ -178,7 +178,7 @@ def load_as_bytes(path):
         FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
 
     Todo:
-        Ensure all reasonably possible `OSError`s are documented here and in functions that call this.
+        Ensure all reasonably possible OSErrors are documented here and in functions that call this.
 
     """
     with open(path, 'rb') as file_to_load:
