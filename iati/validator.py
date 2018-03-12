@@ -370,8 +370,8 @@ def _check_codes(dataset, codelist):
     Raises:
         ValueError: When a path in a mapping is looking for a type of information that is not supported.
 
-    Todo:
-        Stop this being fixed to 2.02.
+    Note:
+        This code assumes that the Version codelist acts as a list of all possible version numbers.
 
     """
     error_log = ValidationErrorLog()
@@ -381,8 +381,8 @@ def _check_codes(dataset, codelist):
         mappings = iati.default.codelist_mapping(dataset.version)
     else:
         # rather than attempting general checks, ensure version number errors occur
-        codelist = iati.default.codelist('Version', '2.02')
-        mappings = iati.default.codelist_mapping('2.02')
+        codelist = iati.default.codelist('Version', iati.version.STANDARD_VERSION_LATEST)
+        mappings = iati.default.codelist_mapping(iati.version.STANDARD_VERSION_LATEST)
 
     err_name_prefix = 'err' if codelist.complete else 'warn'
 
