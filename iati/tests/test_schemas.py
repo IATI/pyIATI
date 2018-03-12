@@ -206,14 +206,12 @@ class TestSchemas(SchemaTestsBase):
 
         assert len(schema_initialised.codelists) == 1
 
+    @pytest.mark.fixed_to_202
     def test_schema_rulesets_add(self, schema_initialised):
         """Check that it is possible to add Rulesets to the Schema.
 
         Todo:
             Consider if this test should test against a versioned Ruleset.
-
-            Stop this being fixed to 2.02.
-
         """
         ruleset = iati.default.ruleset('2.02')
 
@@ -221,14 +219,12 @@ class TestSchemas(SchemaTestsBase):
 
         assert len(schema_initialised.rulesets) == 1
 
+    @pytest.mark.fixed_to_202
     def test_schema_rulesets_add_twice(self, schema_initialised):
         """Check that it is not possible to add the same Ruleset to a Schema multiple times.
 
         Todo:
             Consider if this test should test against a versioned Ruleset.
-
-            Stop this being fixed to 2.02.
-
         """
         ruleset = iati.default.ruleset('2.02')
 
@@ -237,14 +233,12 @@ class TestSchemas(SchemaTestsBase):
 
         assert len(schema_initialised.rulesets) == 1
 
+    @pytest.mark.fixed_to_202
     def test_schema_rulesets_add_duplicate(self, schema_initialised):
         """Check that it is possible to add multiple functionally identical Rulesets to a Schema.
 
         Todo:
             Consider if this test should test against a versioned Ruleset.
-
-            Stop this being fixed to 2.02.
-
         """
         ruleset = iati.default.ruleset('2.02')
         ruleset_copy = copy.deepcopy(ruleset)
@@ -254,14 +248,12 @@ class TestSchemas(SchemaTestsBase):
 
         assert len(schema_initialised.rulesets) == 2
 
+    @pytest.mark.fixed_to_202
     def test_schema_rulesets_add_two_different(self, schema_initialised):
         """Check that it is possible to add multiple different Rulesets to a Schema.
 
         Todo:
             Consider if this test should test against a versioned Ruleset.
-
-            Stop this being fixed to 2.02.
-
         """
         ruleset = iati.default.ruleset('2.02')
         ruleset_copy = copy.deepcopy(ruleset)
