@@ -22,6 +22,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Tests] Correct some very old test fixtures and documentation. [#286]
 
+- [Validation] Separate two similar but distinct ValueErrors that lxml may raise so that pyIATI treats them differently. [#287]
+
 ### Security
 
 

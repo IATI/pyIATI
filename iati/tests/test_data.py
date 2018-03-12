@@ -5,6 +5,7 @@ Todo:
 """
 import collections
 import math
+import sys
 from future.standard_library import install_aliases
 from lxml import etree
 import pytest
@@ -187,17 +188,35 @@ class TestDatasetWithEncoding(object):
 
     """
 
-    @pytest.fixture
-    def xml_needing_encoding(self):
-        """An XML string with a placeholder for an encoding through use of `str.format()`"""
-        xml = """<?xml version="1.0" encoding="{}"?>
+    BASE_XML_NEEDING_ENCODING = """<?xml version="1.0" encoding="{}"?>
         <iati-activities version="xx">
           <iati-activity>
              <iati-identifier></iati-identifier>
          </iati-activity>
         </iati-activities>"""
 
-        return xml
+    @pytest.fixture(params=[
+        BASE_XML_NEEDING_ENCODING,
+        BASE_XML_NEEDING_ENCODING + '\n',  # trailing newline
+        BASE_XML_NEEDING_ENCODING + ' '  # trailing space
+    ])
+    def xml_needing_encoding(self, request):
+        """An XML string with a placeholder for an encoding through use of `str.format()`"""
+        return request.param
+
+    @pytest.fixture(params=[
+        BASE_XML_NEEDING_ENCODING,
+        '\n' + BASE_XML_NEEDING_ENCODING,  # leading newline
+        ' ' + BASE_XML_NEEDING_ENCODING,  # leading space
+        BASE_XML_NEEDING_ENCODING + '\n',  # trailing newline
+        BASE_XML_NEEDING_ENCODING + ' '  # trailing space
+    ])
+    def xml_needing_encoding_use_as_str(self, request):
+        """An XML string with a placeholder for an encoding through use of `str.format()`.
+
+        Some values work when used as a `str`, but not as `bytes`.
+        """
+        return request.param
 
     def test_instantiation_dataset_from_string(self):
         """Test that a Dataset instantiated directly from a string (rather than a file) correctly creates an iati.data.Dataset and the input data is contained within the object."""
@@ -213,6 +232,22 @@ class TestDatasetWithEncoding(object):
         assert isinstance(dataset, iati.data.Dataset)
         assert dataset.xml_str == xml_str
 
+    def test_instantiation_dataset_from_string_with_encoding(self, xml_needing_encoding_use_as_str):
+        """Test that an encoded Dataset instantiated directly from a string (rather than a file or bytes object) correctly creates an iati.data.Dataset and the input data is contained within the object."""
+        xml = xml_needing_encoding_use_as_str.format('UTF-8')
+
+        if sys.version_info.major > 2:
+            with pytest.raises(iati.exceptions.ValidationError) as validation_err:
+                iati.data.Dataset(xml)
+
+            assert len(validation_err.value.error_log) == 1
+            assert validation_err.value.error_log.contains_error_called('err-encoding-in-str')
+        else:
+            dataset = iati.data.Dataset(xml)
+
+            assert isinstance(dataset, iati.data.Dataset)
+            assert dataset.xml_str == xml.strip()
+
     @pytest.mark.parametrize("encoding", [
         "UTF-8",
         "utf-8",
@@ -226,8 +261,8 @@ class TestDatasetWithEncoding(object):
         "BIG5",
         "EUC-JP"
     ])
-    def test_instantiation_dataset_from_string_with_encoding(self, xml_needing_encoding, encoding):
-        """Test that an encoded Dataset instantiated directly from a string (rather than a file) correctly creates an iati.data.Dataset and the input data is contained within the object.
+    def test_instantiation_dataset_from_encoded_string_with_encoding(self, xml_needing_encoding, encoding):
+        """Test that an encoded Dataset instantiated directly from an encoded string (rather than a file) correctly creates an iati.data.Dataset and the input data is contained within the object.
 
         Note:
             The use of UTF-8 and UTF-16 is strongly recommended for IATI datasets, however other encodings are specificed here to demonstrate compatibility.
@@ -239,7 +274,7 @@ class TestDatasetWithEncoding(object):
         dataset = iati.data.Dataset(xml_encoded)
 
         assert isinstance(dataset, iati.data.Dataset)
-        assert dataset.xml_str == xml_encoded
+        assert dataset.xml_str == xml_encoded.strip()
 
     @pytest.mark.parametrize("encoding_declared, encoding_used", [
         ("UTF-16", "UTF-8"),
@@ -248,8 +283,8 @@ class TestDatasetWithEncoding(object):
         ("UTF-16", "BIG5"),
         ("UTF-16", "EUC-JP")
     ])
-    def test_instantiation_dataset_from_string_with_encoding_mismatch(self, xml_needing_encoding, encoding_declared, encoding_used):
-        """Test that an error is raised when attempting to create a Dataset where a string is encoded significantly differently from what is defined within the XML encoding declaration.
+    def test_instantiation_dataset_from_encoded_string_with_encoding_mismatch(self, xml_needing_encoding, encoding_declared, encoding_used):
+        """Test that an error is raised when attempting to create a Dataset where an encoded string is encoded significantly differently from what is defined within the XML encoding declaration.
 
         Todo:
             Amend error message, when the todo in iati.data.Dataset.xml_str() has been resolved.
@@ -272,8 +307,8 @@ class TestDatasetWithEncoding(object):
         assert excinfo.value.error_log.contains_error_called('err-encoding-invalid')
 
     @pytest.mark.parametrize("encoding", ["CP424"])
-    def test_instantiation_dataset_from_string_with_unsupported_encoding(self, xml_needing_encoding, encoding):
-        """Test that an error is raised when attempting to create a dataset where a string is encoded significantly differently from what is defined within the XML encoding declaration.
+    def test_instantiation_dataset_from_encoded_string_with_unsupported_encoding(self, xml_needing_encoding, encoding):
+        """Test that an error is raised when attempting to create a dataset where an encoded string is encoded significantly differently from what is defined within the XML encoding declaration.
 
         Todo:
             Amend error message, when the todo in iati.data.Dataset.xml_str() has been resolved.
