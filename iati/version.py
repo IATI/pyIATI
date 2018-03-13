@@ -362,7 +362,9 @@ def decimalise_integer(input_func):
             version_arg_idx = 0
         version = _decimalise_integer(args[version_arg_idx])
 
-        return input_func(*args[0:version_arg_idx], version, *args[version_arg_idx + 1:], **kwargs)
+        full_args = list(args[0:version_arg_idx]) + [version] + list(args[version_arg_idx + 1:])  # python2/pre-3.5 compatibility: cannot have multiple unpacks directly
+
+        return input_func(*full_args, **kwargs)
 
     return wrapper
 
@@ -385,7 +387,9 @@ def normalise_decimals(input_func):
             version_arg_idx = 0
         version = _normalise_decimal_version(args[version_arg_idx])
 
-        return input_func(*args[0:version_arg_idx], version, *args[version_arg_idx + 1:], **kwargs)
+        full_args = list(args[0:version_arg_idx]) + [version] + list(args[version_arg_idx + 1:])  # python2/pre-3.5 compatibility: cannot have multiple unpacks directly
+
+        return input_func(*full_args, **kwargs)
 
     return wrapper
 
