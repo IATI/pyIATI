@@ -365,6 +365,10 @@ def folder_path_for_version(version=iati.version.STANDARD_VERSION_ANY):
     Returns:
         str: The relative path to the folder for containing SSOT data the specified version of the Standard.
 
+    Raises:
+        TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: When a specified version is not a known version of the IATI Standard.
+
     """
     return os.path.join(BASE_PATH_STANDARD, folder_name_for_version(version))
 

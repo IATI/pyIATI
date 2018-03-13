@@ -165,6 +165,32 @@ class TestResourcePathComponents(object):
 
 
 @pytest.mark.new_tests
+class TestResoucePathGenerationEntireStandard(object):
+    """A container for tests relating to generating entire filepaths for any part of the Standard."""
+
+    def test_folder_path_for_version_known(self, std_ver_any_mixedinst_valid_known):
+        """Check that expected components are present within folder paths for data for known versions of the IATI Standard."""
+        expected_components = ['resources', 'standard', iati.resources.BASE_PATH_STANDARD]
+
+        version_folder = iati.resources.folder_name_for_version(std_ver_any_mixedinst_valid_known)
+        full_path = iati.resources.folder_path_for_version(std_ver_any_mixedinst_valid_known)
+
+        assert version_folder in full_path
+        for component in expected_components:
+            assert component in full_path
+
+    def test_folder_path_for_version_unknown_valueerr(self, std_ver_all_mixedinst_valid_unknown):
+        """Check that a ValueError is raised when trying to create a path for an unknown version of the IATI Standard."""
+        with pytest.raises(ValueError):
+            iati.resources.folder_path_for_version(std_ver_all_mixedinst_valid_unknown)
+
+    def test_folder_path_for_version_typeerr(self, std_ver_all_uninst_typeerr):
+        """Check that TypeError is raised when trying to create a folder path for a value of a type that cannot be a version number."""
+        with pytest.raises(TypeError):
+            iati.resources.folder_path_for_version(std_ver_all_uninst_typeerr)
+
+
+@pytest.mark.new_tests
 class TestResourceHandlingInvalidPaths(object):
     """A container for tests relating to handling paths that are invalid for one reason or another."""
 
@@ -194,16 +220,6 @@ class TestResourceHandlingInvalidPaths(object):
 
 class TestResourceFolders(object):
     """A container for tests relating to resource folders."""
-
-    @pytest.mark.parametrize('path_component', [
-        'resources',
-        'standard'
-    ])
-    def test_folder_path_for_version(self, std_ver_minor_mixedinst_valid_fullsupport, path_component):
-        """Check that expected components are present within folder paths."""
-        path = iati.resources.folder_path_for_version(std_ver_minor_mixedinst_valid_fullsupport)
-
-        assert path_component in path
 
     @pytest.mark.parametrize('version, expected_num_paths', [
         ('2.02', 237),
