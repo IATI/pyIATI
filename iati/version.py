@@ -348,7 +348,7 @@ def decimalise_integer(input_func):
     * iati.Versions will remain unchanged.
 
     Args:
-        input_func (function): The function to decorate. One of the arguments is called `version`.
+        input_func (function): The function to decorate. One of the arguments is called `version`. It is highly advised that this is the first argument.
 
     Returns:
         function: The input function, wrapped such that it is called with a iati.Version representing a Decimal Version.
@@ -356,7 +356,10 @@ def decimalise_integer(input_func):
     """
     def wrapper(*args, **kwargs):
         """Act as a wrapper to convert input Integer Version numbers to a normalised format Decimal Version."""
-        version_arg_idx = inspect.getargspec(input_func).args.index('version')
+        try:  # python2 compatibility - python3.3 added an 'inspect.signature' function which is much more useful, especially with python3.5 enhancements around unwrapping
+            version_arg_idx = inspect.getargspec(input_func).args.index('version')
+        except ValueError:
+            version_arg_idx = 0
         version = _decimalise_integer(args[version_arg_idx])
 
         return input_func(*args[0:version_arg_idx], version, *args[version_arg_idx + 1:], **kwargs)
@@ -368,7 +371,7 @@ def normalise_decimals(input_func):
     """Decorate function by converting an input version into an iati.Version if a value is specified that is a permitted way to represent a Decimal Version.
 
     Args:
-        input_func (function): The function to decorate. One of the arguments is called `version`.
+        input_func (function): The function to decorate. One of the arguments is called `version`. It is highly advised that this is the first argument.
 
     Returns:
         function: The input function, wrapped such that it is called with an iati.Version if a Decimal version is provided.
@@ -376,7 +379,10 @@ def normalise_decimals(input_func):
     """
     def wrapper(*args, **kwargs):
         """Act as a wrapper to ensure a version number is an iati.Version if a Decimal version is specified."""
-        version_arg_idx = inspect.getargspec(input_func).args.index('version')
+        try:  # python2 compatibility - python3.3 added an 'inspect.signature' function which is much more useful, especially with python3.5 enhancements around unwrapping
+            version_arg_idx = inspect.getargspec(input_func).args.index('version')
+        except ValueError:
+            version_arg_idx = 0
         version = _normalise_decimal_version(args[version_arg_idx])
 
         return input_func(*args[0:version_arg_idx], version, *args[version_arg_idx + 1:], **kwargs)
