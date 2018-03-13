@@ -374,7 +374,7 @@ def folder_path_for_version(version=iati.version.STANDARD_VERSION_ANY):
 
 
 def path_for_version(path, version=iati.version.STANDARD_VERSION_ANY):
-    """Return the relative location of a specified path at the specified version of the Standard.
+    """Return the absolute location of a specified path at the specified version of the Standard.
 
     Args:
         path (str): The path to the file that is to be read in.
@@ -383,11 +383,12 @@ def path_for_version(path, version=iati.version.STANDARD_VERSION_ANY):
     Returns:
         str: The relative path to a file at the specified version of the Standard.
 
+    Raises:
+        TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: When a specified version is not a known version of the IATI Standard.
+
     Note:
         Does not check whether anything exists at the specified path.
-
-    Todo:
-        Test this directly rather than just the indirect tests that exist at present.
 
     """
     return resource_filesystem_path(os.path.join(folder_path_for_version(version), path))
@@ -442,7 +443,12 @@ def _ensure_portable_filepath(maybe_filepath):
         raise TypeError('A filesystem path must be a string. The provided value is a {0}.'.format(type(maybe_filepath)))
 
     path_components = maybe_filepath.split(os.path.sep)
+
+    # allow there to be a trailing folder separator on the input maybe_filepath
+    if len(path_components) > 1 and path_components[-1] == '':
+        path_components.pop()
+
     permitted_component_regex = re.compile('^[_.A-Za-z0-9][-_.A-Za-z0-9]*$')
     for component in path_components:
         if re.match(permitted_component_regex, component) is None:
-            raise ValueError('Each component in a permitted filepath must only include the following characters: A-Z a-z 0-9 . _ -')
+            raise ValueError('Each component in a permitted filepath must only include the following characters: A-Z a-z 0-9 . _ - (Problem component: {0} Actual path: {1})'.format(component, maybe_filepath))

@@ -13,6 +13,13 @@ def filename_no_meaning(request):
     """Return a filename with no particular meaning."""
     return request.param
 
+@pytest.fixture(params=[
+    'a-single-filename'
+])
+def filename_no_meaning_single(request):
+    """Return a single filename with no particular meaning."""
+    return request.param
+
 @pytest.fixture(params=iati.tests.utilities.generate_test_types(['str'], True))
 def filepath_invalid_type(request):
     """Return a value that is of a type that cannot represent a filepath."""
@@ -30,4 +37,13 @@ def filepath_empty(request):
 ])
 def filepath_invalid_value(request):
     """Return a value that is a string that cannot represent a filepath."""
+    return request.param
+
+@pytest.fixture(params=[
+    'foldername' + os.path.sep,
+    'foldername-with-hyphen' + os.path.sep,
+    'folder' + os.path.sep + 'sub-folder' + os.path.sep
+])
+def folderpath_no_meaning(request):
+    """Return a folder path with no particular meaning."""
     return request.param
