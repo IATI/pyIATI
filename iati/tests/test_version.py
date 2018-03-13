@@ -1,5 +1,6 @@
 """A module containing tests for the pyIATI representation of Standard metadata."""
 import copy
+import inspect
 import math
 import operator
 import pytest
@@ -497,33 +498,57 @@ class TestVersionStandardisation(object):
     """A container for tests relating to standardising how versions are passed into functions."""
 
     @iati.version.decimalise_integer
-    def return_decimalised_integer(version):  # pylint: disable=no-self-argument
-        """Return the version parameter, but converted to an iati.Version representing the newest Decimal Version in the given Integer Version if something that can be treated as an Integer Version is provided."""
+    def return_decimalised_integer_1_arg(version):  # pylint: disable=no-self-argument
+        """Return the version parameter, but converted to an iati.Version representing the newest Decimal Version in the given Integer Version if something that can be treated as an Integer Version is provided.
+
+        The version argument is first.
+        """
+        return version
+
+    @iati.version.decimalise_integer
+    def return_decimalised_integer_2_arg(first_arg, version):  # pylint: disable=no-self-argument
+        """Return the version parameter, but converted to an iati.Version representing the newest Decimal Version in the given Integer Version if something that can be treated as an Integer Version is provided.
+
+        The version argument is second.
+        """
         return version
 
     @iati.version.normalise_decimals
-    def return_normalised_decimal(version):  # pylint: disable=no-self-argument
-        """Return the version parameter, but converted to an iati.Version if something that can be treated as a Decimal Version is provided."""
+    def return_normalised_decimal_1_arg(version):  # pylint: disable=no-self-argument
+        """Return the version parameter, but converted to an iati.Version if something that can be treated as a Decimal Version is provided.
+
+        The version argument is first.
+        """
+        return version
+
+    @iati.version.normalise_decimals
+    def return_normalised_decimal_2_arg(first_arg, version):  # pylint: disable=no-self-argument
+        """Return the version parameter, but converted to an iati.Version if something that can be treated as a Decimal Version is provided.
+
+        The version argument is second.
+        """
         return version
 
     INTEGER_TO_DECIMAL_FUNCTIONS = [
-        return_decimalised_integer,
-        iati.version._decimalise_integer
+        (return_decimalised_integer_1_arg, 0),
+        (return_decimalised_integer_2_arg, 1),
+        (iati.version._decimalise_integer, 0)
     ]
 
     @pytest.fixture(params=INTEGER_TO_DECIMAL_FUNCTIONS)
     def integer_decimalisation_func(self, request):
-        """Return a function to check the return value of."""
+        """Return a tuple containing a function to check the return value of, and the number of padding arguments to provide it."""
         return request.param
 
     DECIMAL_S13N_FUNCTIONS = [
-        return_normalised_decimal,
-        iati.version._normalise_decimal_version
+        (return_normalised_decimal_1_arg, 0),
+        (return_normalised_decimal_2_arg, 1),
+        (iati.version._normalise_decimal_version, 0)
     ]
 
     @pytest.fixture(params=DECIMAL_S13N_FUNCTIONS)
     def decimal_normalisation_func(self, request):
-        """Return a function to check the return value of."""
+        """Return tuple containing a function to check the return value of, and the number of padding arguments to provide it."""
         return request.param
 
     @pytest.fixture(params=INTEGER_TO_DECIMAL_FUNCTIONS + DECIMAL_S13N_FUNCTIONS)
@@ -531,23 +556,42 @@ class TestVersionStandardisation(object):
         """Return a function that does not modify junk values before returning them."""
         return request.param
 
+    def _create_padded_args_list(self, num_preceding_args, last_val):
+        """Create a list of values with a value of note in the last position.
+
+        The padding values allow a single test to check whether decorators work when an argument of interest is in varying positions.
+        """
+        return ['placeholder-arg'] * (num_preceding_args) + [last_val]
+
     # decimal standardisation
     def test_decimal_versions_normalised(self, std_ver_minor_uninst_valid_possible, decimal_normalisation_func):
         """Check that values that represent Decimal Versions of the IATI Standard are converted to iati.Versions."""
-        assert decimal_normalisation_func(std_ver_minor_uninst_valid_possible) == iati.Version(std_ver_minor_uninst_valid_possible)
+        func_to_test = decimal_normalisation_func[0]
+        args_list = self._create_padded_args_list(decimal_normalisation_func[1], std_ver_minor_uninst_valid_possible)
+
+        assert func_to_test(*args_list) == iati.Version(std_ver_minor_uninst_valid_possible)
 
     def test_integer_versions_not_normalised(self, std_ver_major_uninst_valid_possible, decimal_normalisation_func):
         """Check that values that represent Integer Versions of the IATI Standard are returned as-is when normalising Decimal Versions."""
-        assert decimal_normalisation_func(std_ver_major_uninst_valid_possible) == std_ver_major_uninst_valid_possible
+        func_to_test = decimal_normalisation_func[0]
+        args_list = self._create_padded_args_list(decimal_normalisation_func[1], std_ver_major_uninst_valid_possible)
+
+        assert func_to_test(*args_list) == std_ver_major_uninst_valid_possible
 
     # integer decimalisation
-    def test_decimal_version_conversion_valid_version(self, std_ver_minor_inst_valid_known, integer_decimalisation_func):
+    def test_decimal_version_conversion_valid_version(self, integer_decimalisation_func, std_ver_minor_inst_valid_known):
         """Check that known Decimal Versions remain unchanged."""
-        assert integer_decimalisation_func(std_ver_minor_inst_valid_known) == std_ver_minor_inst_valid_known
+        func_to_test = integer_decimalisation_func[0]
+        args_list = self._create_padded_args_list(integer_decimalisation_func[1], std_ver_minor_inst_valid_known)
+
+        assert func_to_test(*args_list) == std_ver_minor_inst_valid_known
 
     def test_decimal_version_conversion_valid_decimal_representation(self, std_ver_minor_uninst_valid_known, integer_decimalisation_func):
         """Check that values that can be used to create actual Decimal Versions are left alone."""
-        assert integer_decimalisation_func(std_ver_minor_uninst_valid_known) == std_ver_minor_uninst_valid_known
+        func_to_test = integer_decimalisation_func[0]
+        args_list = self._create_padded_args_list(integer_decimalisation_func[1], std_ver_minor_uninst_valid_known)
+
+        assert func_to_test(*args_list) == std_ver_minor_uninst_valid_known
 
     @pytest.mark.parametrize('integer_version, expected_decimal', [
         ('1', iati.Version('1.05')),
@@ -557,7 +601,10 @@ class TestVersionStandardisation(object):
     @pytest.mark.latest_version('2.02')
     def test_integer_version_conversion_valid(self, integer_version, expected_decimal, integer_decimalisation_func):
         """Check that valid Integer Versions return the last Decimal in the Integer."""
-        assert integer_decimalisation_func(integer_version) == expected_decimal
+        func_to_test = integer_decimalisation_func[0]
+        args_list = self._create_padded_args_list(integer_decimalisation_func[1], integer_version)
+
+        assert func_to_test(*args_list) == expected_decimal
 
     def test_junk_values_not_modified(self, std_ver_minor_uninst_mixederr, junk_ignoring_func):
         """Check that junk values are returned as-is when standardising Decimal Versions.
@@ -571,7 +618,10 @@ class TestVersionStandardisation(object):
         except TypeError:
             original_value = std_ver_minor_uninst_mixederr
 
-        result = junk_ignoring_func(std_ver_minor_uninst_mixederr)
+        func_to_test = junk_ignoring_func[0]
+        args_list = self._create_padded_args_list(junk_ignoring_func[1], std_ver_minor_uninst_mixederr)
+
+        result = func_to_test(*args_list)
 
         assert result is std_ver_minor_uninst_mixederr
         try:

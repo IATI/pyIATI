@@ -7,6 +7,7 @@ Todo:
 
 """
 from decimal import Decimal
+import inspect
 import re
 import semantic_version
 import iati.utilities
@@ -347,7 +348,7 @@ def decimalise_integer(input_func):
     * iati.Versions will remain unchanged.
 
     Args:
-        input_func (function): The function to decorate. Takes the `version` argument as its first argument.
+        input_func (function): The function to decorate. One of the arguments is called `version`.
 
     Returns:
         function: The input function, wrapped such that it is called with a iati.Version representing a Decimal Version.
@@ -355,9 +356,10 @@ def decimalise_integer(input_func):
     """
     def wrapper(*args, **kwargs):
         """Act as a wrapper to convert input Integer Version numbers to a normalised format Decimal Version."""
-        version = _decimalise_integer(args[0])
+        version_arg_idx = inspect.getargspec(input_func).args.index('version')
+        version = _decimalise_integer(args[version_arg_idx])
 
-        return input_func(version, *args[1:], **kwargs)
+        return input_func(*args[0:version_arg_idx], version, *args[version_arg_idx + 1:], **kwargs)
 
     return wrapper
 
@@ -366,7 +368,7 @@ def normalise_decimals(input_func):
     """Decorate function by converting an input version into an iati.Version if a value is specified that is a permitted way to represent a Decimal Version.
 
     Args:
-        input_func (function): The function to decorate. Takes the `version` argument as its first argument.
+        input_func (function): The function to decorate. One of the arguments is called `version`.
 
     Returns:
         function: The input function, wrapped such that it is called with an iati.Version if a Decimal version is provided.
@@ -374,9 +376,10 @@ def normalise_decimals(input_func):
     """
     def wrapper(*args, **kwargs):
         """Act as a wrapper to ensure a version number is an iati.Version if a Decimal version is specified."""
-        version = _normalise_decimal_version(args[0])
+        version_arg_idx = inspect.getargspec(input_func).args.index('version')
+        version = _normalise_decimal_version(args[version_arg_idx])
 
-        return input_func(version, *args[1:], **kwargs)
+        return input_func(*args[0:version_arg_idx], version, *args[version_arg_idx + 1:], **kwargs)
 
     return wrapper
 
