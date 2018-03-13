@@ -384,13 +384,21 @@ def path_for_version(path, version=iati.version.STANDARD_VERSION_ANY):
         str: The relative path to a file at the specified version of the Standard.
 
     Raises:
+        TypeError: If the given path is of a type that cannot be a filepath.
         TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: If the given path is a string that cannot be a useful component of a filepath.
         ValueError: When a specified version is not a known version of the IATI Standard.
 
     Note:
         Does not check whether anything exists at the specified path.
 
     """
+    try:  # python2 and python3.4 compatibility
+        _ensure_portable_filepath(path)
+    except ValueError:
+        if len(path):
+            raise
+
     return resource_filesystem_path(os.path.join(folder_path_for_version(version), path))
 
 
