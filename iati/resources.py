@@ -260,8 +260,8 @@ def create_lib_data_path(name):
         str: The path to the specified file.
 
     Raises:
-        TypeError: If the given path is of a type that cannot be a filepath.
-        ValueError: If the given path is a string that cannot be a useful component of a filepath.
+        TypeError: If the given name is of a type that cannot be a filepath.
+        ValueError: If the given name is a string that cannot be a useful component of a filepath.
 
     Note:
         Does not check whether the specified file actually exists.
