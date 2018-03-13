@@ -296,12 +296,9 @@ class TestDatasetSourceFinding(object):
         iati.tests.resources.load_as_dataset('valid_iati', '2.02')
     ])
     def data(self, request):
-        """A Dataset to test.
+        """A Dataset to test."""
+        request.applymarker(pytest.mark.fixed_to_202)
 
-        Todo:
-            Stop this being fixed to 2.02.
-
-        """
         return request.param
 
     @pytest.fixture
@@ -578,13 +575,9 @@ class TestDatasetVersionDetection(object):
 
         assert result == std_ver_minor_inst_valid_known_v2
 
+    @pytest.mark.fixed_to_202
     def test_cannot_assign_to_version_property(self):
-        """Check that it is not possible to assign to the `version` property.
-
-        Todo:
-            Stop this being fixed to 2.02.
-
-        """
+        """Check that it is not possible to assign to the `version` property."""
         data = iati.tests.resources.load_as_dataset('valid_iati', '2.02')
 
         with pytest.raises(AttributeError) as excinfo:

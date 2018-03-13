@@ -46,16 +46,15 @@ def codelist_lengths_by_version(request):  # latest_version fixture used to perf
 
 
 @pytest.fixture
-def schema_ruleset():
+def schema_ruleset(request):
     """Return a schema with the Standard Ruleset added.
 
     Returns:
         A valid Activity Schema with the Standard Ruleset added.
 
-    Todo:
-        Stop this being fixed to 2.02.
-
     """
+    request.applymarker(pytest.mark.fixed_to_202)
+
     schema = iati.default.activity_schema('2.02', False)
     ruleset = iati.default.ruleset('2.02')
 

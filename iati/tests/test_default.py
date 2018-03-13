@@ -143,14 +143,12 @@ class TestDefaultCodelists(object):
             for code in codelist.codes:
                 assert code.name == ''
 
+    @pytest.mark.fixed_to_202
     def test_codelist_mapping_condition(self):
         """Check that the Codelist mapping file is having conditions read.
 
         Todo:
             Split into multiple tests.
-
-            Stop this being fixed to 2.02.
-
         """
         mapping = iati.default.codelist_mapping('2.02')
 
@@ -205,13 +203,9 @@ class TestDefaultRulesets(object):
 
         assert isinstance(ruleset, iati.Ruleset)
 
+    @pytest.mark.fixed_to_202
     def test_default_ruleset_validation_rules_valid(self, schema_ruleset):
-        """Check that a fully valid IATI file does not raise any type of error (including rules/rulesets).
-
-        Todo:
-            Stop this being fixed to 2.02.
-
-        """
+        """Check that a fully valid IATI file does not raise any type of error (including rules/rulesets)."""
         data = iati.tests.resources.load_as_dataset('valid_std_ruleset', '2.02')
         result = iati.validator.full_validation(data, schema_ruleset)
 
@@ -242,6 +236,7 @@ class TestDefaultRulesets(object):
         )
         # Note the Rules relating to 'dependent', 'no_more_than_one', 'regex_no_matches', 'startswith' and 'unique' are not used in the Standard Ruleset.
     ])
+    @pytest.mark.fixed_to_202
     def test_default_ruleset_validation_rules_invalid(self, schema_ruleset, rule_error, invalid_dataset_name, info_text):
         """Check that the expected rule error is detected when validating files containing invalid data for that rule.
 
@@ -253,9 +248,6 @@ class TestDefaultRulesets(object):
             Consider whether this test should remove all warnings and assert that there is only the expected warning contained within the test file.
 
             Check that the expected missing elements appear the the help text for the given element.
-
-            Stop this being fixed to 2.02.
-
         """
         data = iati.tests.resources.load_as_dataset(invalid_dataset_name, '2.02')
         result = iati.validator.full_validation(data, schema_ruleset)
@@ -328,13 +320,10 @@ class TestDefaultModifications(object):
         return 'Country'
 
     @pytest.fixture
-    def codelist(self, codelist_name):
-        """Return a default Codelist that is part of the IATI Standard.
+    def codelist(self, request, codelist_name):
+        """Return a default Codelist that is part of the IATI Standard."""
+        request.applymarker(pytest.mark.fixed_to_202)
 
-        Todo:
-            Stop this being fixed to 2.02.
-
-        """
         return iati.default.codelist(codelist_name, '2.02')
 
     @pytest.fixture
