@@ -36,7 +36,8 @@ class TestResourceConstants(object):
         iati.resources.BASE_PATH_LIB_DATA.split(os.path.sep).pop(),
         iati.resources.PATH_CODELISTS,
         iati.resources.PATH_SCHEMAS,
-        iati.resources.PATH_RULESETS
+        iati.resources.PATH_RULESETS,
+        iati.resources.PATH_VERSION_INDEPENDENT
     ])
     def test_folder_names_valid_values(self, folder_name):
         """Test that constants that should be folder names are lower case strings separated by underscores."""
@@ -105,6 +106,65 @@ class TestResourceLibData(object):
 
 
 @pytest.mark.new_tests
+class TestResourcePathComponents(object):
+    """A container for tests relating to generation of component parts of a resource path."""
+
+    @pytest.mark.parametrize('version, expected_version_foldername', [
+        ('2.02', '2-02'),
+        ('2.01', '2-01'),
+        ('1.05', '1-05'),
+        ('1.04', '1-04'),
+        ('1.03', '1-03'),
+        ('1.02', '1-02'),
+        ('1.01', '1-01'),
+        ('2.1.10', '2-02'),
+        ('2.0.5', '2-01'),
+        ('1.4.4', '1-05'),
+        ('1.3.3', '1-04'),
+        ('1.2.2', '1-03'),
+        ('1.1.1', '1-02'),
+        ('1.1.0', '1-02'),
+        ('1.0.0', '1-01'),
+        (Decimal('1.05'), '1-05'),
+        (Decimal('1.04'), '1-04'),
+        (Decimal('1.03'), '1-03'),
+        (Decimal('1.02'), '1-02'),
+        (Decimal('1.01'), '1-01'),
+        (iati.Version('2.02'), '2-02'),
+        (iati.Version('2.01'), '2-01'),
+        (iati.Version('1.05'), '1-05'),
+        (iati.Version('1.04'), '1-04'),
+        (iati.Version('1.03'), '1-03'),
+        (iati.Version('1.02'), '1-02'),
+        (iati.Version('1.01'), '1-01'),
+        ('1', '1'),
+        ('2', '2'),
+        (iati.version.STANDARD_VERSION_ANY, iati.resources.PATH_VERSION_INDEPENDENT)
+    ])
+    @pytest.mark.latest_version('2.02')
+    def test_version_folder_name_generation_known(self, version, expected_version_foldername):
+        """Check that the correct folder name is returned for known version numbers."""
+        folder_name = iati.resources.folder_name_for_version(version)
+
+        assert expected_version_foldername == folder_name
+
+    def test_version_folder_name_generation_unknown(self, std_ver_all_mixedinst_valid_unknown):
+        """Check that a ValueError is raised when trying to create a folder name for an unknown version."""
+        with pytest.raises(ValueError):
+            iati.resources.folder_name_for_version(std_ver_all_mixedinst_valid_unknown)
+
+    def test_folder_name_for_version_valueerr(self, std_ver_all_uninst_valueerr):
+        """Check that an version of the Standard of the correct type, but an incorrect value raises a ValueError."""
+        with pytest.raises(ValueError):
+            iati.resources.folder_name_for_version(std_ver_all_uninst_valueerr)
+
+    def test_folder_name_for_version_typeerr(self, std_ver_all_uninst_typeerr):
+        """Check that an version of the Standard of the correct type, but an incorrect value raises a TypeError."""
+        with pytest.raises(TypeError):
+            iati.resources.folder_name_for_version(std_ver_all_uninst_typeerr)
+
+
+@pytest.mark.new_tests
 class TestResourceHandlingInvalidPaths(object):
     """A container for tests relating to handling paths that are invalid for one reason or another."""
 
@@ -135,47 +195,6 @@ class TestResourceHandlingInvalidPaths(object):
 class TestResourceFolders(object):
     """A container for tests relating to resource folders."""
 
-    @pytest.mark.parametrize('version, expected_version_foldername', [
-        ('2.02', '2-02'),
-        ('2.01', '2-01'),
-        ('1.05', '1-05'),
-        ('1.04', '1-04'),
-        ('1.03', '1-03'),
-        ('1.02', '1-02'),
-        ('1.01', '1-01'),
-        (Decimal('1.05'), '1-05'),
-        (Decimal('1.04'), '1-04'),
-        (Decimal('1.03'), '1-03'),
-        (Decimal('1.02'), '1-02'),
-        (Decimal('1.01'), '1-01'),
-        (iati.Version('2.02'), '2-02'),
-        (iati.Version('2.01'), '2-01'),
-        (iati.Version('1.05'), '1-05'),
-        (iati.Version('1.04'), '1-04'),
-        (iati.Version('1.03'), '1-03'),
-        (iati.Version('1.02'), '1-02'),
-        (iati.Version('1.01'), '1-01'),
-        ('1', '1'),
-        ('2', '2'),
-        (iati.version.STANDARD_VERSION_ANY, 'version-independent')
-    ])
-    @pytest.mark.latest_version('2.02')
-    def test_folder_name_for_version(self, version, expected_version_foldername):
-        """Check that expected components are present within folder paths."""
-        path = iati.resources.folder_name_for_version(version)
-
-        assert expected_version_foldername == path
-
-    def test_folder_name_for_version_valueerr(self, std_ver_all_uninst_valueerr):
-        """Check that an version of the Standard of the correct type, but an incorrect value raises a ValueError."""
-        with pytest.raises(ValueError):
-            iati.resources.folder_name_for_version(std_ver_all_uninst_valueerr)
-
-    def test_folder_name_for_version_typeerr(self, std_ver_all_uninst_typeerr):
-        """Check that an version of the Standard of the correct type, but an incorrect value raises a TypeError."""
-        with pytest.raises(TypeError):
-            iati.resources.folder_name_for_version(std_ver_all_uninst_typeerr)
-
     @pytest.mark.parametrize('path_component', [
         'resources',
         'standard'
@@ -183,6 +202,7 @@ class TestResourceFolders(object):
     def test_folder_path_for_version(self, std_ver_minor_mixedinst_valid_fullsupport, path_component):
         """Check that expected components are present within folder paths."""
         path = iati.resources.folder_path_for_version(std_ver_minor_mixedinst_valid_fullsupport)
+
         assert path_component in path
 
     @pytest.mark.parametrize('version, expected_num_paths', [

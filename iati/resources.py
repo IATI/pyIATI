@@ -36,6 +36,8 @@ PATH_SCHEMAS = 'schemas'
 """The location of the folder containing Schemas from the SSOT."""
 PATH_RULESETS = 'rulesets'
 """The location of the folder containing Rulesets from the SSOT."""
+PATH_VERSION_INDEPENDENT = 'version_independent'
+"""The location of the folder containing version-independent content."""
 
 FILE_CODELIST_EXTENSION = '.xml'
 """The expected extension of a file containing a Codelist."""
@@ -327,32 +329,31 @@ def folder_name_for_version(version=iati.version.STANDARD_VERSION_ANY):
         str: The folder name for the specified version of the Standard.
 
     Raises:
-        ValueError: When a specified version is not a valid version of the IATI Standard.
-
-    Todo:
-        Extract magic string: 'version-independent'
+        TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: When a specified version is not a known version of the IATI Standard.
 
     """
+    is_major = False
+
     if version == iati.version.STANDARD_VERSION_ANY:
-        return 'version-independent'
+        return PATH_VERSION_INDEPENDENT
     elif isinstance(version, (str, int)) and not isinstance(version, bool):
         try:
-            if int(version) in iati.version.STANDARD_VERSIONS_MAJOR:
-                return str(version)
+            if str(int(version)) == str(version):
+                is_major = True
         except ValueError:
             pass
 
-        version = iati.Version(version)
+    if is_major and int(version) in iati.version.STANDARD_VERSIONS_MAJOR:
+        return str(version)
+    elif not is_major:
+        # is an iati.Version due to the `normalise_decimals` decorator
+        version.patch = 0  # folder names do not currently account for patch versions
 
-    try:
         if version in iati.version.STANDARD_VERSIONS:
             return str(version.integer) + '-0' + str(version.decimal)
-        elif version.major in iati.version.STANDARD_VERSIONS_MAJOR:
-            return str(version.major)
-    except AttributeError:
-        pass
 
-    raise ValueError("Version {} is not a valid version of the IATI Standard.".format(version))
+    raise ValueError("Version {0} is not a known version of the IATI Standard.".format(version))
 
 
 def folder_path_for_version(version=iati.version.STANDARD_VERSION_ANY):
