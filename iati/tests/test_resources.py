@@ -116,6 +116,34 @@ class TestResourceLibData(object):
 
 
 @pytest.mark.new_tests
+class TestResourceHandlingInvalidPaths(object):
+    """A container for tests relating to handling paths that are invalid and being passed to functions that are version-independent."""
+
+    @pytest.fixture(params=[
+        iati.resources.create_lib_data_path,
+        iati.resources.resource_filesystem_path
+    ])
+    def resource_func(self, request):
+        """A resource function that takes in file paths as an input."""
+        return request.param
+
+    def test_create_lib_data_path_empty_path(self, filepath_empty):
+        """Check that a ValueError is raised when given an empty filepath."""
+        with pytest.raises(ValueError):
+            iati.resources.create_lib_data_path(filepath_empty)
+
+    def test_create_lib_data_path_valueerr(self, filepath_invalid_value, resource_func):
+        """Check that functions cause a value error when given a string that cannot be a filepath."""
+        with pytest.raises(ValueError):
+            resource_func(filepath_invalid_value)
+
+    def test_create_lib_data_path_typeerr(self, filepath_invalid_type, resource_func):
+        """Check that functions cause a type error when given a path of an incorrect type."""
+        with pytest.raises(TypeError):
+            resource_func(filepath_invalid_type)
+
+
+@pytest.mark.new_tests
 class TestResourcePathComponents(object):
     """A container for tests relating to generation of component parts of a resource path."""
 
@@ -239,34 +267,6 @@ class TestResoucePathGenerationEntireStandard(object):
         """Check that a TypeError is raised when trying to create an absolute path from a path of an incorrect type."""
         with pytest.raises(TypeError):
             iati.resources.path_for_version(filepath_invalid_type, std_ver_minor_inst_valid_single)
-
-
-@pytest.mark.new_tests
-class TestResourceHandlingInvalidPaths(object):
-    """A container for tests relating to handling paths that are invalid for one reason or another."""
-
-    @pytest.fixture(params=[
-        iati.resources.create_lib_data_path,
-        iati.resources.resource_filesystem_path
-    ])
-    def resource_func(self, request):
-        """A resource function that takes in file paths as an input."""
-        return request.param
-
-    def test_create_lib_data_path_empty_path(self, filepath_empty):
-        """Check that a ValueError is raised when given an empty filepath."""
-        with pytest.raises(ValueError):
-            iati.resources.create_lib_data_path(filepath_empty)
-
-    def test_create_lib_data_path_valueerr(self, filepath_invalid_value, resource_func):
-        """Check that functions cause a value error when given a string that cannot be a filepath."""
-        with pytest.raises(ValueError):
-            resource_func(filepath_invalid_value)
-
-    def test_create_lib_data_path_typeerr(self, filepath_invalid_type, resource_func):
-        """Check that functions cause a type error when given a path of an incorrect type."""
-        with pytest.raises(TypeError):
-            resource_func(filepath_invalid_type)
 
 
 class TestResourceFolders(object):
