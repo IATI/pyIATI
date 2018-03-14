@@ -111,25 +111,48 @@ def get_codelist_mapping_paths(version):
     return paths
 
 
+@iati.version.allow_possible_version
 def get_ruleset_paths(version=iati.version.STANDARD_VERSION_ANY):
     """Find the paths for all Rulesets at the specified version of the Standard.
 
     Args:
-        version (str / int / Decimal / iati.Version): The version of the Standard to return the Rulesets for. Defaults to iati.version.STANDARD_VERSION_ANY.
-
-    Raises:
-        ValueError: When a specified version is not a valid version of the IATI Standard.
+        version (str / int / Decimal / iati.Version): The version of the Standard to return the Rulesets for.
 
     Returns:
         list(str): A list of paths to all of the Rulesets at the specified version of the Standard.
 
-    Todo:
-        Further exploration needs to be undertaken in how to handle pre-1.04 versions of the Standard.
+    Raises:
+        TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: When a specified version is of the correct type, but cannot represent a version of the IATI Standard.
 
-        Add tests to show that versions 1.04 and above are being correctly handled, including errors.
+    Todo:
+        Consider adding is_minor() and is_major() functions in the version module.
 
     """
-    paths = [create_ruleset_path(FILE_RULESET_STANDARD_NAME, version)]
+    paths = []
+
+    try:
+        # check if minor version
+        if isinstance(version, iati.Version):
+            versions = [version]
+        elif version == iati.version.STANDARD_VERSION_ANY:
+            pass  # skip to the code after the if-else
+        else:
+            iati.Version(version)
+
+        versions = [version]
+    except (TypeError, ValueError):
+        # major version
+        versions = [minor_ver for minor_ver in iati.version.versions_for_integer(int(version)) if minor_ver in iati.version.STANDARD_VERSIONS_SUPPORTED]
+
+    for version in versions:
+        try:
+            created_path = create_ruleset_path(FILE_RULESET_STANDARD_NAME, version)
+
+            if os.path.isfile(created_path):
+                paths.append(created_path)
+        except ValueError:
+            pass  # there is no path to check
 
     return paths
 
@@ -285,7 +308,9 @@ def create_ruleset_path(name, version):
         str: The path to a file containing the specified ruleset.
 
     Raises:
+        TypeError: If the given name is of a type that cannot be a filepath.
         TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: If the given name is a string that cannot be a useful component of a filepath.
         ValueError: When a specified version is not a known version of the IATI Standard.
 
     Note:
@@ -306,16 +331,19 @@ def create_schema_path(name, version):
 
     Args:
         name (str): The name of the Schema to locate.
-        version (str / int / Decimal / iati.Version): The version of the Standard to return the Schema for. Defaults to iati.version.STANDARD_VERSION_ANY.
+        version (str / int / Decimal / iati.Version): The version of the Standard to return the Schema for.
 
     Returns:
         str: The path to a file containing the specified Schema.
 
+    Raises:
+        TypeError: If the given name is of a type that cannot be a filepath.
+        TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: If the given name is a string that cannot be a useful component of a filepath.
+        ValueError: When a specified version is not a known version of the IATI Standard.
+
     Note:
         Does not check whether the specified Schema actually exists.
-
-    Warning:
-        Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
     Todo:
         Determine how to handle version decorators when the version argument is not first in the list. This will enable the current private function access to be removed. See #294 for more info.

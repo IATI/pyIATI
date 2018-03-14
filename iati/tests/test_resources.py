@@ -339,6 +339,57 @@ class TestResourcePathCreationRulesetAndSchema(object):
             func_to_test(filepath_invalid_type, std_ver_minor_inst_valid_single)
 
 
+@pytest.mark.new_tests
+class TestResourceGetRulesetPaths(object):
+    """A container for get_ruleset_paths() tests."""
+
+    def test_get_ruleset_paths_minor_fullsupport(self, std_ver_minor_mixedinst_valid_fullsupport):
+        """Test getting a list of Ruleset versions. The requested version is fully supported by pyIATI."""
+        result = iati.resources.get_ruleset_paths(std_ver_minor_mixedinst_valid_fullsupport)
+
+        assert len(result) == 1
+        assert result[0] == iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_STANDARD_NAME, std_ver_minor_mixedinst_valid_fullsupport)
+
+    def test_get_ruleset_paths_independent(self):
+        """Test getting a list of version-independent standard Rulesets."""
+        result = iati.resources.get_ruleset_paths(iati.version.STANDARD_VERSION_ANY)
+
+        assert result == []
+
+    def test_get_ruleset_paths_minor_partsupport(self, std_ver_minor_mixedinst_valid_partsupport):
+        """Test getting a list of Ruleset versions. The requested version is partially supported by pyIATI."""
+        result = iati.resources.get_ruleset_paths(std_ver_minor_mixedinst_valid_partsupport)
+
+        assert result == []
+
+    def test_get_ruleset_paths_minor_unknown(self, std_ver_all_mixedinst_valid_unknown):
+        """Test getting a list of Ruleset versions. The requested version is not known by pyIATI."""
+        result = iati.resources.get_ruleset_paths(std_ver_all_mixedinst_valid_unknown)
+
+        assert result == []
+
+    def test_get_ruleset_paths_major_known(self, std_ver_major_uninst_valid_known):
+        """Test getting a list of Ruleset versions. The requested version is a known integer version. The list should contain paths for each supported minor within the major."""
+        supported_versions_at_major = [version for version in iati.version.versions_for_integer(int(std_ver_major_uninst_valid_known)) if version in iati.version.STANDARD_VERSIONS_SUPPORTED]
+        expected_path_count = len(supported_versions_at_major)
+
+        result = iati.resources.get_ruleset_paths(std_ver_major_uninst_valid_known)
+
+        assert len(result) == expected_path_count
+        for version in supported_versions_at_major:
+            assert iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_STANDARD_NAME, version) in result
+
+    def test_get_ruleset_path_unknown(self, std_ver_all_uninst_valueerr):
+        """Check that a ValueError is raised when requesting paths for an value that cannot be a version of the Standard."""
+        with pytest.raises(ValueError):
+            iati.resources.get_ruleset_paths(std_ver_all_uninst_valueerr)
+
+    def test_get_ruleset_path_typerr(self, std_ver_all_uninst_typeerr):
+        """Check that a TypeError is raised when requesting paths for a version of an incorrect type."""
+        with pytest.raises(TypeError):
+            iati.resources.get_ruleset_paths(std_ver_all_uninst_typeerr)
+
+
 class TestResourceFolders(object):
     """A container for tests relating to resource folders."""
 
