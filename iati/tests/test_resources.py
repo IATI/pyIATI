@@ -271,6 +271,39 @@ class TestResoucePathCreationEntireStandard(object):
 
 
 @pytest.mark.new_tests
+class TestResourcePathCreationCodelistMapping(object):
+    """A container for tests relating to creating Codelist Mapping File paths."""
+
+    def test_create_codelist_mapping_path_minor(self, std_ver_minor_mixedinst_valid_known):
+        """Check that there is a single Codelist Mapping File for minor versions."""
+        version_folder = iati.resources.folder_name_for_version(std_ver_minor_mixedinst_valid_known)
+        path = iati.resources.create_codelist_mapping_path(std_ver_minor_mixedinst_valid_known)
+
+        assert isinstance(path, str)
+        assert path.endswith(iati.resources.FILE_CODELIST_MAPPING + iati.resources.FILE_CODELIST_EXTENSION)
+        assert version_folder in path
+
+    def test_create_codelist_mapping_path_major(self, std_ver_major_uninst_valid_known):
+        """Check that requesting a Codelist Mapping File for a major version returns the same path as for the last minor within the major."""
+        minor_version = max(iati.version.versions_for_integer(std_ver_major_uninst_valid_known))
+
+        path_major = iati.resources.create_codelist_mapping_path(std_ver_major_uninst_valid_known)
+        path_minor = iati.resources.create_codelist_mapping_path(minor_version)
+
+        assert path_major == path_minor
+
+    def test_create_codelist_mapping_path_version_independent(self):
+        """Check that a ValueError is raised when requesting a version-independent Codelist Mapping File."""
+        with pytest.raises(ValueError):
+            iati.resources.create_codelist_mapping_path(iati.version.STANDARD_VERSION_ANY)
+
+    def test_create_codelist_mapping_path_unknown(self, std_ver_all_mixedinst_valid_unknown):
+        """Check that a ValueError is raised when requesting a Codelist Mapping file for an unknown version of the Standard."""
+        with pytest.raises(ValueError):
+            iati.resources.create_codelist_mapping_path(std_ver_all_mixedinst_valid_unknown)
+
+
+@pytest.mark.new_tests
 class TestResourcePathCreationRulesetAndSchema(object):
     """A container for tests relating to Ruleset and Schema path creation.
 
@@ -370,7 +403,7 @@ class TestResourceGetRulesetPaths(object):
 
     def test_get_ruleset_paths_major_known(self, std_ver_major_uninst_valid_known):
         """Test getting a list of Ruleset paths. The requested version is a known integer version. The list should contain paths for each supported minor within the major."""
-        supported_versions_at_major = [version for version in iati.version.versions_for_integer(int(std_ver_major_uninst_valid_known)) if version in iati.version.STANDARD_VERSIONS_SUPPORTED]
+        supported_versions_at_major = [version for version in iati.version.versions_for_integer(std_ver_major_uninst_valid_known) if version in iati.version.STANDARD_VERSIONS_SUPPORTED]
         expected_path_count = len(supported_versions_at_major)
 
         result = iati.resources.get_ruleset_paths(std_ver_major_uninst_valid_known)
@@ -423,7 +456,7 @@ class TestResourceGetSchemaPaths(object):
 
     def test_get_schema_paths_major_known(self, std_ver_major_uninst_valid_known, func_and_name):
         """Test getting a list of Org or Activity Schema paths. The requested version is a known integer version. The list should contain paths for each supported minor within the major."""
-        versions_at_major = [version for version in iati.version.versions_for_integer(int(std_ver_major_uninst_valid_known))]
+        versions_at_major = [version for version in iati.version.versions_for_integer(std_ver_major_uninst_valid_known)]
         expected_path_count = len(versions_at_major)
 
         result = func_and_name.func(std_ver_major_uninst_valid_known)
@@ -449,7 +482,7 @@ class TestResourceGetSchemaPaths(object):
 
     def test_get_all_schema_paths_major_known(self, std_ver_major_uninst_valid_known, func_and_name):
         """Test getting a list of all Schema paths. The requested version is a known integer version. The list should contain paths for each supported minor within the major."""
-        versions_at_major = [version for version in iati.version.versions_for_integer(int(std_ver_major_uninst_valid_known))]
+        versions_at_major = [version for version in iati.version.versions_for_integer(std_ver_major_uninst_valid_known)]
         expected_path_count = len(versions_at_major) * 2
 
         activity_paths = iati.resources.get_activity_schema_paths(std_ver_major_uninst_valid_known)
@@ -551,46 +584,6 @@ class TestResourceCreatePath(object):
         with pytest.raises(TypeError):
             iati.resources.create_codelist_path('maybe-codelist-name', std_ver_all_uninst_typeerr)
 
-    def test_create_codelist_mapping_path_minor(self, std_ver_minor_mixedinst_valid_fullsupport):
-        """Check that there is a single Codelist Mapping File for minor versions."""
-        path = iati.resources.create_codelist_mapping_path(std_ver_minor_mixedinst_valid_fullsupport)
-
-        assert isinstance(path, str)
-        assert iati.resources.folder_name_for_version(std_ver_minor_mixedinst_valid_fullsupport) in path
-
-    def test_create_codelist_mapping_path_major(self, std_ver_major_uninst_valid_known):
-        """Check that requesting a Codelist Mapping File for a major version returns the same path as for the last minor within the major."""
-        standard_version_minor = max(iati.version.versions_for_integer(std_ver_major_uninst_valid_known))
-
-        path_major = iati.resources.create_codelist_mapping_path(std_ver_major_uninst_valid_known)
-        path_minor = iati.resources.create_codelist_mapping_path(standard_version_minor)
-
-        assert path_major == path_minor
-
-    def test_create_codelist_mapping_path_version_independent(self):
-        """Check that a ValueError is raised when requesting a version-independent Codelist Mapping File."""
-        with pytest.raises(ValueError):
-            iati.resources.create_codelist_mapping_path(iati.version.STANDARD_VERSION_ANY)
-
-    def test_create_codelist_mapping_path_valueerr(self, std_ver_all_uninst_valueerr):
-        """Check that a ValueError is raised when requesting with a version of the correct type, but that cannot represent a version."""
-        with pytest.raises(ValueError):
-            iati.resources.create_codelist_mapping_path(std_ver_all_uninst_valueerr)
-
-    def test_create_codelist_mapping_path_typeerr(self, std_ver_all_uninst_typeerr):
-        """Check that a ValueError is raised when requesting with a version of the wrong type."""
-        with pytest.raises(TypeError):
-            iati.resources.create_codelist_mapping_path(std_ver_all_uninst_typeerr)
-
-    def test_create_codelist_mapping_path_is_xml(self, std_ver_minor_mixedinst_valid_fullsupport):
-        """Check that the Codelist Mapping File path points to a valid XML file."""
-        path = iati.resources.create_codelist_mapping_path(std_ver_minor_mixedinst_valid_fullsupport)
-
-        content = iati.utilities.load_as_string(path)
-
-        assert len(content) > 5000
-        assert iati.validator.is_xml(content)
-
 
 class TestResourceCodelists(object):
     """A container for tests relating to Codelist resources."""
@@ -630,12 +623,3 @@ class TestResourceCodelists(object):
         codelist_mapping_paths = iati.resources.get_codelist_mapping_paths(std_ver_minor_mixedinst_valid_fullsupport)
 
         assert len(codelist_mapping_paths) == 1
-
-    def test_create_codelist_mapping_path(self, std_ver_minor_mixedinst_valid_fullsupport):
-        """Check that the Codelist Mapping File path points to a valid XML file."""
-        path = iati.resources.create_codelist_mapping_path(std_ver_minor_mixedinst_valid_fullsupport)
-
-        content = iati.utilities.load_as_string(path)
-
-        assert len(content) > 5000
-        assert iati.validator.is_xml(content)
