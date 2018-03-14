@@ -279,7 +279,7 @@ def create_ruleset_path(name, version):
 
     Args:
         name (str): The name of the Ruleset to locate.
-        version (str / int / Decimal / iati.Version): The version of the Standard to return the Ruleset for. Defaults to iati.version.STANDARD_VERSION_ANY.
+        version (str / int / Decimal / iati.Version): The version of the Standard to return the Ruleset for.
 
     Returns:
         str: The path to a file containing the specified ruleset.
