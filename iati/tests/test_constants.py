@@ -26,7 +26,7 @@ class TestConstants(object):
 
     def test_standard_versions_correct_number(self):
         """Check that standard versions has the expected number of items."""
-        assert len(iati.constants.STANDARD_VERSIONS) == 5
+        assert len(iati.constants.STANDARD_VERSIONS) == 4
 
     def test_standard_versions_major_all_are_integers(self):
         """Check that each major version is an integer."""

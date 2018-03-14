@@ -10,7 +10,7 @@ Todo:
 
 """
 
-STANDARD_VERSIONS = ['1.04', '1.05', '2.01', '2.02', '2.03']
+STANDARD_VERSIONS = ['1.04', '1.05', '2.01', '2.02']
 """Define all versions of the Standard.
 
 Todo:

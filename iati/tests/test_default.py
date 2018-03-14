@@ -68,19 +68,17 @@ class TestDefaultCodelists(object):
         ('1.05', 'AidTypeFlag', iati.Codelist),
         ('2.01', 'AidTypeFlag', ValueError),
         ('2.02', 'AidTypeFlag', ValueError),
-        ('2.03', 'AidTypeFlag', ValueError),
         ('1.04', 'BudgetStatus', ValueError),
         ('1.05', 'BudgetStatus', ValueError),
         ('2.01', 'BudgetStatus', ValueError),
-        ('2.02', 'BudgetStatus', iati.Codelist),
-        ('2.03', 'BudgetStatus', iati.Codelist)
+        ('2.02', 'BudgetStatus', iati.Codelist)
     ])
     def test_default_codelist_valid_only_at_some_versions(self, codelist_name, version, expected_type):
         """Check that a codelist that is valid at some version/s is not valid in other versions.
 
         Example:
             AidTypeFlag was an embedded codelist in v1.04 and v1.05, but is not valid at any version after this.
-            BudgetStatus was added as an embedded codelist in v2.02, so is not valid prior to this.
+            For example, BudgetStatus was added as an embedded codelist in v2.02, so is not valid prior to this.
         """
         try:  # Note pytest.raises() is not used here in order to keep this test flexible for parameterization.
             result = iati.default.codelist(codelist_name, version)
