@@ -253,7 +253,7 @@ def allow_fully_supported_version(input_func):
         function: The input function, wrapped such that it is called with a fully supported iati.Version representing a Decimal Version.
 
     """
-    def wrapper(*args, **kwargs):
+    def wrap_allow_fully_supported_version(*args, **kwargs):
         """Act as a wrapper to ensure a version number is a Decimal that is fully supported by pyIATI.
 
         Raises:
@@ -267,7 +267,7 @@ def allow_fully_supported_version(input_func):
 
         return input_func(*args, **kwargs)
 
-    return wrapper
+    return wrap_allow_fully_supported_version
 
 
 def allow_known_version(input_func):
@@ -285,7 +285,7 @@ def allow_known_version(input_func):
         function: The input function, wrapped such that it is called with an iati.Version representing a real Decimal Version.
 
     """
-    def wrapper(*args, **kwargs):
+    def wrap_allow_known_version(*args, **kwargs):
         """Act as a wrapper to ensure a version number is a Decimal that exists.
 
         Raises:
@@ -299,7 +299,7 @@ def allow_known_version(input_func):
 
         return input_func(*args, **kwargs)
 
-    return wrapper
+    return wrap_allow_known_version
 
 
 def allow_possible_version(input_func):
@@ -318,7 +318,7 @@ def allow_possible_version(input_func):
         function: The input function, wrapped such that the return value is known to represent some IATI Version Number.
 
     """
-    def wrapper(*args, **kwargs):
+    def wrap_allow_possible_version(*args, **kwargs):
         """Act as a wrapper to ensure a value represents a possible version number.
 
         Raises:
@@ -332,7 +332,7 @@ def allow_possible_version(input_func):
 
         return input_func(*args, **kwargs)
 
-    return wrapper
+    return wrap_allow_possible_version
 
 
 def decimalise_integer(input_func):
@@ -353,13 +353,13 @@ def decimalise_integer(input_func):
         function: The input function, wrapped such that it is called with a iati.Version representing a Decimal Version.
 
     """
-    def wrapper(*args, **kwargs):
+    def wrap_decimalise_integer(*args, **kwargs):
         """Act as a wrapper to convert input Integer Version numbers to a normalised format Decimal Version."""
         version = _decimalise_integer(args[0])
 
         return input_func(version, *args[1:], **kwargs)
 
-    return wrapper
+    return wrap_decimalise_integer
 
 
 def normalise_decimals(input_func):
@@ -372,13 +372,13 @@ def normalise_decimals(input_func):
         function: The input function, wrapped such that it is called with an iati.Version if a Decimal version is provided.
 
     """
-    def wrapper(*args, **kwargs):
+    def wrap_standardise_decimals(*args, **kwargs):
         """Act as a wrapper to ensure a version number is an iati.Version if a Decimal version is specified."""
         version = _normalise_decimal_version(args[0])
 
         return input_func(version, *args[1:], **kwargs)
 
-    return wrapper
+    return wrap_standardise_decimals
 
 
 def versions_for_integer(integer):
