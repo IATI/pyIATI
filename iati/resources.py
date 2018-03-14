@@ -274,7 +274,7 @@ def create_lib_data_path(name):
     return resource_filesystem_path(os.path.join(BASE_PATH_LIB_DATA, name))
 
 
-def create_ruleset_path(name, version=iati.version.STANDARD_VERSION_ANY):
+def create_ruleset_path(name, version):
     """Determine the path of a Ruleset with the given name at the specified version of the Standard.
 
     Args:
@@ -284,13 +284,20 @@ def create_ruleset_path(name, version=iati.version.STANDARD_VERSION_ANY):
     Returns:
         str: The path to a file containing the specified ruleset.
 
+    Raises:
+        TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: When a specified version is not a known version of the IATI Standard.
+
     Note:
         Does not check whether the specified ruleset actually exists.
 
     Todo:
-        Test this directly rather than just the indirect tests that exist at present.
+        Determine how to handle version decorators when the version argument is not first in the list. This will enable the current private function access to be removed. See #294 for more info.
 
     """
+    version = iati.version._decimalise_integer(version)  # see todo  # pylint: disable=protected-access
+    _ensure_portable_filepath(name)
+
     return path_for_version(os.path.join(PATH_RULESETS, '{0}'.format(name) + FILE_RULESET_EXTENSION), version)
 
 

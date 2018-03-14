@@ -203,7 +203,7 @@ class TestResourcePathComponents(object):
 
 
 @pytest.mark.new_tests
-class TestResoucePathGenerationEntireStandard(object):
+class TestResoucePathCreationEntireStandard(object):
     """A container for tests relating to generating entire filepaths for any part of the Standard."""
 
     def test_folder_path_for_version_known(self, std_ver_any_mixedinst_valid_known):
@@ -267,6 +267,54 @@ class TestResoucePathGenerationEntireStandard(object):
         """Check that a TypeError is raised when trying to create an absolute path from a path of an incorrect type."""
         with pytest.raises(TypeError):
             iati.resources.path_for_version(filepath_invalid_type, std_ver_minor_inst_valid_single)
+
+
+@pytest.mark.new_tests
+class TestResourcePathCreationRulesets(object):
+    """A container for tests relating to Ruleset path creation."""
+
+    def test_create_ruleset_path_minor_known(self, filename_no_meaning, std_ver_minor_independent_mixedinst_valid_known):
+        """Check that the expected components are present in a path for a Ruleset at a known minor or independent version of the Standard."""
+        version_folder = iati.resources.folder_name_for_version(std_ver_minor_independent_mixedinst_valid_known)
+        full_path = iati.resources.create_ruleset_path(filename_no_meaning, std_ver_minor_independent_mixedinst_valid_known)
+
+        assert full_path.endswith(filename_no_meaning + iati.resources.FILE_RULESET_EXTENSION)
+        assert version_folder in full_path
+        assert iati.resources.PATH_RULESETS in full_path
+
+    def test_create_ruleset_path_major_known(self, filename_no_meaning_single, std_ver_major_uninst_valid_known):
+        """Check that asking for a Ruleset path for a major version returns the same value as the last minor within the major."""
+        minor_version = max(iati.version.versions_for_integer(std_ver_major_uninst_valid_known))
+
+        major_path = iati.resources.create_ruleset_path(filename_no_meaning_single, std_ver_major_uninst_valid_known)
+        minor_path = iati.resources.create_ruleset_path(filename_no_meaning_single, minor_version)
+
+        assert major_path == minor_path
+
+    def test_create_ruleset_path_no_version(self, filename_no_meaning_single):
+        """Check that specifying a version of the Standard to create a path for is required."""
+        with pytest.raises(TypeError):
+            iati.resources.create_ruleset_path(filename_no_meaning_single)
+
+    def test_create_ruleset_path_unknown(self, filename_no_meaning_single, std_ver_all_mixedinst_valid_unknown):
+        """Check that a ValueError is raised when trying to create a path for a Ruleset at an unknown version of the Standard."""
+        with pytest.raises(ValueError):
+            iati.resources.create_ruleset_path(filename_no_meaning_single, std_ver_all_mixedinst_valid_unknown)
+
+    def test_create_ruleset_path_ver_typerr(self, filename_no_meaning_single, std_ver_all_uninst_typeerr):
+        """Check that a TypeError is raised when trying to create a path for a Ruleset from a version of an incorrect type."""
+        with pytest.raises(TypeError):
+            iati.resources.create_ruleset_path(filename_no_meaning_single, std_ver_all_uninst_typeerr)
+
+    def test_create_ruleset_path_path_valueerr(self, filepath_invalid_value, std_ver_minor_inst_valid_single):
+        """Check that a ValueError is raised when trying to ruleset path for a path that is a string that cannot be a filepath."""
+        with pytest.raises(ValueError):
+            iati.resources.create_ruleset_path(filepath_invalid_value, std_ver_minor_inst_valid_single)
+
+    def test_create_ruleset_path_path_typeerr(self, filepath_invalid_type, std_ver_minor_inst_valid_single):
+        """Check that a TypeError is raised when trying to ruleset path for a path that is of a type that cannot be a filepath."""
+        with pytest.raises(TypeError):
+            iati.resources.create_ruleset_path(filepath_invalid_type, std_ver_minor_inst_valid_single)
 
 
 class TestResourceFolders(object):

@@ -272,6 +272,23 @@ def std_ver_all_uninst_mixederr(request):
     ver.iativer_str for ver in iati.version.STANDARD_VERSIONS_MINOR
 ] + [
     ver.semver_str for ver in iati.version.STANDARD_VERSIONS_MINOR
+] + iati.version.STANDARD_VERSIONS_MINOR + [
+    iati.version.STANDARD_VERSION_ANY
+])
+def std_ver_minor_independent_mixedinst_valid_known(request):
+    """Return an IATI version number that pyIATI knows to exist, or independent.
+
+    Todo:
+        Add decimal representations where possible.
+
+    """
+    return request.param
+
+
+@pytest.fixture(params=[
+    ver.iativer_str for ver in iati.version.STANDARD_VERSIONS_MINOR
+] + [
+    ver.semver_str for ver in iati.version.STANDARD_VERSIONS_MINOR
 ] + [
     iati.version.STANDARD_VERSION_ANY
 ] + iati.version.STANDARD_VERSIONS_MINOR + MAJOR_KNOWN)
@@ -344,6 +361,21 @@ def std_ver_minor_uninst_valueerr_str_decimal(request):
 ])
 def std_ver_minor_uninst_valid_known(request):
     """Return an uninstantiated IATI version number that pyIATI knows to exist.
+
+    Todo:
+        Add decimal representations where possible.
+
+    """
+    return request.param
+
+
+@pytest.fixture(params=[
+    ver.iativer_str for ver in iati.version.STANDARD_VERSIONS_MINOR
+] + [
+    ver.semver_str for ver in iati.version.STANDARD_VERSIONS_MINOR
+] + iati.version.STANDARD_VERSIONS_MINOR)
+def std_ver_minor_mixedinst_valid_known(request):
+    """Return an IATI version number that pyIATI knows to exist.
 
     Todo:
         Add decimal representations where possible.
