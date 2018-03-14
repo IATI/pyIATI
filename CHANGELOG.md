@@ -14,14 +14,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Tests] Separate testing of `bytes` and `str` type values for Python 3+. [#286]
 - [Tests] Mark tests requiring updates when adding a new version. [#288]
 - [Tests] Add another build stage to check that docs build when merging to dev or master. [#292]
+- [Tests] Significantly improve test coverage of the `resources` module.
 
 ### Changed
+
+- [Resources] Change the folder containing version-independent data from `version-independent` to `version_independent` for consistency.
+- [Resources] `create_*_path()` functions will raise errors when given an unknown version.
+- [Resources] `get_*_paths()` functions now verify that paths point to actual files before returning them.
+- [Resources] `get_*_paths()` functions raise errors when given values that cannot represent a version.
 
 - [Utilities] Raise a TypeError rather than a ValueError when `convert_xml_to_tree()` is given a value of incorrect type. [#286]
 
 ### Deprecated
 
 ### Removed
+
+- [Resources] Functions in the `resources` module no longer have default values for the `version` argument.
 
 ### Fixed
 
