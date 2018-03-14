@@ -443,6 +443,10 @@ class TestResourceGetSchemaPaths(object):
         assert activity_path in result
         assert org_path in result
 
+        # ensure the paths have at least a minimum amount of content in the files they reference
+        for path in result:
+            assert os.path.getsize(path) > 10000
+
     def test_get_all_schema_paths_major_known(self, std_ver_major_uninst_valid_known, func_and_name):
         """Test getting a list of all Schema paths. The requested version is a known integer version. The list should contain paths for each supported minor within the major."""
         versions_at_major = [version for version in iati.version.versions_for_integer(int(std_ver_major_uninst_valid_known))]
@@ -635,79 +639,3 @@ class TestResourceCodelists(object):
 
         assert len(content) > 5000
         assert iati.validator.is_xml(content)
-
-
-class TestResourceSchemas(object):
-    """A container for tests relating to Schema resources."""
-
-    def test_get_activity_schema_paths(self, std_ver_minor_mixedinst_valid_fullsupport):
-        """Check that all activity schema paths are found.
-
-        Todo:
-            Handle all paths to schemas being found correctly.
-
-        """
-        activity_paths = iati.resources.get_activity_schema_paths(std_ver_minor_mixedinst_valid_fullsupport)
-
-        assert len(activity_paths) == 1
-
-    def test_get_organisation_schema_paths(self, std_ver_minor_mixedinst_valid_fullsupport):
-        """Check that all organisation schema paths are found.
-
-        Todo:
-            Handle all paths to schemas being found correctly.
-
-        """
-        organisation_paths = iati.resources.get_organisation_schema_paths(std_ver_minor_mixedinst_valid_fullsupport)
-
-        assert len(organisation_paths) == 1
-
-    def test_find_schema_paths(self, std_ver_minor_mixedinst_valid_fullsupport):
-        """Check that both the activity and organisation schema paths are being found.
-
-        Todo:
-            Handle all paths to schemas being found correctly.
-
-        """
-        paths = iati.resources.get_all_schema_paths(std_ver_minor_mixedinst_valid_fullsupport)
-
-        assert len(paths) == 2
-
-    @pytest.mark.parametrize('create_schema_path_function', [
-        iati.resources.get_all_schema_paths,
-        iati.resources.get_activity_schema_paths,
-        iati.resources.get_organisation_schema_paths
-    ])
-    def test_find_schema_paths_file_extension(self, std_ver_minor_mixedinst_valid_fullsupport, create_schema_path_function):
-        """Check that the correct file extension is present within file paths returned by get_all_*schema_paths functions."""
-        paths = create_schema_path_function(std_ver_minor_mixedinst_valid_fullsupport)
-
-        for path in paths:
-            assert path[-4:] == iati.resources.FILE_SCHEMA_EXTENSION
-
-    def test_schema_activity_string(self, std_ver_minor_inst_valid_known):
-        """Check that the Activity schema file contains content.
-
-        Todo:
-            Change fixture to mixedinst.
-
-        """
-        path = iati.resources.create_schema_path('iati-activities-schema', std_ver_minor_inst_valid_known)
-
-        content = iati.utilities.load_as_string(path)
-
-        assert len(content) > 50000
-
-    def test_schema_activity_tree(self, std_ver_minor_inst_valid_known):
-        """Check that the Activity schema loads into an XML Tree.
-
-        This additionally involves checking that imported schemas also work.
-
-        Todo:
-            Change fixture to mixedinst.
-
-        """
-        path = iati.resources.create_schema_path('iati-activities-schema', std_ver_minor_inst_valid_known)
-        schema = iati.utilities.load_as_tree(path)
-
-        assert isinstance(schema, etree._ElementTree)  # pylint: disable=protected-access
