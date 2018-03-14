@@ -111,7 +111,6 @@ def get_codelist_mapping_paths(version):
     return paths
 
 
-@iati.version.allow_possible_version
 def get_ruleset_paths(version=iati.version.STANDARD_VERSION_ANY):
     """Find the paths for all Rulesets at the specified version of the Standard.
 
@@ -129,32 +128,7 @@ def get_ruleset_paths(version=iati.version.STANDARD_VERSION_ANY):
         Consider adding is_minor() and is_major() functions in the version module.
 
     """
-    paths = []
-
-    try:
-        # check if minor version
-        if isinstance(version, iati.Version):
-            versions = [version]
-        elif version == iati.version.STANDARD_VERSION_ANY:
-            pass  # skip to the code after the if-else
-        else:
-            iati.Version(version)
-
-        versions = [version]
-    except (TypeError, ValueError):
-        # major version
-        versions = [minor_ver for minor_ver in iati.version.versions_for_integer(int(version)) if minor_ver in iati.version.STANDARD_VERSIONS_SUPPORTED]
-
-    for version in versions:
-        try:
-            created_path = create_ruleset_path(FILE_RULESET_STANDARD_NAME, version)
-
-            if os.path.isfile(created_path):
-                paths.append(created_path)
-        except ValueError:
-            pass  # there is no path to check
-
-    return paths
+    return _get_paths(version, FILE_RULESET_STANDARD_NAME, create_ruleset_path, iati.version.STANDARD_VERSIONS_SUPPORTED)
 
 
 def get_all_schema_paths(version=iati.version.STANDARD_VERSION_ANY):
@@ -185,18 +159,14 @@ def get_activity_schema_paths(version=iati.version.STANDARD_VERSION_ANY):
         version (str / int / Decimal / iati.Version): The version of the Standard to return the activity schemas for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Raises:
-        ValueError: When a specified version is not a valid version of the IATI Standard.
+        TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: When a specified version is of the correct type, but cannot represent a version of the IATI Standard.
 
     Returns:
         list(str): A list of paths to all of the Activity Schemas at the specified version of the Standard.
 
-    Todo:
-        Add tests for version parameters that are invalid.
-
-        Look to match against integers so there is a clear reason to return a list rather than a single Schema.
-
     """
-    return [create_schema_path(FILE_SCHEMA_ACTIVITY_NAME, version)]
+    return _get_paths(version, FILE_SCHEMA_ACTIVITY_NAME, create_schema_path, iati.version.STANDARD_VERSIONS)
 
 
 def get_organisation_schema_paths(version=iati.version.STANDARD_VERSION_ANY):  # pylint: disable=invalid-name
@@ -206,19 +176,60 @@ def get_organisation_schema_paths(version=iati.version.STANDARD_VERSION_ANY):  #
         version (str / int / Decimal / iati.Version): The version of the Standard to return the Organisation schemas for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Raises:
-        ValueError: When a specified version is not a valid version of the IATI Standard.
+        TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: When a specified version is of the correct type, but cannot represent a version of the IATI Standard.
 
     Returns:
         list(str): A list of paths to all of the Organisation Schemas at the specified version of the Standard.
 
-    Todo:
-        Add tests for version parameters that are invalid.
+    """
+    return _get_paths(version, FILE_SCHEMA_ORGANISATION_NAME, create_schema_path, iati.version.STANDARD_VERSIONS)
 
-        Look to match against integers so there is a clear reason to return a list rather than a single Schema.
 
+@iati.version.allow_possible_version
+def _get_paths(version, file_name, path_creation_func, supported_versions):
+    """Find the paths for a component within the IATI Standard at a specified version of the Standard.
+
+    Args:
+        version (str / int / Decimal / iati.Version): The version of the Standard to return the paths for.
+        file_name (str): The name of the file containing the thing of interest.
+        path_creation_func (func): A function that takes a file_name and version, then returns a path.
+        supported_versions (list of iati.Version): A list of minor versions that paths pointing at the thing of interest may exist for.
+
+    Raises:
+        TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: When a specified version is of the correct type, but cannot represent a version of the IATI Standard.
+
+    Returns:
+        list(str): A list of paths to all of the Organisation Schemas at the specified version of the Standard.
 
     """
-    return [create_schema_path(FILE_SCHEMA_ORGANISATION_NAME, version)]
+    paths = []
+
+    try:
+        # check if minor version
+        if isinstance(version, iati.Version):
+            versions = [version]
+        elif version == iati.version.STANDARD_VERSION_ANY:
+            pass  # skip to the code after the if-else
+        else:
+            iati.Version(version)
+
+        versions = [version]
+    except (TypeError, ValueError):
+        # major version
+        versions = [minor_ver for minor_ver in iati.version.versions_for_integer(int(version)) if minor_ver in supported_versions]
+
+    for version in versions:
+        try:
+            created_path = path_creation_func(file_name, version)
+
+            if os.path.isfile(created_path):
+                paths.append(created_path)
+        except ValueError:
+            pass  # there is no path to check
+
+    return paths
 
 
 def create_codelist_path(codelist_name, version=iati.version.STANDARD_VERSION_ANY):

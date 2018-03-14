@@ -344,7 +344,7 @@ class TestResourceGetRulesetPaths(object):
     """A container for get_ruleset_paths() tests."""
 
     def test_get_ruleset_paths_minor_fullsupport(self, std_ver_minor_mixedinst_valid_fullsupport):
-        """Test getting a list of Ruleset versions. The requested version is fully supported by pyIATI."""
+        """Test getting a list of Ruleset paths. The requested version is fully supported by pyIATI."""
         result = iati.resources.get_ruleset_paths(std_ver_minor_mixedinst_valid_fullsupport)
 
         assert len(result) == 1
@@ -357,19 +357,19 @@ class TestResourceGetRulesetPaths(object):
         assert result == []
 
     def test_get_ruleset_paths_minor_partsupport(self, std_ver_minor_mixedinst_valid_partsupport):
-        """Test getting a list of Ruleset versions. The requested version is partially supported by pyIATI."""
+        """Test getting a list of Ruleset paths. The requested version is partially supported by pyIATI."""
         result = iati.resources.get_ruleset_paths(std_ver_minor_mixedinst_valid_partsupport)
 
         assert result == []
 
     def test_get_ruleset_paths_minor_unknown(self, std_ver_all_mixedinst_valid_unknown):
-        """Test getting a list of Ruleset versions. The requested version is not known by pyIATI."""
+        """Test getting a list of Ruleset paths. The requested version is not known by pyIATI."""
         result = iati.resources.get_ruleset_paths(std_ver_all_mixedinst_valid_unknown)
 
         assert result == []
 
     def test_get_ruleset_paths_major_known(self, std_ver_major_uninst_valid_known):
-        """Test getting a list of Ruleset versions. The requested version is a known integer version. The list should contain paths for each supported minor within the major."""
+        """Test getting a list of Ruleset paths. The requested version is a known integer version. The list should contain paths for each supported minor within the major."""
         supported_versions_at_major = [version for version in iati.version.versions_for_integer(int(std_ver_major_uninst_valid_known)) if version in iati.version.STANDARD_VERSIONS_SUPPORTED]
         expected_path_count = len(supported_versions_at_major)
 
@@ -378,6 +378,86 @@ class TestResourceGetRulesetPaths(object):
         assert len(result) == expected_path_count
         for version in supported_versions_at_major:
             assert iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_STANDARD_NAME, version) in result
+
+
+@pytest.mark.new_tests
+class TestResourceGetSchemaPaths(object):
+    """A container for get_x_schema_paths() tests."""
+
+    @pytest.fixture(params=[
+        (iati.resources.get_activity_schema_paths, iati.resources.FILE_SCHEMA_ACTIVITY_NAME),
+        (iati.resources.get_organisation_schema_paths, iati.resources.FILE_SCHEMA_ORGANISATION_NAME)
+    ])
+    def func_and_name(self, request):
+        """Return a named tuple containing a function to generate the paths for a type of Schema, plus the name of the Schema."""
+        output = collections.namedtuple('output', 'func schema_name')
+        return output(func=request.param[0], schema_name=request.param[1])
+
+    @pytest.fixture(params=[
+        iati.resources.get_all_schema_paths,
+        iati.resources.get_activity_schema_paths,
+        iati.resources.get_organisation_schema_paths
+    ])
+    def schema_path_func_all(self, request):
+        """Return a function that returns a list of paths for Schema resources."""
+        return request.param
+
+    def test_get_schema_paths_minor_known(self, std_ver_minor_mixedinst_valid_known, func_and_name):
+        """Test getting a list of Org or Activity Schema paths. The requested version is known by pyIATI."""
+        result = func_and_name.func(std_ver_minor_mixedinst_valid_known)
+
+        assert len(result) == 1
+        assert result[0] == iati.resources.create_schema_path(func_and_name.schema_name, std_ver_minor_mixedinst_valid_known)
+
+    def test_get_schema_paths_minor_unknown(self, std_ver_all_mixedinst_valid_unknown, schema_path_func_all):
+        """Test getting a list of Org or Activity Schema paths. The requested version is not known by pyIATI."""
+        result = schema_path_func_all(std_ver_all_mixedinst_valid_unknown)
+
+        assert result == []
+
+    def test_get_schema_paths_independent(self, schema_path_func_all):
+        """Test getting a list of version-independent Org or Activity Schemas."""
+        result = schema_path_func_all(iati.version.STANDARD_VERSION_ANY)
+
+        assert result == []
+
+    def test_get_schema_paths_major_known(self, std_ver_major_uninst_valid_known, func_and_name):
+        """Test getting a list of Org or Activity Schema paths. The requested version is a known integer version. The list should contain paths for each supported minor within the major."""
+        versions_at_major = [version for version in iati.version.versions_for_integer(int(std_ver_major_uninst_valid_known))]
+        expected_path_count = len(versions_at_major)
+
+        result = func_and_name.func(std_ver_major_uninst_valid_known)
+
+        assert len(result) == expected_path_count
+        for version in versions_at_major:
+            assert iati.resources.create_schema_path(func_and_name.schema_name, version) in result
+
+    def test_get_all_schema_paths_minor_known(self, std_ver_minor_mixedinst_valid_known, func_and_name):
+        """Test getting a list of all Schema paths. The requested version is known by pyIATI."""
+        activity_path = iati.resources.get_activity_schema_paths(std_ver_minor_mixedinst_valid_known)[0]
+        org_path = iati.resources.get_organisation_schema_paths(std_ver_minor_mixedinst_valid_known)[0]
+
+        result = iati.resources.get_all_schema_paths(std_ver_minor_mixedinst_valid_known)
+
+        assert len(result) == 2
+        assert activity_path in result
+        assert org_path in result
+
+    def test_get_all_schema_paths_major_known(self, std_ver_major_uninst_valid_known, func_and_name):
+        """Test getting a list of all Schema paths. The requested version is a known integer version. The list should contain paths for each supported minor within the major."""
+        versions_at_major = [version for version in iati.version.versions_for_integer(int(std_ver_major_uninst_valid_known))]
+        expected_path_count = len(versions_at_major) * 2
+
+        activity_paths = iati.resources.get_activity_schema_paths(std_ver_major_uninst_valid_known)
+        org_paths = iati.resources.get_organisation_schema_paths(std_ver_major_uninst_valid_known)
+
+        result = iati.resources.get_all_schema_paths(std_ver_major_uninst_valid_known)
+
+        assert len(result) == expected_path_count
+        for path in activity_paths:
+            assert path in result
+        for path in org_paths:
+            assert path in result
 
 
 @pytest.mark.new_tests
