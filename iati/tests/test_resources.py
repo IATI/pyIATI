@@ -563,6 +563,11 @@ class TestResourceGetPathsNotAVersion(object):
         with pytest.raises(ValueError):
             func_to_test(std_ver_all_uninst_valueerr)
 
+    def test_get_x_path_no_version(self, func_to_test):
+        """Check that a TypeError is raised when requesting paths without specifying a version."""
+        with pytest.raises(TypeError):
+            func_to_test()
+
     def test_get_x_path_typerr(self, std_ver_all_uninst_typeerr, func_to_test):
         """Check that a TypeError is raised when requesting paths for a version of an incorrect type."""
         with pytest.raises(TypeError):

@@ -61,7 +61,7 @@ FILE_SCHEMA_ORGANISATION_NAME = 'iati-organisations-schema'
 """The name of a file containing an Organisation Schema."""
 
 
-def get_codelist_paths(version=iati.version.STANDARD_VERSION_ANY):
+def get_codelist_paths(version):
     """Find the paths for all Codelists at the specified version of the Standard.
 
     Args:
@@ -106,7 +106,7 @@ def get_codelist_mapping_paths(version):
     return _get_paths(version, '', create_codelist_mapping_path, iati.version.STANDARD_VERSIONS_SUPPORTED)
 
 
-def get_ruleset_paths(version=iati.version.STANDARD_VERSION_ANY):
+def get_ruleset_paths(version):
     """Find the paths for all Rulesets at the specified version of the Standard.
 
     Args:
@@ -126,7 +126,7 @@ def get_ruleset_paths(version=iati.version.STANDARD_VERSION_ANY):
     return _get_paths(version, FILE_RULESET_STANDARD_NAME, create_ruleset_path, iati.version.STANDARD_VERSIONS_SUPPORTED)
 
 
-def get_all_schema_paths(version=iati.version.STANDARD_VERSION_ANY):
+def get_all_schema_paths(version):
     """Find the paths for all Schemas at the specified version of the Standard.
 
     Args:
@@ -147,7 +147,7 @@ def get_all_schema_paths(version=iati.version.STANDARD_VERSION_ANY):
     return get_activity_schema_paths(version) + get_organisation_schema_paths(version)
 
 
-def get_activity_schema_paths(version=iati.version.STANDARD_VERSION_ANY):
+def get_activity_schema_paths(version):
     """Find the paths for all Activity Schemas at the specified version of the Standard.
 
     Args:
@@ -164,7 +164,7 @@ def get_activity_schema_paths(version=iati.version.STANDARD_VERSION_ANY):
     return _get_paths(version, FILE_SCHEMA_ACTIVITY_NAME, create_schema_path, iati.version.STANDARD_VERSIONS)
 
 
-def get_organisation_schema_paths(version=iati.version.STANDARD_VERSION_ANY):  # pylint: disable=invalid-name
+def get_organisation_schema_paths(version):  # pylint: disable=invalid-name
     """Find the paths for all Organisation Schemas at the specified version of the Standard.
 
     Args:
