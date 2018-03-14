@@ -61,13 +61,6 @@
             <url>http://www.indicatorregistry.org</url>
         </codelist-item>
         <codelist-item>
-            <code>8</code>
-            <name>
-                <narrative>Harmonized Indicators for Private Sector (HIPSO)</narrative>
-            </name>
-            <url>https://indicators.ifipartnership.org/indicators/</url>
-        </codelist-item>
-        <codelist-item>
             <code>99</code>
             <name>
                 <narrative>Reporting Organisation</narrative>
