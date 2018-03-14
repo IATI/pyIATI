@@ -76,13 +76,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Validation] `_check_is_iati_xml()` will raise a `TypeError` when given a non-dataset. This replaces an undocumented `AttributeError`. [#239]
 
-<<<<<<< HEAD
 - [Versions] The value to represent 'version independent' has been changed to be a value that is `not None`, and a constant added to specify the exact value. [#281]
 
-### Deprecated
-
-=======
->>>>>>> dev-revert-temp-203
 ### Removed
 
 - [Defaults] Remove `get_default_version_if_none()`. [#243]
