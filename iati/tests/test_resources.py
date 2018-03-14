@@ -1,4 +1,5 @@
 """A module containing tests for the library implementation of accessing resources."""
+import collections
 from decimal import Decimal
 import os
 import re
@@ -291,20 +292,17 @@ class TestResourcePathCreationRulesetAndSchema(object):
     ])
     def func_plus_expected_data(self, request):
         """Return a tuple containing a function to test, plus the extension and a component that should be present in the returned path."""
-        return request.param
+        output = collections.namedtuple('output', 'func_to_test expected_extension expected_component')
+        return output(func_to_test=request.param[0], expected_extension=request.param[1], expected_component=request.param[2])
 
     def test_create_path_minor_known(self, filename_no_meaning, std_ver_minor_independent_mixedinst_valid_known, func_plus_expected_data):
         """Check that the expected components are present in a path from a generation function at a known minor or independent version of the Standard."""
-        func_to_test = func_plus_expected_data[0]
-        expected_extension = func_plus_expected_data[1]
-        expected_component = func_plus_expected_data[2]
-
         version_folder = iati.resources.folder_name_for_version(std_ver_minor_independent_mixedinst_valid_known)
-        full_path = func_to_test(filename_no_meaning, std_ver_minor_independent_mixedinst_valid_known)
+        full_path = func_plus_expected_data.func_to_test(filename_no_meaning, std_ver_minor_independent_mixedinst_valid_known)
 
-        assert full_path.endswith(filename_no_meaning + expected_extension)
+        assert full_path.endswith(filename_no_meaning + func_plus_expected_data.expected_extension)
         assert version_folder in full_path
-        assert expected_component in full_path
+        assert func_plus_expected_data.expected_component in full_path
 
     def test_create_path_major_known(self, filename_no_meaning_single, std_ver_major_uninst_valid_known, func_to_test):
         """Check that a generation function returns the same value for a major version as the last minor within the major."""
