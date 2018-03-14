@@ -130,10 +130,11 @@ def get_all_schema_paths(version):
     """Find the paths for all Schemas at the specified version of the Standard.
 
     Args:
-        version (str / int / Decimal / iati.Version): The version of the Standard to return the Schemas for. Defaults to iati.version.STANDARD_VERSION_ANY.
+        version (str / int / Decimal / iati.Version): The version of the Standard to return the Schemas for.
 
     Raises:
-        ValueError: When a specified version is not a valid version of the IATI Standard.
+        TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: When a specified version is of the correct type, but cannot represent a version of the IATI Standard.
 
     Returns:
         list(str): A list of paths to all of the Schemas at the specified version of the Standard.
@@ -151,7 +152,7 @@ def get_activity_schema_paths(version):
     """Find the paths for all Activity Schemas at the specified version of the Standard.
 
     Args:
-        version (str / int / Decimal / iati.Version): The version of the Standard to return the activity schemas for. Defaults to iati.version.STANDARD_VERSION_ANY.
+        version (str / int / Decimal / iati.Version): The version of the Standard to return the activity schemas for.
 
     Raises:
         TypeError: When a specified version is of a type that cannot represent an IATI version number.
@@ -168,7 +169,7 @@ def get_organisation_schema_paths(version):  # pylint: disable=invalid-name
     """Find the paths for all Organisation Schemas at the specified version of the Standard.
 
     Args:
-        version (str / int / Decimal / iati.Version): The version of the Standard to return the Organisation schemas for. Defaults to iati.version.STANDARD_VERSION_ANY.
+        version (str / int / Decimal / iati.Version): The version of the Standard to return the Organisation schemas for.
 
     Raises:
         TypeError: When a specified version is of a type that cannot represent an IATI version number.
