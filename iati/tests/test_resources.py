@@ -379,15 +379,32 @@ class TestResourceGetRulesetPaths(object):
         for version in supported_versions_at_major:
             assert iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_STANDARD_NAME, version) in result
 
-    def test_get_ruleset_path_unknown(self, std_ver_all_uninst_valueerr):
+
+@pytest.mark.new_tests
+class TestResourceGetPathsNotAVersion(object):
+    """A container for get_x_path() tests where the function is provided a value that cannot represent a version."""
+
+    @pytest.fixture(params=[
+        iati.resources.get_codelist_paths,
+        iati.resources.get_codelist_mapping_paths,
+        iati.resources.get_ruleset_paths,
+        iati.resources.get_all_schema_paths,
+        iati.resources.get_activity_schema_paths,
+        iati.resources.get_organisation_schema_paths
+    ])
+    def func_to_test(self, request):
+        """Return a function to test the behavior of. The function takes a single argument, which takes a value that can represent a version number."""
+        return request.param
+
+    def test_get_x_path_valueerr(self, std_ver_all_uninst_valueerr, func_to_test):
         """Check that a ValueError is raised when requesting paths for an value that cannot be a version of the Standard."""
         with pytest.raises(ValueError):
-            iati.resources.get_ruleset_paths(std_ver_all_uninst_valueerr)
+            func_to_test(std_ver_all_uninst_valueerr)
 
-    def test_get_ruleset_path_typerr(self, std_ver_all_uninst_typeerr):
+    def test_get_x_path_typerr(self, std_ver_all_uninst_typeerr, func_to_test):
         """Check that a TypeError is raised when requesting paths for a version of an incorrect type."""
         with pytest.raises(TypeError):
-            iati.resources.get_ruleset_paths(std_ver_all_uninst_typeerr)
+            func_to_test(std_ver_all_uninst_typeerr)
 
 
 class TestResourceFolders(object):
