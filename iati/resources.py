@@ -11,6 +11,7 @@ Todo:
     Determine how to distribute SSOT content - with package, or separately (being downloaded at runtime).
 
 """
+import inspect
 import os
 import pkg_resources
 import re
@@ -95,20 +96,14 @@ def get_codelist_mapping_paths(version):
         version (str / int / Decimal / iati.Version): The version of the Standard to return the Codelist Mapping file for.
 
     Raises:
-        ValueError: When a specified version is not a valid version of the IATI Standard.
+        TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: When a specified version is of the correct type, but cannot represent a version of the IATI Standard.
 
     Returns:
         list(str): A list of paths to all of the Codelist Mapping files at the specified version of the Standard.
 
-    Todo:
-        Further exploration needs to be undertaken in how to handle pre-1.04 versions of the Standard.
-
-        Add tests to show that versions 1.04 and above are being correctly handled, including errors.
-
     """
-    paths = [create_codelist_mapping_path(version)]
-
-    return paths
+    return _get_paths(version, '', create_codelist_mapping_path, iati.version.STANDARD_VERSIONS_SUPPORTED)
 
 
 def get_ruleset_paths(version=iati.version.STANDARD_VERSION_ANY):
@@ -220,9 +215,17 @@ def _get_paths(version, file_name, path_creation_func, supported_versions):
         # major version
         versions = [minor_ver for minor_ver in iati.version.versions_for_integer(int(version)) if minor_ver in supported_versions]
 
+    try:
+        num_path_creation_func_args = len(inspect.getfullargspec(path_creation_func).args)
+    except AttributeError:  # python2/3 compatiblity: getfullargspec added at v3, while getargspec was deprecated
+        num_path_creation_func_args = len(inspect.getargspec(path_creation_func).args)
+
     for version in versions:
         try:
-            created_path = path_creation_func(file_name, version)
+            if num_path_creation_func_args == 2:
+                created_path = path_creation_func(file_name, version)
+            else:
+                created_path = path_creation_func(version)
 
             if os.path.isfile(created_path):
                 paths.append(created_path)

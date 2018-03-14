@@ -373,6 +373,51 @@ class TestResourcePathCreationRulesetAndSchema(object):
 
 
 @pytest.mark.new_tests
+class TestResourceGetCodelistMappingPaths(object):
+    """A container for get_codelist_mapping_paths() tests.
+
+    Note:
+        This class contains very similar tests to the equivalent for Rulesets. They are different because the Ruleset creation function takes two arguments, not one.
+    """
+
+    def test_get_codelist_mapping_paths_minor_fullsupport(self, std_ver_minor_mixedinst_valid_fullsupport):
+        """Test getting a list of Codelist Mapping paths. The requested version is fully supported by pyIATI."""
+        result = iati.resources.get_codelist_mapping_paths(std_ver_minor_mixedinst_valid_fullsupport)
+
+        assert len(result) == 1
+        assert result[0] == iati.resources.create_codelist_mapping_path(std_ver_minor_mixedinst_valid_fullsupport)
+
+    def test_get_codelist_mapping_paths_independent(self):
+        """Test getting a list of version-independent Codelist Mapping files."""
+        result = iati.resources.get_codelist_mapping_paths(iati.version.STANDARD_VERSION_ANY)
+
+        assert result == []
+
+    def test_get_codelist_mapping_paths_minor_partsupport(self, std_ver_minor_mixedinst_valid_partsupport):
+        """Test getting a list of Codelist Mapping paths. The requested version is partially supported by pyIATI."""
+        result = iati.resources.get_codelist_mapping_paths(std_ver_minor_mixedinst_valid_partsupport)
+
+        assert result == []
+
+    def test_get_codelist_mapping_paths_minor_unknown(self, std_ver_all_mixedinst_valid_unknown):
+        """Test getting a list of Codelist Mapping paths. The requested version is not known by pyIATI."""
+        result = iati.resources.get_codelist_mapping_paths(std_ver_all_mixedinst_valid_unknown)
+
+        assert result == []
+
+    def test_get_codelist_mapping_paths_major_known(self, std_ver_major_uninst_valid_known):
+        """Test getting a list of Codelist Mapping paths. The requested version is a known integer version. The list should contain paths for each supported minor within the major."""
+        supported_versions_at_major = [version for version in iati.version.versions_for_integer(std_ver_major_uninst_valid_known) if version in iati.version.STANDARD_VERSIONS_SUPPORTED]
+        expected_path_count = len(supported_versions_at_major)
+
+        result = iati.resources.get_codelist_mapping_paths(std_ver_major_uninst_valid_known)
+
+        assert len(result) == expected_path_count
+        for version in supported_versions_at_major:
+            assert iati.resources.create_codelist_mapping_path(version) in result
+
+
+@pytest.mark.new_tests
 class TestResourceGetRulesetPaths(object):
     """A container for get_ruleset_paths() tests."""
 
@@ -617,9 +662,3 @@ class TestResourceCodelists(object):
         assert path[-4:] == iati.resources.FILE_CODELIST_EXTENSION
         assert path.count(iati.resources.FILE_CODELIST_EXTENSION) == 1
         assert iati.resources.PATH_CODELISTS in path
-
-    def test_get_codelist_mapping_paths(self, std_ver_minor_mixedinst_valid_fullsupport):
-        """Check that all codelist mapping paths are found."""
-        codelist_mapping_paths = iati.resources.get_codelist_mapping_paths(std_ver_minor_mixedinst_valid_fullsupport)
-
-        assert len(codelist_mapping_paths) == 1
