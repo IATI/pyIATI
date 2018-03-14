@@ -270,51 +270,75 @@ class TestResoucePathCreationEntireStandard(object):
 
 
 @pytest.mark.new_tests
-class TestResourcePathCreationRulesets(object):
-    """A container for tests relating to Ruleset path creation."""
+class TestResourcePathCreationRulesetAndSchema(object):
+    """A container for tests relating to Ruleset and Schema path creation.
 
-    def test_create_ruleset_path_minor_known(self, filename_no_meaning, std_ver_minor_independent_mixedinst_valid_known):
-        """Check that the expected components are present in a path for a Ruleset at a known minor or independent version of the Standard."""
+    Each of these should act equivalently across different version and path inputs since their parameters are the same.
+    Schemas are available at more versions than Rulesets, though this is not an issue since the create_x_path() functions do not check whether a path actually exists.
+    """
+
+    @pytest.fixture(params=[
+        iati.resources.create_ruleset_path,
+        iati.resources.create_schema_path
+    ])
+    def func_to_test(self, request):
+        """Return a function to test."""
+        return request.param
+
+    @pytest.fixture(params=[
+        (iati.resources.create_ruleset_path, iati.resources.FILE_RULESET_EXTENSION, iati.resources.PATH_RULESETS),
+        (iati.resources.create_schema_path, iati.resources.FILE_SCHEMA_EXTENSION, iati.resources.PATH_SCHEMAS)
+    ])
+    def func_plus_expected_data(self, request):
+        """Return a tuple containing a function to test, plus the extension and a component that should be present in the returned path."""
+        return request.param
+
+    def test_create_path_minor_known(self, filename_no_meaning, std_ver_minor_independent_mixedinst_valid_known, func_plus_expected_data):
+        """Check that the expected components are present in a path from a generation function at a known minor or independent version of the Standard."""
+        func_to_test = func_plus_expected_data[0]
+        expected_extension = func_plus_expected_data[1]
+        expected_component = func_plus_expected_data[2]
+
         version_folder = iati.resources.folder_name_for_version(std_ver_minor_independent_mixedinst_valid_known)
-        full_path = iati.resources.create_ruleset_path(filename_no_meaning, std_ver_minor_independent_mixedinst_valid_known)
+        full_path = func_to_test(filename_no_meaning, std_ver_minor_independent_mixedinst_valid_known)
 
-        assert full_path.endswith(filename_no_meaning + iati.resources.FILE_RULESET_EXTENSION)
+        assert full_path.endswith(filename_no_meaning + expected_extension)
         assert version_folder in full_path
-        assert iati.resources.PATH_RULESETS in full_path
+        assert expected_component in full_path
 
-    def test_create_ruleset_path_major_known(self, filename_no_meaning_single, std_ver_major_uninst_valid_known):
-        """Check that asking for a Ruleset path for a major version returns the same value as the last minor within the major."""
+    def test_create_path_major_known(self, filename_no_meaning_single, std_ver_major_uninst_valid_known, func_to_test):
+        """Check that a generation function returns the same value for a major version as the last minor within the major."""
         minor_version = max(iati.version.versions_for_integer(std_ver_major_uninst_valid_known))
 
-        major_path = iati.resources.create_ruleset_path(filename_no_meaning_single, std_ver_major_uninst_valid_known)
-        minor_path = iati.resources.create_ruleset_path(filename_no_meaning_single, minor_version)
+        major_path = func_to_test(filename_no_meaning_single, std_ver_major_uninst_valid_known)
+        minor_path = func_to_test(filename_no_meaning_single, minor_version)
 
         assert major_path == minor_path
 
-    def test_create_ruleset_path_no_version(self, filename_no_meaning_single):
+    def test_create_path_no_version(self, filename_no_meaning_single, func_to_test):
         """Check that specifying a version of the Standard to create a path for is required."""
         with pytest.raises(TypeError):
-            iati.resources.create_ruleset_path(filename_no_meaning_single)
+            func_to_test(filename_no_meaning_single)
 
-    def test_create_ruleset_path_unknown(self, filename_no_meaning_single, std_ver_all_mixedinst_valid_unknown):
-        """Check that a ValueError is raised when trying to create a path for a Ruleset at an unknown version of the Standard."""
+    def test_create_path_unknown(self, filename_no_meaning_single, std_ver_all_mixedinst_valid_unknown, func_to_test):
+        """Check that a ValueError is raised when using a generation function to create a path for a at an unknown version of the Standard."""
         with pytest.raises(ValueError):
-            iati.resources.create_ruleset_path(filename_no_meaning_single, std_ver_all_mixedinst_valid_unknown)
+            func_to_test(filename_no_meaning_single, std_ver_all_mixedinst_valid_unknown)
 
-    def test_create_ruleset_path_ver_typerr(self, filename_no_meaning_single, std_ver_all_uninst_typeerr):
-        """Check that a TypeError is raised when trying to create a path for a Ruleset from a version of an incorrect type."""
+    def test_create_path_ver_typerr(self, filename_no_meaning_single, std_ver_all_uninst_typeerr, func_to_test):
+        """Check that a TypeError is raised when using a generation function to create a path from a version of an incorrect type."""
         with pytest.raises(TypeError):
-            iati.resources.create_ruleset_path(filename_no_meaning_single, std_ver_all_uninst_typeerr)
+            func_to_test(filename_no_meaning_single, std_ver_all_uninst_typeerr)
 
-    def test_create_ruleset_path_path_valueerr(self, filepath_invalid_value, std_ver_minor_inst_valid_single):
-        """Check that a ValueError is raised when trying to ruleset path for a path that is a string that cannot be a filepath."""
+    def test_create_path_path_valueerr(self, filepath_invalid_value, std_ver_minor_inst_valid_single, func_to_test):
+        """Check that a ValueError is raised when providing a generation function a path to work from that is a string that cannot be a filepath."""
         with pytest.raises(ValueError):
-            iati.resources.create_ruleset_path(filepath_invalid_value, std_ver_minor_inst_valid_single)
+            func_to_test(filepath_invalid_value, std_ver_minor_inst_valid_single)
 
-    def test_create_ruleset_path_path_typeerr(self, filepath_invalid_type, std_ver_minor_inst_valid_single):
-        """Check that a TypeError is raised when trying to ruleset path for a path that is of a type that cannot be a filepath."""
+    def test_create_path_path_typeerr(self, filepath_invalid_type, std_ver_minor_inst_valid_single, func_to_test):
+        """Check that a TypeError is raised when providing a generation function a path to work from that is of a type that cannot be a filepath."""
         with pytest.raises(TypeError):
-            iati.resources.create_ruleset_path(filepath_invalid_type, std_ver_minor_inst_valid_single)
+            func_to_test(filepath_invalid_type, std_ver_minor_inst_valid_single)
 
 
 class TestResourceFolders(object):

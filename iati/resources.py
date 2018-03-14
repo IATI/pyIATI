@@ -301,7 +301,7 @@ def create_ruleset_path(name, version):
     return path_for_version(os.path.join(PATH_RULESETS, '{0}'.format(name) + FILE_RULESET_EXTENSION), version)
 
 
-def create_schema_path(name, version=iati.version.STANDARD_VERSION_ANY):
+def create_schema_path(name, version):
     """Determine the path of a Schema with the given name at the specified version of the Standard.
 
     Args:
@@ -318,9 +318,12 @@ def create_schema_path(name, version=iati.version.STANDARD_VERSION_ANY):
         Further exploration needs to be undertaken in how to handle multiple versions of the Standard.
 
     Todo:
-        Test this directly rather than just the indirect tests that exist at present.
+        Determine how to handle version decorators when the version argument is not first in the list. This will enable the current private function access to be removed. See #294 for more info.
 
     """
+    version = iati.version._decimalise_integer(version)  # see todo  # pylint: disable=protected-access
+    _ensure_portable_filepath(name)
+
     return path_for_version(os.path.join(PATH_SCHEMAS, '{0}'.format(name) + FILE_SCHEMA_EXTENSION), version)
 
 
