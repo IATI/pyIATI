@@ -12,7 +12,6 @@ import iati.version
 import iati.tests.resources
 
 
-@pytest.mark.new_tests
 class TestResourceConstants(object):
     """A container for tests relating to checks of resource constants."""
 
@@ -71,7 +70,6 @@ class TestResourceConstants(object):
         assert re.match(file_extension_regex, file_extension)
 
 
-@pytest.mark.new_tests
 class TestResourceFilesystemPaths(object):
     """A container for tests relating to specific filesystem paths."""
 
@@ -103,7 +101,6 @@ class TestResourceFilesystemPaths(object):
         assert os.path.isdir(full_path)
 
 
-@pytest.mark.new_tests
 class TestResourceLibData(object):
     """A container for tests relating to handling paths for pyIATI library-specific data."""
 
@@ -115,7 +112,6 @@ class TestResourceLibData(object):
         assert full_path.endswith(filename_no_meaning)
 
 
-@pytest.mark.new_tests
 class TestResourceHandlingInvalidPaths(object):
     """A container for tests relating to handling paths that are invalid and being passed to functions that are version-independent."""
 
@@ -143,7 +139,6 @@ class TestResourceHandlingInvalidPaths(object):
             resource_func(filepath_invalid_type)
 
 
-@pytest.mark.new_tests
 class TestResourcePathComponents(object):
     """A container for tests relating to generation of component parts of a resource path."""
 
@@ -202,7 +197,6 @@ class TestResourcePathComponents(object):
             iati.resources.folder_name_for_version(std_ver_all_uninst_typeerr)
 
 
-@pytest.mark.new_tests
 class TestResoucePathCreationEntireStandard(object):
     """A container for tests relating to generating entire filepaths for any part of the Standard."""
 
@@ -269,7 +263,6 @@ class TestResoucePathCreationEntireStandard(object):
             iati.resources.path_for_version(filepath_invalid_type, std_ver_minor_inst_valid_single)
 
 
-@pytest.mark.new_tests
 class TestResourcePathCreationCodelistMapping(object):
     """A container for tests relating to creating Codelist Mapping File paths."""
 
@@ -302,7 +295,6 @@ class TestResourcePathCreationCodelistMapping(object):
             iati.resources.create_codelist_mapping_path(std_ver_all_mixedinst_valid_unknown)
 
 
-@pytest.mark.new_tests
 class TestResourcePathCreationCoreComponents(object):
     """A container for tests relating to path creation for core components in the IATI Standard.
 
@@ -399,7 +391,6 @@ class TestResourcePathCreationCoreComponents(object):
             func_to_test(filepath_invalid_type, std_ver_minor_inst_valid_single)
 
 
-@pytest.mark.new_tests
 class TestResourceGetCodelistPaths(object):
     """A container for get_codelist_paths() tests."""
 
@@ -439,7 +430,6 @@ class TestResourceGetCodelistPaths(object):
         assert result == []
 
 
-@pytest.mark.new_tests
 class TestResourceGetCodelistMappingPaths(object):
     """A container for get_codelist_mapping_paths() tests.
 
@@ -484,7 +474,6 @@ class TestResourceGetCodelistMappingPaths(object):
             assert iati.resources.create_codelist_mapping_path(version) in result
 
 
-@pytest.mark.new_tests
 class TestResourceGetRulesetPaths(object):
     """A container for get_ruleset_paths() tests."""
 
@@ -525,7 +514,6 @@ class TestResourceGetRulesetPaths(object):
             assert iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_STANDARD_NAME, version) in result
 
 
-@pytest.mark.new_tests
 class TestResourceGetSchemaPaths(object):
     """A container for get_x_schema_paths() tests."""
 
@@ -609,7 +597,6 @@ class TestResourceGetSchemaPaths(object):
             assert path in result
 
 
-@pytest.mark.new_tests
 class TestResourceGetPathsNotAVersion(object):
     """A container for get_x_path() tests where the function is provided a value that cannot represent a version."""
 
@@ -641,7 +628,7 @@ class TestResourceGetPathsNotAVersion(object):
             func_to_test(std_ver_all_uninst_typeerr)
 
 
-class TestResourceFolders(object):
+class TestResourceTestDataFolders(object):
     """A container for tests relating to resource folders."""
 
     @pytest.mark.parametrize('version, expected_num_paths', [
@@ -656,6 +643,7 @@ class TestResourceFolders(object):
         ('2', 0),
         (iati.version.STANDARD_VERSION_ANY, 0)
     ])
+    @pytest.mark.latest_version('2.02')
     def test_get_test_data_paths_in_folder(self, version, expected_num_paths):
         """Check that test data is being found in specified subfolders.
 
