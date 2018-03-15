@@ -192,12 +192,12 @@ class TestResourcePathComponents(object):
             iati.resources.folder_name_for_version(std_ver_all_mixedinst_valid_unknown)
 
     def test_folder_name_for_version_valueerr(self, std_ver_all_uninst_valueerr):
-        """Check that an version of the Standard of the correct type, but an incorrect value raises a ValueError."""
+        """Check that a version of the Standard of the correct type, but an incorrect value raises a ValueError."""
         with pytest.raises(ValueError):
             iati.resources.folder_name_for_version(std_ver_all_uninst_valueerr)
 
     def test_folder_name_for_version_typeerr(self, std_ver_all_uninst_typeerr):
-        """Check that an version of the Standard of the correct type, but an incorrect value raises a TypeError."""
+        """Check that a version of the Standard of the correct type, but an incorrect value raises a TypeError."""
         with pytest.raises(TypeError):
             iati.resources.folder_name_for_version(std_ver_all_uninst_typeerr)
 

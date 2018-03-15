@@ -53,5 +53,5 @@ def filepath_invalid_value(request):
     'folder' + os.path.sep + 'sub-folder' + os.path.sep
 ])
 def folderpath_no_meaning(request):
-    """Return a folder path with no particular meaning."""
+    """Return a folder path with no particular meaning. Differs from a filepath in that it contains separators."""
     return request.param

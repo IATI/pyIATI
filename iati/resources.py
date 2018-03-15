@@ -65,7 +65,7 @@ def get_codelist_paths(version):
     """Find the paths for all Codelists at the specified version of the Standard.
 
     Args:
-        version (str / int / Decimal / iati.Version): The version of the Standard to return the Codelists for. Defaults to iati.version.STANDARD_VERSION_ANY.
+        version (str / int / Decimal / iati.Version): The version of the Standard to return the Codelists for.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -197,7 +197,7 @@ def _get_paths(version, file_name, path_creation_func, supported_versions):
         ValueError: When a specified version is of the correct type, but cannot represent a version of the IATI Standard.
 
     Returns:
-        list(str): A list of paths to all of the Organisation Schemas at the specified version of the Standard.
+        list(str): A list of paths to built with the given components at the specified version of the Standard.
 
     """
     paths = []
@@ -496,8 +496,11 @@ def _ensure_portable_filepath(maybe_filepath):
         TypeError: If the input value is of a type that cannot be a filepath.
         ValueError: If the input value is a string that cannot be a useful component of a filepath.
 
+    Note:
+        This restriction is currently tight since it's easier to tighten than loosen restrictions. The restriction could be relaxed over time.
+
     Todo:
-        Consider utilising the Python3.6 concept of path-like objects.
+        Consider utilising the Python3.4 concept of path-like objects.
 
     """
     if not isinstance(maybe_filepath, str):
