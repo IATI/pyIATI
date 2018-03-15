@@ -10,7 +10,7 @@ install:
   - pip install -U pip wheel
   - pip install -r requirements-dev.txt
 script:
-  - make test
+  - make testp
 
 stages:
   - test

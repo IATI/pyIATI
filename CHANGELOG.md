@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Fixed
 
 - [Validation] The `_check_codes()` implementation is no longer fixed to version 2.02. [#291]
+- [Validation] Separate two similar but distinct ValueErrors that lxml may raise so that pyIATI treats them differently. [#287]
 
 - [Tests] Correct some very old test fixtures and documentation. [#286]
 
@@ -77,8 +78,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Versions] The value to represent 'version independent' has been changed to be a value that is `not None`, and a constant added to specify the exact value. [#281]
 
-### Deprecated
-
 ### Removed
 
 - [Defaults] Remove `get_default_version_if_none()`. [#243]
@@ -99,6 +98,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Defaults] Test and document `ValueError`s that can be raised by functions in `iati.default`. [#241]
 
+- [Documentation] Minor fixes to README. [#266, #267]
+
 - [Rulesets] `name` attribute on a Rule changed to read-only property. [#251]
 - [Rulesets] Equal Rulesets are now deemed to be equal. [#249]
 
@@ -108,8 +109,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Validation] Datasets with an `xml:lang` attribute no longer raise a `KeyError` upon performing Codelist validation against a Schema populated with the Language Codelist. [#226]
 
 - [Tools] Updated dependencies to latest version as of 2018-01-25 and fixed newly identified linting issue. [#269]
-
-### Security
 
 
 ## [0.2.0] - 2017-11-07
