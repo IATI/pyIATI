@@ -386,7 +386,7 @@ def normalise_decimals(input_func):
         function: The input function, wrapped such that it is called with an iati.Version if a Decimal version is provided.
 
     """
-    def wrap_standardise_decimals(*args, **kwargs):
+    def wrap_normalise_decimals(*args, **kwargs):
         """Act as a wrapper to ensure a version number is an iati.Version if a Decimal version is specified."""
         try:
             version = args[0]
@@ -397,7 +397,7 @@ def normalise_decimals(input_func):
 
         return input_func(version, *args[1:], **kwargs)
 
-    return wrap_standardise_decimals
+    return wrap_normalise_decimals
 
 
 def versions_for_integer(integer):
