@@ -335,6 +335,26 @@ class TestVersionConstants(object):
         assert iati.version.STANDARD_VERSION_ANY != ''
 
 
+class TestVersionDecorators(object):
+    """A container for tests that cover all version decorators."""
+
+    def func_with_no_args(self):
+        """A function that takes no arguments."""
+        return True
+
+    @pytest.mark.parametrize('decorator', [
+        iati.version.allow_fully_supported_version,
+        iati.version.allow_known_version,
+        iati.version.allow_possible_version,
+        iati.version.decimalise_integer,
+        iati.version.normalise_decimals
+    ])
+    def test_version_decorators_require_arg(self, decorator):
+        """Test that decorators raise a TypeError when given a function that requires no arguments."""
+        with pytest.raises(TypeError):
+            decorator(self.func_with_no_args)()
+
+
 # pylint: disable=protected-access
 class VersionSupportChecksBase(object):
     """A container for functions and fixtures used to check version support.
