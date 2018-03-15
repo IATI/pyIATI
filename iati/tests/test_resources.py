@@ -3,7 +3,6 @@ import collections
 from decimal import Decimal
 import os
 import re
-from lxml import etree
 import pytest
 import iati.constants
 import iati.resources
@@ -42,7 +41,7 @@ class TestResourceConstants(object):
     ])
     def test_folder_names_valid_values(self, folder_name):
         """Test that constants that should be folder names are lower case strings separated by underscores."""
-        folder_name_regex = re.compile('^([a-z]+_)*[a-z]+$')
+        folder_name_regex = re.compile(r'^([a-z]+_)*[a-z]+$')
 
         assert re.match(folder_name_regex, folder_name)
 
@@ -55,7 +54,7 @@ class TestResourceConstants(object):
     ])
     def test_file_names_valid_values(self, file_name):
         """Test that constants that should be file names are lower case strings separated by hyphens or underscores."""
-        file_name_regex = re.compile('^([a-z]+[\-_])*[a-z]+$')
+        file_name_regex = re.compile(r'^([a-z]+[\-_])*[a-z]+$')
 
         assert re.match(file_name_regex, file_name)
 
@@ -67,7 +66,7 @@ class TestResourceConstants(object):
     ])
     def test_file_extensions_valid_values(self, file_extension):
         """Test that constants that should be file extensions are a dot followed by a lower case string."""
-        file_extension_regex = re.compile('^\.[a-z]+$')
+        file_extension_regex = re.compile(r'^\.[a-z]+$')
 
         assert re.match(file_extension_regex, file_extension)
 
@@ -100,7 +99,7 @@ class TestResourceFilesystemPaths(object):
         """Check that the base resource folder is located when given an empty filepath."""
         full_path = iati.resources.resource_filesystem_path(filepath_empty)
 
-        assert len(full_path)
+        assert full_path != ''
         assert os.path.isdir(full_path)
 
 
@@ -510,7 +509,7 @@ class TestResourceGetSchemaPaths(object):
         for version in versions_at_major:
             assert iati.resources.create_schema_path(func_and_name.schema_name, version) in result
 
-    def test_get_all_schema_paths_minor_known(self, std_ver_minor_mixedinst_valid_known, func_and_name):
+    def test_get_all_schema_paths_minor_known(self, std_ver_minor_mixedinst_valid_known):
         """Test getting a list of all Schema paths. The requested version is known by pyIATI."""
         activity_path = iati.resources.get_activity_schema_paths(std_ver_minor_mixedinst_valid_known)[0]
         org_path = iati.resources.get_organisation_schema_paths(std_ver_minor_mixedinst_valid_known)[0]
@@ -525,7 +524,7 @@ class TestResourceGetSchemaPaths(object):
         for path in result:
             assert os.path.getsize(path) > 10000
 
-    def test_get_all_schema_paths_major_known(self, std_ver_major_uninst_valid_known, func_and_name):
+    def test_get_all_schema_paths_major_known(self, std_ver_major_uninst_valid_known):
         """Test getting a list of all Schema paths. The requested version is a known integer version. The list should contain paths for each supported minor within the major."""
         versions_at_major = [version for version in iati.version.versions_for_integer(std_ver_major_uninst_valid_known)]
         expected_path_count = len(versions_at_major) * 2

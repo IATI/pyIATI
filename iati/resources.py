@@ -13,8 +13,8 @@ Todo:
 """
 import inspect
 import os
-import pkg_resources
 import re
+import pkg_resources
 import iati.version
 
 
@@ -221,12 +221,12 @@ def _get_paths(version, file_name, path_creation_func, supported_versions):
     except AttributeError:  # python2/3 compatiblity: getfullargspec added at v3, while getargspec was deprecated
         num_path_creation_func_args = len(inspect.getargspec(path_creation_func).args)
 
-    for version in versions:
+    for minor_ver in versions:
         try:
             if num_path_creation_func_args == 2:
-                created_path = path_creation_func(file_name, version)
+                created_path = path_creation_func(file_name, minor_ver)
             else:
-                created_path = path_creation_func(version)
+                created_path = path_creation_func(minor_ver)
 
             if os.path.isfile(created_path):
                 paths.append(created_path)
@@ -449,7 +449,7 @@ def path_for_version(path, version=iati.version.STANDARD_VERSION_ANY):
     try:  # python2 and python3.4 compatibility
         _ensure_portable_filepath(path)
     except ValueError:
-        if len(path):
+        if path != '':
             raise
 
     return resource_filesystem_path(os.path.join(folder_path_for_version(version), path))
@@ -475,7 +475,7 @@ def resource_filesystem_path(path):
     try:
         _ensure_portable_filepath(path)
     except ValueError:
-        if len(path):
+        if path != '':
             raise
 
     return pkg_resources.resource_filename(PACKAGE, path)

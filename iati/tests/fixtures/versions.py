@@ -305,7 +305,7 @@ def std_ver_any_mixedinst_valid_known(request):
 @pytest.fixture(params=[
     iati.Version(version) for version in MINOR_IATIVER_VALID if not iati.Version(version) in iati.version.STANDARD_VERSIONS_MINOR
 ] + [
-    major_ver for major_ver in MAJOR_VALID if not major_ver in MAJOR_KNOWN
+    major_version for major_version in MAJOR_VALID if major_version not in MAJOR_KNOWN
 ])
 def std_ver_all_mixedinst_valid_unknown(request):
     """Return a major or minor version of the IATI Standard that is not known by pyIATI to exist."""

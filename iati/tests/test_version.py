@@ -332,7 +332,7 @@ class TestVersionConstants(object):
 
     def test_standard_version_any_has_length(self):
         """Check that the value to represent any version is a value with length."""
-        assert len(iati.version.STANDARD_VERSION_ANY)
+        assert iati.version.STANDARD_VERSION_ANY != ''
 
 
 # pylint: disable=protected-access
@@ -590,6 +590,6 @@ class TestVersionMajorMinorRelationship(object):
         """Check that the each of the decimal versions returned by versions_for_integer starts with the input major version."""
         result = iati.version.versions_for_integer(std_ver_major_uninst_valid_known)
 
-        assert len(result) > 0
+        assert result != []
         for version in result:
             assert version.major == int(std_ver_major_uninst_valid_known)
