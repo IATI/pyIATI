@@ -400,6 +400,46 @@ class TestResourcePathCreationCoreComponents(object):
 
 
 @pytest.mark.new_tests
+class TestResourceGetCodelistPaths(object):
+    """A container for get_codelist_paths() tests."""
+
+    def test_find_codelist_paths(self, codelist_lengths_by_version):
+        """Check that all codelist paths are being found.
+
+        This covers major, minor and version-independent.
+        """
+        paths = iati.resources.get_codelist_paths(codelist_lengths_by_version.version)
+
+        assert len(paths) == codelist_lengths_by_version.expected_length
+        for path in paths:
+            assert path[-4:] == iati.resources.FILE_CODELIST_EXTENSION
+            assert iati.resources.PATH_CODELISTS in path
+
+    def test_get_codelist_mapping_paths_independent(self):
+        """Test getting a list of version-independent Codelist files.
+
+        Todo:
+            Look to better determine how to access the different categories of Codelist.
+
+        """
+        result = iati.resources.get_codelist_paths(iati.version.STANDARD_VERSION_ANY)
+
+        assert result == []
+
+    def test_get_codelist_paths_minor_partsupport(self, std_ver_minor_mixedinst_valid_partsupport):
+        """Test getting a list of Codelist paths. The requested version is partially supported by pyIATI."""
+        result = iati.resources.get_codelist_paths(std_ver_minor_mixedinst_valid_partsupport)
+
+        assert result == []
+
+    def test_get_codelist_paths_minor_unknown(self, std_ver_all_mixedinst_valid_unknown):
+        """Test getting a list of Codelist paths. The requested version is not known by pyIATI."""
+        result = iati.resources.get_codelist_paths(std_ver_all_mixedinst_valid_unknown)
+
+        assert result == []
+
+
+@pytest.mark.new_tests
 class TestResourceGetCodelistMappingPaths(object):
     """A container for get_codelist_mapping_paths() tests.
 
@@ -624,50 +664,3 @@ class TestResourceFolders(object):
         paths = iati.tests.resources.get_test_data_paths_in_folder('ssot-activity-xml-fail', version)
 
         assert len(paths) == expected_num_paths
-
-    @pytest.fixture(params=[
-        'AidType', 'FlowType', 'Language',  # Codelist names that are valid at all versions
-        'BudgetStatus', 'OtherIdentifierType', 'PolicyMarkerVocabulary',  # Codelist names that are valid at some versions, but not all
-        'invalid-codelist-name'  # Codelist name that is not a valid Codelist
-    ])
-    def potential_codelist_name(self, request):
-        """Return a potential Codelist name.
-
-        Todo:
-            Use this with get_codelist_paths()
-        """
-        return request.param
-
-
-class TestResourceCodelists(object):
-    """A container for tests relating to Codelist resources."""
-
-    def test_codelist_flow_type(self, std_ver_minor_mixedinst_valid_fullsupport):
-        """Check that the FlowType codelist is loaded as a string and contains content."""
-        path = iati.resources.create_codelist_path('FlowType', std_ver_minor_mixedinst_valid_fullsupport)
-
-        content = iati.utilities.load_as_string(path)
-
-        assert len(content) > 3200
-        assert iati.validator.is_xml(content)
-
-    def test_find_codelist_paths(self, codelist_lengths_by_version):
-        """Check that all codelist paths are being found."""
-        paths = iati.resources.get_codelist_paths(codelist_lengths_by_version[0])
-
-        assert len(paths) == codelist_lengths_by_version[1]
-        for path in paths:
-            assert path[-4:] == iati.resources.FILE_CODELIST_EXTENSION
-            assert iati.resources.PATH_CODELISTS in path
-
-    @pytest.mark.parametrize('codelist', [
-        'Name',
-        'Name.xml',
-    ])
-    def test_get_codelist_path_name(self, std_ver_minor_mixedinst_valid_fullsupport, codelist):
-        """Check that a codelist path is found from just a name."""
-        path = iati.resources.create_codelist_path(codelist, std_ver_minor_mixedinst_valid_fullsupport)
-
-        assert path[-4:] == iati.resources.FILE_CODELIST_EXTENSION
-        assert path.count(iati.resources.FILE_CODELIST_EXTENSION) == 1
-        assert iati.resources.PATH_CODELISTS in path

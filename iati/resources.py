@@ -61,30 +61,39 @@ FILE_SCHEMA_ORGANISATION_NAME = 'iati-organisations-schema'
 """The name of a file containing an Organisation Schema."""
 
 
+@iati.version.decimalise_integer
+@iati.version.allow_possible_version
 def get_codelist_paths(version):
     """Find the paths for all Codelists at the specified version of the Standard.
 
     Args:
         version (str / int / Decimal / iati.Version): The version of the Standard to return the Codelists for.
+            Decimal: Return paths for the specified version of the Standard.
+            Integer: Return paths for the latest Decimal version within the given integer.
+            Version-independent: Return paths for Non-Embedded Codelists.
 
     Raises:
-        ValueError: When a specified version is not a valid version of the IATI Standard.
+        TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: When a specified version is of the correct type, but cannot represent a version of the IATI Standard.
 
     Returns:
         list(str): A list of paths to all of the Codelists at the specified version of the Standard.
 
     Todo:
-        Further exploration needs to be undertaken in how to handle pre-1.04 versions of the Standard.
-
-        Add tests to show that versions 1.04 and above are being correctly handled, including errors.
-
-        Provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
+        Look to provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
 
     """
-    folder_path = path_for_version(PATH_CODELISTS, version)
-    files = pkg_resources.resource_listdir(PACKAGE, folder_path[len(resource_filesystem_path('')):])
-    files_codelists_only = [file_name for file_name in files if file_name[-4:] == FILE_CODELIST_EXTENSION]
-    paths = [create_codelist_path(file_name, version) for file_name in files_codelists_only]
+    paths = []
+
+    try:
+        folder_path = path_for_version(PATH_CODELISTS, version)
+    except ValueError:
+        folder_path = ''
+
+    if os.path.isdir(folder_path):
+        files = pkg_resources.resource_listdir(PACKAGE, folder_path[len(resource_filesystem_path('')):])
+        files_codelists_only = [file_name for file_name in files if file_name[-4:] == FILE_CODELIST_EXTENSION]
+        paths = [create_codelist_path(file_name, version) for file_name in files_codelists_only]
 
     return paths
 
