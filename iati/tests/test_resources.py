@@ -303,14 +303,16 @@ class TestResourcePathCreationCodelistMapping(object):
 
 
 @pytest.mark.new_tests
-class TestResourcePathCreationRulesetAndSchema(object):
-    """A container for tests relating to Ruleset and Schema path creation.
+class TestResourcePathCreationCoreComponents(object):
+    """A container for tests relating to path creation for core components in the IATI Standard.
 
+    Core components include Codelists, Rulesets and Schemas.
     Each of these should act equivalently across different version and path inputs since their parameters are the same.
     Schemas are available at more versions than Rulesets, though this is not an issue since the create_x_path() functions do not check whether a path actually exists.
     """
 
     @pytest.fixture(params=[
+        iati.resources.create_codelist_path,
         iati.resources.create_ruleset_path,
         iati.resources.create_schema_path
     ])
@@ -319,6 +321,15 @@ class TestResourcePathCreationRulesetAndSchema(object):
         return request.param
 
     @pytest.fixture(params=[
+        iati.resources.create_ruleset_path,
+        iati.resources.create_schema_path
+    ])
+    def func_to_test_decimalised_integers(self, request):
+        """Return a function to test that treats integers as the latest minor within the major."""
+        return request.param
+
+    @pytest.fixture(params=[
+        (iati.resources.create_codelist_path, iati.resources.FILE_CODELIST_EXTENSION, iati.resources.PATH_CODELISTS),
         (iati.resources.create_ruleset_path, iati.resources.FILE_RULESET_EXTENSION, iati.resources.PATH_RULESETS),
         (iati.resources.create_schema_path, iati.resources.FILE_SCHEMA_EXTENSION, iati.resources.PATH_SCHEMAS)
     ])
@@ -332,16 +343,33 @@ class TestResourcePathCreationRulesetAndSchema(object):
         version_folder = iati.resources.folder_name_for_version(std_ver_minor_independent_mixedinst_valid_known)
         full_path = func_plus_expected_data.func_to_test(filename_no_meaning, std_ver_minor_independent_mixedinst_valid_known)
 
+        assert isinstance(full_path, str)
         assert full_path.endswith(filename_no_meaning + func_plus_expected_data.expected_extension)
         assert version_folder in full_path
         assert func_plus_expected_data.expected_component in full_path
 
-    def test_create_path_major_known(self, filename_no_meaning_single, std_ver_major_uninst_valid_known, func_to_test):
-        """Check that a generation function returns the same value for a major version as the last minor within the major."""
+    def test_create_path_major_known(self, filename_no_meaning_single, std_ver_major_uninst_valid_known):
+        """Check that a generation function returns a value for a major version.
+
+        This is relevant to Codelists, but not other components. These are tested separately.
+        """
+        version_folder = iati.resources.folder_name_for_version(std_ver_major_uninst_valid_known)
+        full_path = iati.resources.create_codelist_path(filename_no_meaning_single, std_ver_major_uninst_valid_known)
+
+        assert isinstance(full_path, str)
+        assert full_path.endswith(filename_no_meaning_single + iati.resources.FILE_CODELIST_EXTENSION)
+        assert os.path.sep + version_folder + os.path.sep in full_path
+        assert iati.resources.PATH_CODELISTS in full_path
+
+    def test_create_path_major_known_decimalised_integers(self, filename_no_meaning_single, std_ver_major_uninst_valid_known, func_to_test_decimalised_integers):
+        """Check that a generation function returns the same value for a major version as the last minor within the major.
+
+        This is relevant to some Standard components, though not all. As such, it uses a different fixture to other functions in this class.
+        """
         minor_version = max(iati.version.versions_for_integer(std_ver_major_uninst_valid_known))
 
-        major_path = func_to_test(filename_no_meaning_single, std_ver_major_uninst_valid_known)
-        minor_path = func_to_test(filename_no_meaning_single, minor_version)
+        major_path = func_to_test_decimalised_integers(filename_no_meaning_single, std_ver_major_uninst_valid_known)
+        minor_path = func_to_test_decimalised_integers(filename_no_meaning_single, minor_version)
 
         assert major_path == minor_path
 
@@ -597,41 +625,18 @@ class TestResourceFolders(object):
 
         assert len(paths) == expected_num_paths
 
-
-class TestResourceCreatePath(object):
-    """A container for tests relating to creating paths."""
-
     @pytest.fixture(params=[
         'AidType', 'FlowType', 'Language',  # Codelist names that are valid at all versions
         'BudgetStatus', 'OtherIdentifierType', 'PolicyMarkerVocabulary',  # Codelist names that are valid at some versions, but not all
         'invalid-codelist-name'  # Codelist name that is not a valid Codelist
     ])
     def potential_codelist_name(self, request):
-        """Return a potential Codelist name."""
+        """Return a potential Codelist name.
+
+        Todo:
+            Use this with get_codelist_paths()
+        """
         return request.param
-
-    def test_create_codelist_path(self, potential_codelist_name, std_ver_any_mixedinst_valid_known):
-        """Check that a Codelist path is correctly created."""
-        path = iati.resources.create_codelist_path(potential_codelist_name, std_ver_any_mixedinst_valid_known)
-
-        assert isinstance(path, str)
-        assert iati.resources.folder_name_for_version(std_ver_any_mixedinst_valid_known) in path
-
-    @pytest.mark.parametrize("not_a_str", iati.tests.utilities.generate_test_types(['str'], True))
-    def test_create_codelist_path_non_str_name(self, not_a_str, std_ver_any_mixedinst_valid_known):
-        """Check that a TypeError is raised when requesting a Codelist with a non-string name."""
-        with pytest.raises(TypeError):
-            iati.resources.create_codelist_path(not_a_str, std_ver_any_mixedinst_valid_known)
-
-    def test_create_codelist_path_version_valueerr(self, std_ver_all_uninst_valueerr):
-        """Check that a ValueError is raised when requesting a Codelist with a version of the correct type, but that cannot represent a version."""
-        with pytest.raises(ValueError):
-            iati.resources.create_codelist_path('maybe-codelist-name', std_ver_all_uninst_valueerr)
-
-    def test_create_codelist_path_version_typeerr(self, std_ver_all_uninst_typeerr):
-        """Check that a TypeError is raised when requesting a Codelist with a version of the wrong type."""
-        with pytest.raises(TypeError):
-            iati.resources.create_codelist_path('maybe-codelist-name', std_ver_all_uninst_typeerr)
 
 
 class TestResourceCodelists(object):

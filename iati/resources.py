@@ -236,29 +236,30 @@ def _get_paths(version, file_name, path_creation_func, supported_versions):
     return paths
 
 
-def create_codelist_path(codelist_name, version=iati.version.STANDARD_VERSION_ANY):
+def create_codelist_path(codelist_name, version):
     """Determine the path of a Codelist with the given name at the specified version of the Standard.
 
     Args:
         codelist_name (str): The name of the codelist to locate. Should the name end in `.xml`, this shall be removed to determine the name.
-        version (str / int / Decimal / iati.Version): The version of the Standard to return the Codelists for. Defaults to iati.version.STANDARD_VERSION_ANY.
+        version (str / int / Decimal / iati.Version): The version of the Standard to return the Codelists for.
 
     Returns:
         str: The path to a file containing the specified Codelist.
 
     Raises:
-        TypeError: When the codelist name is not a string.
-        ValueError: When an invalid version is specified.
+        TypeError: If the given Codelist name is of a type that cannot be a filepath.
+        TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: If the given name is a string that cannot be a useful component of a filepath.
+        ValueError: When a specified version is not a known version of the IATI Standard.
 
     Note:
         Does not check whether the specified Codelist actually exists.
 
-    Warning:
+    Todo:
         It needs to be determined how best to locate a user-defined Codelist that is available at a URL that needs fetching.
 
     """
-    if not isinstance(codelist_name, str):
-        raise TypeError('The name of a Codelist must be a string, not a {0}'.format(type(codelist_name)))
+    _ensure_portable_filepath(codelist_name)  # required for python2 compatibility
 
     if codelist_name[-4:] == FILE_CODELIST_EXTENSION:
         codelist_name = codelist_name[:-4]
