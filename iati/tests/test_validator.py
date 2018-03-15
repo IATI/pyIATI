@@ -548,7 +548,7 @@ class TestValidateIsXML(ValidationTestBase):
         """
         result = iati.validator.validate_is_xml(xml_str_explicit_encoding)
 
-        if sys.version_info.major > 2:
+        if sys.version_info.major > 2:  # python2/3 compatibility: lxml acts differently at v2 to v3, so different checks need to be made for each major version
             assert len(result) == 1
             assert result.contains_error_called('err-encoding-in-str')
         else:
