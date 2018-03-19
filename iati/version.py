@@ -49,7 +49,10 @@ class Version(semantic_version.Version):
 
     @property
     def decimal(self):
-        """int: The IATIver Decimal Component of the Version."""
+        """int: The IATIver Decimal Component of the Version.
+        
+        This differs from the minor component since it starts at .01 (1) rather than .0 (0).
+        """
         return self.minor + 1
 
     @decimal.setter
