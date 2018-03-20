@@ -143,6 +143,7 @@ class TestResourcePathComponents(object):
     """A container for tests relating to generation of component parts of a resource path."""
 
     @pytest.mark.parametrize('version, expected_version_foldername', [
+        ('2.03', '2-03'),
         ('2.02', '2-02'),
         ('2.01', '2-01'),
         ('1.05', '1-05'),
@@ -150,6 +151,7 @@ class TestResourcePathComponents(object):
         ('1.03', '1-03'),
         ('1.02', '1-02'),
         ('1.01', '1-01'),
+        ('2.2.0', '2-03'),
         ('2.1.10', '2-02'),
         ('2.0.5', '2-01'),
         ('1.4.4', '1-05'),
@@ -163,6 +165,7 @@ class TestResourcePathComponents(object):
         (Decimal('1.03'), '1-03'),
         (Decimal('1.02'), '1-02'),
         (Decimal('1.01'), '1-01'),
+        (iati.Version('2.03'), '2-03'),
         (iati.Version('2.02'), '2-02'),
         (iati.Version('2.01'), '2-01'),
         (iati.Version('1.05'), '1-05'),
@@ -174,7 +177,7 @@ class TestResourcePathComponents(object):
         ('2', '2'),
         (iati.version.STANDARD_VERSION_ANY, iati.resources.PATH_VERSION_INDEPENDENT)
     ])
-    @pytest.mark.latest_version('2.02')
+    @pytest.mark.latest_version('2.03')
     def test_version_folder_name_generation_known(self, version, expected_version_foldername):
         """Check that the correct folder name is returned for known version numbers."""
         folder_name = iati.resources.folder_name_for_version(version)
@@ -632,6 +635,7 @@ class TestResourceTestDataFolders(object):
     """A container for tests relating to resource folders."""
 
     @pytest.mark.parametrize('version, expected_num_paths', [
+        ('2.03', 0),  # data yet to be added
         ('2.02', 237),
         ('2.01', 217),
         ('1.05', 17),
@@ -643,7 +647,7 @@ class TestResourceTestDataFolders(object):
         ('2', 0),
         (iati.version.STANDARD_VERSION_ANY, 0)
     ])
-    @pytest.mark.latest_version('2.02')
+    @pytest.mark.latest_version('2.03')
     def test_get_test_data_paths_in_folder(self, version, expected_num_paths):
         """Check that test data is being found in specified subfolders.
 

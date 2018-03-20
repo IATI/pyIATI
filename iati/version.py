@@ -199,7 +199,7 @@ class Version(semantic_version.Version):
     """
 
 
-STANDARD_VERSIONS_SUPPORTED = [Version(version_iativer) for version_iativer in ['1.04', '1.05', '2.01', '2.02']]
+STANDARD_VERSIONS_SUPPORTED = [Version(version_iativer) for version_iativer in ['1.04', '1.05', '2.01', '2.02', '2.03']]
 """Define all versions of the Standard fully supported by pyIATI."""
 
 STANDARD_VERSIONS = [Version(version_iativer) for version_iativer in ['1.01', '1.02', '1.03']] + STANDARD_VERSIONS_SUPPORTED
