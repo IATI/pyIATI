@@ -635,7 +635,7 @@ class TestResourceTestDataFolders(object):
     """A container for tests relating to resource folders."""
 
     @pytest.mark.parametrize('version, expected_num_paths', [
-        ('2.03', 0),  # data yet to be added
+        ('2.03', 323),
         ('2.02', 237),
         ('2.01', 217),
         ('1.05', 17),
