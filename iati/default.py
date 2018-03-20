@@ -202,7 +202,7 @@ def ruleset_schema():
         Determine whether a version should be provided. This is worth considering if the content of the IATI Ruleset Schema varies between versions.
 
     """
-    path = iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_SCHEMA_NAME)
+    path = iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_SCHEMA_NAME, iati.version.STANDARD_VERSION_ANY)
     schema_str = iati.utilities.load_as_string(path)
 
     return json.loads(schema_str)

@@ -12,6 +12,7 @@ Each of these sections has a number of values that they may take. It is not nece
   * `major` - major / integer versions
   * `minor` - minor / decimal versions
   * `all` - both major and minor versions
+  * `any` - both major and minor versions, plus the value that represents every single version
   * `independent` - a value that represents every single version
 * Instantiation Status
   * `inst` - an iati.Version instance
@@ -237,9 +238,15 @@ def std_ver_minor_uninst_typeerr(request):
     return request.param
 
 
-@pytest.fixture(params=iati.tests.utilities.generate_test_types([], True))
+@pytest.fixture(params=MINOR_MIXED_VER_INVALID + MAJOR_INVALID + MAJOR_VALID + iati.tests.utilities.generate_test_types([], True))
 def std_ver_minor_uninst_mixederr(request):
     """Return a value that does not represent a minor version number."""
+    return request.param
+
+
+@pytest.fixture(params=MINOR_MIXED_VER_INVALID + MAJOR_INVALID)
+def std_ver_all_uninst_valueerr(request):
+    """Return a value of the correct type to represent a version number, but has an invalid value."""
     return request.param
 
 
@@ -252,6 +259,56 @@ def std_ver_all_uninst_typeerr(request):
         See: https://github.com/IATI/pyIATI/issues/218#issuecomment-364086162
 
     """
+    return request.param
+
+
+@pytest.fixture(params=MINOR_MIXED_VER_INVALID + MAJOR_INVALID + iati.tests.utilities.generate_test_types(['int'], True))
+def std_ver_all_uninst_mixederr(request):
+    """Return a value that does not represent a version number."""
+    return request.param
+
+
+@pytest.fixture(params=[
+    ver.iativer_str for ver in iati.version.STANDARD_VERSIONS_MINOR
+] + [
+    ver.semver_str for ver in iati.version.STANDARD_VERSIONS_MINOR
+] + iati.version.STANDARD_VERSIONS_MINOR + [
+    iati.version.STANDARD_VERSION_ANY
+])
+def std_ver_minor_independent_mixedinst_valid_known(request):
+    """Return an IATI version number that pyIATI knows to exist, or independent.
+
+    Todo:
+        Add decimal representations where possible.
+
+    """
+    return request.param
+
+
+@pytest.fixture(params=[
+    ver.iativer_str for ver in iati.version.STANDARD_VERSIONS_MINOR
+] + [
+    ver.semver_str for ver in iati.version.STANDARD_VERSIONS_MINOR
+] + [
+    iati.version.STANDARD_VERSION_ANY
+] + iati.version.STANDARD_VERSIONS_MINOR + MAJOR_KNOWN)
+def std_ver_any_mixedinst_valid_known(request):
+    """Return a value that can represent some known version number at any level of granularity.
+
+    Todo:
+        Add decimal representations where possible.
+
+    """
+    return request.param
+
+
+@pytest.fixture(params=[
+    iati.Version(version) for version in MINOR_IATIVER_VALID if not iati.Version(version) in iati.version.STANDARD_VERSIONS_MINOR
+] + [
+    major_version for major_version in MAJOR_VALID if major_version not in MAJOR_KNOWN
+])
+def std_ver_all_mixedinst_valid_unknown(request):
+    """Return a major or minor version of the IATI Standard that is not known by pyIATI to exist."""
     return request.param
 
 
@@ -293,7 +350,7 @@ def std_ver_minor_uninst_valid_possible(request):
 
 @pytest.fixture(params=MINOR_MIXED_VER_INVALID)
 def std_ver_minor_uninst_valueerr_str_decimal(request):
-    """Return a valid version number in a valid format."""
+    """Return an invalid version number in a valid format."""
     return request.param
 
 
@@ -304,6 +361,21 @@ def std_ver_minor_uninst_valueerr_str_decimal(request):
 ])
 def std_ver_minor_uninst_valid_known(request):
     """Return an uninstantiated IATI version number that pyIATI knows to exist.
+
+    Todo:
+        Add decimal representations where possible.
+
+    """
+    return request.param
+
+
+@pytest.fixture(params=[
+    ver.iativer_str for ver in iati.version.STANDARD_VERSIONS_MINOR
+] + [
+    ver.semver_str for ver in iati.version.STANDARD_VERSIONS_MINOR
+] + iati.version.STANDARD_VERSIONS_MINOR)
+def std_ver_minor_mixedinst_valid_known(request):
+    """Return an IATI version number that pyIATI knows to exist.
 
     Todo:
         Add decimal representations where possible.
@@ -370,7 +442,7 @@ def std_ver_minor_inst_valid_known(request):
     version for version in MINOR_IATIVER_VALID if not iati.Version(version) in iati.version.STANDARD_VERSIONS_MINOR
 ])
 def std_ver_minor_inst_valid_unknown(request):
-    """Return a version of the IATI Standard that is not known by pyIATI to exist."""
+    """Return a minor version of the IATI Standard that is not known by pyIATI to exist."""
     return iati.Version(request.param)
 
 

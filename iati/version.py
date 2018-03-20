@@ -260,7 +260,10 @@ def allow_fully_supported_version(input_func):
             ValueError: If the input version is not a Decimal iati.Version that pyIATI fully supports.
 
         """
-        version = args[0]
+        try:
+            version = args[0]
+        except IndexError:
+            raise TypeError('The decorated function does not take any arguments. It must have arguments, the first of which is a specified version.')
 
         if not _is_fully_supported(version):
             raise ValueError('{0} is not a fully supported version of the IATI Standard in a normalised representation.'.format(repr(version)))
@@ -292,7 +295,10 @@ def allow_known_version(input_func):
             ValueError: If the input version is not a known Decimal iati.Version.
 
         """
-        version = args[0]
+        try:
+            version = args[0]
+        except IndexError:
+            raise TypeError('The decorated function does not take any arguments. It must have arguments, the first of which is a specified version.')
 
         if not _is_known(version):
             raise ValueError('{0} is not a known version of the IATI Standard in a normalised representation.'.format(repr(version)))
@@ -326,7 +332,10 @@ def allow_possible_version(input_func):
             ValueError: If the input version is a string, Decimal or Integer, but the value cannot represent a Version Number.
 
         """
-        version = args[0]
+        try:
+            version = args[0]
+        except IndexError:
+            raise TypeError('The decorated function does not take any arguments. It must have arguments, the first of which is a specified version.')
 
         _prevent_non_version_representations(version)
 
@@ -355,7 +364,12 @@ def decimalise_integer(input_func):
     """
     def wrap_decimalise_integer(*args, **kwargs):
         """Act as a wrapper to convert input Integer Version numbers to a normalised format Decimal Version."""
-        version = _decimalise_integer(args[0])
+        try:
+            version = args[0]
+        except IndexError:
+            raise TypeError('The decorated function does not take any arguments. It must have arguments, the first of which is a specified version.')
+
+        version = _decimalise_integer(version)
 
         return input_func(version, *args[1:], **kwargs)
 
@@ -372,13 +386,18 @@ def normalise_decimals(input_func):
         function: The input function, wrapped such that it is called with an iati.Version if a Decimal version is provided.
 
     """
-    def wrap_standardise_decimals(*args, **kwargs):
+    def wrap_normalise_decimals(*args, **kwargs):
         """Act as a wrapper to ensure a version number is an iati.Version if a Decimal version is specified."""
-        version = _normalise_decimal_version(args[0])
+        try:
+            version = args[0]
+        except IndexError:
+            raise TypeError('The decorated function does not take any arguments. It must have arguments, the first of which is a specified version.')
+
+        version = _normalise_decimal_version(version)
 
         return input_func(version, *args[1:], **kwargs)
 
-    return wrap_standardise_decimals
+    return wrap_normalise_decimals
 
 
 def versions_for_integer(integer):
@@ -391,7 +410,7 @@ def versions_for_integer(integer):
         list of iati.Version: Containing the supported versions for the input integer.
 
     """
-    return [version for version in iati.version.STANDARD_VERSIONS if version.major == integer]
+    return [version for version in iati.version.STANDARD_VERSIONS if version.major == int(integer)]
 
 
 def _decimalise_integer(version):
@@ -411,10 +430,12 @@ def _decimalise_integer(version):
     try:
         if not isinstance(version, (int, str)) or isinstance(version, bool):
             raise TypeError
+        elif isinstance(version, str) and str(int(version)) != version:  # detect strings containing numbers and whitespace
+            raise ValueError
         major_version = int(version)
         if major_version in iati.version.STANDARD_VERSIONS_MAJOR:
             version = max(versions_for_integer(major_version))
-        elif str(major_version) == version:  # specifying only a major component
+        elif str(major_version) == str(version):  # specifying only a major component
             version = Version(str(major_version) + '.0.0')
     except (ValueError, TypeError, OverflowError):
         pass
