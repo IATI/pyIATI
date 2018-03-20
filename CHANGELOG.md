@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Constants] `STANDARD_VERSIONS_SUPPORTED` lists all versions of the Standard that are fully supported by pyIATI. [#223]
 - [Constants] `STANDARD_VERSIONS_MINOR` lists all Minor versions of the IATI Standard. [#264]
 
+- [Resources] Add ability to define resource files that are version-independent. [#223]
+
+- [Versions] Add a class to represent Standard Versions. Handles current and proposed formats. [#273]
+
 - [Tests] Separate testing of `bytes` and `str` type values for Python 3+. [#286]
 - [Tests] Mark tests requiring updates when adding a new version. [#288]
 - [Tests] Add another build stage to check that docs build when merging to dev or master. [#292]
@@ -18,20 +22,36 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Changed
 
+- [Defaults] Make `version` argument mandatory when accessing Standard content that may differ between versions. [#243]
+
+- [Constants] Move lists of versions to `version` module. [#280]
+
+- [General] Change default behavior of `version` argument as per proposal in #218. [#223]
+
 - [Resources] Change the folder containing version-independent data from `version-independent` to `version_independent` for consistency.
 - [Resources] `create_*_path()` functions will raise errors when given an unknown version.
 - [Resources] `get_*_paths()` functions now verify that paths point to actual files before returning them.
 - [Resources] `get_*_paths()` functions raise errors when given values that cannot represent a version.
 
-- [Utilities] Raise a TypeError rather than a ValueError when `convert_xml_to_tree()` is given a value of incorrect type. [#286]
+- [Utility] Move function acting on versions to `version` module. [#280]
+- [Utility] Raise a TypeError rather than a ValueError when `convert_xml_to_tree()` is given a value of incorrect type. [#286]
+
+- [Versions] The value to represent 'version independent' has been changed to be a value that is `not None`, and a constant added to specify the exact value. [#281]
 
 ### Deprecated
 
 ### Removed
 
+- [Defaults] Remove `get_default_version_if_none()`. [#243]
+- [Defaults] Remove `version` argument for `ruleset_schema()` since this is version-independent.
+
 - [Resources] Functions in the `resources` module no longer have default values for the `version` argument.
 
 ### Fixed
+
+- [Constants] `STANDARD_VERSIONS` now lists all versions of the Standard, not just those that are fully supported by pyIATI. [#223]
+
+- [Schemas] A tree is now returned from `_change_include_to_xinclude()` when there are no includes to convert. [#244]
 
 - [Validation] The `_check_codes()` implementation is no longer fixed to version 2.02. [#291]
 - [Validation] Separate two similar but distinct ValueErrors that lxml may raise so that pyIATI treats them differently. [#287]
@@ -47,30 +67,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Datasets] A Dataset `xml_tree` may be set with an ElementTree. [#235]
 
-- [Resources] Add ability to define resource files that are version-independent. [#223]
 - [Resources] Updated SSOT to latest content as of 2017-11-14. [#237]
 - [Resources] Remove SSOT organisation test files that are not valid XML. [IATI/IATI-Schemas#376, #242]
 - [Resources] Add `get_ruleset_paths()` and `get_codelist_mapping_paths()` to improve consistency of resources module. [#260]
 
-- [Utility] Non-resource files may be loaded using utility functions. [#235]
-
 - [Schemas] Test that multiple Rulesets can be added to a Schema. [#254]
+
+- [Utility] Non-resource files may be loaded using utility functions. [#235]
 
 - [Validation] `full_validation()` now checks whether a Dataset is IATI XML. [#239]
 - [Validation] Test that SSOT organisation test files are valid IATI XML. [#242]
 
-- [Versions] Add a class to represent Standard Versions. Handles current and proposed formats. [#273]
-
 ### Changed
-
-- [Defaults] Make `version` argument mandatory when accessing Standard content that may differ between versions. [#243]
 
 - [Codelists] `complete` attribute included in equality comparison and hash calculations. [#247]
 - [Codelists] Codes must have a value to instantiate. [#247]
-
-- [Constants] Move lists of versions to `version` module. [#280]
-
-- [General] Change default behavior of `version` argument as per proposal in #218. [#223]
 
 - [Resources] Move `load_as_x` functions to `iati.utilities`. [#235]
 - [Resources] Rename version-specific resource folders to reduce ambiguity. [#217]
@@ -80,16 +91,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Rulesets] `case` attribute on a Rule changed from public to private. [#252]
 - [Rulesets] `context` attribute on a Rule changed to read-only property. [#253]
 
-- [Utility] Move function acting on versions to `version` module. [#280]
-
 - [Validation] `_check_is_iati_xml()` will raise a `TypeError` when given a non-dataset. This replaces an undocumented `AttributeError`. [#239]
 
-- [Versions] The value to represent 'version independent' has been changed to be a value that is `not None`, and a constant added to specify the exact value. [#281]
-
 ### Removed
-
-- [Defaults] Remove `get_default_version_if_none()`. [#243]
-- [Defaults] Remove `version` argument for `ruleset_schema()` since this is version-independent.
 
 - [Documentation] Stop tracking auto-generated docs templates. [#236]
 
@@ -102,16 +106,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Codelists] Fixed impossible XPath in Codelist Mapping File. [IATI/IATI-Codelists#119, #229]
 - [Codelists] Sort Codes in a Codelist before hashing so that Codelists with the same Codes always have the same hash. [#247]
 
-- [Constants] `STANDARD_VERSIONS` now lists all versions of the Standard, not just those that are fully supported by pyIATI. [#223]
-
 - [Defaults] Test and document `ValueError`s that can be raised by functions in `iati.default`. [#241]
 
 - [Documentation] Minor fixes to README. [#266, #267]
 
 - [Rulesets] `name` attribute on a Rule changed to read-only property. [#251]
 - [Rulesets] Equal Rulesets are now deemed to be equal. [#249]
-
-- [Schemas] A tree is now returned from `_change_include_to_xinclude()` when there are no includes to convert. [#244]
 
 - [Validation] Prevent `XPathEvalError`s occurring when given a Codelist Mapping XPath that identifies something other than an attribute. [#229]
 - [Validation] Datasets with an `xml:lang` attribute no longer raise a `KeyError` upon performing Codelist validation against a Schema populated with the Language Codelist. [#226]
