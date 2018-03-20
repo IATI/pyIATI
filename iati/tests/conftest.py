@@ -28,12 +28,12 @@ def pytest_runtest_call(item):
 
 
 @pytest.fixture(params=[
-    ('2.03', 0),  # 2.03 Codelists are yet to be added
+    ('2.03', 33),  # There are 9 embedded codelists at v2.02, pre-migration NE Codelists have been symlinked (the migration is yet to occur)
     ('2.02', 62),  # There are 38 embedded codelists at v2.02, plus 24 non-embedded codelists (which are valid for any version)
     ('2.01', 61),  # There are 37 embedded codelists at v2.01, plus 24 non-embedded codelists (which are valid for any version)
     ('1.05', 59),  # There are 35 embedded codelists at v1.05, plus 24 non-embedded codelists (which are valid for any version)
     ('1.04', 59),  # There are 35 embedded codelists at v1.04, plus 24 non-embedded codelists (which are valid for any version)
-    ('2', 0),  # the same as the latest minor within the major
+    ('2', 33),  # the same as the latest minor within the major
     ('1', 59)  # the same as the latest minor within the major
 ])
 def codelist_lengths_by_version(request):  # latest_version fixture used to perform checks when adding new versions  # pylint: disable=unused-argument
