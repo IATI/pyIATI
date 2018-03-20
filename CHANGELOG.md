@@ -45,6 +45,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Validation] `full_validation()` now checks whether a Dataset is IATI XML. [#239]
 - [Validation] Test that SSOT organisation test files are valid IATI XML. [#242]
 
+- [Versions] Add a class to represent Standard Versions. Handles current and proposed formats. [#273]
+
 ### Changed
 
 - [Codelists] `complete` attribute included in equality comparison and hash calculations. [#247]
