@@ -51,6 +51,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Constants] `STANDARD_VERSIONS` now lists all versions of the Standard, not just those that are fully supported by pyIATI. [#223]
 
+- [Resources] Re-implement support for 2.03 from the ground up to improve correctness and reduce number of undetectable bugs. [#307]
+
 - [Schemas] A tree is now returned from `_change_include_to_xinclude()` when there are no includes to convert. [#244]
 
 - [Validation] The `_check_codes()` implementation is no longer fixed to version 2.02. [#291]
@@ -70,6 +72,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Resources] Updated SSOT to latest content as of 2017-11-14. [#237]
 - [Resources] Remove SSOT organisation test files that are not valid XML. [IATI/IATI-Schemas#376, #242]
 - [Resources] Add `get_ruleset_paths()` and `get_codelist_mapping_paths()` to improve consistency of resources module. [#260]
+- [Resources] Add Schemas, Codelists and Rulesets for v2.03. [#272]
 
 - [Schemas] Test that multiple Rulesets can be added to a Schema. [#254]
 
