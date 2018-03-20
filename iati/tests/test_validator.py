@@ -1,5 +1,6 @@
 """A module containing tests for data validation."""
 # pylint: disable=too-many-lines
+import sys
 import pytest
 import iati.data
 import iati.default
@@ -40,6 +41,20 @@ class ValidationTestBase(object):
     def xml_str(self, request):
         """A valid XML string."""
         return request.param
+
+    @pytest.fixture
+    def xml_str_explicit_encoding(self):
+        """A valid XML string with an explicit encoding declaration.
+
+        Todo:
+            Move this into a file as part of a shuffle towards a permanent 2.03 solution.
+
+        """
+        xml_str_explicit_encoding = """<?xml version="1.0" encoding="UTF-8"?>
+        <xml-element>
+        </xml-element>"""
+
+        return xml_str_explicit_encoding
 
     @pytest.fixture
     def xml_str_no_text_decl(self, xml_str):
@@ -297,7 +312,7 @@ class TestValidationErrorLog(ValidationTestBase):  # pylint: disable=too-many-pu
 
         assert error_log == error_log_empty
 
-    @pytest.mark.parametrize("non_iterable", iati.tests.utilities.generate_test_types(['bytearray', 'iter', 'list', 'mapping', 'memory', 'range', 'set', 'str', 'tuple', 'view'], True))
+    @pytest.mark.parametrize("non_iterable", iati.tests.utilities.generate_test_types(['bytes', 'bytearray', 'iter', 'list', 'mapping', 'memory', 'range', 'set', 'str', 'tuple', 'view'], True))
     def test_error_log_extend_from_non_iterable(self, error_log, error_log_empty, non_iterable):
         """Test extending an error log with a non-iterable."""
         with pytest.raises(TypeError):
@@ -504,6 +519,20 @@ class TestValidateIsXML(ValidationTestBase):
 
         assert result == error_log_empty
 
+    def test_xml_check_explicit_encoding_in_str_detailed_output(self, xml_str_explicit_encoding, error_log_empty):
+        """Perform check to see whether a parameter is valid XML.
+
+        The parameter is valid XML, but in a format that lxml does not support.
+        Obtain detailed error output.
+        """
+        result = iati.validator.validate_is_xml(xml_str_explicit_encoding)
+
+        if sys.version_info.major > 2:
+            assert len(result) == 1
+            assert result.contains_error_called('err-encoding-in-str')
+        else:
+            assert result == error_log_empty
+
     def test_xml_check_valid_xml_comments_after_detailed_output(self, xml_str, str_not_xml, error_log_empty):
         """Perform check to see string a parameter is valid XML.
 
@@ -543,7 +572,18 @@ class TestValidateIsXML(ValidationTestBase):
 
         assert result == error_log_empty
 
-    @pytest.mark.parametrize("not_str", iati.tests.utilities.generate_test_types(['str'], True))
+    @pytest.mark.parametrize("bytes_not_xml", iati.tests.utilities.generate_test_types(['bytes']))
+    def test_xml_check_bytes_not_xml_detailed_output(self, bytes_not_xml):
+        """Perform check to see whether a parameter is valid XML. The parameter is a bytes object that is not valid XML.
+
+        Obtain detailed error output.
+        """
+        result = iati.validator.validate_is_xml(bytes_not_xml)
+
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-xml-empty-document')
+
+    @pytest.mark.parametrize("not_str", iati.tests.utilities.generate_test_types(['bytes', 'str'], True))
     def test_xml_check_not_str_detailed_output(self, not_str):
         """Perform check to see whether a parameter is valid XML. The parameter is not valid XML.
 

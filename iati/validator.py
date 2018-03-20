@@ -456,7 +456,7 @@ def _check_is_xml(maybe_xml):
     """Check whether a given parameter is valid XML.
 
     Args:
-        maybe_xml (str): An string that may or may not contain valid XML.
+        maybe_xml (str / bytes): A string that may or may not contain valid XML.
 
     Returns:
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
@@ -477,7 +477,16 @@ def _check_is_xml(maybe_xml):
         for log_entry in parser.error_log:
             error = _create_error_for_lxml_log_entry(log_entry)
             error_log.add(error)
-    except (AttributeError, TypeError, ValueError):
+        # test_xml_check_not_xml, test_xml_check_not_str_detailed_output
+    except ValueError as err:
+        if 'can only parse strings' in err.args[0]:
+            problem_var_type = type(maybe_xml)  # used via `locals()` # pylint: disable=unused-variable
+            error = ValidationError('err-not-xml-not-string', locals())
+            error_log.add(error)
+        elif 'Unicode strings with encoding declaration are not supported.' in err.args[0]:
+            error = ValidationError('err-encoding-in-str', locals())
+            error_log.add(error)
+    except (AttributeError, TypeError):
         problem_var_type = type(maybe_xml)  # used via `locals()` # pylint: disable=unused-variable
         error = ValidationError('err-not-xml-not-string', locals())
         error_log.add(error)
