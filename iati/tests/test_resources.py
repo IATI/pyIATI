@@ -175,13 +175,13 @@ class TestResourcePathComponents(object):
         (iati.version.STANDARD_VERSION_ANY, iati.resources.PATH_VERSION_INDEPENDENT)
     ])
     @pytest.mark.latest_version('2.02')
-    def test_version_folder_name_generation_known(self, version, expected_version_foldername):
+    def test_folder_name_for_version_generation_known(self, version, expected_version_foldername):
         """Check that the correct folder name is returned for known version numbers."""
         folder_name = iati.resources.folder_name_for_version(version)
 
         assert expected_version_foldername == folder_name
 
-    def test_version_folder_name_generation_unknown(self, std_ver_all_mixedinst_valid_unknown):
+    def test_folder_name_for_version_generation_unknown(self, std_ver_all_mixedinst_valid_unknown):
         """Check that a ValueError is raised when trying to create a folder name for an unknown version."""
         with pytest.raises(ValueError):
             iati.resources.folder_name_for_version(std_ver_all_mixedinst_valid_unknown)
