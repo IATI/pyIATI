@@ -36,10 +36,16 @@ class TestDefault(object):
 class TestDefaultCodelists(object):
     """A container for tests relating to default Codelists."""
 
-    @pytest.fixture
-    def codelist_name(self):
+    @pytest.fixture(params=[
+        'Country',  # Codelist that has always been Non-Embedded
+        'ActivityStatus',  # Codelist that has always been Embedded
+        'ActivityScope',  # Codelist migrated from Embedded to NE alongside 2.03
+    ])
+    def codelist_name(self, request):
         """Return the name of a valid Codelist."""
-        return 'Country'
+        request.applymarker(pytest.mark.latest_version('2.03'))
+
+        return request.param
 
     @pytest.fixture
     def codelists_with_no_name_codes(self):
@@ -143,6 +149,14 @@ class TestDefaultCodelists(object):
         for codelist in relevant_codelists:
             for code in codelist.codes:
                 assert code.name == ''
+
+    def test_codelists_in_mapping_exist(self, std_ver_minor_inst_valid_fullsupport):
+        """Check that the Codelists mentioned in a Codelist mapping file at a given version actually exist."""
+        codelist_names = iati.default.codelists(std_ver_minor_inst_valid_fullsupport).keys()
+        mapping = iati.default.codelist_mapping(std_ver_minor_inst_valid_fullsupport)
+
+        for expected_codelist in mapping.keys():
+            assert expected_codelist in codelist_names
 
     @pytest.mark.fixed_to_202
     def test_codelist_mapping_condition(self):
