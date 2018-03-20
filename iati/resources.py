@@ -68,9 +68,9 @@ def get_codelist_paths(version):
 
     Args:
         version (str / int / Decimal / iati.Version): The version of the Standard to return the Codelists for.
-            Decimal: Return paths for the specified version of the Standard.
+            Decimal: Return paths for the specified version of the Standard. Includes paths for both Embedded and Non-Embedded Codelists.
             Integer: Return paths for the latest Decimal version within the given integer.
-            Version-independent: Return paths for Non-Embedded Codelists.
+            Version-independent: Return an empty list.
 
     Raises:
         TypeError: When a specified version is of a type that cannot represent an IATI version number.
@@ -79,8 +79,13 @@ def get_codelist_paths(version):
     Returns:
         list(str): A list of paths to all of the Codelists at the specified version of the Standard.
 
+    Note:
+        Requesting version-independent Codelists returns an empty list rather raising a ValueError since it is planned that in the future a list of Non-Embedded Codelists will be returned.
+
     Todo:
-        Look to provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
+        Return a list of Non-Embedded Codelists when 'version-independent' Codelists are requested.
+
+        Look to provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists (or both!).
 
     """
     paths = []
