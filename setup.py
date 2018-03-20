@@ -19,7 +19,9 @@ setup(
         # YAML parsing for validation error codes
         'PyYAML==3.12',
         # python2/python3 compatibility library
-        'six==1.11.0'
+        'six==1.11.0',
+        # SemVer library
+        'semantic_version==2.6.0'
         ],
     classifiers = [
         'Development Status :: 2 - Pre-Alpha',
