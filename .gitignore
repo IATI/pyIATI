@@ -107,3 +107,12 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+###
+### Include things that are otherwise ignored
+###
+
+# test data files hidden because they're in a folder called 'target'
+
+!iati/resources/test_data/2-03/ssot-activity-xml-fail/iati-activities/iati-activity/result/indicator/period/target/
+!iati/resources/test_data/2-03/ssot-activity-xml-pass/iati-activities/iati-activity/result/indicator/period/target/
