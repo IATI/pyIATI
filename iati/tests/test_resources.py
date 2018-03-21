@@ -309,6 +309,16 @@ class TestResourcePathCreationCodelistMapping(object):
         with pytest.raises(ValueError):
             iati.resources.create_codelist_mapping_path(std_ver_all_mixedinst_valid_unknown)
 
+    def test_create_codelist_mapping_path_no_version(self):
+        """Check that specifying a version of the Standard to create a Codelist Mapping path for is required."""
+        with pytest.raises(TypeError):
+            iati.resources.create_codelist_mapping_path()
+
+    def test_create_codelist_mapping_path_typerr(self, std_ver_all_uninst_typeerr):
+        """Check that a TypeError is raised when using a generation function to create a Codelist Mapping path from a version of an incorrect type."""
+        with pytest.raises(TypeError):
+            iati.resources.create_codelist_mapping_path(std_ver_all_uninst_typeerr)
+
 
 class TestResourcePathCreationCoreComponents(object):
     """A container for tests relating to path creation for core components in the IATI Standard.
