@@ -290,8 +290,8 @@ def create_codelist_mapping_path(version):
         Integer: Return a path for the latest Decimal version within the given integer.
 
     Raises:
-        TypeError: If a version of an incorrect type is specified.
-        ValueError: If an invalid version is specified.
+        TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: When a specified version is not a known version of the IATI Standard.
 
     Returns:
         str: The path to a file containing the mapping file.

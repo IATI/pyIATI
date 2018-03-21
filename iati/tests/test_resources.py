@@ -355,7 +355,7 @@ class TestResourcePathCreationCoreComponents(object):
         assert version_folder in full_path
         assert func_plus_expected_data.expected_component in full_path
 
-    def test_create_path_major_known(self, filename_no_meaning_single, std_ver_major_uninst_valid_known):
+    def test_create_path_major_known_codelists(self, filename_no_meaning_single, std_ver_major_uninst_valid_known):
         """Check that a generation function returns a value for a major version.
 
         This is relevant to Codelists, but not other components. These are tested separately.
@@ -414,12 +414,17 @@ class TestResourceGetCodelistPaths(object):
 
         This covers major, minor and version-independent.
         """
+        decimalised_version = iati.version._decimalise_integer(codelist_lengths_by_version.version)  # pylint: disable=protected-access
+        expected_root = iati.resources.path_for_version(iati.resources.PATH_CODELISTS, decimalised_version)
+
         paths = iati.resources.get_codelist_paths(codelist_lengths_by_version.version)
 
+        assert len(paths) == len(set(paths))
         assert len(paths) == codelist_lengths_by_version.expected_length
         for path in paths:
             assert path[-4:] == iati.resources.FILE_CODELIST_EXTENSION
-            assert iati.resources.PATH_CODELISTS in path
+            assert expected_root in path
+            assert os.path.isfile(path)
 
     def test_get_codelist_mapping_paths_independent(self):
         """Test getting a list of version-independent Codelist files.
@@ -458,6 +463,7 @@ class TestResourceGetCodelistMappingPaths(object):
 
         assert len(result) == 1
         assert result[0] == iati.resources.create_codelist_mapping_path(std_ver_minor_mixedinst_valid_fullsupport)
+        assert os.path.isfile(result[0])
 
     def test_get_codelist_mapping_paths_independent(self):
         """Test getting a list of version-independent Codelist Mapping files."""
@@ -498,6 +504,7 @@ class TestResourceGetRulesetPaths(object):
 
         assert len(result) == 1
         assert result[0] == iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_STANDARD_NAME, std_ver_minor_mixedinst_valid_fullsupport)
+        assert os.path.isfile(result[0])
 
     def test_get_ruleset_paths_independent(self):
         """Test getting a list of version-independent standard Rulesets."""
@@ -556,6 +563,7 @@ class TestResourceGetSchemaPaths(object):
 
         assert len(result) == 1
         assert result[0] == iati.resources.create_schema_path(func_and_name.schema_name, std_ver_minor_mixedinst_valid_known)
+        assert os.path.isfile(result[0])
 
     def test_get_schema_paths_minor_unknown(self, std_ver_all_mixedinst_valid_unknown, schema_path_func_all):
         """Test getting a list of Org or Activity Schema paths. The requested version is not known by pyIATI."""
@@ -591,10 +599,6 @@ class TestResourceGetSchemaPaths(object):
         assert activity_path in result
         assert org_path in result
 
-        # ensure the paths have at least a minimum amount of content in the files they reference
-        for path in result:
-            assert os.path.getsize(path) > 10000
-
     def test_get_all_schema_paths_major_known(self, std_ver_major_uninst_valid_known):
         """Test getting a list of all Schema paths. The requested version is a known integer version. The list should contain paths for each supported minor within the major."""
         versions_at_major = [version for version in iati.version.versions_for_integer(std_ver_major_uninst_valid_known)]
@@ -613,7 +617,7 @@ class TestResourceGetSchemaPaths(object):
 
 
 class TestResourceGetPathsNotAVersion(object):
-    """A container for get_x_path() tests where the function is provided a value that cannot represent a version."""
+    """A container for get_*_paths() tests where the function is provided a value that cannot represent a version."""
 
     @pytest.fixture(params=[
         iati.resources.get_codelist_paths,
