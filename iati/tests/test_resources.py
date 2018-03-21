@@ -196,6 +196,11 @@ class TestResourcePathComponents(object):
         with pytest.raises(TypeError):
             iati.resources.folder_name_for_version(std_ver_all_uninst_typeerr)
 
+    def test_folder_name_for_version_requires_version(self):
+        """Check that a version must be specified when requesting a folder name for a version (there is no default)."""
+        with pytest.raises(TypeError):
+            iati.resources.folder_name_for_version()
+
 
 class TestResoucePathCreationEntireStandard(object):
     """A container for tests relating to generating entire filepaths for any part of the Standard."""
@@ -220,6 +225,11 @@ class TestResoucePathCreationEntireStandard(object):
         """Check that a TypeError is raised when trying to create a folder path for a value of a type that cannot be a version number."""
         with pytest.raises(TypeError):
             iati.resources.folder_path_for_version(std_ver_all_uninst_typeerr)
+
+    def test_folder_path_for_version_requires_version(self):
+        """Check that a version must be specified when requesting a folder path for a version (there is no default)."""
+        with pytest.raises(TypeError):
+            iati.resources.folder_path_for_version()
 
     def test_path_for_version_known(self, filename_no_meaning, std_ver_any_mixedinst_valid_known):
         """Check that expected components are present within absolute paths for data for known versions of the IATI Standard."""
@@ -251,6 +261,11 @@ class TestResoucePathCreationEntireStandard(object):
         """Check that a TypeError is raised when trying to create a folder path for a value of a type that cannot be a version number."""
         with pytest.raises(TypeError):
             iati.resources.path_for_version(filename_no_meaning_single, std_ver_all_uninst_typeerr)
+
+    def test_path_for_version_requires_version(self, filename_no_meaning_single):
+        """Check that a version must be specified when requesting a path for a version (there is no default)."""
+        with pytest.raises(TypeError):
+            iati.resources.path_for_version(filename_no_meaning_single)
 
     def test_path_for_version_path_valueerr(self, filepath_invalid_value, std_ver_minor_inst_valid_single):
         """Check that a ValueError is raised when trying to create a path from a string that cannot be a filepath."""

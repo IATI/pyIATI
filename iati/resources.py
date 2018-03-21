@@ -387,7 +387,7 @@ def create_schema_path(name, version):
 
 @iati.version.allow_possible_version
 @iati.version.normalise_decimals
-def folder_name_for_version(version=iati.version.STANDARD_VERSION_ANY):
+def folder_name_for_version(version):
     """Return the folder name for a given version of the Standard.
 
     Args:
@@ -424,7 +424,7 @@ def folder_name_for_version(version=iati.version.STANDARD_VERSION_ANY):
     raise ValueError("Version {0} is not a known version of the IATI Standard.".format(version))
 
 
-def folder_path_for_version(version=iati.version.STANDARD_VERSION_ANY):
+def folder_path_for_version(version):
     """Return the path for the folder containing SSOT data (schemas, codelists etc) at the specified version of the Standard.
 
     Args:
@@ -441,7 +441,7 @@ def folder_path_for_version(version=iati.version.STANDARD_VERSION_ANY):
     return os.path.join(BASE_PATH_STANDARD, folder_name_for_version(version))
 
 
-def path_for_version(path, version=iati.version.STANDARD_VERSION_ANY):
+def path_for_version(path, version):
     """Return the absolute location of a specified path at the specified version of the Standard.
 
     Args:
