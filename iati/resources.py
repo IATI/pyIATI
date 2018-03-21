@@ -391,7 +391,7 @@ def folder_name_for_version(version):
     """Return the folder name for a given version of the Standard.
 
     Args:
-        version (str / int / Decimal / iati.Version): The version of the Standard to return the folder path for. Defaults to iati.version.STANDARD_VERSION_ANY.
+        version (str / int / Decimal / iati.Version): The version of the Standard to return the folder path for.
 
     Returns:
         str: The folder name for the specified version of the Standard.
@@ -428,7 +428,7 @@ def folder_path_for_version(version):
     """Return the path for the folder containing SSOT data (schemas, codelists etc) at the specified version of the Standard.
 
     Args:
-        version (str / int / Decimal / iati.Version): The version of the Standard to return the folder path for. Defaults to iati.version.STANDARD_VERSION_ANY.
+        version (str / int / Decimal / iati.Version): The version of the Standard to return the folder path for.
 
     Returns:
         str: The relative path to the folder for containing SSOT data the specified version of the Standard.
@@ -446,7 +446,7 @@ def path_for_version(path, version):
 
     Args:
         path (str): The path to the file that is to be read in.
-        version (str / int / Decimal / iati.Version): The version of the Standard to return the folder path for. Defaults to iati.version.STANDARD_VERSION_ANY.
+        version (str / int / Decimal / iati.Version): The version of the Standard to return the folder path for.
 
     Returns:
         str: The relative path to a file at the specified version of the Standard.
