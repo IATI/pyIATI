@@ -406,6 +406,7 @@ def folder_name_for_version(version):
     if version == iati.version.STANDARD_VERSION_ANY:
         return PATH_VERSION_INDEPENDENT
     elif isinstance(version, (str, int)) and not isinstance(version, bool):
+        # this logic is required since the Version class cannot currently represent Major Versions (and so have a direct `is_major` attribute - see: #265
         try:
             if str(int(version)) == str(version):
                 is_major = True
