@@ -19,7 +19,16 @@ def _check_latest_version_mark(item):
     latest_version_marker = item.get_marker('latest_version')
     if latest_version_marker is not None:
         latest_version = iati.Version(latest_version_marker.args[0])
-        assert latest_version == iati.version.STANDARD_VERSION_LATEST
+        help_msg = """The test or fixture is based around data that changes depending on the latest version of the Standard (ie. the `latest_version` pytest mark is being used).
+
+        This may include information such as:
+        * A mapping from version numbers to a value that changes at each version (eg. the number of Codelists at a version).
+        * A value that changes when new versions are added (eg. the number of known versions).
+
+        As such, the test needs updating to support a newly added version:
+        * Update the data to ensure all values for all relevant versions are correct.
+        * Update the marker to state the latest version that is supported (this needs to be the latest known version for this test to pass)."""
+        assert latest_version == iati.version.STANDARD_VERSION_LATEST, help_msg
 
 
 def pytest_runtest_call(item):
