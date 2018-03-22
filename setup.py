@@ -18,8 +18,6 @@ setup(
         'lxml==4.2.1',
         # YAML parsing for validation error codes
         'PyYAML==3.12',
-        # python2/python3 compatibility library
-        'six==1.11.0',
         # SemVer library
         'semantic_version==2.6.0'
         ],
@@ -29,8 +27,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Topic :: Scientific/Engineering :: Information Analysis',

@@ -1,13 +1,12 @@
 """A module containing tests for the library implementation of accessing utilities."""
 from lxml import etree
 import pytest
-import six
 import iati.resources
 import iati.tests.utilities
 import iati.utilities
 
 
-class TestUtilities(object):
+class TestUtilities:
     """A container for tests relating to utilities."""
 
     @pytest.fixture
@@ -193,7 +192,7 @@ class TestUtilities(object):
         pass
 
 
-class TestFileLoading(object):
+class TestFileLoading:
     """A container for tests relating to loading files."""
 
     @pytest.fixture(scope='session')
@@ -260,10 +259,10 @@ class TestFileLoading(object):
             _ = iati.utilities.load_as_dataset(invalid_xml_file_path)
 
     def test_load_as_string(self, invalid_xml_file_path):
-        """Test that `utilities.load_as_string()` returns a string (python3) or unicode (python2) object with the expected content."""
+        """Test that `utilities.load_as_string()` returns a string with the expected content."""
         result = iati.utilities.load_as_string(invalid_xml_file_path)
 
-        assert isinstance(result, six.string_types)
+        assert isinstance(result, str)
         assert result == 'This is a string that is not valid XML\n'
 
     @pytest.mark.parametrize("load_method", [
@@ -274,12 +273,6 @@ class TestFileLoading(object):
     def test_load_as_x_non_existing_file(self, load_method):
         """Test that `utilities.load_as_bytes()` returns a bytes object with the expected content."""
         path_test_data = iati.tests.resources.get_test_data_path('this-file-does-not-exist')
-
-        # python 2/3 compatibility - FileNotFoundError introduced at Python 3
-        try:
-            FileNotFoundError
-        except NameError:
-            FileNotFoundError = IOError  # pylint: disable=redefined-builtin,invalid-name
 
         with pytest.raises(FileNotFoundError):
             _ = load_method(path_test_data)
@@ -296,8 +289,7 @@ class TestFileLoading(object):
         str_of_interest = dataset.xml_tree.xpath('//reporting-org/narrative/text()')[0]
 
         # the character of interest is in windows-1252, but is different from ASCII
-        # python2/3 compatibility: encode string as UTF-8
-        assert str_of_interest.encode('utf-8') == b'\xc5\xb8'
+        assert str_of_interest.encode('UTF-8') == b'\xc5\xb8'
 
     @pytest.mark.parametrize("file_to_load", [
         'dataset-encoding/valid-UTF-8.xml',
@@ -317,8 +309,7 @@ class TestFileLoading(object):
         # the tested characters are all in the code range 004000-00FFFF
         # this means that they are 3-bit at UTF-8, 2 bit as UTF-16 and 4-bit as UTF-32 in 8-bit environments
         # https://en.wikipedia.org/wiki/Comparison_of_Unicode_encodings#Eight-bit_environments
-        # python2/3 compatibility: encode string as UTF-8
-        assert str_of_interest.encode('utf-8') == b'\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9'  # noqa: ignore=E501  # pylint: disable=line-too-long
+        assert str_of_interest.encode('UTF-8') == b'\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9'  # noqa: ignore=E501  # pylint: disable=line-too-long
 
     @pytest.mark.parametrize("file_to_load", [
         'dataset-encoding/valid-undetectable-encoding.xml'

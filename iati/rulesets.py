@@ -14,7 +14,6 @@ import re
 import sre_constants
 from datetime import datetime
 import jsonschema
-import six
 import iati.default
 import iati.utilities
 
@@ -50,7 +49,7 @@ def constructor_for_rule_type(rule_type):
     return possible_rule_types[rule_type]
 
 
-class Ruleset(object):
+class Ruleset:
     """Representation of a Ruleset as defined within the IATI SSOT.
 
     Attributes:
@@ -78,7 +77,7 @@ class Ruleset(object):
             ruleset_dict = json.loads(ruleset_str, object_pairs_hook=iati.utilities.dict_raise_on_duplicates)
         except TypeError:
             raise ValueError('Provided Ruleset string is not a string.')
-        except ValueError:  # python2/3 - should be json.decoder.JSONDecodeError at python 3.5+
+        except json.decoder.JSONDecodeError:
             if ruleset_str.strip() == '':
                 ruleset_dict = {}
             else:
@@ -165,7 +164,7 @@ class Ruleset(object):
                     self.rules.add(new_rule)
 
 
-class Rule(object):
+class Rule:
     """Representation of a Rule contained within a Ruleset.
 
     Acts as a base class for specific types of Rule that actually check the content of the data.
@@ -239,7 +238,7 @@ class Rule(object):
             ValueError: When `context` is an empty string.
 
         """
-        if isinstance(context, six.string_types):
+        if isinstance(context, str):
             if context != '':
                 return context
             raise ValueError
@@ -389,7 +388,7 @@ class Rule(object):
 
         """
         xpath_results = context.xpath(path)
-        results = [result if isinstance(result, six.string_types) else result.text for result in xpath_results]
+        results = [result if isinstance(result, str) else result.text for result in xpath_results]
         return ['' if result is None else result for result in results]
 
     def _condition_met_for(self, context_element):
@@ -630,14 +629,9 @@ class RuleDateOrder(Rule):
         later_date = self._get_date(context_element, self.more)
 
         try:
-            # python2 allows `bool`s to be compared to `None` without raising a TypeError, while python3 does not
-            if early_date is None or later_date is None:
-                return None
-
             if early_date > later_date:
                 return False
         except TypeError:
-            # a TypeError is raised in python3 if either of the dates is None
             return None
         return True
 

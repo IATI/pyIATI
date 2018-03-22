@@ -1,12 +1,11 @@
 """A module containing a core representation of an IATI Dataset."""
-import sys
 from lxml import etree
 import iati.exceptions
 import iati.utilities
 import iati.validator
 
 
-class Dataset(object):
+class Dataset:
     """Representation of an IATI XML file that may be validated against a Schema.
 
     Attributes:
@@ -89,10 +88,9 @@ class Dataset(object):
                 validation_error_log = iati.validator.validate_is_xml(value_stripped)
 
                 # Convert the input to bytes, as etree.fromstring works most consistently with bytes objects, especially if an XML encoding declaration has been used.
-                if (isinstance(value_stripped, str) and
-                        sys.version_info.major > 2):  # Python v2 treats strings as byte objects by default
+                if isinstance(value_stripped, str):
                     value_stripped_bytes = value_stripped.encode()
-                else:
+                elif isinstance(value_stripped, bytes):
                     value_stripped_bytes = value_stripped
 
                 if not validation_error_log.contains_errors():

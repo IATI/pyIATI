@@ -8,7 +8,7 @@ import iati.resources
 import iati.utilities
 
 
-class Schema(object):
+class Schema:
     """Representation of a Schema as defined within the IATI SSOT. This is used as a base class for ActivitySchema and OrganisationSchema and should not be instantiated directly.
 
     Attributes:

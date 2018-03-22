@@ -2,7 +2,7 @@
 import iati.constants
 
 
-class TestConstants(object):
+class TestConstants:
     """A container for tests relating to IATI software constants."""
 
     def test_namespace(self):

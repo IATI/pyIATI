@@ -1,6 +1,5 @@
 """A module containing tests for data validation."""
 # pylint: disable=too-many-lines
-import sys
 import pytest
 import iati.data
 import iati.default
@@ -9,7 +8,7 @@ import iati.tests.utilities
 import iati.validator
 
 
-class ValidationTestBase(object):
+class ValidationTestBase:
     """A container for fixtures and other functionality useful among multiple groups of Validation Test."""
 
     @pytest.fixture
@@ -67,13 +66,9 @@ class ValidationTestBase(object):
         """A value that is not a valid XML string."""
         return request.param
 
-    @pytest.fixture(params=['This is a string that is not XML.'])
+    @pytest.fixture(params=iati.tests.utilities.generate_test_types(['str']))
     def str_not_xml(self, request):
-        """A string that is not XML.
-
-        Note:
-            Does not use the utility function due to problems with Python 2.7.
-        """
+        """A string that is not XML."""
         return request.param
 
     @pytest.fixture
@@ -118,7 +113,7 @@ class ValidationTestBase(object):
         return iati.validator.ValidationErrorLog()
 
 
-class TestValidationError(object):
+class TestValidationError:
     """A container for tests relating to ValidationErrors."""
 
     def test_validation_error_init_no_name(self):
@@ -326,7 +321,7 @@ class TestValidationErrorLog(ValidationTestBase):  # pylint: disable=too-many-pu
         assert error_log == error_log_empty
 
 
-class TestValidationAuxiliaryData(object):
+class TestValidationAuxiliaryData:
     """A container for tests relating to auxiliary validation data."""
 
     def test_error_code_names(self):
@@ -540,7 +535,7 @@ class TestValidateIsXML(ValidationTestBase):
 
         assert result == error_log_empty
 
-    def test_xml_check_explicit_encoding_in_str_detailed_output(self, xml_str_explicit_encoding, error_log_empty):
+    def test_xml_check_explicit_encoding_in_str_detailed_output(self, xml_str_explicit_encoding):
         """Perform check to see whether a parameter is valid XML.
 
         The parameter is valid XML, but in a format that lxml does not support.
@@ -548,11 +543,8 @@ class TestValidateIsXML(ValidationTestBase):
         """
         result = iati.validator.validate_is_xml(xml_str_explicit_encoding)
 
-        if sys.version_info.major > 2:  # python2/3 compatibility: lxml acts differently at v2 to v3, so different checks need to be made for each major version
-            assert len(result) == 1
-            assert result.contains_error_called('err-encoding-in-str')
-        else:
-            assert result == error_log_empty
+        assert len(result) == 1
+        assert result.contains_error_called('err-encoding-in-str')
 
     def test_xml_check_valid_xml_comments_after_detailed_output(self, xml_str, str_not_xml, error_log_empty):
         """Perform check to see string a parameter is valid XML.
@@ -991,7 +983,7 @@ class TestValidationVocabularies(ValidateCodelistsBase):
         assert iati.validator.is_valid(data, schema_sectors)
 
 
-class TestValidateRulesets(object):
+class TestValidateRulesets:
     """A container for tests relating to validation of Rulesets."""
 
     @pytest.mark.fixed_to_202

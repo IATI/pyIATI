@@ -12,7 +12,7 @@ import iati.version
 import iati.tests.resources
 
 
-class TestResourceConstants(object):
+class TestResourceConstants:
     """A container for tests relating to checks of resource constants."""
 
     @pytest.mark.parametrize('folder_path', [
@@ -70,7 +70,7 @@ class TestResourceConstants(object):
         assert re.match(file_extension_regex, file_extension)
 
 
-class TestResourceFilesystemPaths(object):
+class TestResourceFilesystemPaths:
     """A container for tests relating to specific filesystem paths."""
 
     def test_resource_filesystem_path(self, filename_no_meaning):
@@ -101,7 +101,7 @@ class TestResourceFilesystemPaths(object):
         assert os.path.isdir(full_path)
 
 
-class TestResourceLibData(object):
+class TestResourceLibData:
     """A container for tests relating to handling paths for pyIATI library-specific data."""
 
     def test_create_lib_data_path(self, filename_no_meaning):
@@ -112,7 +112,7 @@ class TestResourceLibData(object):
         assert full_path.endswith(filename_no_meaning)
 
 
-class TestResourceHandlingInvalidPaths(object):
+class TestResourceHandlingInvalidPaths:
     """A container for tests relating to handling paths that are invalid and being passed to functions that are version-independent."""
 
     @pytest.fixture(params=[
@@ -139,7 +139,7 @@ class TestResourceHandlingInvalidPaths(object):
             resource_func(filepath_invalid_type)
 
 
-class TestResourcePathComponents(object):
+class TestResourcePathComponents:
     """A container for tests relating to generation of component parts of a resource path."""
 
     @pytest.mark.parametrize('version, expected_version_foldername', [
@@ -205,7 +205,7 @@ class TestResourcePathComponents(object):
             iati.resources.folder_name_for_version()  # pylint: disable=no-value-for-parameter
 
 
-class TestResoucePathCreationEntireStandard(object):
+class TestResoucePathCreationEntireStandard:
     """A container for tests relating to generating entire filepaths for any part of the Standard."""
 
     def test_folder_path_for_version_known(self, std_ver_any_mixedinst_valid_known):
@@ -281,7 +281,7 @@ class TestResoucePathCreationEntireStandard(object):
             iati.resources.path_for_version(filepath_invalid_type, std_ver_minor_inst_valid_single)
 
 
-class TestResourcePathCreationCodelistMapping(object):
+class TestResourcePathCreationCodelistMapping:
     """A container for tests relating to creating Codelist Mapping File paths."""
 
     def test_create_codelist_mapping_path_minor(self, std_ver_minor_mixedinst_valid_known):
@@ -323,7 +323,7 @@ class TestResourcePathCreationCodelistMapping(object):
             iati.resources.create_codelist_mapping_path(std_ver_all_uninst_typeerr)
 
 
-class TestResourcePathCreationCoreComponents(object):
+class TestResourcePathCreationCoreComponents:
     """A container for tests relating to path creation for core components in the IATI Standard.
 
     Core components include Codelists, Rulesets and Schemas.
@@ -419,7 +419,7 @@ class TestResourcePathCreationCoreComponents(object):
             func_to_test(filepath_invalid_type, std_ver_minor_inst_valid_single)
 
 
-class TestResourceGetCodelistPaths(object):
+class TestResourceGetCodelistPaths:
     """A container for get_codelist_paths() tests."""
 
     def test_find_codelist_paths(self, codelist_lengths_by_version):
@@ -463,7 +463,7 @@ class TestResourceGetCodelistPaths(object):
         assert result == []
 
 
-class TestResourceGetCodelistMappingPaths(object):
+class TestResourceGetCodelistMappingPaths:
     """A container for get_codelist_mapping_paths() tests.
 
     Note:
@@ -508,7 +508,7 @@ class TestResourceGetCodelistMappingPaths(object):
             assert iati.resources.create_codelist_mapping_path(version) in result
 
 
-class TestResourceGetRulesetPaths(object):
+class TestResourceGetRulesetPaths:
     """A container for get_ruleset_paths() tests."""
 
     def test_get_ruleset_paths_minor_fullsupport(self, std_ver_minor_mixedinst_valid_fullsupport):
@@ -549,7 +549,7 @@ class TestResourceGetRulesetPaths(object):
             assert iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_STANDARD_NAME, version) in result
 
 
-class TestResourceGetSchemaPaths(object):
+class TestResourceGetSchemaPaths:
     """A container for get_x_schema_paths() tests."""
 
     @pytest.fixture(params=[
@@ -629,7 +629,7 @@ class TestResourceGetSchemaPaths(object):
             assert path in result
 
 
-class TestResourceGetPathsNotAVersion(object):
+class TestResourceGetPathsNotAVersion:
     """A container for get_*_paths() tests where the function is provided a value that cannot represent a version."""
 
     @pytest.fixture(params=[
@@ -660,7 +660,7 @@ class TestResourceGetPathsNotAVersion(object):
             func_to_test(std_ver_all_uninst_typeerr)
 
 
-class TestResourceTestDataFolders(object):
+class TestResourceTestDataFolders:
     """A container for tests relating to resource folders."""
 
     @pytest.mark.parametrize('version, expected_num_paths', [
