@@ -7,7 +7,7 @@ import iati.schemas
 import iati.tests.utilities
 
 
-class TestDefault(object):
+class TestDefault:
     """A container for tests relating to Default data."""
 
     @pytest.fixture(params=[
@@ -33,7 +33,7 @@ class TestDefault(object):
         assert default_data_func_version_param(std_ver_major_uninst_valid_known) == default_data_func_version_param(minor_version)
 
 
-class TestDefaultCodelists(object):
+class TestDefaultCodelists:
     """A container for tests relating to default Codelists."""
 
     @pytest.fixture(params=[
@@ -204,7 +204,7 @@ class TestDefaultCodelists(object):
         assert len(codelists) == codelist_lengths_by_version.expected_length
 
 
-class TestDefaultRulesets(object):
+class TestDefaultRulesets:
     """A container for tests relating to default Rulesets."""
 
     def test_default_ruleset(self, std_ver_minor_mixedinst_valid_fullsupport):
@@ -277,7 +277,7 @@ class TestDefaultRulesets(object):
         assert info_text in errors_for_rule_error[0].info
 
 
-class TestDefaultSchemas(object):
+class TestDefaultSchemas:
     """A container for tests relating to default Schemas."""
 
     def test_default_activity_schemas(self, std_ver_minor_mixedinst_valid_fullsupport):
@@ -326,7 +326,7 @@ class TestDefaultSchemas(object):
         assert schema.rulesets == set()
 
 
-class TestDefaultModifications(object):
+class TestDefaultModifications:
     """A container for tests relating to the ability to modify defaults."""
 
     @pytest.fixture

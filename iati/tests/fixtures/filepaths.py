@@ -26,7 +26,7 @@ def filename_no_meaning_single(request):
 def filepath_invalid_type(request):
     """Return a value that is of a type that cannot represent a filepath.
 
-    Python2/3 compatibility: Look at using the concept of PathLike that was introduced at 3.4.
+    Python3 compatibility: Look at using the concept of PathLike that was introduced at 3.4.
     """
     return request.param
 

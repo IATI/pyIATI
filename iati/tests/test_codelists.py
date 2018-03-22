@@ -5,7 +5,7 @@ from lxml import etree
 import iati.codelists
 
 
-class TestCodelistsNonClass(object):
+class TestCodelistsNonClass:
     """Test codelists functionality that is not contained within a class.
 
     Note:
@@ -15,7 +15,7 @@ class TestCodelistsNonClass(object):
     pass
 
 
-class TestCodelists(object):
+class TestCodelists:
     """A container for tests relating to Codelists."""
 
     @pytest.fixture
@@ -123,7 +123,7 @@ class TestCodelists(object):
         assert type_tree[0][0].nsmap == iati.constants.NSMAP
 
 
-class TestCodes(object):
+class TestCodes:
     """A container for tests relating to Codes."""
 
     def test_code_no_attributes(self):
@@ -166,7 +166,7 @@ class TestCodes(object):
         assert enum_el.nsmap == iati.constants.NSMAP
 
 
-class TestCodelistEquality(object):
+class TestCodelistEquality:
     """A container for tests relating to Codelist equality - both direct and via hashing."""
 
     @pytest.mark.parametrize('codelist', iati.default.codelists('2.02').values())

@@ -7,7 +7,7 @@ import iati.default
 import iati.resources
 
 
-class ValidationError(object):
+class ValidationError:
     """A base class to encapsulate information about Validation Errors."""
 
     # pylint: disable=too-many-instance-attributes
@@ -70,7 +70,7 @@ class ValidationError(object):
             pass
 
 
-class ValidationErrorLog(object):
+class ValidationErrorLog:
     """A container to keep track of a set of ValidationErrors.
 
     This acts as an iterable that ValidationErrors can be looped over.
@@ -733,11 +733,7 @@ def get_error_codes():
 
     # convert name of exception into reference to the relevant class
     for err in err_codes_dict.values():
-        # python2/3 have exceptions in different modules, though six and future do not appear to have a standard workaround for this
-        try:
-            err['base_exception'] = getattr(sys.modules['builtins'], err['base_exception'])
-        except KeyError:
-            err['base_exception'] = getattr(sys.modules['exceptions'], err['base_exception'])
+        err['base_exception'] = getattr(sys.modules['builtins'], err['base_exception'])
 
     return err_codes_dict
 
