@@ -92,6 +92,16 @@
             <url>http://thecommonwealth.org/</url>
         </codelist-item>
         <codelist-item>
+            <code>XI-IATI-DGF</code>
+            <name>
+                <narrative>Democratic Governance Facility</narrative>
+            </name>
+            <description>
+                <narrative>DGF supports state and non state partners to strengthen democratisation, protect human rights, improve access to justice and enhance accountability in Uganda. DGF’s work is built upon the principles and values enshrined in Uganda’s 1995 Constitution and reiterated in its current National Development Plan.</narrative>
+            </description>
+            <url>https://www.dgf.ug/</url>
+        </codelist-item>
+        <codelist-item>
             <code>XI-IATI-EC_DEVCO</code>
             <name>
                 <narrative>European Commission – Development and Cooperation</narrative>

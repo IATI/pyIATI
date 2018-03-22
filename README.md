@@ -52,7 +52,7 @@ The file `docs/build/index.html` serves as the documentation home page.
 IATI Version Support
 ====================
 
-pyIATI fully supports versions `1.04`, `1.05`, `2.01` and `2.02` of the IATI Standard.
+pyIATI fully supports versions `1.04`, `1.05`, `2.01`, `2.02` and `2.03` of the IATI Standard.
 
 Schemas for versions `1.01`, `1.02` and `1.03` are included in the `iati/resources/standard` directory but are not yet accessible using the available pyIATI functions to return default schemas.
 
