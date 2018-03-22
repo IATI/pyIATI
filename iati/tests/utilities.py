@@ -19,7 +19,6 @@ SCHEMA_NAME_VALID = 'iati-activities-schema'
 XML_TREE_VALID = iati.utilities.load_as_tree(iati.tests.resources.get_test_data_path('valid_not_iati'))
 """An etree that is valid XML but not IATI XML."""
 
-
 TYPE_TEST_DATA = {
     'bool': [True, False],
     'bytes': [b'\x80abc', b'\x80abc'],

@@ -8,12 +8,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
-- [Constants] `STANDARD_VERSIONS_SUPPORTED` lists all versions of the Standard that are fully supported by pyIATI. [#223]
-- [Constants] `STANDARD_VERSIONS_MINOR` lists all Minor versions of the IATI Standard. [#264]
 
 - [Resources] Add ability to define resource files that are version-independent. [#223]
 
 - [Versions] Add a class to represent Standard Versions. Handles current and proposed formats. [#273]
+- [Versions] `STANDARD_VERSIONS_SUPPORTED` lists all versions of the Standard that are fully supported by pyIATI. [#223]
+- [Versions] `STANDARD_VERSIONS_MINOR` lists all Minor versions of the IATI Standard. [#264]
 
 - [Tests] Separate testing of `bytes` and `str` type values for Python 3+. [#286]
 - [Tests] Mark tests requiring updates when adding a new version. [#288]
@@ -52,14 +52,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Fixed
 
-- [Constants] `STANDARD_VERSIONS` now lists all versions of the Standard, not just those that are fully supported by pyIATI. [#223]
-
 - [Resources] Re-implement support for 2.03 from the ground up to improve correctness and reduce number of undetectable bugs. [#307]
 
 - [Schemas] A tree is now returned from `_change_include_to_xinclude()` when there are no includes to convert. [#244]
 
 - [Validation] The `_check_codes()` implementation is no longer fixed to version 2.02. [#291]
 - [Validation] Separate two similar but distinct ValueErrors that lxml may raise so that pyIATI treats them differently. [#287]
+
+- [Versions] `STANDARD_VERSIONS` now lists all versions of the Standard, not just those that are fully supported by pyIATI. [#223]
 
 - [Tests] Correct some very old test fixtures and documentation. [#286]
 
