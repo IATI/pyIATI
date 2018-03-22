@@ -5,18 +5,14 @@ Todo:
 """
 import collections
 import math
-import sys
-from future.standard_library import install_aliases
 from lxml import etree
 import pytest
 import iati.data
 import iati.default
 import iati.tests.utilities
 
-install_aliases()
 
-
-class TestDatasets(object):
+class TestDatasets:
     """A container for tests relating to Datasets."""
 
     @pytest.fixture
@@ -181,7 +177,7 @@ class TestDatasets(object):
         assert 'If setting a Dataset with the xml_property, an ElementTree should be provided, not a' in str(excinfo.value)
 
 
-class TestDatasetWithEncoding(object):
+class TestDatasetWithEncoding:
     """A container for tests relating to creating a Dataset from various types of input.
 
     This may be files vs strings, or may revolve around character encoding.
@@ -236,17 +232,11 @@ class TestDatasetWithEncoding(object):
         """Test that an encoded Dataset instantiated directly from a string (rather than a file or bytes object) correctly creates an iati.data.Dataset and the input data is contained within the object."""
         xml = xml_needing_encoding_use_as_str.format('UTF-8')
 
-        if sys.version_info.major > 2:
-            with pytest.raises(iati.exceptions.ValidationError) as validation_err:
-                iati.data.Dataset(xml)
+        with pytest.raises(iati.exceptions.ValidationError) as validation_err:
+            iati.data.Dataset(xml)
 
-            assert len(validation_err.value.error_log) == 1
-            assert validation_err.value.error_log.contains_error_called('err-encoding-in-str')
-        else:
-            dataset = iati.data.Dataset(xml)
-
-            assert isinstance(dataset, iati.data.Dataset)
-            assert dataset.xml_str == xml.strip()
+        assert len(validation_err.value.error_log) == 1
+        assert validation_err.value.error_log.contains_error_called('err-encoding-in-str')
 
     @pytest.mark.parametrize("encoding", [
         "UTF-8",
@@ -323,7 +313,7 @@ class TestDatasetWithEncoding(object):
         assert excinfo.value.error_log.contains_error_called('err-encoding-unsupported')
 
 
-class TestDatasetSourceFinding(object):
+class TestDatasetSourceFinding:
     """A container for tests relating to finding source context within a Dataset."""
 
     @pytest.fixture(params=[
@@ -498,7 +488,7 @@ class TestDatasetSourceFinding(object):
                 data.source_around_line(line_num, invalid_value)
 
 
-class TestDatasetVersionDetection(object):
+class TestDatasetVersionDetection:
     """A container for tests relating to detecting the version of a Dataset."""
 
     @pytest.fixture(params=[

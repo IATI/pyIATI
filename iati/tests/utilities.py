@@ -1,6 +1,5 @@
 """A module containing utility constants and functions for tests."""
 import decimal
-import sys
 import iati.constants
 import iati.resources
 import iati.tests.resources
@@ -20,13 +19,9 @@ SCHEMA_NAME_VALID = 'iati-activities-schema'
 XML_TREE_VALID = iati.utilities.load_as_tree(iati.tests.resources.get_test_data_path('valid_not_iati'))
 """An etree that is valid XML but not IATI XML."""
 
-
-_BYTES_VALS = [b'\x80abc', b'\x80abc']
-
-
 TYPE_TEST_DATA = {
     'bool': [True, False],
-    'bytes': [val for val in _BYTES_VALS if sys.version_info.major > 2],  # python2/3 compatibility
+    'bytes': [b'\x80abc', b'\x80abc'],
     'bytearray': [bytearray.fromhex('2Ef0 F1f2  '), bytearray(b'Hi!'), bytearray(range(20))],
     'complex': [3453J, -35415J, 0J, complex(234, 681), complex(-768, 16078), complex(6187, -81), complex(-1867, -618)],
     'contextmanager': [decimal.localcontext()],
@@ -41,7 +36,7 @@ TYPE_TEST_DATA = {
     'other': [NotImplemented],
     'range': [range(3, 4)],
     'set': [set(range(20)), set(['hello', 23]), frozenset(range(20)), frozenset(['hello', 23])],
-    'str': ['\N{GREEK CAPITAL LETTER DELTA}', '\u0394', '\U00000394', 'This is a string'] + [val for val in _BYTES_VALS if sys.version_info.major == 2],  # python2.7 warning # pylint: disable=anomalous-unicode-escape-in-string
+    'str': ['\N{GREEK CAPITAL LETTER DELTA}', '\u0394', '\U00000394', 'This is a string'],
     'tuple': [(), (1, 2)],
     'type': [type(1), type('string')],
     'unicode': [],  # counts as a string, so moved there

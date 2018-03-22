@@ -15,7 +15,7 @@ import iati.resources
 import iati.tests.utilities
 
 
-class RulesetFixtures(object):
+class RulesetFixtures:
     """A base class for fixtures to use in Ruleset tests."""
 
     empty_init_config = [
@@ -247,7 +247,7 @@ class TestRulesetEquality(RulesetFixtures):
         assert cmp_func_different_val_and_hash(ruleset, ruleset_copy)
 
 
-class TestRule(object):
+class TestRule:
     """A container for tests relating to Rules."""
 
     def test_rule_class_cannot_be_instantiated_directly_without_name(self):
@@ -268,7 +268,7 @@ class TestRule(object):
             iati.Rule(name, context, case)  # pylint: disable=too-many-function-args
 
 
-class TestRuleSubclasses(object):
+class TestRuleSubclasses:
     """A container for tests relating to all Rule subclasses."""
 
     @pytest.fixture(params=[
@@ -317,7 +317,7 @@ class TestRuleSubclasses(object):
             rule_constructor(context, case)
 
 
-class RuleSubclassFixtures(object):
+class RuleSubclassFixtures:
     """A base class for fixtures to use in Rule subclass tests."""
 
     @pytest.fixture

@@ -125,7 +125,7 @@ def load_as_string(relative_path, version=iati.version.STANDARD_VERSION_ANY):
         version (str): The version of the Standard to return the data files for. Defaults to iati.version.STANDARD_VERSION_ANY.
 
     Returns:
-        str (python3) / unicode (python2): The contents of the file at the specified location.
+        str: The contents of the file at the specified location.
 
     """
     path = iati.tests.resources.get_test_data_path(relative_path, version)

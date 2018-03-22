@@ -3,7 +3,7 @@
 # The structure of a code is:
 #
 #   - name-of-the-error-or-warning:
-#       base_exception: The name of a Python exception that the error code represents. Should be valid for both Python 2 and Python 3. https://docs.python.org/2/library/exceptions.html#exception-hierarchy
+#       base_exception: The name of a Python exception that the error code represents. Should be valid for Python 3. https://docs.python.org/3/library/exceptions.html#exception-hierarchy
 #       category: The high level category that the error falls into.
 #       description: |-
 #           A short general description of the error that has occurred.
