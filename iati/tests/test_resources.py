@@ -315,7 +315,7 @@ class TestResourcePathCreationCodelistMapping(object):
     def test_create_codelist_mapping_path_no_version(self):
         """Check that specifying a version of the Standard to create a Codelist Mapping path for is required."""
         with pytest.raises(TypeError):
-            iati.resources.create_codelist_mapping_path()
+            iati.resources.create_codelist_mapping_path()  # pylint: disable=no-value-for-parameter
 
     def test_create_codelist_mapping_path_typerr(self, std_ver_all_uninst_typeerr):
         """Check that a TypeError is raised when using a generation function to create a Codelist Mapping path from a version of an incorrect type."""
