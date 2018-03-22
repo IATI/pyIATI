@@ -188,7 +188,7 @@ virtualenv -p python3 pyenv
 source pyenv/bin/activate
 
 # install Python package dependencies
-pip install -r requirements-dev.txt
+pip install -r requirements_dev.txt
 ```
 
 
