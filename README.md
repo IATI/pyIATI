@@ -149,6 +149,95 @@ dataset_as_string = requests.get('http://XML_FILE_URL_HERE').text
 dataset = iati.Dataset(dataset_as_string)
 ```
 
+
+### Validating datasets
+
+A `Dataset` object can be validated for adherance to XML/IATI schemas can be verified using methods in `iati.validator`.
+
+#### Simple validation
+
+Returns a number of booleans:
+
+```python
+import iati.default
+import iati.validator
+
+# Set-up a sample dataset and get the default v2.03 schema
+>>> dataset = iati.Dataset("""
+... <iati-activities version="2.03">
+...   <iati-activity>
+...   </iati-activity>
+... </iati-activities>
+... """)  # Dataset is XML, but not IATI XML (given missing mandatory elements).
+>>> v203_schema = iati.default.activity_schema('2.03')
+
+# Is the Dataset even XML?
+>>> iati.validator.is_xml(dataset)
+True
+
+# Does the Dataset meet a version of the IATI Schema?
+>>> iati.validator.is_iati_xml(dataset, v203_schema)
+False
+
+# Does the Dataset meet a version of the IATI Schema AND the IATI Ruleset?
+>>> iati.validator.is_valid(dataset, v203_schema)
+False
+```
+
+#### Detailed validation
+
+Datasets can be validated to return a `ValidationErrorLog` can be performed using:
+
+```python
+import iati.default
+import iati.validator
+
+# Set-up a sample dataset and get the default v2.03 schema
+>>> dataset = iati.Dataset("""
+... <iati-activities version="2.03">
+...   <iati-activity>
+...   </iati-activity>
+... </iati-activities>
+... """)  # Dataset is XML, but not IATI XML (given missing mandatory elements).
+>>> v203_schema = iati.default.activity_schema('2.03')
+
+# Is the Dataset even XML? (Returns a ValidationErrorLog object)
+>>> error_log = iati.validator.full_validation(dataset, v203_schema)
+
+# The error log can be read:
+>>> len(error_log)  # Number or errors or warnings found
+25
+
+>>> error_log.contains_errors()  # Boolean if at least one error is present
+True
+
+>>> error_log.contains_warnings() # Boolean if at least one warning is present
+True
+
+# Let's look at the first error only
+>>> first_error = error_log[0]
+>>> first_error.info
+"<string>:2:0:ERROR:SCHEMASV:SCHEMAV_ELEMENT_CONTENT: Element 'iati-activity': Missing child element(s). Expected is ( iati-identifier )."
+
+>>> first_error.description
+'A different element was found than was expected.'
+
+>>> first_error.help
+'There are a number of mandatory elements that an IATI data file must contain. Additionally, these must occur in the required order.\nFor more information about what an XML element is, see https://www.w3schools.com/xml/xml_elements.asp'
+
+>>> first_error.status
+'error'
+
+>>> first_error.name
+'err-not-iati-xml-missing-required-element'
+
+# For 'value not on codelist' errors, the following ValidationError properties may be useful
+# ValidationError.actual_value
+# ValidationError.column_number
+# ValidationErrorline_number
+```
+
+
 #### Accessing data
 
 The `Dataset` object contains an `xml_tree` attribute (itself an `lxml.etree` object). [XPath expessions](https://www.w3schools.com/xml/xpath_intro.asp) can be used to extract desired information from the dataset. For example:
