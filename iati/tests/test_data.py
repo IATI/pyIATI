@@ -328,10 +328,12 @@ class TestDatasetSourceFinding(object):
 
     @pytest.fixture(params=[
         iati.tests.resources.load_as_dataset('valid_not_iati'),
-        iati.tests.resources.load_as_dataset('valid_iati')
+        iati.tests.resources.load_as_dataset('valid_iati', '2.02')
     ])
     def data(self, request):
         """A Dataset to test."""
+        request.applymarker(pytest.mark.fixed_to_202)
+
         return request.param
 
     @pytest.fixture
@@ -508,8 +510,7 @@ class TestDatasetVersionDetection(object):
         output = collections.namedtuple('output', 'root_element child_element')
         return output(root_element=request.param[0], child_element=request.param[1])
 
-    @pytest.mark.parametrize("version", iati.utilities.versions_for_integer(1))
-    def test_detect_version_v1_simple(self, iati_tag_names, version):
+    def test_detect_version_v1_simple(self, iati_tag_names, std_ver_minor_inst_valid_known_v1):
         """Check that a version 1 Dataset is detected correctly.
         Also checks that version numbers containing whitespace do not affect version detection.
         """
@@ -520,10 +521,10 @@ class TestDatasetVersionDetection(object):
             <{1} version="   {2}"></{1}>
             <{1} version="   {2}   "></{1}>
         </{0}>
-        """.format(iati_tag_names.root_element, iati_tag_names.child_element, version))
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element, std_ver_minor_inst_valid_known_v1))
         result = data.version
 
-        assert result == version
+        assert result == std_ver_minor_inst_valid_known_v1
 
     def test_detect_version_explicit_parent_mismatch_explicit_child(self, iati_tag_names):
         """Check that no version is detected for a v1 Dataset where a version within the `iati-activities` element does not match the versions specified within all `iati-activity` child elements."""
@@ -547,7 +548,7 @@ class TestDatasetVersionDetection(object):
         """.format(iati_tag_names.root_element, iati_tag_names.child_element))
         result = data.version
 
-        assert result == '1.01'
+        assert result == iati.Version('1.01')
 
     def test_detect_version_explicit_parent_matches_implicit_child(self, iati_tag_names):
         """Check that the default version is detected for a Dataset with the default version explicitly defined at `iati-activities` level, but where all `iati-activity` child elements are not defined (i.e. the default version is assumed)."""
@@ -559,7 +560,7 @@ class TestDatasetVersionDetection(object):
         """.format(iati_tag_names.root_element, iati_tag_names.child_element))
         result = data.version
 
-        assert result == '1.01'
+        assert result == iati.Version('1.01')
 
     def test_detect_version_implicit_parent_matches_explicit_and_implicit_child(self, iati_tag_names):
         """Check that the default version is detected for a Dataset with no version not defined at `iati-activities` level (i.e. the default version is assumed), but where at least one `iati-activity` child element has the default version defined."""
@@ -571,7 +572,7 @@ class TestDatasetVersionDetection(object):
         """.format(iati_tag_names.root_element, iati_tag_names.child_element))
         result = data.version
 
-        assert result == '1.01'
+        assert result == iati.Version('1.01')
 
     def test_detect_version_explicit_parent_mismatch_implicit_child(self, iati_tag_names):
         """Check that no version is detected for a Dataset that has a non-default version defined at the `iati-activities` level, but no version is defined in any `iati-activity` child element (i.e. the default version is assumed)."""
@@ -597,23 +598,22 @@ class TestDatasetVersionDetection(object):
 
         assert result is None
 
-    @pytest.mark.parametrize("version", iati.utilities.versions_for_integer(2))
-    def test_detect_version_v2_simple(self, iati_tag_names, version):
+    def test_detect_version_v2_simple(self, iati_tag_names, std_ver_minor_inst_valid_known_v2):
         """Check that a version 2 Dataset is detected correctly."""
         data = iati.Dataset("""
         <{0} version="{2}">
             <{1}></{1}>
             <{1}></{1}>
         </{0}>
-        """.format(iati_tag_names.root_element, iati_tag_names.child_element, version))
+        """.format(iati_tag_names.root_element, iati_tag_names.child_element, std_ver_minor_inst_valid_known_v2))
         result = data.version
 
-        assert result == version
+        assert result == std_ver_minor_inst_valid_known_v2
 
+    @pytest.mark.fixed_to_202
     def test_cannot_assign_to_version_property(self):
         """Check that it is not possible to assign to the `version` property."""
-        path = iati.tests.resources.get_test_data_path('valid_iati')
-        data = iati.utilities.load_as_dataset(path)
+        data = iati.tests.resources.load_as_dataset('valid_iati', '2.02')
 
         with pytest.raises(AttributeError) as excinfo:
             data.version = 'test'

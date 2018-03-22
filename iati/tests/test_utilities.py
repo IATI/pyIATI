@@ -11,11 +11,12 @@ class TestUtilities(object):
     """A container for tests relating to utilities."""
 
     @pytest.fixture
-    def schema_base_tree(self):
+    def schema_base_tree(self, request):
         """Return schema_base_tree."""
-        activity_schema_path = iati.resources.create_schema_path(
-            iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID
-        )
+        request.applymarker(pytest.mark.fixed_to_202)
+
+        activity_schema_path = iati.resources.get_activity_schema_paths('2.02')[0]
+
         return iati.ActivitySchema(activity_schema_path)._schema_base_tree  # pylint: disable=protected-access
 
     def test_add_namespace_schema_new(self, schema_base_tree):
@@ -137,9 +138,10 @@ class TestUtilities(object):
 
         assert 'The `new_ns_uri` parameter must be a valid URI.' in str(excinfo.value)
 
+    @pytest.mark.fixed_to_202
     def test_convert_tree_to_schema(self):
         """Check that an etree can be converted to a schema."""
-        path = iati.resources.create_schema_path('iati-activities-schema')
+        path = iati.resources.get_activity_schema_paths('2.02')[0]
 
         tree = iati.utilities.load_as_tree(path)
         if not tree:  # pragma: no cover
@@ -189,18 +191,6 @@ class TestUtilities(object):
     def test_log_warning(self):
         """TODO: Implement testing for logging."""
         pass
-
-
-class TestDefaultVersions(object):
-    """A container for tests relating to default versions."""
-
-    @pytest.mark.parametrize("major_version", iati.constants.STANDARD_VERSIONS_MAJOR)
-    def test_versions_for_integer(self, major_version):
-        """Check that the each of the decimal versions returned by versions_for_integer starts with the input major version."""
-        result = iati.utilities.versions_for_integer(major_version)
-
-        for version in result:
-            assert version.startswith(str(major_version))
 
 
 class TestFileLoading(object):
