@@ -24,9 +24,6 @@ XML_TREE_VALID = iati.utilities.load_as_tree(iati.tests.resources.get_test_data_
 _BYTES_VALS = [b'\x80abc', b'\x80abc']
 
 
-_BYTES_VALS = [b'\x80abc', b'\x80abc']
-
-
 TYPE_TEST_DATA = {
     'bool': [True, False],
     'bytes': [val for val in _BYTES_VALS if sys.version_info.major > 2],  # python2/3 compatibility

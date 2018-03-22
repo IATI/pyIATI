@@ -233,7 +233,7 @@ def _get_paths(version, file_name, path_creation_func, supported_versions):
     try:
         num_path_creation_func_args = len(inspect.getfullargspec(path_creation_func).args)
     except AttributeError:  # python2/3 compatiblity: getfullargspec added at v3, while getargspec was deprecated
-        num_path_creation_func_args = len(inspect.getargspec(path_creation_func).args)
+        num_path_creation_func_args = len(inspect.getargspec(path_creation_func).args)  # python2/3 compatiblity  # pylint: disable=deprecated-method
 
     for minor_ver in versions:
         try:
