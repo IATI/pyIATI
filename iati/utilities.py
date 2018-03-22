@@ -175,7 +175,7 @@ def load_as_bytes(path):
         bytes: The contents of the file at the specified location.
 
     Raises:
-        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+        FileNotFoundError: When a file at the specified path does not exist.
 
     Todo:
         Ensure all reasonably possible OSErrors are documented here and in functions that call this.
@@ -197,7 +197,7 @@ def load_as_dataset(path):
         iati.Dataset: A Dataset object representing the contents of the file at the specified location.
 
     Raises:
-        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+        FileNotFoundError: When a file at the specified path does not exist.
 
         ValueError: When a file at the specified path does not contain valid XML.
 
@@ -217,10 +217,10 @@ def load_as_string(path):
         path (str): An absolute (rather than relative) path to the file that is to be read in.
 
     Returns:
-        str (python3) / unicode (python2): The contents of the file at the specified location.
+        str: The contents of the file at the specified location.
 
     Raises:
-        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+        FileNotFoundError: When a file at the specified path does not exist.
 
     """
     loaded_bytes = load_as_bytes(path)
@@ -233,9 +233,6 @@ def load_as_string(path):
         detected_info = chardet.detect(loaded_bytes[:25000])
         try:
             loaded_str = loaded_bytes.decode(detected_info['encoding'])
-            # in Python 2 it is necessary to strip the BOM when decoding from UTF-16BE
-            if detected_info['encoding'] == 'UTF-16' and loaded_str[:1] == u'\ufeff':
-                loaded_str = loaded_str[1:]
         except TypeError:
             raise ValueError('Could not detect encoding of file')
 

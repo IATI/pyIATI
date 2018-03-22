@@ -5,7 +5,7 @@ import iati.resources
 import iati.utilities
 
 
-class Codelist(object):
+class Codelist:
     """Representation of a Codelist as defined within the IATI SSOT.
 
     Attributes:
@@ -165,7 +165,7 @@ class Codelist(object):
         return type_base_el
 
 
-class Code(object):
+class Code:
     """Representation of a Code contained within a Codelist.
 
     Attributes:

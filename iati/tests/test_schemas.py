@@ -11,7 +11,7 @@ import iati.schemas
 import iati.tests.utilities
 
 
-class SchemaTestsBase(object):
+class SchemaTestsBase:
     """A base class for all Schema tests."""
 
     @pytest.fixture(params=[

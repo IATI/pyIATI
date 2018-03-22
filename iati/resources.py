@@ -230,10 +230,7 @@ def _get_paths(version, file_name, path_creation_func, supported_versions):
         # major version
         versions = [minor_ver for minor_ver in iati.version.versions_for_integer(int(version)) if minor_ver in supported_versions]
 
-    try:
-        num_path_creation_func_args = len(inspect.getfullargspec(path_creation_func).args)
-    except AttributeError:  # python2/3 compatiblity: getfullargspec added at v3, while getargspec was deprecated
-        num_path_creation_func_args = len(inspect.getargspec(path_creation_func).args)
+    num_path_creation_func_args = len(inspect.getfullargspec(path_creation_func).args)
 
     for minor_ver in versions:
         try:
@@ -273,7 +270,7 @@ def create_codelist_path(codelist_name, version):
         It needs to be determined how best to locate a user-defined Codelist that is available at a URL that needs fetching.
 
     """
-    _ensure_portable_filepath(codelist_name)  # required for python2 compatibility
+    _ensure_portable_filepath(codelist_name)
 
     if codelist_name[-4:] == FILE_CODELIST_EXTENSION:
         codelist_name = codelist_name[:-4]
@@ -322,7 +319,7 @@ def create_lib_data_path(name):
         Does not check whether the specified file actually exists.
 
     """
-    _ensure_portable_filepath(name)  # required for python2 compatibility
+    _ensure_portable_filepath(name)
 
     return resource_filesystem_path(os.path.join(BASE_PATH_LIB_DATA, name))
 
@@ -462,7 +459,7 @@ def path_for_version(path, version):
         Does not check whether anything exists at the specified path.
 
     """
-    try:  # python2 and python3.4 compatibility
+    try:
         _ensure_portable_filepath(path)
     except ValueError:
         if path != '':

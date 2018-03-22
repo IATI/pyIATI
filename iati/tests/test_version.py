@@ -7,7 +7,7 @@ import iati.tests.utilities
 from iati.tests.fixtures.versions import iativer, semver, split_decimal, split_iativer, split_semver
 
 
-class TestVersionInit(object):
+class TestVersionInit:
     """A container for tests relating to initialisation of Standard Versions."""
 
     def test_version_no_params(self):
@@ -92,7 +92,7 @@ class TestVersionInit(object):
         assert str(excinfo.value) == 'A valid version number must be specified.'
 
 
-class TestVersionComparison(object):
+class TestVersionComparison:
     """A container for tests relating to comparison between Standard Versions."""
 
     @pytest.fixture(params=[
@@ -163,7 +163,7 @@ class TestVersionComparison(object):
         assert result == should_pass
 
 
-class TestVersionModification(object):
+class TestVersionModification:
     """A container for tests relating to modifying Version Numbers after they are instantiated."""
 
     CHANGE_AMOUNT = 10
@@ -199,7 +199,7 @@ class TestVersionModification(object):
         setattr(std_ver_minor_inst_valid_single, attrib_name, not_int)
 
 
-class TestVersionRepresentation(object):
+class TestVersionRepresentation:
     """A container for tests relating to how Standard Versions are represented when output."""
 
     def test_iativer_string_output(self, std_ver_minor_uninst_valid_iativer_possible):
@@ -227,7 +227,7 @@ class TestVersionRepresentation(object):
         assert version.semver_str == std_ver_minor_uninst_valid_semver_possible
 
 
-class TestVersionBumping(object):
+class TestVersionBumping:
     """A container for tests relating to bumping of Version Numbers."""
 
     def test_version_bump_major(self, std_ver_minor_uninst_valid_semver_possible):
@@ -255,7 +255,7 @@ class TestVersionBumping(object):
         assert version.next_decimal() == next_minor_version
 
 
-class TestVersionImplementationDetailHiding(object):
+class TestVersionImplementationDetailHiding:
     """A container for tests relating to ensuring implementation detail is hidden.
 
     The implementation of the Version class makes use of a Semantic Versioning library by inheriting from a base class.
@@ -284,7 +284,7 @@ class TestVersionImplementationDetailHiding(object):
         assert std_ver_minor_inst_valid_possible.partial is True
 
 
-class TestVersionConstants(object):
+class TestVersionConstants:
     """A container for tests relating to constants that define useful groups of IATI version numbers."""
 
     @pytest.fixture(params=[
@@ -335,7 +335,7 @@ class TestVersionConstants(object):
         assert iati.version.STANDARD_VERSION_ANY != ''
 
 
-class TestVersionDecorators(object):
+class TestVersionDecorators:
     """A container for tests that cover all version decorators."""
 
     def func_with_no_args(self):
@@ -356,7 +356,7 @@ class TestVersionDecorators(object):
 
 
 # pylint: disable=protected-access
-class VersionSupportChecksBase(object):
+class VersionSupportChecksBase:
     """A container for functions and fixtures used to check version support.
 
     In their own class to reduce the number of public methods in the parent class below the linting limit of 20.
@@ -509,7 +509,7 @@ class TestVersionSupportChecks(VersionSupportChecksBase):
             possibly_version_func(std_ver_all_uninst_typeerr)
 
 
-class TestVersionNormalisation(object):
+class TestVersionNormalisation:
     """A container for tests relating to normalising how versions are passed into functions."""
 
     @iati.version.decimalise_integer
@@ -593,17 +593,10 @@ class TestVersionNormalisation(object):
         result = junk_ignoring_func(std_ver_all_uninst_mixederr)
 
         assert result is std_ver_all_uninst_mixederr
-        try:
-            assert (result == original_value) or isinstance(original_value, type(iter([]))) or math.isnan(original_value)
-        except TypeError:
-            # python 2/3 compatibility - identical context managers are not deemed to be equal at Python 2
-            import decimal
-            import sys
-            if not (sys.version_info[0] == 2 and isinstance(original_value, type(decimal.localcontext()))):
-                assert False
+        assert (result == original_value) or isinstance(original_value, type(iter([]))) or math.isnan(original_value)
 
 
-class TestVersionMajorMinorRelationship(object):
+class TestVersionMajorMinorRelationship:
     """A container for tests relating to the relationship between major and minor versions."""
 
     def test_versions_for_integer(self, std_ver_major_uninst_valid_known):
