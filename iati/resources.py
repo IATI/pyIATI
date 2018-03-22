@@ -68,9 +68,9 @@ def get_codelist_paths(version):
 
     Args:
         version (str / int / Decimal / iati.Version): The version of the Standard to return the Codelists for.
-            Decimal: Return paths for the specified version of the Standard.
+            Decimal: Return paths for the specified version of the Standard. Includes paths for both Embedded and Non-Embedded Codelists.
             Integer: Return paths for the latest Decimal version within the given integer.
-            Version-independent: Return paths for Non-Embedded Codelists.
+            Version-independent: Return an empty list.
 
     Raises:
         TypeError: When a specified version is of a type that cannot represent an IATI version number.
@@ -79,8 +79,13 @@ def get_codelist_paths(version):
     Returns:
         list(str): A list of paths to all of the Codelists at the specified version of the Standard.
 
+    Note:
+        Requesting version-independent Codelists returns an empty list rather raising a ValueError since it is planned that in the future a list of Non-Embedded Codelists will be returned.
+
     Todo:
-        Look to provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists.
+        Return a list of Non-Embedded Codelists when 'version-independent' Codelists are requested.
+
+        Look to provide an argument that allows the returned list to be restricted to only Embedded or only Non-Embedded Codelists (or both!).
 
     """
     paths = []
@@ -285,8 +290,8 @@ def create_codelist_mapping_path(version):
         Integer: Return a path for the latest Decimal version within the given integer.
 
     Raises:
-        TypeError: If a version of an incorrect type is specified.
-        ValueError: If an invalid version is specified.
+        TypeError: When a specified version is of a type that cannot represent an IATI version number.
+        ValueError: When a specified version is not a known version of the IATI Standard.
 
     Returns:
         str: The path to a file containing the mapping file.
@@ -382,11 +387,11 @@ def create_schema_path(name, version):
 
 @iati.version.allow_possible_version
 @iati.version.normalise_decimals
-def folder_name_for_version(version=iati.version.STANDARD_VERSION_ANY):
+def folder_name_for_version(version):
     """Return the folder name for a given version of the Standard.
 
     Args:
-        version (str / int / Decimal / iati.Version): The version of the Standard to return the folder path for. Defaults to iati.version.STANDARD_VERSION_ANY.
+        version (str / int / Decimal / iati.Version): The version of the Standard to return the folder path for.
 
     Returns:
         str: The folder name for the specified version of the Standard.
@@ -401,6 +406,7 @@ def folder_name_for_version(version=iati.version.STANDARD_VERSION_ANY):
     if version == iati.version.STANDARD_VERSION_ANY:
         return PATH_VERSION_INDEPENDENT
     elif isinstance(version, (str, int)) and not isinstance(version, bool):
+        # this logic is required since the Version class cannot currently represent Major Versions (and so have a direct `is_major` attribute - see: #265
         try:
             if str(int(version)) == str(version):
                 is_major = True
@@ -419,11 +425,11 @@ def folder_name_for_version(version=iati.version.STANDARD_VERSION_ANY):
     raise ValueError("Version {0} is not a known version of the IATI Standard.".format(version))
 
 
-def folder_path_for_version(version=iati.version.STANDARD_VERSION_ANY):
+def folder_path_for_version(version):
     """Return the path for the folder containing SSOT data (schemas, codelists etc) at the specified version of the Standard.
 
     Args:
-        version (str / int / Decimal / iati.Version): The version of the Standard to return the folder path for. Defaults to iati.version.STANDARD_VERSION_ANY.
+        version (str / int / Decimal / iati.Version): The version of the Standard to return the folder path for.
 
     Returns:
         str: The relative path to the folder for containing SSOT data the specified version of the Standard.
@@ -436,12 +442,12 @@ def folder_path_for_version(version=iati.version.STANDARD_VERSION_ANY):
     return os.path.join(BASE_PATH_STANDARD, folder_name_for_version(version))
 
 
-def path_for_version(path, version=iati.version.STANDARD_VERSION_ANY):
+def path_for_version(path, version):
     """Return the absolute location of a specified path at the specified version of the Standard.
 
     Args:
         path (str): The path to the file that is to be read in.
-        version (str / int / Decimal / iati.Version): The version of the Standard to return the folder path for. Defaults to iati.version.STANDARD_VERSION_ANY.
+        version (str / int / Decimal / iati.Version): The version of the Standard to return the folder path for.
 
     Returns:
         str: The relative path to a file at the specified version of the Standard.

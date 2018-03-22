@@ -178,13 +178,13 @@ class TestResourcePathComponents(object):
         (iati.version.STANDARD_VERSION_ANY, iati.resources.PATH_VERSION_INDEPENDENT)
     ])
     @pytest.mark.latest_version('2.03')
-    def test_version_folder_name_generation_known(self, version, expected_version_foldername):
+    def test_folder_name_for_version_generation_known(self, version, expected_version_foldername):
         """Check that the correct folder name is returned for known version numbers."""
         folder_name = iati.resources.folder_name_for_version(version)
 
         assert expected_version_foldername == folder_name
 
-    def test_version_folder_name_generation_unknown(self, std_ver_all_mixedinst_valid_unknown):
+    def test_folder_name_for_version_generation_unknown(self, std_ver_all_mixedinst_valid_unknown):
         """Check that a ValueError is raised when trying to create a folder name for an unknown version."""
         with pytest.raises(ValueError):
             iati.resources.folder_name_for_version(std_ver_all_mixedinst_valid_unknown)
@@ -198,6 +198,11 @@ class TestResourcePathComponents(object):
         """Check that a version of the Standard of the correct type, but an incorrect value raises a TypeError."""
         with pytest.raises(TypeError):
             iati.resources.folder_name_for_version(std_ver_all_uninst_typeerr)
+
+    def test_folder_name_for_version_requires_version(self):
+        """Check that a version must be specified when requesting a folder name for a version (there is no default)."""
+        with pytest.raises(TypeError):
+            iati.resources.folder_name_for_version()  # pylint: disable=no-value-for-parameter
 
 
 class TestResoucePathCreationEntireStandard(object):
@@ -223,6 +228,11 @@ class TestResoucePathCreationEntireStandard(object):
         """Check that a TypeError is raised when trying to create a folder path for a value of a type that cannot be a version number."""
         with pytest.raises(TypeError):
             iati.resources.folder_path_for_version(std_ver_all_uninst_typeerr)
+
+    def test_folder_path_for_version_requires_version(self):
+        """Check that a version must be specified when requesting a folder path for a version (there is no default)."""
+        with pytest.raises(TypeError):
+            iati.resources.folder_path_for_version()  # pylint: disable=no-value-for-parameter
 
     def test_path_for_version_known(self, filename_no_meaning, std_ver_any_mixedinst_valid_known):
         """Check that expected components are present within absolute paths for data for known versions of the IATI Standard."""
@@ -254,6 +264,11 @@ class TestResoucePathCreationEntireStandard(object):
         """Check that a TypeError is raised when trying to create a folder path for a value of a type that cannot be a version number."""
         with pytest.raises(TypeError):
             iati.resources.path_for_version(filename_no_meaning_single, std_ver_all_uninst_typeerr)
+
+    def test_path_for_version_requires_version(self, filename_no_meaning_single):
+        """Check that a version must be specified when requesting a path for a version (there is no default)."""
+        with pytest.raises(TypeError):
+            iati.resources.path_for_version(filename_no_meaning_single)  # pylint: disable=no-value-for-parameter
 
     def test_path_for_version_path_valueerr(self, filepath_invalid_value, std_ver_minor_inst_valid_single):
         """Check that a ValueError is raised when trying to create a path from a string that cannot be a filepath."""
@@ -296,6 +311,16 @@ class TestResourcePathCreationCodelistMapping(object):
         """Check that a ValueError is raised when requesting a Codelist Mapping file for an unknown version of the Standard."""
         with pytest.raises(ValueError):
             iati.resources.create_codelist_mapping_path(std_ver_all_mixedinst_valid_unknown)
+
+    def test_create_codelist_mapping_path_no_version(self):
+        """Check that specifying a version of the Standard to create a Codelist Mapping path for is required."""
+        with pytest.raises(TypeError):
+            iati.resources.create_codelist_mapping_path()
+
+    def test_create_codelist_mapping_path_typerr(self, std_ver_all_uninst_typeerr):
+        """Check that a TypeError is raised when using a generation function to create a Codelist Mapping path from a version of an incorrect type."""
+        with pytest.raises(TypeError):
+            iati.resources.create_codelist_mapping_path(std_ver_all_uninst_typeerr)
 
 
 class TestResourcePathCreationCoreComponents(object):
@@ -343,7 +368,7 @@ class TestResourcePathCreationCoreComponents(object):
         assert version_folder in full_path
         assert func_plus_expected_data.expected_component in full_path
 
-    def test_create_path_major_known(self, filename_no_meaning_single, std_ver_major_uninst_valid_known):
+    def test_create_path_major_known_codelists(self, filename_no_meaning_single, std_ver_major_uninst_valid_known):
         """Check that a generation function returns a value for a major version.
 
         This is relevant to Codelists, but not other components. These are tested separately.
@@ -402,12 +427,17 @@ class TestResourceGetCodelistPaths(object):
 
         This covers major, minor and version-independent.
         """
+        decimalised_version = iati.version._decimalise_integer(codelist_lengths_by_version.version)  # pylint: disable=protected-access
+        expected_root = iati.resources.path_for_version(iati.resources.PATH_CODELISTS, decimalised_version)
+
         paths = iati.resources.get_codelist_paths(codelist_lengths_by_version.version)
 
+        assert len(paths) == len(set(paths))
         assert len(paths) == codelist_lengths_by_version.expected_length
         for path in paths:
             assert path[-4:] == iati.resources.FILE_CODELIST_EXTENSION
-            assert iati.resources.PATH_CODELISTS in path
+            assert expected_root in path
+            assert os.path.isfile(path)
 
     def test_get_codelist_mapping_paths_independent(self):
         """Test getting a list of version-independent Codelist files.
@@ -446,6 +476,7 @@ class TestResourceGetCodelistMappingPaths(object):
 
         assert len(result) == 1
         assert result[0] == iati.resources.create_codelist_mapping_path(std_ver_minor_mixedinst_valid_fullsupport)
+        assert os.path.isfile(result[0])
 
     def test_get_codelist_mapping_paths_independent(self):
         """Test getting a list of version-independent Codelist Mapping files."""
@@ -486,6 +517,7 @@ class TestResourceGetRulesetPaths(object):
 
         assert len(result) == 1
         assert result[0] == iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_STANDARD_NAME, std_ver_minor_mixedinst_valid_fullsupport)
+        assert os.path.isfile(result[0])
 
     def test_get_ruleset_paths_independent(self):
         """Test getting a list of version-independent standard Rulesets."""
@@ -544,6 +576,7 @@ class TestResourceGetSchemaPaths(object):
 
         assert len(result) == 1
         assert result[0] == iati.resources.create_schema_path(func_and_name.schema_name, std_ver_minor_mixedinst_valid_known)
+        assert os.path.isfile(result[0])
 
     def test_get_schema_paths_minor_unknown(self, std_ver_all_mixedinst_valid_unknown, schema_path_func_all):
         """Test getting a list of Org or Activity Schema paths. The requested version is not known by pyIATI."""
@@ -579,10 +612,6 @@ class TestResourceGetSchemaPaths(object):
         assert activity_path in result
         assert org_path in result
 
-        # ensure the paths have at least a minimum amount of content in the files they reference
-        for path in result:
-            assert os.path.getsize(path) > 10000
-
     def test_get_all_schema_paths_major_known(self, std_ver_major_uninst_valid_known):
         """Test getting a list of all Schema paths. The requested version is a known integer version. The list should contain paths for each supported minor within the major."""
         versions_at_major = [version for version in iati.version.versions_for_integer(std_ver_major_uninst_valid_known)]
@@ -601,7 +630,7 @@ class TestResourceGetSchemaPaths(object):
 
 
 class TestResourceGetPathsNotAVersion(object):
-    """A container for get_x_path() tests where the function is provided a value that cannot represent a version."""
+    """A container for get_*_paths() tests where the function is provided a value that cannot represent a version."""
 
     @pytest.fixture(params=[
         iati.resources.get_codelist_paths,

@@ -57,7 +57,10 @@ class Version(semantic_version.Version):
 
     @property
     def decimal(self):
-        """int: The IATIver Decimal Component of the Version."""
+        """int: The IATIver Decimal Component of the Version.
+
+        This differs from the minor component since it starts at .01 (1) rather than .0 (0).
+        """
         return self.minor + 1
 
     @decimal.setter
@@ -260,10 +263,7 @@ def allow_fully_supported_version(input_func):
             ValueError: If the input version is not a Decimal iati.Version that pyIATI fully supports.
 
         """
-        try:
-            version = args[0]
-        except IndexError:
-            raise TypeError('The decorated function does not take any arguments. It must have arguments, the first of which is a specified version.')
+        version = _extract_version_arg(args)
 
         if not _is_fully_supported(version):
             raise ValueError('{0} is not a fully supported version of the IATI Standard in a normalised representation.'.format(repr(version)))
@@ -295,10 +295,7 @@ def allow_known_version(input_func):
             ValueError: If the input version is not a known Decimal iati.Version.
 
         """
-        try:
-            version = args[0]
-        except IndexError:
-            raise TypeError('The decorated function does not take any arguments. It must have arguments, the first of which is a specified version.')
+        version = _extract_version_arg(args)
 
         if not _is_known(version):
             raise ValueError('{0} is not a known version of the IATI Standard in a normalised representation.'.format(repr(version)))
@@ -332,10 +329,7 @@ def allow_possible_version(input_func):
             ValueError: If the input version is a string, Decimal or Integer, but the value cannot represent a Version Number.
 
         """
-        try:
-            version = args[0]
-        except IndexError:
-            raise TypeError('The decorated function does not take any arguments. It must have arguments, the first of which is a specified version.')
+        version = _extract_version_arg(args)
 
         _prevent_non_version_representations(version)
 
@@ -364,10 +358,7 @@ def decimalise_integer(input_func):
     """
     def wrap_decimalise_integer(*args, **kwargs):
         """Act as a wrapper to convert input Integer Version numbers to a normalised format Decimal Version."""
-        try:
-            version = args[0]
-        except IndexError:
-            raise TypeError('The decorated function does not take any arguments. It must have arguments, the first of which is a specified version.')
+        version = _extract_version_arg(args)
 
         version = _decimalise_integer(version)
 
@@ -388,10 +379,7 @@ def normalise_decimals(input_func):
     """
     def wrap_normalise_decimals(*args, **kwargs):
         """Act as a wrapper to ensure a version number is an iati.Version if a Decimal version is specified."""
-        try:
-            version = args[0]
-        except IndexError:
-            raise TypeError('The decorated function does not take any arguments. It must have arguments, the first of which is a specified version.')
+        version = _extract_version_arg(args)
 
         version = _normalise_decimal_version(version)
 
@@ -439,6 +427,27 @@ def _decimalise_integer(version):
             version = Version(str(major_version) + '.0.0')
     except (ValueError, TypeError, OverflowError):
         pass
+
+    return version
+
+
+def _extract_version_arg(arg_list):
+    """Extract a version argument from an args list, raising an error if something is wrong.
+
+    Args:
+        arg_list (list): The input args to extract a version argument from. The `version` argument is expected to be the first argument.
+
+    Returns:
+        Any: The value in the specified argument index.
+
+    Raises:
+        TypeError: If the argument list is not long enough to access the specified index (since the function the argument list was taken from does not permit the required number of attributes).
+
+    """
+    try:
+        version = arg_list[0]
+    except IndexError:
+        raise TypeError('The decorated function does not take any arguments. It must have arguments, the first of which is a specified version.')
 
     return version
 

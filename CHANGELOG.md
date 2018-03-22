@@ -18,7 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - [Tests] Separate testing of `bytes` and `str` type values for Python 3+. [#286]
 - [Tests] Mark tests requiring updates when adding a new version. [#288]
 - [Tests] Add another build stage to check that docs build when merging to dev or master. [#292]
-- [Tests] Significantly improve test coverage of the `resources` module.
+- [Tests] Significantly improve test coverage of the `resources` module. [#297]
 
 ### Changed
 
@@ -28,10 +28,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [General] Change default behavior of `version` argument as per proposal in #218. [#223]
 
-- [Resources] Change the folder containing version-independent data from `version-independent` to `version_independent` for consistency.
-- [Resources] `create_*_path()` functions will raise errors when given an unknown version.
-- [Resources] `get_*_paths()` functions now verify that paths point to actual files before returning them.
-- [Resources] `get_*_paths()` functions raise errors when given values that cannot represent a version.
+- [Resources] Change the folder containing version-independent data from `version-independent` to `version_independent` for consistency. [#297]
+- [Resources] `create_*_path()` functions will raise errors when given an unknown version. [#297]
+- [Resources] `get_*_paths()` functions now verify that paths point to actual files before returning them. [#297]
+- [Resources] `get_*_paths()` functions raise errors when given values that cannot represent a version. [#297]
 
 - [Utility] Move function acting on versions to `version` module. [#280]
 - [Utility] Raise a TypeError rather than a ValueError when `convert_xml_to_tree()` is given a value of incorrect type. [#286]
@@ -43,9 +43,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Removed
 
 - [Defaults] Remove `get_default_version_if_none()`. [#243]
-- [Defaults] Remove `version` argument for `ruleset_schema()` since this is version-independent.
+- [Defaults] Remove `version` argument for `ruleset_schema()` since this is version-independent. [#243]
 
-- [Resources] Functions in the `resources` module no longer have default values for the `version` argument.
+- [Resources] Functions in the `resources` module no longer have default values for the `version` argument. [#297]
 
 ### Fixed
 
