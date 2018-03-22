@@ -47,6 +47,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Resources] Functions in the `resources` module no longer have default values for the `version` argument. [#297]
 
+- [Compatibility] Drop support for Python 3.4. [#309]
+
 ### Fixed
 
 - [Resources] Re-implement support for 2.03 from the ground up to improve correctness and reduce number of undetectable bugs. [#307]

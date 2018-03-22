@@ -462,7 +462,7 @@ def path_for_version(path, version):
         Does not check whether anything exists at the specified path.
 
     """
-    try:  # python2 and python3.4 compatibility
+    try:  # python2 compatibility
         _ensure_portable_filepath(path)
     except ValueError:
         if path != '':
@@ -516,7 +516,7 @@ def _ensure_portable_filepath(maybe_filepath):
         This restriction is currently tight since it's easier to tighten than loosen restrictions. The restriction could be relaxed over time.
 
     Todo:
-        Consider utilising the Python3.4 concept of path-like objects.
+        Consider utilising the Python3 concept of path-like objects from the pathlib module.
 
     """
     if not isinstance(maybe_filepath, str):
