@@ -43,6 +43,6 @@ jobs:
           python: 3.5
           install:
             - pip install -U pip wheel
-            - pip install -r requirements-dev.txt
+            - pip install -r requirements_dev.txt
           script: make docs
           if: branch IN (master, dev)
