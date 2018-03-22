@@ -513,7 +513,7 @@ def _ensure_portable_filepath(maybe_filepath):
         This restriction is currently tight since it's easier to tighten than loosen restrictions. The restriction could be relaxed over time.
 
     Todo:
-        Consider utilising the Python3.4 concept of path-like objects.
+        Consider utilising the Python3 concept of path-like objects from the pathlib module.
 
     """
     if not isinstance(maybe_filepath, str):
