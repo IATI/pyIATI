@@ -10,37 +10,49 @@ import iati.tests.utilities
 class TestDefault(object):
     """A container for tests relating to Default data."""
 
-    @pytest.mark.parametrize("invalid_version", iati.tests.utilities.generate_test_types(['none'], True))
-    @pytest.mark.parametrize("func_to_check", [
-        iati.default.get_default_version_if_none,
+    @pytest.fixture(params=[
         iati.default.codelists,
         iati.default.codelist_mapping,
         iati.default.ruleset,
-        iati.default.ruleset_schema,
         iati.default.activity_schema,
         iati.default.organisation_schema
     ])
-    def test_invalid_version(self, invalid_version, func_to_check):
+    def default_data_func_version_param(self, request):
+        """Return a default data function that takes only a version as a parameter."""
+        return request.param
+
+    def test_invalid_version(self, std_ver_minor_uninst_valueerr_str_decimal, default_data_func_version_param):
         """Check that an invalid version causes an error when obtaining default data."""
         with pytest.raises(ValueError):
-            func_to_check(invalid_version)
+            default_data_func_version_param(std_ver_minor_uninst_valueerr_str_decimal)
+
+    def test_major_version_matches_minor(self, std_ver_major_uninst_valid_known, default_data_func_version_param):
+        """Check that specifying a major version returns the same info as the corresponding decimal."""
+        minor_version = iati.version._decimalise_integer(std_ver_major_uninst_valid_known)  # pylint: disable=protected-access
+
+        assert default_data_func_version_param(std_ver_major_uninst_valid_known) == default_data_func_version_param(minor_version)
 
 
 class TestDefaultCodelists(object):
     """A container for tests relating to default Codelists."""
 
-    @pytest.fixture
-    def codelist_name(self):
+    @pytest.fixture(params=[
+        'Country',  # Codelist that has always been Non-Embedded
+        'ActivityStatus',  # Codelist that has always been Embedded
+        'ActivityScope',  # Codelist migrated from Embedded to NE alongside 2.03
+    ])
+    def codelist_name(self, request):
         """Return the name of a valid Codelist."""
-        return 'Country'
+        request.applymarker(pytest.mark.latest_version('2.03'))
+
+        return request.param
 
     @pytest.fixture
     def codelists_with_no_name_codes(self):
         """Return the names of Codelists where Codes do not have names."""
         return ['FileFormat', 'Version']
 
-    @pytest.mark.parametrize("invalid_version", iati.tests.utilities.generate_test_types(['none'], True))
-    def test_invalid_version_single_codelist(self, invalid_version, codelist_name):
+    def test_invalid_version_single_codelist(self, std_ver_minor_uninst_valueerr_str_decimal, codelist_name):
         """Check that an invalid version causes an error when obtaining a single default Codelist.
 
         Note:
@@ -48,15 +60,15 @@ class TestDefaultCodelists(object):
 
         """
         with pytest.raises(ValueError):
-            iati.default.codelist(codelist_name, invalid_version)
+            iati.default.codelist(codelist_name, std_ver_minor_uninst_valueerr_str_decimal)
 
-    def test_default_codelist_valid_at_all_versions(self, codelist_name, standard_version_optional):
+    def test_default_codelist_valid_at_all_versions(self, codelist_name, std_ver_minor_mixedinst_valid_fullsupport):
         """Check that a named default Codelist may be located.
 
         Todo:
             Check internal values beyond the codelists being the correct type.
         """
-        codelist = iati.default.codelist(codelist_name, *standard_version_optional)
+        codelist = iati.default.codelist(codelist_name, std_ver_minor_mixedinst_valid_fullsupport)
 
         assert isinstance(codelist, iati.Codelist)
         assert codelist.name == codelist_name
@@ -68,19 +80,19 @@ class TestDefaultCodelists(object):
         ('1.05', 'AidTypeFlag', iati.Codelist),
         ('2.01', 'AidTypeFlag', ValueError),
         ('2.02', 'AidTypeFlag', ValueError),
-        ('2.03', 'AidTypeFlag', ValueError),
         ('1.04', 'BudgetStatus', ValueError),
         ('1.05', 'BudgetStatus', ValueError),
         ('2.01', 'BudgetStatus', ValueError),
         ('2.02', 'BudgetStatus', iati.Codelist),
         ('2.03', 'BudgetStatus', iati.Codelist)
     ])
+    @pytest.mark.latest_version('2.03')
     def test_default_codelist_valid_only_at_some_versions(self, codelist_name, version, expected_type):
         """Check that a codelist that is valid at some version/s is not valid in other versions.
 
         Example:
             AidTypeFlag was an embedded codelist in v1.04 and v1.05, but is not valid at any version after this.
-            BudgetStatus was added as an embedded codelist in v2.02, so is not valid prior to this.
+            For example, BudgetStatus was added as an embedded codelist in v2.02, so is not valid prior to this.
         """
         try:  # Note pytest.raises() is not used here in order to keep this test flexible for parameterization.
             result = iati.default.codelist(codelist_name, version)
@@ -90,10 +102,10 @@ class TestDefaultCodelists(object):
         assert isinstance(result, expected_type)
 
     @pytest.mark.parametrize("name", iati.tests.utilities.generate_test_types(['str'], True))
-    def test_default_codelist_invalid_at_all_versions(self, name, standard_version_optional):
+    def test_default_codelist_invalid_at_all_versions(self, name, std_ver_minor_mixedinst_valid_fullsupport):
         """Check that trying to find a default Codelist with an invalid name raises an error."""
         with pytest.raises(ValueError) as excinfo:
-            iati.default.codelist(name, *standard_version_optional)
+            iati.default.codelist(name, std_ver_minor_mixedinst_valid_fullsupport)
 
         assert 'There is no default Codelist in version' in str(excinfo.value)
 
@@ -112,50 +124,60 @@ class TestDefaultCodelists(object):
             for code in codelist.codes:
                 assert isinstance(code, iati.Code)
 
-    def test_default_codelists_codes_have_name(self, standard_version_optional, codelists_with_no_name_codes):
+    def test_default_codelists_codes_have_name(self, std_ver_minor_mixedinst_valid_fullsupport, codelists_with_no_name_codes):
         """Check that Codelists with Codes that should have names do have names.
 
         Codes in a Codelist should have a name. This checks that default Codelists have names. A small number of Codelists are excluded because they are known not to have names.
 
         """
-        codelists = iati.default.codelists(*standard_version_optional)
+        codelists = iati.default.codelists(std_ver_minor_mixedinst_valid_fullsupport)
         relevant_codelists = [codelist for codelist in codelists.values() if codelist.name not in codelists_with_no_name_codes]
 
         for codelist in relevant_codelists:
             for code in codelist.codes:
                 assert code.name != ''
 
-    def test_default_codelists_no_name_codes_have_no_name(self, standard_version_optional, codelists_with_no_name_codes):
+    def test_default_codelists_no_name_codes_have_no_name(self, std_ver_minor_mixedinst_valid_fullsupport, codelists_with_no_name_codes):
         """Check that Codelists with Codes that are known to have no name have no name.
 
         Ideally all Codes would have a name. There are a couple of Codelists where Codes do not. This test is intended to identify the point in time that names are added.
 
         """
-        codelists = iati.default.codelists(*standard_version_optional)
+        codelists = iati.default.codelists(std_ver_minor_mixedinst_valid_fullsupport)
         relevant_codelists = [codelist for codelist in codelists.values() if codelist.name in codelists_with_no_name_codes]
 
         for codelist in relevant_codelists:
             for code in codelist.codes:
                 assert code.name == ''
 
+    def test_codelists_in_mapping_exist(self, std_ver_minor_inst_valid_fullsupport):
+        """Check that the Codelists mentioned in a Codelist mapping file at a given version actually exist."""
+        codelist_names = iati.default.codelists(std_ver_minor_inst_valid_fullsupport).keys()
+        mapping = iati.default.codelist_mapping(std_ver_minor_inst_valid_fullsupport)
+
+        for expected_codelist in mapping.keys():
+            assert expected_codelist in codelist_names
+
+    @pytest.mark.fixed_to_202
     def test_codelist_mapping_condition(self):
         """Check that the Codelist mapping file is having conditions read.
 
         Todo:
             Split into multiple tests.
         """
-        mapping = iati.default.codelist_mapping()
+        mapping = iati.default.codelist_mapping('2.02')
 
         assert mapping['Sector'][0]['condition'] == "@vocabulary = '1' or not(@vocabulary)"
         assert mapping['Version'][0]['condition'] is None
 
-    def test_codelist_mapping_xpath(self, standard_version_optional):
+    def test_codelist_mapping_xpath(self, std_ver_minor_mixedinst_valid_fullsupport):
         """Check that the Codelist mapping file is being read for both org and activity mappings.
 
         Todo:
             Split into multiple tests.
+
         """
-        mapping = iati.default.codelist_mapping(*standard_version_optional)
+        mapping = iati.default.codelist_mapping(std_ver_minor_mixedinst_valid_fullsupport)
         currency_xpaths = [currency_mapping['xpath'] for currency_mapping in mapping['Currency']]
 
         expected_xpaths = [
@@ -185,20 +207,21 @@ class TestDefaultCodelists(object):
 class TestDefaultRulesets(object):
     """A container for tests relating to default Rulesets."""
 
-    def test_default_ruleset(self, standard_version_optional):
+    def test_default_ruleset(self, std_ver_minor_mixedinst_valid_fullsupport):
         """Check that the default Ruleset is correct.
 
         Todo:
             Check internal values beyond the Ruleset being the correct type.
 
         """
-        ruleset = iati.default.ruleset(*standard_version_optional)
+        ruleset = iati.default.ruleset(std_ver_minor_mixedinst_valid_fullsupport)
 
         assert isinstance(ruleset, iati.Ruleset)
 
+    @pytest.mark.fixed_to_202
     def test_default_ruleset_validation_rules_valid(self, schema_ruleset):
         """Check that a fully valid IATI file does not raise any type of error (including rules/rulesets)."""
-        data = iati.tests.resources.load_as_dataset('valid_std_ruleset')
+        data = iati.tests.resources.load_as_dataset('valid_std_ruleset', '2.02')
         result = iati.validator.full_validation(data, schema_ruleset)
 
         assert iati.validator.is_xml(data.xml_str)
@@ -228,6 +251,7 @@ class TestDefaultRulesets(object):
         )
         # Note the Rules relating to 'dependent', 'no_more_than_one', 'regex_no_matches', 'startswith' and 'unique' are not used in the Standard Ruleset.
     ])
+    @pytest.mark.fixed_to_202
     def test_default_ruleset_validation_rules_invalid(self, schema_ruleset, rule_error, invalid_dataset_name, info_text):
         """Check that the expected rule error is detected when validating files containing invalid data for that rule.
 
@@ -239,9 +263,8 @@ class TestDefaultRulesets(object):
             Consider whether this test should remove all warnings and assert that there is only the expected warning contained within the test file.
 
             Check that the expected missing elements appear the the help text for the given element.
-
         """
-        data = iati.tests.resources.load_as_dataset(invalid_dataset_name)
+        data = iati.tests.resources.load_as_dataset(invalid_dataset_name, '2.02')
         result = iati.validator.full_validation(data, schema_ruleset)
         errors_for_rule_error = result.get_errors_or_warnings_by_name(rule_error)
         errors_for_ruleset = result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')
@@ -257,23 +280,25 @@ class TestDefaultRulesets(object):
 class TestDefaultSchemas(object):
     """A container for tests relating to default Schemas."""
 
-    def test_default_activity_schemas(self, standard_version_optional):
+    def test_default_activity_schemas(self, std_ver_minor_mixedinst_valid_fullsupport):
         """Check that the default ActivitySchemas are correct.
 
         Todo:
             Check internal values beyond the schemas being the correct type.
+            Test that unpopulated Schemas can be obtained with only partially supported versions.
         """
-        schema = iati.default.activity_schema(*standard_version_optional)
+        schema = iati.default.activity_schema(std_ver_minor_mixedinst_valid_fullsupport)
 
         assert isinstance(schema, iati.ActivitySchema)
 
-    def test_default_organisation_schemas(self, standard_version_optional):
+    def test_default_organisation_schemas(self, std_ver_minor_mixedinst_valid_fullsupport):
         """Check that the default ActivitySchemas are correct.
 
         Todo:
             Check internal values beyond the schemas being the correct type.
+            Test that unpopulated Schemas can be obtained with only partially supported versions.
         """
-        schema = iati.default.organisation_schema(*standard_version_optional)
+        schema = iati.default.organisation_schema(std_ver_minor_mixedinst_valid_fullsupport)
 
         assert isinstance(schema, iati.OrganisationSchema)
 
@@ -293,9 +318,9 @@ class TestDefaultSchemas(object):
         iati.default.activity_schema,
         iati.default.organisation_schema
     ])
-    def test_default_schemas_unpopulated(self, schema_func, standard_version_mandatory):
+    def test_default_schemas_unpopulated(self, schema_func, std_ver_minor_mixedinst_valid_fullsupport):
         """Check that the default Codelists for each version contain the expected number of Codelists."""
-        schema = schema_func(standard_version_mandatory[0], False)
+        schema = schema_func(std_ver_minor_mixedinst_valid_fullsupport, False)
 
         assert schema.codelists == set()
         assert schema.rulesets == set()
@@ -310,9 +335,11 @@ class TestDefaultModifications(object):
         return 'Country'
 
     @pytest.fixture
-    def codelist(self, codelist_name):
+    def codelist(self, request, codelist_name):
         """Return a default Codelist that is part of the IATI Standard."""
-        return iati.default.codelist(codelist_name)
+        request.applymarker(pytest.mark.fixed_to_202)
+
+        return iati.default.codelist(codelist_name, '2.02')
 
     @pytest.fixture
     def codelist_non_default(self):
@@ -324,25 +351,25 @@ class TestDefaultModifications(object):
         """Return a Code object that has not been added to a Codelist."""
         return iati.Code('new code value', 'new code name')
 
-    def test_default_codelist_modification(self, codelist_name, new_code, standard_version_optional):
+    def test_default_codelist_modification(self, codelist_name, new_code, std_ver_minor_mixedinst_valid_fullsupport):
         """Check that a default Codelist cannot be modified by adding Codes to returned lists."""
-        default_codelist = iati.default.codelist(codelist_name, *standard_version_optional)
+        default_codelist = iati.default.codelist(codelist_name, std_ver_minor_mixedinst_valid_fullsupport)
         base_default_codelist_length = len(default_codelist.codes)
 
         default_codelist.codes.add(new_code)
-        unmodified_codelist = iati.default.codelist(codelist_name, *standard_version_optional)
+        unmodified_codelist = iati.default.codelist(codelist_name, std_ver_minor_mixedinst_valid_fullsupport)
 
         assert len(default_codelist.codes) == base_default_codelist_length + 1
         assert len(unmodified_codelist.codes) == base_default_codelist_length
 
-    def test_default_codelists_modification(self, codelist_name, new_code, standard_version_optional):
+    def test_default_codelists_modification(self, codelist_name, new_code, std_ver_minor_mixedinst_valid_fullsupport):
         """Check that default Codelists cannot be modified by adding Codes to returned lists with default parameters."""
-        default_codelists = iati.default.codelists(*standard_version_optional)
+        default_codelists = iati.default.codelists(std_ver_minor_mixedinst_valid_fullsupport)
         codelist_of_interest = default_codelists[codelist_name]
         base_default_codelist_length = len(codelist_of_interest.codes)
 
         codelist_of_interest.codes.add(new_code)
-        unmodified_codelists = iati.default.codelists(*standard_version_optional)
+        unmodified_codelists = iati.default.codelists(std_ver_minor_mixedinst_valid_fullsupport)
         unmodified_codelist_of_interest = unmodified_codelists[codelist_name]
 
         assert len(codelist_of_interest.codes) == base_default_codelist_length + 1
@@ -352,18 +379,18 @@ class TestDefaultModifications(object):
         iati.default.activity_schema,
         iati.default.organisation_schema
     ])
-    def test_default_x_schema_modification_unpopulated(self, default_call, codelist, standard_version_mandatory):
+    def test_default_x_schema_modification_unpopulated(self, default_call, codelist, std_ver_minor_mixedinst_valid_fullsupport):
         """Check that unpopulated default Schemas cannot be modified.
 
         Note:
             Implementation is by attempting to add a Codelist to the Schema.
 
         """
-        default_schema = default_call(standard_version_mandatory[0], False)
+        default_schema = default_call(std_ver_minor_mixedinst_valid_fullsupport, False)
         base_codelist_count = len(default_schema.codelists)
 
         default_schema.codelists.add(codelist)
-        unmodified_schema = default_call(standard_version_mandatory[0], False)
+        unmodified_schema = default_call(std_ver_minor_mixedinst_valid_fullsupport, False)
 
         assert len(default_schema.codelists) == base_codelist_count + 1
         assert len(unmodified_schema.codelists) == base_codelist_count
@@ -372,18 +399,18 @@ class TestDefaultModifications(object):
         iati.default.activity_schema,
         iati.default.organisation_schema
     ])
-    def test_default_x_schema_modification_populated(self, default_call, codelist_non_default, standard_version_mandatory):
+    def test_default_x_schema_modification_populated(self, default_call, codelist_non_default, std_ver_minor_mixedinst_valid_fullsupport):
         """Check that populated default Schemas cannot be modified.
 
         Note:
             Implementation is by attempting to add a Codelist to the Schema.
 
         """
-        default_schema = default_call(standard_version_mandatory[0], True)
+        default_schema = default_call(std_ver_minor_mixedinst_valid_fullsupport, True)
         base_codelist_count = len(default_schema.codelists)
 
         default_schema.codelists.add(codelist_non_default)
-        unmodified_schema = default_call(standard_version_mandatory[0], True)
+        unmodified_schema = default_call(std_ver_minor_mixedinst_valid_fullsupport, True)
 
         assert len(default_schema.codelists) == base_codelist_count + 1
         assert len(unmodified_schema.codelists) == base_codelist_count

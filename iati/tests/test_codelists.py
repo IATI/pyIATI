@@ -64,33 +64,37 @@ class TestCodelists(object):
 
     def test_codelist_define_from_xml(self, name_to_set):
         """Check that a Codelist can be generated from an XML codelist definition."""
-        path = iati.resources.create_codelist_path('FlowType')
+        path = iati.resources.create_codelist_path('BudgetType', '2.02')
         xml_str = iati.utilities.load_as_string(path)
         codelist = iati.Codelist(name_to_set, xml=xml_str)
 
-        code_names = ['ODA', 'OOF', 'Non-export credit OOF', 'Officially supported export credits', 'Private grants', 'Private market', 'Private Foreign Direct Investment', 'Other Private flows at market terms', 'Non flow', 'Other flows']
-        code_values = ['10', '20', '21', '22', '30', '35', '36', '37', '40', '50']
+        code_names = ['Original', 'Revised']
+        code_values = ['1', '2']
 
-        assert codelist.name == 'FlowType'
-        assert len(codelist.codes) == 10
+        assert codelist.name == 'BudgetType'
+        assert len(codelist.codes) == 2
         for code in codelist.codes:
             assert code.name in code_names
             assert code.value in code_values
 
+    @pytest.mark.fixed_to_202
     def test_codelist_complete(self):
-        """Check that a Codelist can be generated from an XML codelist definition."""
+        """Check that a complete Codelist can be generated from an XML codelist definition."""
         codelist_name = 'BudgetType'
-        path = iati.resources.create_codelist_path(codelist_name)
+        path = iati.resources.create_codelist_path(codelist_name, '2.02')
         xml_str = iati.utilities.load_as_string(path)
+
         codelist = iati.Codelist(codelist_name, xml=xml_str)
 
         assert codelist.complete is True
 
+    @pytest.mark.fixed_to_202
     def test_codelist_incomplete(self):
-        """Check that a Codelist can be generated from an XML codelist definition."""
+        """Check that an incomplete Codelist can be generated from an XML codelist definition."""
         codelist_name = 'Country'
-        path = iati.resources.create_codelist_path(codelist_name)
+        path = iati.resources.create_codelist_path(codelist_name, '2.02')
         xml_str = iati.utilities.load_as_string(path)
+
         codelist = iati.Codelist(codelist_name, xml=xml_str)
 
         assert codelist.complete is False

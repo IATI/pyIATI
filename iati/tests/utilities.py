@@ -5,9 +5,8 @@ import iati.constants
 import iati.resources
 import iati.tests.resources
 
-
 # This will need updating once test data forcing XML format is fixed
-RULESET_FOR_TESTING = iati.Ruleset(iati.utilities.load_as_string(iati.resources.create_ruleset_path('ruleset_for_tests')))
+RULESET_FOR_TESTING = iati.Ruleset(iati.utilities.load_as_string(iati.resources.create_ruleset_path('ruleset_for_tests', iati.version.STANDARD_VERSION_ANY)))
 """A working Ruleset based on the Standard Ruleset."""
 
 
@@ -20,10 +19,6 @@ SCHEMA_NAME_VALID = 'iati-activities-schema'
 
 XML_TREE_VALID = iati.utilities.load_as_tree(iati.tests.resources.get_test_data_path('valid_not_iati'))
 """An etree that is valid XML but not IATI XML."""
-XML_TREE_VALID_IATI = iati.utilities.load_as_tree(iati.tests.resources.get_test_data_path('valid_iati'))
-"""A valid IATI etree."""
-XML_TREE_VALID_IATI_INVALID_CODE = iati.utilities.load_as_tree(iati.tests.resources.get_test_data_path('valid_iati_invalid_code'))
-"""A valid IATI etree that has an invalid Code value."""
 
 
 _BYTES_VALS = [b'\x80abc', b'\x80abc']

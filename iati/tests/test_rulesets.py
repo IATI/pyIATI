@@ -3,7 +3,7 @@
 Todo:
     Check all tests are still necessary/relevant.
     Condense tests for individual Rules.
-    Try to standardise Rule arrays for extraction.
+    Try to normalise Rule arrays for extraction.
 
 """
 # pylint: disable=protected-access,too-many-lines
@@ -164,19 +164,21 @@ class TestRulesetInitialisation(RulesetFixtures):
 class TestRulesetValidityChecks(RulesetFixtures):
     """A container for tests relating to checking whether a Dataset is valid for a Ruleset."""
 
+    @pytest.mark.fixed_to_202
     def test_ruleset_is_valid_for_valid_dataset(self):
         """Check that a Dataset can be validated against the Standard Ruleset."""
         ruleset = iati.tests.utilities.RULESET_FOR_TESTING
-        valid_dataset = iati.tests.resources.load_as_dataset('valid_std_ruleset')
+        valid_dataset = iati.tests.resources.load_as_dataset('valid_std_ruleset', '2.02')
 
         assert ruleset.is_valid_for(valid_dataset)
 
     @pytest.mark.parametrize("invalid_dataset", [
-        iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_bad_date_order'),
-        iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_bad_identifier'),
-        iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_does_not_sum_100'),
-        iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_missing_sector_element')
+        iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_bad_date_order', '2.02'),
+        iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_bad_identifier', '2.02'),
+        iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_does_not_sum_100', '2.02'),
+        iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_missing_sector_element', '2.02')
     ])
+    @pytest.mark.fixed_to_202
     def test_ruleset_is_invalid_for_invalid_dataset(self, invalid_dataset):
         """Check that a Dataset can be invalidated against the Standard Ruleset."""
         ruleset = iati.tests.utilities.RULESET_FOR_TESTING
@@ -188,9 +190,9 @@ class TestRulesetValidityChecks(RulesetFixtures):
         ('ruleset/invalid_sum', 'sum', {'paths': ['element42'], 'sum': 50}),
     ])
     def test_ruleset_is_invalid_for_valueerror(self, dataset_name, rule_type, case):
-        """Check that `ValueError`s are correctly handled when checking a Ruleset.
+        """Check that ValueErrors are correctly handled when checking a Ruleset.
 
-        Rulesets should absorb them and return `False` rather than passing them on to the caller.
+        Rulesets should absorb them and return False rather than passing them on to the caller.
 
         """
         invalid_dataset = iati.tests.resources.load_as_dataset(dataset_name)
@@ -1367,7 +1369,7 @@ class TestRuleSum(RuleSubclassTestBase):
     """A container for tests relating to RuleSum.
 
     Todo:
-        **Determine if assumption that double counting of elements should be not permitted when duplicate paths specified, but should when multiple elements exist, is correct.
+        Determine if assumption that double counting of elements should be not permitted when duplicate paths specified, but should when multiple elements exist, is correct.
 
     """
 
