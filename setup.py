@@ -15,7 +15,7 @@ setup(
         # JSON schema parsing validation
         'jsonschema==2.6.0',
         # XML handling library
-        'lxml==4.2.3',
+        'lxml==4.2.4',
         # YAML parsing for validation error codes
         'PyYAML==3.13',
         # SemVer library
