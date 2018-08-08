@@ -17,7 +17,6 @@ Welcome to pyIATI's documentation!
 Indices and tables
 ==================
 
-* :ref: `README`
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`

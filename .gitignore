@@ -9,6 +9,7 @@ pyenv2/
 # generated docs files
 docs/source/iati.rst
 docs/source/modules.rst
+docs/source/README.rst
 
 # defined files to ignore
 ignore_*
