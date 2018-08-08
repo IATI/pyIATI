@@ -1,10 +1,12 @@
-# iati.core
+# pyIATI
 
-The iati.core Python module.
+A developers’ toolkit for IATI.
 
-[![Build Status](https://travis-ci.org/IATI/iati.core.svg?branch=master)](https://travis-ci.com/IATI/iati.core) [![Requirements Status](https://requires.io/github/IATI/iati.core/requirements.svg?branch=master)](https://requires.io/github/IATI/iati.core/requirements/?branch=master)
+[![Build Status](https://travis-ci.org/IATI/pyIATI.svg?branch=master)](https://travis-ci.org/IATI/pyIATI) [![PyPI](https://img.shields.io/pypi/v/pyIATI.svg)](https://pypi.python.org/pypi/pyIATI)
 
-Varying between: [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges) and [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges) (see docstrings)
+`master`: [![Requirements Status](https://requires.io/github/IATI/pyIATI/requirements.svg?branch=master)](https://requires.io/github/IATI/pyIATI/requirements/?branch=master) `dev`: [![Requirements Status](https://requires.io/github/IATI/pyIATI/requirements.svg?branch=dev)](https://requires.io/github/IATI/pyIATI/requirements/?branch=dev)
+
+Varying between: ![experimental](https://img.shields.io/badge/stability-experimental-orange.svg) and ![unstable](https://img.shields.io/badge/stability-unstable-yellow.svg) (see docstrings)
 
 General Information
 ===================
@@ -15,11 +17,9 @@ This is a Python module containing IATI functionality that would otherwise be re
 
 **Feedback, suggestions, use-case descriptions, bug reports and so on are much appreciated** - it's far better to know of issues earlier in the development cycle. Please use [Github Issues](https://github.com/IATI/iati.core/issues) for this.
 
-At present the library (`core`) represents the contents of the [IATI Single Source of Truth (SSOT)](https://github.com/iati/iati-standard-ssot). It is able to handle a single version of the Standard (2.02 by default, although it is possible to change data files). Some placeholder work has been undertaken to deal with multiple standard versions. It is planned that this work will be completed once surrounding APIs are nearer a stable state.
+At present the library (`core`) represents much of the contents of the [IATI Single Source of Truth (SSOT)](https://github.com/iati/iati-standard-ssot).
 
 More pleasant API naming, better hiding of underlying `lxml`, full documentation, improved error handling, and a greater number of tests for edge-cases are known key areas for improvement.
-
-It is planned that different sections of the library, such as `validate` are split into their own repositories. They exist within this repository at present to help speed up the iteration process.
 
 
 General Installation for System Use
@@ -30,7 +30,7 @@ General Installation for System Use
 apt-get install python-pip libxml2-dev libxslt-dev python-dev
 
 # install this package
-python setup.py install
+pip install pyIATI
 ```
 
 Documentation
@@ -46,94 +46,201 @@ sphinx-build -b html docs/source/ docs/build/
 
 The file `docs/build/index.html` serves as the documentation home page.
 
+**Note:** These are a work-in-progress.
+
+
+IATI Version Support
+====================
+
+pyIATI fully supports versions `1.04`, `1.05`, `2.01`, `2.02` and `2.03` of the IATI Standard.
+
+Schemas for versions `1.01`, `1.02` and `1.03` are included in the `iati/resources/standard` directory but are not yet accessible using the available pyIATI functions to return default schemas.
+
 
 Usage
 =====
 
-**WARNING:** This `iati.core` library is currently in active development. **All usage examples are subject to change**, as we iteratively improve functionality.  Therefore, the following examples are provided for illustrative purposes only.  As the library matures, this message and other documentation will be updated accordingly!
+**WARNING:** This library is currently in active development. **All usage examples are subject to change**, as we iteratively improve functionality. Therefore, the following examples are provided for illustrative purposes only. As the library matures, this message and other documentation will be updated accordingly.
 
-Once installed, the library provides functionality to represent IATI Schemas, Codelists and publisher datasets as Python objects.  The IATI Standard schemas and codelists are provided out of the box, however this can be manipulated if bespoke versions of the Schemas/Codelists are required.
+Once installed, the library provides functionality to represent IATI Schemas, Codelists and publisher datasets as Python objects. The IATI Standard schemas and codelists are provided out of the box (using `iati.default`), however this can be manipulated if bespoke versions of the Schemas/Codelists are required.
 
 ### Loading an XSD Schema
 
-A number of default IATI `.xsd` schema files are included as part of the library. They are stored in the folder: `iati.core/iati/core/resources/schemas/202/`
+A number of default IATI `.xsd` schema files are included as part of the library. They are stored in the folder: `iati.core/iati/core/resources/schemas/`
 
-The following example loads the default IATI v2.02 `iati-activities-schema.xsd` schema:
+The following example loads the latest IATI Activity Schema:
 
 ```python
-import iati.core.default
-schema = iati.core.default.schema('iati-activities-schema')
+import iati.default
+schema = iati.default.activity_schema()
 ```
 
-Helper functions will be written in due course to return all xpaths within a schema, as well as documentation for each element.
+By default, the default Schema will be populated with other information such as Codelists and Rulesets for the specified version of the Standard.
 
-### Loading codelists
-
-A given IATI codelist can be added to the schema. Example using the [Country](http://iatistandard.org/codelists/Country/) codelist.
+To access an Organisation Schema for version 1.05, with no additional information added:
 
 ```python
-import iati.core.default
-schema.codelists.add(iati.core.default.codelist('Country'))
+import iati.default
+schema = iati.default.organisation_schema('1.05', False)
 ```
 
-The default collection of IATI codelists can be added using:
+Helper functions will be written in due course to return all XPaths within a Schema, as well as documentation for each element. Work in this area can be seen in the `get-data-from-schema` branch.
+
+### Loading Codelists
+
+A given IATI Codelist can be added to a Schema. Example using the [Country](http://iatistandard.org/codelists/Country/) codelist.
 
 ```python
-import iati.core.default
-for codelist in iati.core.default.codelists().values():
-    schema.codelists.add(codelist)
+import iati.default
+country_codelist = iati.default.codelist('Country')
+schema.codelists.add(country_codelist)
+```
+
+All Codelists for the latest version of the Standard can be accessed with:
+
+```python
+import iati.default
+all_latest_codelists = iati.default.codelists():
 ```
 
 ### Loading Rulesets
 
 The default IATI Ruleset can be loaded by using:
 
-```
-import iati.core.default
-
-iati.core.default.ruleset()
+```python
+import iati.default
+iati.default.ruleset()
 ```
 
 If you wish to load your own Ruleset you can do this using:
 
-```
-import iati.core.resources
-import iati.core.Rulesets
+```python
+import iati.rulesets
+import iati.utilities
 
-ruleset_str = iati.core.resources.load_as_string(filepath)
+# Load a local Ruleset
+ruleset_str = iati.utilities.load_as_string('/absolute/path/to/ruleset.json')
+
 # To create a Ruleset object from your ruleset_str:
-iati.core.Ruleset(ruleset_str)
+iati.Ruleset(ruleset_str)
 ```
 
-**Note:** This functionality is not yet implemented.
+### Working with IATI Datasets
 
-Validate an IATI Dataset against the Standard Ruleset:
-
-To be added.
-
-
-### Working with IATI datasets
-
-#### Loading a dataset
+#### Loading a dataset - local
 
 ```python
-import iati.core.data
+import iati.utilities
 
 # Load a local file
-with open('path/to/iati-activites.xml', 'r') as xml_file_object:
-    dataset_as_string = xml_file_object.read()
+dataset = iati.utilities.load_as_dataset('/absolute/path/to/iati-activites.xml')
+```
+
+#### Loading a dataset - remote
+
+```python
+import iati.data
 
 # Load a remote file
 # Assumes the Requests library is installed: http://docs.python-requests.org/
 import requests
 dataset_as_string = requests.get('http://XML_FILE_URL_HERE').text
 
-dataset = iati.core.Dataset(dataset_as_string)
+dataset = iati.Dataset(dataset_as_string)
 ```
+
+
+### Validating datasets
+
+A `Dataset` object can be validated for adherance to XML/IATI schemas can be verified using methods in `iati.validator`.
+
+#### Simple validation
+
+Returns a number of booleans:
+
+```python
+import iati.default
+import iati.validator
+
+# Set-up a sample dataset and get the default v2.03 schema
+>>> dataset = iati.Dataset("""
+... <iati-activities version="2.03">
+...   <iati-activity>
+...   </iati-activity>
+... </iati-activities>
+... """)  # Dataset is XML, but not IATI XML (given missing mandatory elements).
+>>> v203_schema = iati.default.activity_schema('2.03')
+
+# Is the Dataset even XML?
+>>> iati.validator.is_xml(dataset)
+True
+
+# Does the Dataset meet a version of the IATI Schema?
+>>> iati.validator.is_iati_xml(dataset, v203_schema)
+False
+
+# Does the Dataset meet a version of the IATI Schema AND the IATI Ruleset?
+>>> iati.validator.is_valid(dataset, v203_schema)
+False
+```
+
+#### Detailed validation
+
+Datasets can be validated to return a `ValidationErrorLog` can be performed using:
+
+```python
+import iati.default
+import iati.validator
+
+# Set-up a sample dataset and get the default v2.03 schema
+>>> dataset = iati.Dataset("""
+... <iati-activities version="2.03">
+...   <iati-activity>
+...   </iati-activity>
+... </iati-activities>
+... """)  # Dataset is XML, but not IATI XML (given missing mandatory elements).
+>>> v203_schema = iati.default.activity_schema('2.03')
+
+# Is the Dataset even XML? (Returns a ValidationErrorLog object)
+>>> error_log = iati.validator.full_validation(dataset, v203_schema)
+
+# The error log can be read:
+>>> len(error_log)  # Number or errors or warnings found
+25
+
+>>> error_log.contains_errors()  # Boolean if at least one error is present
+True
+
+>>> error_log.contains_warnings() # Boolean if at least one warning is present
+True
+
+# Let's look at the first error only
+>>> first_error = error_log[0]
+>>> first_error.info
+"<string>:2:0:ERROR:SCHEMASV:SCHEMAV_ELEMENT_CONTENT: Element 'iati-activity': Missing child element(s). Expected is ( iati-identifier )."
+
+>>> first_error.description
+'A different element was found than was expected.'
+
+>>> first_error.help
+'There are a number of mandatory elements that an IATI data file must contain. Additionally, these must occur in the required order.\nFor more information about what an XML element is, see https://www.w3schools.com/xml/xml_elements.asp'
+
+>>> first_error.status
+'error'
+
+>>> first_error.name
+'err-not-iati-xml-missing-required-element'
+
+# For 'value not on codelist' errors, the following ValidationError properties may be useful
+# ValidationError.actual_value
+# ValidationError.column_number
+# ValidationErrorline_number
+```
+
 
 #### Accessing data
 
-The `Dataset` object contains an `xml_tree` attribute (itself an `lxml.etree` object). [XPath expessions](https://www.w3schools.com/xml/xpath_intro.asp) can be used to extract desired information from the dataset.  For example:
+The `Dataset` object contains an `xml_tree` attribute (itself an `lxml.etree` object). [XPath expessions](https://www.w3schools.com/xml/xpath_intro.asp) can be used to extract desired information from the dataset. For example:
 
 ```python
 # WARNING: The following examples assume the source dataset file is produced in IATI v2.x format
@@ -170,7 +277,7 @@ virtualenv -p python3 pyenv
 source pyenv/bin/activate
 
 # install Python package dependencies
-pip install -r requirements-dev.txt
+pip install -r requirements_dev.txt
 ```
 
 
@@ -196,7 +303,7 @@ radon cc iati --no-assert -nc
 Alternatively, the Makefile can be used.
 
 ```
-make tests
+make test
 make lint
 make complexity
 make docs
@@ -205,25 +312,6 @@ make docs
 
 make all
 ```
-
-
-Overall TODOs
-=============
-
-- Clearer Configuration
-- Docs
-  - Examples
-  - Formalise Stability
-  - Getting Started Guides
-  - Tutorial - example usage
-- Error Handling
-- Licensing
-- Add IATI Standard Rulesets / Rules
-- Stablise API
-- Add versions of the Standard other than the latest (v2.02)
-- Add further tests
-- Add error cases
-- Potentially look at proper fuzzing
 
 
 Licensing

@@ -1,20 +1,25 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = 'iati.core',
-    version = '0.1dev',
+    name = 'pyIATI',
+    version = '0.3.0',
     description = 'Python library representing the IATI Schemas, Codelists and Rulesets',
     author = 'IATI Technical Team and other authors',
     author_email = 'code@iatistandard.org',
     url='http://iatistandard.org/',
-    packages = find_packages(exclude='iati/core/tests'),
+    packages = find_packages(),
+    include_package_data = True,
     install_requires = [
+        # detecting character encoding of files
+        'chardet==3.0.4',
         # JSON schema parsing validation
         'jsonschema==2.6.0',
         # XML handling library
-        'lxml==3.8.0',
-        # python2/python3 compatibility library
-        'six==1.10.0'
+        'lxml==4.2.4',
+        # YAML parsing for validation error codes
+        'PyYAML==3.13',
+        # SemVer library
+        'semantic_version==2.6.0'
         ],
     classifiers = [
         'Development Status :: 2 - Pre-Alpha',
@@ -22,8 +27,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Topic :: Scientific/Engineering :: Information Analysis',
