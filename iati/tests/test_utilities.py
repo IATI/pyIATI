@@ -1,21 +1,21 @@
 """A module containing tests for the library implementation of accessing utilities."""
 from lxml import etree
 import pytest
-import six
 import iati.resources
 import iati.tests.utilities
 import iati.utilities
 
 
-class TestUtilities(object):
+class TestUtilities:
     """A container for tests relating to utilities."""
 
     @pytest.fixture
-    def schema_base_tree(self):
+    def schema_base_tree(self, request):
         """Return schema_base_tree."""
-        activity_schema_path = iati.resources.create_schema_path(
-            iati.tests.utilities.SCHEMA_ACTIVITY_NAME_VALID
-        )
+        request.applymarker(pytest.mark.fixed_to_202)
+
+        activity_schema_path = iati.resources.get_activity_schema_paths('2.02')[0]
+
         return iati.ActivitySchema(activity_schema_path)._schema_base_tree  # pylint: disable=protected-access
 
     def test_add_namespace_schema_new(self, schema_base_tree):
@@ -137,9 +137,10 @@ class TestUtilities(object):
 
         assert 'The `new_ns_uri` parameter must be a valid URI.' in str(excinfo.value)
 
+    @pytest.mark.fixed_to_202
     def test_convert_tree_to_schema(self):
         """Check that an etree can be converted to a schema."""
-        path = iati.resources.create_schema_path('iati-activities-schema')
+        path = iati.resources.get_activity_schema_paths('2.02')[0]
 
         tree = iati.utilities.load_as_tree(path)
         if not tree:  # pragma: no cover
@@ -160,19 +161,16 @@ class TestUtilities(object):
         assert tree.getchildren()[0].tag == 'child'
         assert not tree.getchildren()[0].getchildren()
 
-    def test_convert_xml_to_tree_invalid_str(self):
+    @pytest.mark.parametrize("not_xml", iati.tests.utilities.generate_test_types(['bytes', 'str']))
+    def test_convert_xml_to_tree_invalid_str(self, not_xml):
         """Check that an invalid string raises an error when an attempt is made to convert it to an etree."""
-        not_xml = "this is not XML"
-
-        with pytest.raises(etree.XMLSyntaxError) as excinfo:
+        with pytest.raises(etree.XMLSyntaxError):
             iati.utilities.convert_xml_to_tree(not_xml)
 
-        assert excinfo.typename == 'XMLSyntaxError'
-
-    @pytest.mark.parametrize("not_xml", iati.tests.utilities.generate_test_types(['str'], True))
+    @pytest.mark.parametrize("not_xml", iati.tests.utilities.generate_test_types(['bytes', 'str'], True))
     def test_convert_xml_to_tree_not_str(self, not_xml):
         """Check that an invalid string raises an error when an attempt is made to convert it to an etree."""
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(TypeError) as excinfo:
             iati.utilities.convert_xml_to_tree(not_xml)
 
         assert 'To parse XML into a tree, the XML must be a string, not a' in str(excinfo.value)
@@ -194,19 +192,7 @@ class TestUtilities(object):
         pass
 
 
-class TestDefaultVersions(object):
-    """A container for tests relating to default versions."""
-
-    @pytest.mark.parametrize("major_version", iati.constants.STANDARD_VERSIONS_MAJOR)
-    def test_versions_for_integer(self, major_version):
-        """Check that the each of the decimal versions returned by versions_for_integer starts with the input major version."""
-        result = iati.utilities.versions_for_integer(major_version)
-
-        for version in result:
-            assert version.startswith(str(major_version))
-
-
-class TestFileLoading(object):
+class TestFileLoading:
     """A container for tests relating to loading files."""
 
     @pytest.fixture(scope='session')
@@ -273,10 +259,10 @@ class TestFileLoading(object):
             _ = iati.utilities.load_as_dataset(invalid_xml_file_path)
 
     def test_load_as_string(self, invalid_xml_file_path):
-        """Test that `utilities.load_as_string()` returns a string (python3) or unicode (python2) object with the expected content."""
+        """Test that `utilities.load_as_string()` returns a string with the expected content."""
         result = iati.utilities.load_as_string(invalid_xml_file_path)
 
-        assert isinstance(result, six.string_types)
+        assert isinstance(result, str)
         assert result == 'This is a string that is not valid XML\n'
 
     @pytest.mark.parametrize("load_method", [
@@ -287,12 +273,6 @@ class TestFileLoading(object):
     def test_load_as_x_non_existing_file(self, load_method):
         """Test that `utilities.load_as_bytes()` returns a bytes object with the expected content."""
         path_test_data = iati.tests.resources.get_test_data_path('this-file-does-not-exist')
-
-        # python 2/3 compatibility - FileNotFoundError introduced at Python 3
-        try:
-            FileNotFoundError
-        except NameError:
-            FileNotFoundError = IOError  # pylint: disable=redefined-builtin,invalid-name
 
         with pytest.raises(FileNotFoundError):
             _ = load_method(path_test_data)
@@ -309,8 +289,7 @@ class TestFileLoading(object):
         str_of_interest = dataset.xml_tree.xpath('//reporting-org/narrative/text()')[0]
 
         # the character of interest is in windows-1252, but is different from ASCII
-        # python2/3 compatibility: encode string as UTF-8
-        assert str_of_interest.encode('utf-8') == b'\xc5\xb8'
+        assert str_of_interest.encode('UTF-8') == b'\xc5\xb8'
 
     @pytest.mark.parametrize("file_to_load", [
         'dataset-encoding/valid-UTF-8.xml',
@@ -330,8 +309,7 @@ class TestFileLoading(object):
         # the tested characters are all in the code range 004000-00FFFF
         # this means that they are 3-bit at UTF-8, 2 bit as UTF-16 and 4-bit as UTF-32 in 8-bit environments
         # https://en.wikipedia.org/wiki/Comparison_of_Unicode_encodings#Eight-bit_environments
-        # python2/3 compatibility: encode string as UTF-8
-        assert str_of_interest.encode('utf-8') == b'\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9'  # noqa: ignore=E501  # pylint: disable=line-too-long
+        assert str_of_interest.encode('UTF-8') == b'\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9\xe4\xb6\x8c\xe4\xb9\xa8\xe4\xbc\xb6\xe4\xbe\x97\xe5\x80\x97\xe5\x82\x88\xe5\x84\x88\xe5\x89\x89\xe5\x94\x99\xe8\xac\x9c\xe8\xb0\x8b\xee\x82\xb1\xee\x82\xb2\xee\x82\xb3\xee\x82\xb5\xee\x82\xb8\xee\x82\xba\xee\x82\xbb\xee\x82\xbc\xee\x82\xbd\xee\x82\xbe\xee\x83\x8e\xee\x83\x8f\xee\x84\xa8\xee\x84\xa9'  # noqa: ignore=E501  # pylint: disable=line-too-long
 
     @pytest.mark.parametrize("file_to_load", [
         'dataset-encoding/valid-undetectable-encoding.xml'

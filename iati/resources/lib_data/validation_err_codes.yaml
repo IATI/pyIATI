@@ -3,7 +3,7 @@
 # The structure of a code is:
 #
 #   - name-of-the-error-or-warning:
-#       base_exception: The name of a Python exception that the error code represents. Should be valid for both Python 2 and Python 3. https://docs.python.org/2/library/exceptions.html#exception-hierarchy
+#       base_exception: The name of a Python exception that the error code represents. Should be valid for Python 3. https://docs.python.org/3/library/exceptions.html#exception-hierarchy
 #       category: The high level category that the error falls into.
 #       description: |-
 #           A short general description of the error that has occurred.
@@ -210,6 +210,18 @@
     help: |-
         The root element within an XML data file is the one that contains all other data. In an IATI dataset, this is generally `iati-activities` or `iati-organisations`.
         Note that this error may be raised if an Activity Dataset is validated against an Organisation Schema or vice versa.
+    info: |-
+        {err}
+
+- err-encoding-in-str:
+    base_exception: NotImplementedError
+    category: tool-lxml
+    description: |-
+        The tool used to parse XML does not support strings with encoding declarations.
+    help: |-
+        pyIATI uses another tool to parse XML. This tool does not support Unicode strings with encoding declarations.
+        To work around this, use bytes input or remove the specification of the encoding from the XML.
+        For more information about encoding strings as bytes, see: https://docs.python.org/3/howto/unicode.html#converting-to-bytes
     info: |-
         {err}
 

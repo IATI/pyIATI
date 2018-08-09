@@ -6,7 +6,6 @@ Todo:
     Handle multiple versions of the Standard rather than limiting to the latest.
     Implement more than Codelists.
 """
-
 import json
 import os
 from collections import defaultdict
@@ -14,29 +13,6 @@ from copy import deepcopy
 import iati.codelists
 import iati.constants
 import iati.resources
-
-
-def get_default_version_if_none(version):
-    """Return the default version number if the input version is None. Otherwise returns the input version as is.
-
-    Args:
-        version (str or None): The version to test against.
-
-    Raises:
-        ValueError: When a specified version is not a valid version of the IATI Standard.
-
-    Returns:
-        str: The default version if the input version is None. Otherwise returns the input version.
-
-    Note:
-        The default version of the Standard is deemed to be the latest version.
-
-    """
-    if version is None:
-        return iati.constants.STANDARD_VERSION_LATEST
-    elif version not in iati.constants.STANDARD_VERSIONS:
-        raise ValueError("Version {0} is not a valid version of the IATI Standard.".format(version))
-    return version
 
 
 _CODELISTS = defaultdict(dict)
@@ -64,12 +40,12 @@ Warning:
 """
 
 
-def codelist(name, version=None):
+def codelist(name, version):
     """Return the default Codelist with the specified name for the specified version of the Standard.
 
     Args:
         name (str): The name of the Codelist to return.
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the specified Codelist is returned.
+        version (str / Decimal / iati.Version): The Integer or Decimal version of the Standard to return the Codelist for. If an Integer Version is specified, uses the most recent Decimal Version within the Integer Version.
 
     Raises:
         ValueError: When a specified name is not a Codelist at the specified version of the Standard.
@@ -98,11 +74,14 @@ def codelist(name, version=None):
         raise ValueError(msg)
 
 
-def _codelists(version=None, use_cache=False):
+@iati.version.decimalise_integer
+@iati.version.normalise_decimals
+@iati.version.allow_fully_supported_version
+def _codelists(version, use_cache=False):
     """Locate the default Codelists for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelists are returned.
+        version (str / Decimal / iati.Version): The Integer or Decimal version of the Standard to return the Codelists for. If an Integer Version is specified, uses the most recent Decimal Version within the Integer Version.
         use_cache (bool): Whether the cache should be used rather than loading the Codelists from disk again. If used, a `deepcopy()` should be performed on any returned Codelist before it is modified.
 
     Raises:
@@ -119,8 +98,6 @@ def _codelists(version=None, use_cache=False):
         This is a private function so as to prevent the (dangerous) `use_cache` parameter being part of the public API.
 
     """
-    version = get_default_version_if_none(version)
-
     paths = iati.resources.get_codelist_paths(version)
 
     for path in paths:
@@ -134,11 +111,11 @@ def _codelists(version=None, use_cache=False):
     return _CODELISTS[version]
 
 
-def codelists(version=None):
+def codelists(version):
     """Return the default Codelists for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Codelists for. Defaults to None. This means that the latest version of the Codelists are returned.
+        version (str / Decimal / iati.Version): The Integer or Decimal version of the Standard to return the Codelists for. If an Integer Version is specified, uses the most recent Decimal Version within the Integer Version.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -150,11 +127,14 @@ def codelists(version=None):
     return _codelists(version)
 
 
-def codelist_mapping(version=None):
+@iati.version.decimalise_integer
+@iati.version.normalise_decimals
+@iati.version.allow_fully_supported_version
+def codelist_mapping(version):
     """Define the mapping process which states where in a Dataset you should find values on a given Codelist.
 
     Args:
-        version (str): The version of the Standard to return the mapping file for. Defaults to None. This means that the mapping file is returned for the latest version of the Standard.
+        version (str / Decimal / iati.Version): The Integer or Decimal version of the Standard to return the Codelist Mapping File for. If an Integer Version is specified, uses the most recent Decimal Version within the Integer Version.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -187,11 +167,14 @@ def codelist_mapping(version=None):
     return mappings
 
 
-def ruleset(version=None):
+@iati.version.decimalise_integer
+@iati.version.normalise_decimals
+@iati.version.allow_fully_supported_version
+def ruleset(version):
     """Return the Standard Ruleset for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that the latest Standard Ruleset is returned.
+        version (str / Decimal / iati.Version): The Integer or Decimal version of the Standard to return the Standard Ruleset for. If an Integer Version is specified, uses the most recent Decimal Version within the Integer Version.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -206,11 +189,8 @@ def ruleset(version=None):
     return iati.Ruleset(ruleset_str)
 
 
-def ruleset_schema(version=None):
+def ruleset_schema():
     """Return the Ruleset schema for the specified version of the Standard.
-
-    Args:
-        version (str): The version of the Standard to return the Ruleset for. Defaults to None. This means that the latest Ruleset schema is returned.
 
     Raises:
         ValueError: When a specified version is not a valid version of the IATI Standard.
@@ -218,8 +198,11 @@ def ruleset_schema(version=None):
     Returns:
         dict: A dictionary representing the Ruleset schema for the specified version of the Standard.
 
+    Todo:
+        Determine whether a version should be provided. This is worth considering if the content of the IATI Ruleset Schema varies between versions.
+
     """
-    path = iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_SCHEMA_NAME, version)
+    path = iati.resources.create_ruleset_path(iati.resources.FILE_RULESET_SCHEMA_NAME, iati.version.STANDARD_VERSION_ANY)
     schema_str = iati.utilities.load_as_string(path)
 
     return json.loads(schema_str)
@@ -253,14 +236,14 @@ Warning:
 """
 
 
-def _populate_schema(schema, version=None):
+def _populate_schema(schema, version):
     """Populate a Schema with all its extras.
 
     The extras include Codelists and Rulesets.
 
     Args:
         schema (iati.Schema): The Schema to populate.
-        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Standard is assumed.
+        version (iati.Version): The Decimal version of the Standard to populate the Schema from.
 
     Returns:
         iati.Schema: The provided Schema, populated with additional information.
@@ -269,8 +252,6 @@ def _populate_schema(schema, version=None):
         Does not create a copy of the provided Schema, instead adding to it directly.
 
     """
-    version = get_default_version_if_none(version)
-
     codelists_to_add = codelists(version)
     for codelist_to_add in codelists_to_add.values():
         schema.codelists.add(codelist_to_add)
@@ -280,13 +261,13 @@ def _populate_schema(schema, version=None):
     return schema
 
 
-def _schema(path_func, schema_class, version=None, populate=True, use_cache=False):
+def _schema(path_func, schema_class, version, populate=True, use_cache=False):
     """Return the default Schema of the specified type for the specified version of the Standard.
 
     Args:
         path_func (func): A function to return the paths at which the relevant Schema can be found.
         schema_class (type): A class definition for the Schema of interest.
-        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
+        version (iati.Version): The Decimal version of the Standard to return the Schema for.
         populate (bool): Whether the Schema should be populated with auxilliary information such as Codelists and Rulesets.
         use_cache (bool): Whether the cache should be used rather than loading the Schema from disk again. If used, a `deepcopy()` should be performed on any returned Schema before it is modified.
 
@@ -299,8 +280,6 @@ def _schema(path_func, schema_class, version=None, populate=True, use_cache=Fals
     """
     population_key = 'populated' if populate else 'unpopulated'
 
-    version = get_default_version_if_none(version)
-
     schema_paths = path_func(version)
 
     if (schema_class.ROOT_ELEMENT_NAME not in _SCHEMAS[version][population_key].keys()) or not use_cache:
@@ -312,11 +291,14 @@ def _schema(path_func, schema_class, version=None, populate=True, use_cache=Fals
     return _SCHEMAS[version][population_key][schema_class.ROOT_ELEMENT_NAME]
 
 
-def activity_schema(version=None, populate=True):
+@iati.version.decimalise_integer
+@iati.version.normalise_decimals
+@iati.version.allow_known_version
+def activity_schema(version, populate=True):
     """Return the default Activity Schema for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
+        version (str / Decimal / iati.Version): The Integer or Decimal version of the Standard to return the Activity Schema for. If an Integer Version is specified, uses the most recent Decimal Version within the Integer Version.
         populate (bool): Whether the Schema should be populated with auxilliary information such as Codelists and Rulesets.
 
     Raises:
@@ -329,11 +311,14 @@ def activity_schema(version=None, populate=True):
     return _schema(iati.resources.get_activity_schema_paths, iati.ActivitySchema, version, populate)
 
 
-def organisation_schema(version=None, populate=True):
+@iati.version.decimalise_integer
+@iati.version.normalise_decimals
+@iati.version.allow_known_version
+def organisation_schema(version, populate=True):
     """Return the default Organisation Schema for the specified version of the Standard.
 
     Args:
-        version (str): The version of the Standard to return the Schema for. Defaults to None. This means that the latest version of the Schema is returned.
+        version (str / Decimal / iati.Version): The Integer or Decimal version of the Standard to return the Organisation Schema for. If an Integer Version is specified, uses the most recent Decimal Version within the Integer Version.
         populate (bool): Whether the Schema should be populated with auxilliary information such as Codelists and Rulesets.
 
     Raises:

@@ -8,13 +8,60 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
+
+- [Resources] Add ability to define resource files that are version-independent. [#223]
+
+- [Versions] Add a class to represent Standard Versions. Handles current and proposed formats. [#273]
+- [Versions] `STANDARD_VERSIONS_SUPPORTED` lists all versions of the Standard that are fully supported by pyIATI. [#223]
+- [Versions] `STANDARD_VERSIONS_MINOR` lists all Minor versions of the IATI Standard. [#264]
+
+- [Tests] Separate testing of `bytes` and `str` type values for Python 3+. [#286]
+- [Tests] Mark tests requiring updates when adding a new version. [#288]
+- [Tests] Add another build stage to check that docs build when merging to dev or master. [#292]
+- [Tests] Significantly improve test coverage of the `resources` module. [#297]
+
 ### Changed
+
+- [Defaults] Make `version` argument mandatory when accessing Standard content that may differ between versions. [#243]
+
+- [Constants] Move lists of versions to `version` module. [#280]
+
+- [General] Change default behavior of `version` argument as per proposal in #218. [#223]
+
+- [Resources] Change the folder containing version-independent data from `version-independent` to `version_independent` for consistency. [#297]
+- [Resources] `create_*_path()` functions will raise errors when given an unknown version. [#297]
+- [Resources] `get_*_paths()` functions now verify that paths point to actual files before returning them. [#297]
+- [Resources] `get_*_paths()` functions raise errors when given values that cannot represent a version. [#297]
+
+- [Utility] Move function acting on versions to `version` module. [#280]
+- [Utility] Raise a TypeError rather than a ValueError when `convert_xml_to_tree()` is given a value of incorrect type. [#286]
+
+- [Versions] The value to represent 'version independent' has been changed to be a value that is `not None`, and a constant added to specify the exact value. [#281]
 
 ### Deprecated
 
 ### Removed
 
+- [Defaults] Remove `get_default_version_if_none()`. [#243]
+- [Defaults] Remove `version` argument for `ruleset_schema()` since this is version-independent. [#243]
+
+- [Resources] Functions in the `resources` module no longer have default values for the `version` argument. [#297]
+
+- [Compatibility] Drop support for Python 2.7. [#311]
+- [Compatibility] Drop support for Python 3.4. [#309]
+
 ### Fixed
+
+- [Resources] Re-implement support for 2.03 from the ground up to improve correctness and reduce number of undetectable bugs. [#307]
+
+- [Schemas] A tree is now returned from `_change_include_to_xinclude()` when there are no includes to convert. [#244]
+
+- [Validation] The `_check_codes()` implementation is no longer fixed to version 2.02. [#291]
+- [Validation] Separate two similar but distinct ValueErrors that lxml may raise so that pyIATI treats them differently. [#287]
+
+- [Versions] `STANDARD_VERSIONS` now lists all versions of the Standard, not just those that are fully supported by pyIATI. [#223]
+
+- [Tests] Correct some very old test fixtures and documentation. [#286]
 
 ### Security
 
@@ -41,9 +88,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - [Codelists] `complete` attribute included in equality comparison and hash calculations. [#247]
 - [Codelists] Codes must have a value to instantiate. [#247]
-- [Codelists] A number of Codelists have changed from Embedded to Non-Embedded. [IATI/IATI-Codelists-NonEmbedded#220, #272]
-
-- [Defaults] When a specific version is not requested, it will now assume v2.03 rather than v2.02. [#272]
 
 - [Resources] Move `load_as_x` functions to `iati.utilities`. [#235]
 - [Resources] Rename version-specific resource folders to reduce ambiguity. [#217]

@@ -5,28 +5,12 @@
         </name>
         <description>
             <narrative>
-               
-        Organization identifier lists (formerly Organization Registration Agency).
-        The values from this codelist are used to identify the particular list that
-        an organization identifier was drawn from. The codelist provides a list of 
-        known identifier lists, including national company registers, NGO lists and
-        international and multilateral lists - along with links to sources where 
-        specific organization numbers and identifiers can be looked up.
-        
-        As of 17th of July 2017 the Organisation Registration Agency codelist (now organisation
-        identifier list) is maintained centrally by org-id.guide. org-id.guide provides
-        a register of organisation identifier lists that allows open data
-        publishers to locate organisation identifiers. IATI replicates the
-        list directly from org-id.guide with the exception of the XI-IATI codelist.
-        IATI still maintains the XI-IATI organisation identifier list, which is used 
-        when there are no other available lists that might be used to provide
-        a stable organisation identifier. 
-                
-        If an organisation identifier list that you wish to use cannot be found in org-id.guide,
-        you can submit a direct request on Github
-        (https://github.com/org-id/register/issues) or email contact@org-id.guide
+                The values from this codelist are used to identify the particular list that an organisation identifier was drawn from. The codelist provides a list of known identifier lists, including national company registers, NGO lists and international and multilateral lists - along with links to sources where specific organisation numbers and identifiers can be looked up.
 
-    </narrative>
+                As of 17 July 2017 the Organisation Registration Agency codelist (now organisation identifier list) is maintained centrally by org-id.guide. Open data publishers can now locate organisation identifiers using this website. IATI replicates the list directly from org-id.guide with the exception of the XI-IATI codelist. IATI still maintains the XI-IATI organisation identifier list, which is used  when there are no other available lists that might be used to provide a stable organisation identifier.
+
+                If an organisation identifier list that you wish to use cannot be found in org-id.guide, you can submit a direct request on Github (https://github.com/org-id/register/issues) or email contact@org-id.guide
+            </narrative>
         </description>
     </metadata>
     <codelist-items>

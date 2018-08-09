@@ -1,12 +1,11 @@
 """A module containing a core representation of an IATI Dataset."""
-import sys
 from lxml import etree
 import iati.exceptions
 import iati.utilities
 import iati.validator
 
 
-class Dataset(object):
+class Dataset:
     """Representation of an IATI XML file that may be validated against a Schema.
 
     Attributes:
@@ -86,14 +85,13 @@ class Dataset(object):
             try:
                 value_stripped = value.strip()
 
-                # Convert the input to bytes, as etree.fromstring works most consistently with bytes objects, especially if an XML encoding declaration has been used.
-                if (isinstance(value_stripped, str) and
-                        sys.version_info.major > 2):  # Python v2 treats strings as byte objects by default
-                    value_stripped_bytes = value_stripped.encode()
-                else:
-                    value_stripped_bytes = value_stripped
+                validation_error_log = iati.validator.validate_is_xml(value_stripped)
 
-                validation_error_log = iati.validator.validate_is_xml(value_stripped_bytes)
+                # Convert the input to bytes, as etree.fromstring works most consistently with bytes objects, especially if an XML encoding declaration has been used.
+                if isinstance(value_stripped, str):
+                    value_stripped_bytes = value_stripped.encode()
+                elif isinstance(value_stripped, bytes):
+                    value_stripped_bytes = value_stripped
 
                 if not validation_error_log.contains_errors():
                     self.xml_tree = etree.fromstring(value_stripped_bytes)
@@ -170,7 +168,7 @@ class Dataset(object):
         """Return the version of the Standard that this Dataset is specified against.
 
         Returns:
-            str or None: The version of the Standard that this Dataset is specified against. None if the version cannot be detected.
+            iati.Version / None: The version of the Standard that this Dataset is specified against. None if the version cannot be detected.
 
         Todo:
             Consider if this should raise an error if the Dataset is specified at a version of the Standard that does not exist.
@@ -195,7 +193,10 @@ class Dataset(object):
             # Not version 1 data, so can return the version specified in `iati-activities/@version`
             version = version_iati_root
 
-        return version
+        if version is None:
+            return version
+
+        return iati.Version(version)
 
     def source_at_line(self, line_number):
         """Return the value of the XML source at the specified line.

@@ -8,13 +8,15 @@ import iati.tests.utilities
 import iati.validator
 
 
-class ValidationTestBase(object):
+class ValidationTestBase:
     """A container for fixtures and other functionality useful among multiple groups of Validation Test."""
 
     @pytest.fixture
-    def schema_basic(self):
+    def schema_basic(self, request):
         """An Activity Schema with no Codelists added."""
-        return iati.default.activity_schema(None, False)
+        request.applymarker(pytest.mark.fixed_to_202)
+
+        return iati.default.activity_schema('2.02', False)
 
     @pytest.fixture
     def schema_basic_org(self):
@@ -22,24 +24,37 @@ class ValidationTestBase(object):
         return iati.default.organisation_schema(None, False)
 
     @pytest.fixture
-    def schema_fully_populated(self):
-        """Return an Activity Schema populated with all Codelists.
+    def schema_fully_populated(self, request):
+        """Return an Activity Schema populated with all Codelists."""
+        request.applymarker(pytest.mark.fixed_to_202)
 
-        Todo:
-            Stop this being fixed to 2.02 (see: #223).
-
-        """
         return iati.default.activity_schema('2.02')
 
     @pytest.fixture(params=[
         iati.tests.resources.load_as_string('valid_not_iati'),
-        iati.tests.resources.load_as_string('valid_iati'),
-        iati.tests.resources.load_as_string('valid_iati_invalid_code'),
+        iati.tests.resources.load_as_string('valid_iati', '2.02'),
+        iati.tests.resources.load_as_string('valid_iati_invalid_code', '2.02'),
         iati.tests.resources.load_as_string('leading_whitespace_xml')
     ])
     def xml_str(self, request):
         """A valid XML string."""
+        request.applymarker(pytest.mark.fixed_to_202)
+
         return request.param
+
+    @pytest.fixture
+    def xml_str_explicit_encoding(self):
+        """A valid XML string with an explicit encoding declaration.
+
+        Todo:
+            Move this into a file as part of a shuffle towards a permanent 2.03 solution.
+
+        """
+        xml_str_explicit_encoding = """<?xml version="1.0" encoding="UTF-8"?>
+        <xml-element>
+        </xml-element>"""
+
+        return xml_str_explicit_encoding
 
     @pytest.fixture
     def xml_str_no_text_decl(self, xml_str):
@@ -51,13 +66,9 @@ class ValidationTestBase(object):
         """A value that is not a valid XML string."""
         return request.param
 
-    @pytest.fixture(params=['This is a string that is not XML.'])
+    @pytest.fixture(params=iati.tests.utilities.generate_test_types(['str']))
     def str_not_xml(self, request):
-        """A string that is not XML.
-
-        Note:
-            Does not use the utility function due to problems with Python 2.7.
-        """
+        """A string that is not XML."""
         return request.param
 
     @pytest.fixture
@@ -66,11 +77,13 @@ class ValidationTestBase(object):
         return ''
 
     @pytest.fixture(params=[
-        iati.tests.resources.load_as_dataset('valid_iati'),
-        iati.tests.resources.load_as_dataset('valid_iati_invalid_code')
+        iati.tests.resources.load_as_dataset('valid_iati', '2.02'),
+        iati.tests.resources.load_as_dataset('valid_iati_invalid_code', '2.02')
     ])
     def iati_dataset(self, request):
         """A Dataset that is valid against the IATI Schema."""
+        request.applymarker(pytest.mark.fixed_to_202)
+
         return request.param
 
     @pytest.fixture(params=[
@@ -81,11 +94,13 @@ class ValidationTestBase(object):
         return request.param
 
     @pytest.fixture(params=[
-        iati.tests.resources.load_as_dataset('invalid_iati_missing_required_element'),
-        iati.tests.resources.load_as_dataset('invalid_iati_missing_required_element_from_common')
+        iati.tests.resources.load_as_dataset('invalid_iati_missing_required_element', '2.02'),
+        iati.tests.resources.load_as_dataset('invalid_iati_missing_required_element_from_common', '2.02')
     ])
     def not_iati_dataset_missing_required_el(self, request):
         """A Dataset that is not valid against the IATI Schema because it is missing a required element."""
+        request.applymarker(pytest.mark.fixed_to_202)
+
         return request.param
 
     @pytest.fixture
@@ -98,7 +113,7 @@ class ValidationTestBase(object):
         return iati.validator.ValidationErrorLog()
 
 
-class TestValidationError(object):
+class TestValidationError:
     """A container for tests relating to ValidationErrors."""
 
     def test_validation_error_init_no_name(self):
@@ -297,7 +312,7 @@ class TestValidationErrorLog(ValidationTestBase):  # pylint: disable=too-many-pu
 
         assert error_log == error_log_empty
 
-    @pytest.mark.parametrize("non_iterable", iati.tests.utilities.generate_test_types(['bytearray', 'iter', 'list', 'mapping', 'memory', 'range', 'set', 'str', 'tuple', 'view'], True))
+    @pytest.mark.parametrize("non_iterable", iati.tests.utilities.generate_test_types(['bytes', 'bytearray', 'iter', 'list', 'mapping', 'memory', 'range', 'set', 'str', 'tuple', 'view'], True))
     def test_error_log_extend_from_non_iterable(self, error_log, error_log_empty, non_iterable):
         """Test extending an error log with a non-iterable."""
         with pytest.raises(TypeError):
@@ -306,7 +321,7 @@ class TestValidationErrorLog(ValidationTestBase):  # pylint: disable=too-many-pu
         assert error_log == error_log_empty
 
 
-class TestValidationAuxiliaryData(object):
+class TestValidationAuxiliaryData:
     """A container for tests relating to auxiliary validation data."""
 
     def test_error_code_names(self):
@@ -334,53 +349,63 @@ class ValidateCodelistsBase(ValidationTestBase):
     """A container for fixtures required for Codelist validation tests."""
 
     @pytest.fixture
-    def schema_version(self):
+    def schema_version(self, request):
         """Return an Activity Schema with the Version Codelist added."""
-        schema = iati.default.activity_schema(None, False)
-        codelist = iati.default.codelist('Version')
+        request.applymarker(pytest.mark.fixed_to_202)
+
+        schema = iati.default.activity_schema('2.02', False)
+        codelist = iati.default.codelist('Version', '2.02')
 
         schema.codelists.add(codelist)
 
         return schema
 
     @pytest.fixture
-    def schema_org_type(self):
+    def schema_org_type(self, request):
         """Return an Activity Schema with the OrganisationType Codelist added."""
-        schema = iati.default.activity_schema(None, False)
-        codelist = iati.default.codelist('OrganisationType')
+        request.applymarker(pytest.mark.fixed_to_202)
+
+        schema = iati.default.activity_schema('2.02', False)
+        codelist = iati.default.codelist('OrganisationType', '2.02')
 
         schema.codelists.add(codelist)
 
         return schema
 
     @pytest.fixture
-    def schema_incomplete_codelist(self):
+    def schema_incomplete_codelist(self, request):
         """Return an Activity Schema with an incomplete Codelist added."""
-        schema = iati.default.activity_schema(None, False)
-        codelist = iati.default.codelist('Country')
+        request.applymarker(pytest.mark.fixed_to_202)
+
+        schema = iati.default.activity_schema('2.02', False)
+        codelist = iati.default.codelist('Country', '2.02')
 
         schema.codelists.add(codelist)
 
         return schema
 
     @pytest.fixture
-    def schema_short_mapping_codelist(self):
+    def schema_short_mapping_codelist(self, request):
         """Return an Activity Schema with a Codelist that has a short `path` in the mapping file."""
-        schema = iati.default.activity_schema(None, False)
-        codelist = iati.default.codelist('Language')
+        request.applymarker(pytest.mark.fixed_to_202)
+
+        schema = iati.default.activity_schema('2.02', False)
+        codelist = iati.default.codelist('Language', '2.02')
 
         schema.codelists.add(codelist)
 
         return schema
 
     @pytest.fixture
-    def schema_sectors(self):
+    def schema_sectors(self, request):
         """Return an Activity Schema with the DAC Sector Codelists and appropriate vocabulary added."""
-        schema = iati.default.activity_schema(None, False)
+        request.applymarker(pytest.mark.fixed_to_202)
 
-        codelist_1 = iati.default.codelist('SectorVocabulary')
-        codelist_2 = iati.default.codelist('Sector')
-        codelist_3 = iati.default.codelist('SectorCategory')
+        schema = iati.default.activity_schema('2.02', False)
+
+        codelist_1 = iati.default.codelist('SectorVocabulary', '2.02')
+        codelist_2 = iati.default.codelist('Sector', '2.02')
+        codelist_3 = iati.default.codelist('SectorCategory', '2.02')
 
         schema.codelists.add(codelist_1)
         schema.codelists.add(codelist_2)
@@ -389,10 +414,12 @@ class ValidateCodelistsBase(ValidationTestBase):
         return schema
 
     @pytest.fixture
-    def schema_element_text_codelist(self):
+    def schema_element_text_codelist(self, request):
         """Return an Activity Schema with a Codelist that maps to an element rather than attribute in the mapping file."""
-        schema = iati.default.activity_schema(None, False)
-        codelist = iati.default.codelist('CRSChannelCode')
+        request.applymarker(pytest.mark.fixed_to_202)
+
+        schema = iati.default.activity_schema('2.02', False)
+        codelist = iati.default.codelist('CRSChannelCode', '2.02')
 
         schema.codelists.add(codelist)
 
@@ -402,9 +429,10 @@ class ValidateCodelistsBase(ValidationTestBase):
 class TestValidationTruthyIATI(ValidationTestBase):
     """A container for tests relating to truthy validation of IATI data."""
 
+    @pytest.mark.fixed_to_202
     def test_basic_validation_valid(self, schema_basic):
         """Perform a super simple data validation against a valid Dataset."""
-        data = iati.tests.resources.load_as_dataset('valid_iati')
+        data = iati.tests.resources.load_as_dataset('valid_iati', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_basic)
@@ -450,25 +478,28 @@ class TestValidationTruthyIATI(ValidationTestBase):
         assert not iati.validator.is_iati_xml(data, schema_basic)
         assert not iati.validator.is_valid(data, schema_basic)
 
+    @pytest.mark.fixed_to_202
     def test_basic_validation_invalid_missing_required_element(self, schema_basic):
         """Perform a super simple data validation against a Dataset that is invalid due to a missing required element."""
-        data = iati.tests.resources.load_as_dataset('invalid_iati_missing_required_element')
+        data = iati.tests.resources.load_as_dataset('invalid_iati_missing_required_element', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert not iati.validator.is_iati_xml(data, schema_basic)
         assert not iati.validator.is_valid(data, schema_basic)
 
+    @pytest.mark.fixed_to_202
     def test_basic_validation_invalid_missing_required_element_from_common(self, schema_basic):
         """Perform a super simple data validation against a Dataset that is invalid due to a missing required element that is defined in iati-common.xsd."""
-        data = iati.tests.resources.load_as_dataset('invalid_iati_missing_required_element_from_common')
+        data = iati.tests.resources.load_as_dataset('invalid_iati_missing_required_element_from_common', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert not iati.validator.is_iati_xml(data, schema_basic)
         assert not iati.validator.is_valid(data, schema_basic)
 
+    @pytest.mark.fixed_to_202
     def test_basic_validation_fully_populated_schema(self, schema_fully_populated):
         """Perform validation against a minimal valid Dataset when validated against a fully populated Schema."""
-        data = iati.tests.resources.load_as_dataset('valid_iati_minimal_file')
+        data = iati.tests.resources.load_as_dataset('valid_iati_minimal_file', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_fully_populated)
@@ -503,6 +534,17 @@ class TestValidateIsXML(ValidationTestBase):
         result = iati.validator.validate_is_xml(xml_str)
 
         assert result == error_log_empty
+
+    def test_xml_check_explicit_encoding_in_str_detailed_output(self, xml_str_explicit_encoding):
+        """Perform check to see whether a parameter is valid XML.
+
+        The parameter is valid XML, but in a format that lxml does not support.
+        Obtain detailed error output.
+        """
+        result = iati.validator.validate_is_xml(xml_str_explicit_encoding)
+
+        assert len(result) == 1
+        assert result.contains_error_called('err-encoding-in-str')
 
     def test_xml_check_valid_xml_comments_after_detailed_output(self, xml_str, str_not_xml, error_log_empty):
         """Perform check to see string a parameter is valid XML.
@@ -543,7 +585,18 @@ class TestValidateIsXML(ValidationTestBase):
 
         assert result == error_log_empty
 
-    @pytest.mark.parametrize("not_str", iati.tests.utilities.generate_test_types(['str'], True))
+    @pytest.mark.parametrize("bytes_not_xml", iati.tests.utilities.generate_test_types(['bytes']))
+    def test_xml_check_bytes_not_xml_detailed_output(self, bytes_not_xml):
+        """Perform check to see whether a parameter is valid XML. The parameter is a bytes object that is not valid XML.
+
+        Obtain detailed error output.
+        """
+        result = iati.validator.validate_is_xml(bytes_not_xml)
+
+        assert result.contains_errors()
+        assert result.contains_error_called('err-not-xml-empty-document')
+
+    @pytest.mark.parametrize("not_str", iati.tests.utilities.generate_test_types(['bytes', 'str'], True))
     def test_xml_check_not_str_detailed_output(self, not_str):
         """Perform check to see whether a parameter is valid XML. The parameter is not valid XML.
 
@@ -663,17 +716,19 @@ class TestIsValidIATIXML(ValidationTestBase):
         assert result.contains_errors()
         assert result.contains_error_called('err-not-iati-xml-missing-required-element')
 
+    @pytest.mark.fixed_to_202
     def test_iati_xml_from_ssot_valid(self, schema_basic, error_log_empty):
         """Perform check to see whether valid XML from the SSOT can be loaded and validated."""
-        data = iati.tests.resources.load_as_dataset('ssot-activity-xml-pass/location/01-generic-location')
+        data = iati.tests.resources.load_as_dataset('ssot-activity-xml-pass/location/01-generic-location', '2.02')
 
         result = iati.validator.validate_is_iati_xml(data, schema_basic)
 
         assert result == error_log_empty
 
+    @pytest.mark.fixed_to_202
     def test_iati_xml_from_ssot_invalid(self, schema_basic):
         """Perform check to see whether invalid XML from the SSOT can be loaded and validated."""
-        data = iati.tests.resources.load_as_dataset('ssot-activity-xml-fail/other-identifier/01-missing-attribute-type')
+        data = iati.tests.resources.load_as_dataset('ssot-activity-xml-fail/other-identifier/01-missing-attribute-type', '2.02')
 
         result = iati.validator.validate_is_iati_xml(data, schema_basic)
 
@@ -683,90 +738,102 @@ class TestIsValidIATIXML(ValidationTestBase):
 class TestValidationCodelist(ValidateCodelistsBase):
     """A container for tests relating to validation of Codelists."""
 
+    @pytest.mark.fixed_to_202
     def test_basic_validation_codelist_valid(self, schema_version):
         """Perform data validation against valid IATI XML that has valid Codelist values."""
-        data = iati.tests.resources.load_as_dataset('valid_iati')
+        data = iati.tests.resources.load_as_dataset('valid_iati', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_version)
         assert iati.validator.is_valid(data, schema_version)
 
+    @pytest.mark.fixed_to_202
     def test_basic_validation_codelist_invalid(self, schema_version):
         """Perform data validation against valid IATI XML that has invalid Codelist values."""
-        data = iati.tests.resources.load_as_dataset('valid_iati_invalid_code')
+        data = iati.tests.resources.load_as_dataset('valid_iati_invalid_code', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_version)
         assert not iati.validator.is_valid(data, schema_version)
 
+    @pytest.mark.fixed_to_202
     def test_basic_validation_codelist_valid_from_common(self, schema_org_type):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested is on an element defined in common.xsd."""
-        data = iati.tests.resources.load_as_dataset('valid_iati_valid_code_from_common')
+        data = iati.tests.resources.load_as_dataset('valid_iati_valid_code_from_common', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_org_type)
         assert iati.validator.is_valid(data, schema_org_type)
 
+    @pytest.mark.fixed_to_202
     def test_basic_validation_codelist_invalid_from_common(self, schema_org_type):
         """Perform data validation against valid IATI XML that has invalid Codelist values. The attribute being tested is on an element defined in common.xsd."""
-        data = iati.tests.resources.load_as_dataset('valid_iati_invalid_code_from_common')
+        data = iati.tests.resources.load_as_dataset('valid_iati_invalid_code_from_common', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_org_type)
         assert not iati.validator.is_valid(data, schema_org_type)
 
+    @pytest.mark.fixed_to_202
     def test_basic_validation_codes_valid_multi_use_codelist(self, schema_org_type):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attributes being tested are under different elements, but require the same Codelist."""
-        data = iati.tests.resources.load_as_dataset('valid_iati_valid_codes_multiple_xpaths_for_codelist')
+        data = iati.tests.resources.load_as_dataset('valid_iati_valid_codes_multiple_xpaths_for_codelist', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_org_type)
         assert iati.validator.is_valid(data, schema_org_type)
 
-    @pytest.mark.parametrize("data", [iati.tests.resources.load_as_dataset('valid_iati_invalid_codes_multiple_xpaths_for_codelist_first'), iati.tests.resources.load_as_dataset('valid_iati_invalid_codes_multiple_xpaths_for_codelist_second')])
+    @pytest.mark.parametrize("data", [
+        iati.tests.resources.load_as_dataset('valid_iati_invalid_codes_multiple_xpaths_for_codelist_first', '2.02'),
+        iati.tests.resources.load_as_dataset('valid_iati_invalid_codes_multiple_xpaths_for_codelist_second', '2.02')
+    ])
+    @pytest.mark.fixed_to_202
     def test_basic_validation_codes_invalid_multi_use_codelist(self, data, schema_org_type):
         """Perform data validation against valid IATI XML that has invalid Codelist values. The attributes being tested are under different elements, but require the same Codelist."""
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_org_type)
         assert not iati.validator.is_valid(data, schema_org_type)
 
+    @pytest.mark.fixed_to_202
     def test_basic_validation_codelist_incomplete_present(self, schema_incomplete_codelist):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested refers to an incomplete Codelist. The value is on the list."""
-        data = iati.tests.resources.load_as_dataset('valid_iati_incomplete_codelist_code_present')
+        data = iati.tests.resources.load_as_dataset('valid_iati_incomplete_codelist_code_present', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_incomplete_codelist)
         assert iati.validator.is_valid(data, schema_incomplete_codelist)
 
+    @pytest.mark.fixed_to_202
     def test_basic_validation_codelist_incomplete_not_present(self, schema_incomplete_codelist):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested refers to an incomplete Codelist. The value is not on the list."""
-        data = iati.tests.resources.load_as_dataset('valid_iati_incomplete_codelist_code_not_present')
+        data = iati.tests.resources.load_as_dataset('valid_iati_incomplete_codelist_code_not_present', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_incomplete_codelist)
         assert iati.validator.is_valid(data, schema_incomplete_codelist)
 
-    @pytest.mark.parametrize('data', [
-        iati.tests.resources.load_as_dataset('valid_iati'),
-        iati.tests.resources.load_as_dataset('valid_iati_use_xml_lang')
-    ])
-    def test_basic_validation_short_mapping_xpath(self, schema_short_mapping_codelist, data):
+    @pytest.mark.fixed_to_202
+    def test_basic_validation_short_mapping_xpath(self, schema_short_mapping_codelist):
         """Perform data validation against valid IATI XML. The attribute being tested refers to a Codelist with an abnormally short mapping file path. The data has no attributes mapped to by the Codelist."""
+        data = iati.tests.resources.load_as_dataset('valid_iati', '2.02')
+
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_short_mapping_codelist)
         assert iati.validator.is_valid(data, schema_short_mapping_codelist)
 
+    @pytest.mark.fixed_to_202
     def test_basic_validation_codelist_code_from_element_valid(self, schema_element_text_codelist):
         """Perform data validation against valid IATI XML. The Codelist being tested is being checked against an element text rather than an attribute."""
-        data = iati.tests.resources.load_as_dataset('valid_iati_codelist_mapping_element_text_valid_code')
+        data = iati.tests.resources.load_as_dataset('valid_iati_codelist_mapping_element_text_valid_code', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_element_text_codelist)
         assert iati.validator.is_valid(data, schema_element_text_codelist)
 
+    @pytest.mark.fixed_to_202
     def test_basic_validation_codelist_code_from_element_invalid(self, schema_element_text_codelist):
         """Perform data validation against valid IATI XML. The Codelist being tested is being checked against an element text rather than an attribute."""
-        data = iati.tests.resources.load_as_dataset('valid_iati_codelist_mapping_element_text_invalid_code')
+        data = iati.tests.resources.load_as_dataset('valid_iati_codelist_mapping_element_text_invalid_code', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_element_text_codelist)
@@ -776,38 +843,43 @@ class TestValidationCodelist(ValidateCodelistsBase):
 class TestValidationVocabularies(ValidateCodelistsBase):
     """A container for tests relating to validation of vocabularies and associated Codelists."""
 
+    @pytest.mark.fixed_to_202
     def test_validation_codelist_vocab_default_implicit(self, schema_sectors):
         """Perform data validation against valid IATI XML with a vocabulary that has been implicitly set."""
-        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_default_implicit')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_default_implicit', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
         assert iati.validator.is_valid(data, schema_sectors)
 
+    @pytest.mark.fixed_to_202
     def test_validation_codelist_vocab_default_implicit_invalid_code(self, schema_sectors):
         """Perform data validation against valid IATI XML with a vocabulary that has been implicitly set. The code is invalid."""
-        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_default_implicit_invalid_code')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_default_implicit_invalid_code', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
         assert not iati.validator.is_valid(data, schema_sectors)
 
+    @pytest.mark.fixed_to_202
     def test_validation_codelist_vocab_default_explicit(self, schema_sectors):
         """Perform data validation against valid IATI XML with a vocabulary that has been explicitly set as the default value."""
-        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_default_explicit')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_default_explicit', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
         assert iati.validator.is_valid(data, schema_sectors)
 
+    @pytest.mark.fixed_to_202
     def test_validation_codelist_vocab_non_default(self, schema_sectors):
         """Perform data validation against valid IATI XML with a vocabulary that has been explicitly set as a valid non-default value. The code is valid against this non-default vocabulary."""
-        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_non_default')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_non_default', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
         assert iati.validator.is_valid(data, schema_sectors)
 
+    @pytest.mark.fixed_to_202
     def test_validation_codelist_vocab_multiple_same_valid(self, schema_sectors):
         """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies.
 
@@ -815,12 +887,13 @@ class TestValidationVocabularies(ValidateCodelistsBase):
         The codes are valid against the vocabularies.
         Percentages add up to 100.
         """
-        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_multiple_same_valid')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_multiple_same_valid', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
         assert iati.validator.is_valid(data, schema_sectors)
 
+    @pytest.mark.fixed_to_202
     def test_validation_codelist_vocab_multiple_different_valid(self, schema_sectors):
         """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies.
 
@@ -828,12 +901,13 @@ class TestValidationVocabularies(ValidateCodelistsBase):
         The codes are valid against the vocabularies.
         Percentages add up to 100.
         """
-        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_multiple_different_valid')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_multiple_different_valid', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
         assert iati.validator.is_valid(data, schema_sectors)
 
+    @pytest.mark.fixed_to_202
     def test_validation_codelist_vocab_multiple_same_invalid_code(self, schema_sectors):
         """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies.
 
@@ -841,12 +915,13 @@ class TestValidationVocabularies(ValidateCodelistsBase):
         The codes are valid against the vocabularies.
         Percentages add up to 100.
         """
-        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_multiple_same_invalid_code')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_multiple_same_invalid_code', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
         assert not iati.validator.is_valid(data, schema_sectors)
 
+    @pytest.mark.fixed_to_202
     def test_validation_codelist_vocab_multiple_different_invalid_code(self, schema_sectors):
         """Perform data validation against valid IATI XML with an activity that uses multiple instances of the same element that uses vocabularies.
 
@@ -854,62 +929,67 @@ class TestValidationVocabularies(ValidateCodelistsBase):
         The codes are valid against the vocabularies.
         Percentages add up to 100.
         """
-        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_multiple_different_invalid_code')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_multiple_different_invalid_code', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
         assert not iati.validator.is_valid(data, schema_sectors)
 
+    @pytest.mark.fixed_to_202
     def test_validation_codelist_vocab_user_defined(self, schema_sectors):
         """Perform data validation against valid IATI XML with a user-defined vocabulary. No URI is defined, so the code cannot be checked."""
-        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_user_defined')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_user_defined', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
         assert iati.validator.is_valid(data, schema_sectors)
 
     @pytest.mark.skip(reason="Not yet implemented - need to be able to load Codelists from URLs")
+    @pytest.mark.fixed_to_202
     def test_validation_codelist_vocab_user_defined_with_uri_readable(self, schema_sectors):
         """Perform data validation against valid IATI XML with a user-defined vocabulary. A URI is defined, and points to a machine-readable codelist. As such, the code can be checked. The @code is valid."""
-        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_user_defined_with_uri_readable')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_user_defined_with_uri_readable', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
         assert iati.validator.is_valid(data, schema_sectors)
 
     @pytest.mark.skip(reason="Not yet implemented - need to be able to load Codelists from URLs")
+    @pytest.mark.fixed_to_202
     def test_validation_codelist_vocab_user_defined_with_uri_readable_bad_code(self, schema_sectors):
         """Perform data validation against valid IATI XML with a user-defined vocabulary. A URI is defined, and points to a machine-readable codelist. As such, the code can be checked. The @code is not in the list.
 
         Todo:
             Check that this is a legitimate check to be performed, given the contents and guidance given in the Standard.
         """
-        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_user_defined_with_uri_readable_bad_code')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_user_defined_with_uri_readable_bad_code', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
         assert not iati.validator.is_valid(data, schema_sectors)
 
     @pytest.mark.skip(reason="Not yet implemented - need to be able to load Codelists from URLs")
+    @pytest.mark.fixed_to_202
     def test_validation_codelist_vocab_user_defined_with_uri_unreadable(self, schema_sectors):
         """Perform data validation against valid IATI XML with a user-defined vocabulary. A URI is defined, and points to a non-machine-readable codelist. As such, the @code cannot be checked. The @code is valid.
 
         Todo:
             Remove xfail and work on functionality to fully fetch and parse user-defined codelists after higher priority functionality is finished.
         """
-        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_user_defined_with_uri_unreadable')
+        data = iati.tests.resources.load_as_dataset('valid_iati_vocab_user_defined_with_uri_unreadable', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_sectors)
         assert iati.validator.is_valid(data, schema_sectors)
 
 
-class TestValidateRulesets(object):
+class TestValidateRulesets:
     """A container for tests relating to validation of Rulesets."""
 
+    @pytest.mark.fixed_to_202
     def test_basic_validation_ruleset_valid(self, schema_ruleset):
         """Perform data validation against valid IATI XML that is valid against the Standard Ruleset."""
-        data = iati.tests.resources.load_as_dataset('valid_std_ruleset')
+        data = iati.tests.resources.load_as_dataset('valid_std_ruleset', '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_ruleset)
@@ -921,39 +1001,45 @@ class TestValidateRulesets(object):
         'ruleset-std/invalid_std_ruleset_does_not_sum_100',
         'ruleset-std/invalid_std_ruleset_missing_sector_element'
     ])
+    @pytest.mark.fixed_to_202
     def test_basic_validation_ruleset_invalid(self, schema_ruleset, invalid_xml_file):
         """Perform data validation against valid IATI XML that does not conform to the Standard Ruleset."""
-        data = iati.tests.resources.load_as_dataset(invalid_xml_file)
+        data = iati.tests.resources.load_as_dataset(invalid_xml_file, '2.02')
 
         assert iati.validator.is_xml(data.xml_str)
         assert iati.validator.is_iati_xml(data, schema_ruleset)
         assert not iati.validator.is_valid(data, schema_ruleset)
 
+    @pytest.mark.fixed_to_202
     def test_one_ruleset_error_added_for_multiple_rule_errors(self, schema_ruleset):
         """Check that a Dataset containing multiple Rule errors produces an error log containing only one Ruleset error."""
-        data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors')
-        result = iati.validator._check_ruleset_conformance(data_with_multiple_rule_errors, schema_ruleset)  # pylint: disable=protected-access
+        data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors', '2.02')
+        result = iati.validator.full_validation(data_with_multiple_rule_errors, schema_ruleset)
 
         assert len(result.get_errors_or_warnings_by_category('rule')) > 1
         assert len(result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')) == 1
 
+    @pytest.mark.fixed_to_202
     def test_multiple_ruleset_error_added_for_multiple_rulesets(self):
         """Check that a Schema containing multiple Rulesets produces an error log containing multiple Ruleset errors when each errors."""
-        data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors')
-        ruleset_1 = iati.default.ruleset()
-        ruleset_2 = iati.default.ruleset()
-        schema = iati.default.activity_schema(None, False)
+        data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors', '2.02')
+        ruleset_1 = iati.default.ruleset('2.02')
+        ruleset_2 = iati.default.ruleset('2.02')
+        schema = iati.default.activity_schema('2.02', False)
         schema.rulesets.add(ruleset_1)
         schema.rulesets.add(ruleset_2)
-        result = iati.validator._check_ruleset_conformance(data_with_multiple_rule_errors, schema)  # pylint: disable=protected-access
+
+        result = iati.validator.full_validation(data_with_multiple_rule_errors, schema)
 
         assert len(result.get_errors_or_warnings_by_category('rule')) > 1
         assert len(result.get_errors_or_warnings_by_name('err-ruleset-conformance-fail')) == 2
 
+    @pytest.mark.fixed_to_202
     def test_no_ruleset_errors_added_for_rule_warnings(self, schema_ruleset):
         """Check that a Dataset containing only Rule warnings does not result in a Ruleset error being added."""
-        data_with_rule_warnings_only = iati.tests.resources.load_as_dataset('valid_std_ruleset')
-        result = iati.validator._check_ruleset_conformance(data_with_rule_warnings_only, schema_ruleset)  # pylint: disable=protected-access
+        data_with_rule_warnings_only = iati.tests.resources.load_as_dataset('valid_std_ruleset', '2.02')
+
+        result = iati.validator.full_validation(data_with_rule_warnings_only, schema_ruleset)
 
         assert len(result.get_warnings()) >= 1
         assert len(result.get_errors_or_warnings_by_category('rule')) >= 1
@@ -982,15 +1068,17 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
         assert result.contains_errors()
         assert result.contains_error_called('err-not-iati-xml-missing-required-element')
 
+    @pytest.mark.fixed_to_202
     def test_full_validation_codelist_valid_detailed_output(self, schema_version):
         """Perform data validation against valid IATI XML that has valid Codelist values.  Obtain detailed error output."""
-        data = iati.tests.resources.load_as_dataset('valid_iati')
+        data = iati.tests.resources.load_as_dataset('valid_iati', '2.02')
 
         assert iati.validator.full_validation(data, schema_version) == iati.validator.ValidationErrorLog()
 
+    @pytest.mark.fixed_to_202
     def test_full_validation_codelist_invalid_detailed_output(self, schema_version):
         """Perform data validation against valid IATI XML that has invalid Codelist values."""
-        xml_str = iati.tests.resources.load_as_string('valid_iati_invalid_code')
+        xml_str = iati.tests.resources.load_as_string('valid_iati_invalid_code', '2.02')
         data = iati.Dataset(xml_str)
 
         result = iati.validator.full_validation(data, schema_version)[0]
@@ -1003,21 +1091,23 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
         assert 'Version' in result.info
         assert 'Version' in result.help
 
+    @pytest.mark.fixed_to_202
     def test_full_validation_codelist_incomplete_present_detailed_output(self, schema_incomplete_codelist, error_log_empty):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested refers to an incomplete Codelist. The value is on the list.
         Obtain detailed error output.
         """
-        data = iati.tests.resources.load_as_dataset('valid_iati_incomplete_codelist_code_present')
+        data = iati.tests.resources.load_as_dataset('valid_iati_incomplete_codelist_code_present', '2.02')
 
         result = iati.validator.full_validation(data, schema_incomplete_codelist)
 
         assert result == error_log_empty
 
+    @pytest.mark.fixed_to_202
     def test_full_validation_codelist_incomplete_not_present_detailed_output(self, schema_incomplete_codelist):
         """Perform data validation against valid IATI XML that has valid Codelist values. The attribute being tested refers to an incomplete Codelist. The value is not on the list.
         Obtain detailed error output.
         """
-        xml_str = iati.tests.resources.load_as_string('valid_iati_incomplete_codelist_code_not_present')
+        xml_str = iati.tests.resources.load_as_string('valid_iati_incomplete_codelist_code_not_present', '2.02')
         data = iati.Dataset(xml_str)
 
         result = iati.validator.full_validation(data, schema_incomplete_codelist)[0]
@@ -1031,7 +1121,7 @@ class TestValidatorFullValidation(ValidateCodelistsBase):
 
     def test_full_validation_ruleset_conformance_fail(self, schema_ruleset):
         """Perform data validation against valid IATI XML that does not conform to Rulesets."""
-        data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors')
+        data_with_multiple_rule_errors = iati.tests.resources.load_as_dataset('ruleset-std/invalid_std_ruleset_multiple_rule_errors', '2.02')
         result = iati.validator.full_validation(data_with_multiple_rule_errors, schema_ruleset)
 
         assert len(result.get_errors_or_warnings_by_category('rule')) > 1
