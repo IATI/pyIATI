@@ -27,7 +27,7 @@ General Installation for System Use
 
 ```shell
 # install software dependencies
-apt-get install python-pip libxml2-dev libxslt-dev python-dev
+apt-get install python-pip libxml2-dev libxslt-dev python-dev pandoc
 
 # install this package
 pip install pyIATI
