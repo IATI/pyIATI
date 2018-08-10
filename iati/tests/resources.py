@@ -87,7 +87,7 @@ def get_test_ruleset_path(name, version=iati.version.STANDARD_VERSION_ANY):
         Does not check whether the specified file actually exists.
 
     Warning:
-        This is a function used for testing purposes and should be located in a different module. DO NOT reply on it remaining here.
+        This is a function used for testing purposes and should be located in a different module. DO NOT rely on it remaining here.
 
         Needs to handle a more complex file structure than a single flat directory.
 

@@ -177,7 +177,7 @@ class TestVersionModification:
         ('patch', 2)
     ])
     def modifiable_attrib(self, request):
-        """Return a tuple containing the name of a component within a Version, plus the index it appears when components are ordered from most to least major."""
+        """Return a tuple containing the name of a component within a Version, plus the index as it appears when components are ordered from most to least major."""
         return request.param
 
     def test_attribute_components_writable_valid_values(self, std_ver_minor_inst_valid_possible, modifiable_attrib):
@@ -359,7 +359,7 @@ class TestVersionDecorators:
 class VersionSupportChecksBase:
     """A container for functions and fixtures used to check version support.
 
-    In their own class to reduce the number of public methods in the parent class below the linting limit of 20.
+    These are in their own class to reduce the number of public methods in the parent class below the linting limit of 20.
     """
 
     @iati.version.allow_fully_supported_version
@@ -493,7 +493,7 @@ class TestVersionSupportChecks(VersionSupportChecksBase):
         assert version is std_ver_major_uninst_valid_possible
 
     def test_non_version_representation_valid_val_any(self, possibly_version_func):
-        """Test that the specified ANY_VERSION value detected as being valid representations of an IATI Version Number."""
+        """Test that the specified ANY_VERSION values are detected as being valid representations of an IATI Version Number."""
         version = possibly_version_func(iati.version.STANDARD_VERSION_ANY)
 
         assert version == iati.version.STANDARD_VERSION_ANY
@@ -529,7 +529,7 @@ class TestVersionNormalisation:
 
     @pytest.fixture(params=INTEGER_TO_DECIMAL_FUNCTIONS)
     def integer_decimalisation_func(self, request):
-        """Return a function to check the return value of."""
+        """Return a function for which the return value can be checked."""
         return request.param
 
     DECIMAL_S13N_FUNCTIONS = [
@@ -539,7 +539,7 @@ class TestVersionNormalisation:
 
     @pytest.fixture(params=DECIMAL_S13N_FUNCTIONS)
     def decimal_normalisation_func(self, request):
-        """Return a function to check the return value of."""
+        """Return a function for which the return value can be checked."""
         return request.param
 
     @pytest.fixture(params=INTEGER_TO_DECIMAL_FUNCTIONS + DECIMAL_S13N_FUNCTIONS)

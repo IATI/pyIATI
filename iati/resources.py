@@ -211,7 +211,7 @@ def _get_paths(version, file_name, path_creation_func, supported_versions):
         ValueError: When a specified version is of the correct type, but cannot represent a version of the IATI Standard.
 
     Returns:
-        list(str): A list of paths to built with the given components at the specified version of the Standard.
+        list(str): A list of paths to build with the given components at the specified version of the Standard.
 
     """
     paths = []
