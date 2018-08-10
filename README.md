@@ -75,7 +75,7 @@ The following example loads the latest IATI Activity Schema:
 
 ```python
 import iati.default
-schema = iati.default.activity_schema()
+schema = iati.default.activity_schema('2.03')
 ```
 
 By default, the default Schema will be populated with other information such as Codelists and Rulesets for the specified version of the Standard.
