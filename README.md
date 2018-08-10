@@ -152,7 +152,7 @@ dataset = iati.Dataset(dataset_as_string)
 
 ### Validating datasets
 
-A `Dataset` object can be validated for adherance to XML/IATI schemas can be verified using methods in `iati.validator`.
+A `Dataset` object can be validated for adherence to XML and/or the IATI schemas. IATI schemas can be verified using methods in `iati.validator`.
 
 #### Simple validation
 
@@ -168,25 +168,25 @@ import iati.validator
 ...   <iati-activity>
 ...   </iati-activity>
 ... </iati-activities>
-... """)  # Dataset is XML, but not IATI XML (given missing mandatory elements).
+... """)  # This dataset is XML, but not IATI XML as it's missing mandatory elements.
 >>> v203_schema = iati.default.activity_schema('2.03')
 
-# Is the Dataset even XML?
+# Check whether the dataset is valid XML.
 >>> iati.validator.is_xml(dataset)
 True
 
-# Does the Dataset meet a version of the IATI Schema?
+# Check whether the dataset is valid IATI XML according to the 2.03 schema version.
 >>> iati.validator.is_iati_xml(dataset, v203_schema)
 False
 
-# Does the Dataset meet a version of the IATI Schema AND the IATI Ruleset?
+# Check whether the dataset is valid according to the 2.03 IATI schema and ruleset.
 >>> iati.validator.is_valid(dataset, v203_schema)
 False
 ```
 
 #### Detailed validation
 
-Datasets can be validated to return a `ValidationErrorLog` can be performed using:
+Datasets can be validated to return a `ValidationErrorLog`. This can be performed using:
 
 ```python
 import iati.default
@@ -198,23 +198,23 @@ import iati.validator
 ...   <iati-activity>
 ...   </iati-activity>
 ... </iati-activities>
-... """)  # Dataset is XML, but not IATI XML (given missing mandatory elements).
+... """)  # This dataset is XML, but not IATI XML as it's missing mandatory elements.
 >>> v203_schema = iati.default.activity_schema('2.03')
 
-# Is the Dataset even XML? (Returns a ValidationErrorLog object)
+# Check whether the dataset is valid XML. Returns a ValidationErrorLog object.
 >>> error_log = iati.validator.full_validation(dataset, v203_schema)
 
-# The error log can be read:
->>> len(error_log)  # Number or errors or warnings found
+# The error log can be read using the following:
+>>> len(error_log)  # Number of errors or warnings found
 25
 
->>> error_log.contains_errors()  # Boolean if at least one error is present
+>>> error_log.contains_errors()  # Boolean value returned if at least one error is present
 True
 
->>> error_log.contains_warnings() # Boolean if at least one warning is present
+>>> error_log.contains_warnings() # Boolean value returned if at least one warning is present
 True
 
-# Let's look at the first error only
+# A breakdown of the first error found:
 >>> first_error = error_log[0]
 >>> first_error.info
 "<string>:2:0:ERROR:SCHEMASV:SCHEMAV_ELEMENT_CONTENT: Element 'iati-activity': Missing child element(s). Expected is ( iati-identifier )."

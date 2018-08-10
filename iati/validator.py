@@ -488,7 +488,7 @@ def _check_is_xml(maybe_xml):
         for log_entry in parser.error_log:
             error = _create_error_for_lxml_log_entry(log_entry)
             error_log.add(error)
-        # test_xml_check_not_xml, test_xml_check_not_str_detailed_output
+
     except ValueError as err:
         if 'can only parse strings' in err.args[0]:
             problem_var_type = type(maybe_xml)  # used via `locals()` # pylint: disable=unused-variable

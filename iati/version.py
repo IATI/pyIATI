@@ -102,10 +102,10 @@ class Version(semantic_version.Version):
         """Determine whether a version string is a Decimal and is a permitted value.
 
         Args:
-            version (string or Decimal): The value to check conformance of.
+            version (string or Decimal): The string for which to check conformance.
 
         Returns:
-            bool: True if the provided string is a permitted in IATIver-format version number. False if not.
+            bool: True if the provided string is a permitted IATIver-format version number. False if not.
 
         """
         if not isinstance(version, Decimal):
@@ -116,13 +116,13 @@ class Version(semantic_version.Version):
         return version in valid_values
 
     def _is_iativer(self, version_string):
-        """Determine whether a version string is in a IATIver format and is a permitted value.
+        """Determine whether a version string is in an IATIver format and is a permitted value.
 
         Args:
-            version_string (string): The string to check conformance of.
+            version_string (string): The string for which to check conformance.
 
         Returns:
-            bool: True if the provided string is a permitted in IATIver-format version number. False if not.
+            bool: True if the provided string is a permitted IATIver-format version number. False if not.
 
         """
         # a regex for what makes a valid IATIver Version Number format string
@@ -134,7 +134,7 @@ class Version(semantic_version.Version):
         """Determine whether a version string is in a SemVer format and is a permitted value.
 
         Args:
-            version_string (string): The string to check conformance of.
+            version_string (string): The string for which to check conformance.
 
         Returns:
             bool: True if the provided string is a permitted in SemVer-format version number. False if not.

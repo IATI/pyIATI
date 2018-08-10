@@ -5,7 +5,7 @@ Steps to follow to release a new version of pyIATI.
 
 1. In the `dev` branch.
     1. Ensure license information for any new dependencies has been added to `LICENSES-3RD-PARTY.txt`.
-    2. Read the README to ensure it is up-to-date (if it isn't, fix it!).
+    2. Read the README to ensure it is up-to-date (if it isn't, fix it).
     3. Ensure pyIATI includes the latest relevant version of SSOT content.
     4. Ensure that all relevant Pull Requests have been merged into `dev`.
     5. Ensure the `Unreleased` section in `CHANGELOG.md` covers all changes between `  dev` and `master`.
