@@ -95,7 +95,7 @@ A given IATI Codelist can be added to a Schema. Example using the [Country](http
 
 ```python
 import iati.default
-country_codelist = iati.default.codelist('Country')
+country_codelist = iati.default.codelist('Country', '2.03')
 schema.codelists.add(country_codelist)
 ```
 
@@ -103,7 +103,7 @@ All Codelists for the latest version of the Standard can be accessed with:
 
 ```python
 import iati.default
-all_latest_codelists = iati.default.codelists():
+all_latest_codelists = iati.default.codelists('2.03'):
 ```
 
 ### Loading Rulesets
@@ -112,7 +112,7 @@ The default IATI Ruleset can be loaded by using:
 
 ```python
 import iati.default
-iati.default.ruleset()
+iati.default.ruleset('2.03')
 ```
 
 If you wish to load your own Ruleset you can do this using:
