@@ -27,7 +27,7 @@ General Installation for System Use
 
 ```shell
 # install software dependencies
-apt-get install python-pip libxml2-dev libxslt-dev python-dev
+apt-get install python-pip libxml2-dev libxslt-dev python-dev pandoc
 
 # install this package
 pip install pyIATI
@@ -36,18 +36,20 @@ pip install pyIATI
 Documentation
 =============
 
+The docs are not currently hosted and must be locally generated. To do this you must first:
+
+1. Clone this repo.
+2. Create a new virtualenv using at least python3.5+
+3. `pip install -r requirements_dev.txt`
+
 At present, an HTML documentation site can be generated using the following commands:
 
 ```shell
 # to build the documentation
-sphinx-apidoc -f -o docs/source/ iati/
-sphinx-build -b html docs/source/ docs/build/
+cd pyIATI
+make -B docs
+open docs/build/index.html
 ```
-
-The file `docs/build/index.html` serves as the documentation home page.
-
-**Note:** These are a work-in-progress.
-
 
 IATI Version Support
 ====================
