@@ -48,7 +48,8 @@ At present, an HTML documentation site can be generated using the following comm
 # to build the documentation
 cd pyIATI
 make -B docs
-open docs/build/index.html
+open docs/build/index.html # for Mac OS
+xdg-open docs/build/index.html # for linux
 ```
 
 IATI Version Support
