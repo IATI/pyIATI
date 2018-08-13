@@ -71,6 +71,8 @@ Once installed, the library provides functionality to represent IATI Schemas, Co
 
 A number of default IATI `.xsd` schema files are included as part of the library. They are stored in the folder: `iati.core/iati/core/resources/schemas/`
 
+A schema must now be instantiated with a specified version.
+
 The following example loads the latest IATI Activity Schema:
 
 ```python
