@@ -234,10 +234,6 @@ True
 >>> first_error.name
 'err-not-iati-xml-missing-required-element'
 
-# For 'value not on codelist' errors, the following ValidationError properties may be useful
-# ValidationError.actual_value
-# ValidationError.column_number
-# ValidationErrorline_number
 ```
 
 
