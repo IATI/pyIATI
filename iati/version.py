@@ -447,7 +447,7 @@ def _extract_version_arg(arg_list):
     try:
         version = arg_list[0]
     except IndexError:
-        raise TypeError('The decorated function does not take any arguments. It must have arguments, the first of which is a specified version.')
+        raise TypeError('The first argument of this function must be a specified version.')
 
     return version
 

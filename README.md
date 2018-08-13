@@ -48,7 +48,8 @@ At present, an HTML documentation site can be generated using the following comm
 # to build the documentation
 cd pyIATI
 make -B docs
-open docs/build/index.html
+open docs/build/index.html # for Mac OS
+xdg-open docs/build/index.html # for linux
 ```
 
 IATI Version Support
@@ -70,11 +71,13 @@ Once installed, the library provides functionality to represent IATI Schemas, Co
 
 A number of default IATI `.xsd` schema files are included as part of the library. They are stored in the folder: `iati.core/iati/core/resources/schemas/`
 
+A schema must now be instantiated with a specified version.
+
 The following example loads the latest IATI Activity Schema:
 
 ```python
 import iati.default
-schema = iati.default.activity_schema()
+schema = iati.default.activity_schema('2.03')
 ```
 
 By default, the default Schema will be populated with other information such as Codelists and Rulesets for the specified version of the Standard.
@@ -94,7 +97,7 @@ A given IATI Codelist can be added to a Schema. Example using the [Country](http
 
 ```python
 import iati.default
-country_codelist = iati.default.codelist('Country')
+country_codelist = iati.default.codelist('Country', '2.03')
 schema.codelists.add(country_codelist)
 ```
 
@@ -102,7 +105,7 @@ All Codelists for the latest version of the Standard can be accessed with:
 
 ```python
 import iati.default
-all_latest_codelists = iati.default.codelists():
+all_latest_codelists = iati.default.codelists('2.03'):
 ```
 
 ### Loading Rulesets
@@ -111,7 +114,7 @@ The default IATI Ruleset can be loaded by using:
 
 ```python
 import iati.default
-iati.default.ruleset()
+iati.default.ruleset('2.03')
 ```
 
 If you wish to load your own Ruleset you can do this using:
@@ -139,6 +142,8 @@ dataset = iati.utilities.load_as_dataset('/absolute/path/to/iati-activites.xml')
 ```
 
 #### Loading a dataset - remote
+
+This functionality converts XML strings into bytes and passes it through some internal validation using lxml. Because of this Unicode strings with encoding declaration cannot be instantiated without additional steps as Datasets at this time. See: [Python Unicode Strings](https://lxml.de/parsing.html#python-unicode-strings) for more information.
 
 ```python
 import iati.data
@@ -233,10 +238,6 @@ True
 >>> first_error.name
 'err-not-iati-xml-missing-required-element'
 
-# For 'value not on codelist' errors, the following ValidationError properties may be useful
-# ValidationError.actual_value
-# ValidationError.column_number
-# ValidationErrorline_number
 ```
 
 
