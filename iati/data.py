@@ -50,6 +50,8 @@ class Dataset:
 
             Add a way to determine whether a Dataset fully conforms to the IATI Standard and / or modify the Dataset so that it does.
 
+            Need a way to avoid encoding issues preventing valid IATI datasets being instantiated as pyIATI Datasets.
+
         """
         self._xml_str = None
         self._xml_tree = None

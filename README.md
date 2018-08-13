@@ -141,6 +141,8 @@ dataset = iati.utilities.load_as_dataset('/absolute/path/to/iati-activites.xml')
 
 #### Loading a dataset - remote
 
+This functionality converts XML strings into bytes and passes it through some internal validation using lxml. Because of this Unicode strings with encoding declaration cannot be instantiated without additional steps as Datasets at this time. See: [Python Unicode Strings](https://lxml.de/parsing.html#python-unicode-strings) for more information.
+
 ```python
 import iati.data
 
