@@ -8,6 +8,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [0.4.0] - 2018-08-15
+
+### Added
 
 - [Resources] Add ability to define resource files that are version-independent. [#223]
 
