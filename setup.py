@@ -15,11 +15,11 @@ setup(
         # JSON schema parsing validation
         'jsonschema==2.6.0',
         # XML handling library
-        'lxml==4.1.1',
+        'lxml==4.2.4',
         # YAML parsing for validation error codes
-        'PyYAML==3.12',
-        # python2/python3 compatibility library
-        'six==1.11.0'
+        'PyYAML==3.13',
+        # SemVer library
+        'semantic_version==2.6.0'
         ],
     classifiers = [
         'Development Status :: 2 - Pre-Alpha',
@@ -27,8 +27,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Topic :: Scientific/Engineering :: Information Analysis',

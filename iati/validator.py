@@ -7,7 +7,7 @@ import iati.default
 import iati.resources
 
 
-class ValidationError(object):
+class ValidationError:
     """A base class to encapsulate information about Validation Errors."""
 
     # pylint: disable=too-many-instance-attributes
@@ -70,7 +70,7 @@ class ValidationError(object):
             pass
 
 
-class ValidationErrorLog(object):
+class ValidationErrorLog:
     """A container to keep track of a set of ValidationErrors.
 
     This acts as an iterable that ValidationErrors can be looped over.
@@ -370,9 +370,20 @@ def _check_codes(dataset, codelist):
     Raises:
         ValueError: When a path in a mapping is looking for a type of information that is not supported.
 
+    Note:
+        This code assumes that the Version codelist acts as a list of all possible version numbers.
+
     """
     error_log = ValidationErrorLog()
-    mappings = iati.default.codelist_mapping()
+
+    # clunky workaround due to pre-#230 behavior of `iati.Dataset().version`
+    if dataset.version in iati.version.STANDARD_VERSIONS:
+        mappings = iati.default.codelist_mapping(dataset.version)
+    else:
+        # rather than attempting general checks, ensure version number errors occur
+        codelist = iati.default.codelist('Version', iati.version.STANDARD_VERSION_LATEST)
+        mappings = iati.default.codelist_mapping(iati.version.STANDARD_VERSION_LATEST)
+
     err_name_prefix = 'err' if codelist.complete else 'warn'
 
     for mapping in mappings[codelist.name]:
@@ -456,7 +467,7 @@ def _check_is_xml(maybe_xml):
     """Check whether a given parameter is valid XML.
 
     Args:
-        maybe_xml (str): An string that may or may not contain valid XML.
+        maybe_xml (str / bytes): A string that may or may not contain valid XML.
 
     Returns:
         iati.validator.ValidationErrorLog: A log of the errors that occurred.
@@ -477,7 +488,16 @@ def _check_is_xml(maybe_xml):
         for log_entry in parser.error_log:
             error = _create_error_for_lxml_log_entry(log_entry)
             error_log.add(error)
-    except (AttributeError, TypeError, ValueError):
+
+    except ValueError as err:
+        if 'can only parse strings' in err.args[0]:
+            problem_var_type = type(maybe_xml)  # used via `locals()` # pylint: disable=unused-variable
+            error = ValidationError('err-not-xml-not-string', locals())
+            error_log.add(error)
+        elif 'Unicode strings with encoding declaration are not supported.' in err.args[0]:
+            error = ValidationError('err-encoding-in-str', locals())
+            error_log.add(error)
+    except (AttributeError, TypeError):
         problem_var_type = type(maybe_xml)  # used via `locals()` # pylint: disable=unused-variable
         error = ValidationError('err-not-xml-not-string', locals())
         error_log.add(error)
@@ -713,11 +733,7 @@ def get_error_codes():
 
     # convert name of exception into reference to the relevant class
     for err in err_codes_dict.values():
-        # python2/3 have exceptions in different modules, though six and future do not appear to have a standard workaround for this
-        try:
-            err['base_exception'] = getattr(sys.modules['builtins'], err['base_exception'])
-        except KeyError:
-            err['base_exception'] = getattr(sys.modules['exceptions'], err['base_exception'])
+        err['base_exception'] = getattr(sys.modules['builtins'], err['base_exception'])
 
     return err_codes_dict
 

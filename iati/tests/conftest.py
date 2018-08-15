@@ -3,130 +3,73 @@ import collections
 import pytest
 import iati.default
 import iati.resources
+import iati.tests.utilities
+import iati
+
+
+pytest_plugins = [  # name required by pytest  # pylint: disable=invalid-name
+    'iati.tests.fixtures.comparison',
+    'iati.tests.fixtures.filepaths',
+    'iati.tests.fixtures.versions'
+]
+
+
+def _check_latest_version_mark(item):
+    """Check that functions marked as supporting the latest version of the IATI Standard have been updated."""
+    latest_version_marker = item.get_marker('latest_version')
+    if latest_version_marker is not None:
+        latest_version = iati.Version(latest_version_marker.args[0])
+        help_msg = """The test or fixture is based around data that changes depending on the latest version of the Standard (ie. the `latest_version` pytest mark is being used).
+
+        This may include information such as:
+        * A mapping from version numbers to a value that changes at each version (eg. the number of Codelists at a version).
+        * A value that changes when new versions are added (eg. the number of known versions).
+
+        As such, the test needs updating to support a newly added version:
+        * Update the data to ensure all values for all relevant versions are correct.
+        * Update the marker to state the latest version that is supported (this needs to be the latest known version for this test to pass)."""
+        assert latest_version == iati.version.STANDARD_VERSION_LATEST, help_msg
+
+
+def pytest_runtest_call(item):
+    """Run operations that are called when tests are run."""
+    _check_latest_version_mark(item)
 
 
 @pytest.fixture(params=[
-    ('2.03', 66),  # There are 9 embedded codelists at v2.02, plus 57 non-embedded codelists (which are valid for any version)
+    ('2.03', 66),  # There are 9 embedded codelists at v2.03, plus 57 non-embedded codelists (which are valid for any version)
     ('2.02', 66),  # There are 9 embedded codelists at v2.02, plus 57 non-embedded codelists (which are valid for any version)
     ('2.01', 65),  # There are 8 embedded codelists at v2.01, plus 57 non-embedded codelists (which are valid for any version)
     ('1.05', 67),  # There are 10 embedded codelists at v1.05, plus 57 non-embedded codelists (which are valid for any version)
-    ('1.04', 67)  # There are 10 embedded codelists at v1.04, plus 57 non-embedded codelists (which are valid for any version)
+    ('1.04', 67),  # There are 10 embedded codelists at v1.04, plus 57 non-embedded codelists (which are valid for any version)
+    ('2', 66),  # the same as the latest minor within the major
+    ('1', 67)  # the same as the latest minor within the major
 ])
-def codelist_lengths_by_version(request):
+def codelist_lengths_by_version(request):  # latest_version fixture used to perform checks when adding new versions  # pylint: disable=unused-argument
     """Return a tuple containing versions of the Standard, and the number of Codelists for that version.
 
     Format: `(version=[standardVersion], expected_length=[numCodelists])`
 
     """
+    request.applymarker(pytest.mark.latest_version('2.03'))
+
     output = collections.namedtuple('output', 'version expected_length')
     return output(version=request.param[0], expected_length=request.param[1])
 
 
 @pytest.fixture
-def schema_ruleset():
+def schema_ruleset(request):
     """Return a schema with the Standard Ruleset added.
 
     Returns:
         A valid Activity Schema with the Standard Ruleset added.
 
     """
-    schema = iati.default.activity_schema(None, False)
-    ruleset = iati.default.ruleset()
+    request.applymarker(pytest.mark.fixed_to_202)
+
+    schema = iati.default.activity_schema('2.02', False)
+    ruleset = iati.default.ruleset('2.02')
 
     schema.rulesets.add(ruleset)
 
     return schema
-
-
-@pytest.fixture(params=iati.constants.STANDARD_VERSIONS)
-def standard_version_mandatory(request):
-    """Return a list that can be passed to a function using the argument list unpacking functionality.
-
-    For more information about unpacking argument lists, see https://docs.python.org/3.6/tutorial/controlflow.html#unpacking-argument-lists
-
-    Example:
-        The returned list can be used to test functions (such as `iati.default.codelists`) which has an optional parameter for the version, or can expect `version=None`. It has an optional parameter after the version.
-        In this case test usage would be `iati.default.codelists(*standard_version_mandatory)`.
-
-    Returns:
-        list: A string which corresponds to a version of the Standard.
-
-    """
-    return [request.param]
-
-
-@pytest.fixture(params=['no_arguments', None] + iati.constants.STANDARD_VERSIONS)
-def standard_version_optional(request):
-    """Return a list that can be passed to a function using the argument list unpacking functionality.
-
-    For mor information about unpacking argument lists, see https://docs.python.org/3.6/tutorial/controlflow.html#unpacking-argument-lists
-
-    Example:
-        The returned list can be used to test functions (such as `get_codelist_paths`) which has an optional parameter for the version, or can expect `version=None`.,
-        In this case test usage would be `get_codelist_paths(*standard_version_optional)`.
-
-    Returns:
-        list: Either i) an empty list, ii) a list containing None, or iii) a string which corresponds to a version of the Standard.
-
-    """
-    if request.param == 'no_arguments':
-        return []
-    return [request.param]
-
-
-_CMP_FUNC_EQUAL_VAL = [
-    lambda x, y: x == y,
-    lambda x, y: y == x
-]
-
-
-_CMP_FUNC_EQUAL_HASH = [
-    lambda x, y: hash(x) == hash(y)
-]
-
-
-_CMP_FUNC_DIFFERENT_VAL = [
-    lambda x, y: x != y,
-    lambda x, y: y != x
-]
-
-
-_CMP_FUNC_DIFFERENT_HASH = [
-    lambda x, y: hash(x) != hash(y)
-]
-
-
-@pytest.fixture(params=_CMP_FUNC_EQUAL_VAL)
-def cmp_func_equal_val(request):
-    """Return a comparison function that checks whether two values are equal."""
-    return request.param
-
-
-@pytest.fixture(params=_CMP_FUNC_EQUAL_HASH)
-def cmp_func_equal_hash(request):
-    """Return a comparison function that checks whether two values have the same hash."""
-    return request.param
-
-
-@pytest.fixture(params=_CMP_FUNC_EQUAL_VAL + _CMP_FUNC_EQUAL_HASH)
-def cmp_func_equal_val_and_hash(request):
-    """Return a comparison function that checks whether two values are equal and have the same hash."""
-    return request.param
-
-
-@pytest.fixture(params=_CMP_FUNC_DIFFERENT_VAL)
-def cmp_func_different_val(request):
-    """Return a comparison function that checks whether two values are different."""
-    return request.param
-
-
-@pytest.fixture(params=_CMP_FUNC_DIFFERENT_HASH)
-def cmp_func_different_hash(request):
-    """Return a comparison function that checks whether two hashes are different."""
-    return request.param
-
-
-@pytest.fixture(params=_CMP_FUNC_DIFFERENT_VAL + _CMP_FUNC_DIFFERENT_HASH)
-def cmp_func_different_val_and_hash(request):
-    """Return a comparison function that checks whether two values are different and have different hashes."""
-    return request.param

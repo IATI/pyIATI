@@ -8,7 +8,7 @@ import iati.resources
 import iati.utilities
 
 
-class Schema(object):
+class Schema:
     """Representation of a Schema as defined within the IATI SSOT. This is used as a base class for ActivitySchema and OrganisationSchema and should not be instantiated directly.
 
     Attributes:
@@ -161,10 +161,15 @@ class Schema(object):
         """Return the version that this schema is defined as.
 
         Returns:
-            str or None: The version stated for the schema, according to the value defined in the 'version' attribute at root of the XSD schema. Returns None if there is no 'version' attribute.
+            iati.Version or None: The version stated for the schema, according to the value defined in the 'version' attribute at root of the XSD schema. Returns None if there is no 'version' attribute.
 
         """
-        return self._schema_base_tree.getroot().get('version')
+        version = self._schema_base_tree.getroot().get('version')
+
+        if version is None:
+            return version
+
+        return iati.Version(version)
 
     def flatten_includes(self, tree):
         """Flatten includes so that all nodes are accessible through lxml.

@@ -27,7 +27,7 @@ General Installation for System Use
 
 ```shell
 # install software dependencies
-apt-get install python-pip libxml2-dev libxslt-dev python-dev
+apt-get install python-pip libxml2-dev libxslt-dev python-dev pandoc
 
 # install this package
 pip install pyIATI
@@ -36,18 +36,21 @@ pip install pyIATI
 Documentation
 =============
 
+The docs are not currently hosted and must be locally generated. To do this you must first:
+
+1. Clone this repo.
+2. Create a new virtualenv using at least python3.5+
+3. `pip install -r requirements_dev.txt`
+
 At present, an HTML documentation site can be generated using the following commands:
 
 ```shell
 # to build the documentation
-sphinx-apidoc -f -o docs/source/ iati/
-sphinx-build -b html docs/source/ docs/build/
+cd pyIATI
+make -B docs
+open docs/build/index.html # for Mac OS
+xdg-open docs/build/index.html # for linux
 ```
-
-The file `docs/build/index.html` serves as the documentation home page.
-
-**Note:** These are a work-in-progress. The `edit-docs` branch works to provide an improved docs site.
-
 
 IATI Version Support
 ====================
@@ -68,11 +71,13 @@ Once installed, the library provides functionality to represent IATI Schemas, Co
 
 A number of default IATI `.xsd` schema files are included as part of the library. They are stored in the folder: `iati.core/iati/core/resources/schemas/`
 
+A schema must now be instantiated with a specified version.
+
 The following example loads the latest IATI Activity Schema:
 
 ```python
 import iati.default
-schema = iati.default.activity_schema()
+schema = iati.default.activity_schema('2.03')
 ```
 
 By default, the default Schema will be populated with other information such as Codelists and Rulesets for the specified version of the Standard.
@@ -92,7 +97,7 @@ A given IATI Codelist can be added to a Schema. Example using the [Country](http
 
 ```python
 import iati.default
-country_codelist = iati.default.codelist('Country')
+country_codelist = iati.default.codelist('Country', '2.03')
 schema.codelists.add(country_codelist)
 ```
 
@@ -100,7 +105,7 @@ All Codelists for the latest version of the Standard can be accessed with:
 
 ```python
 import iati.default
-all_latest_codelists = iati.default.codelists():
+all_latest_codelists = iati.default.codelists('2.03'):
 ```
 
 ### Loading Rulesets
@@ -109,7 +114,7 @@ The default IATI Ruleset can be loaded by using:
 
 ```python
 import iati.default
-iati.default.ruleset()
+iati.default.ruleset('2.03')
 ```
 
 If you wish to load your own Ruleset you can do this using:
@@ -138,6 +143,8 @@ dataset = iati.utilities.load_as_dataset('/absolute/path/to/iati-activites.xml')
 
 #### Loading a dataset - remote
 
+This functionality converts XML strings into bytes and passes it through some internal validation using lxml. Because of this Unicode strings with encoding declaration cannot be instantiated without additional steps as Datasets at this time. See: [Python Unicode Strings](https://lxml.de/parsing.html#python-unicode-strings) for more information.
+
 ```python
 import iati.data
 
@@ -148,6 +155,91 @@ dataset_as_string = requests.get('http://XML_FILE_URL_HERE').text
 
 dataset = iati.Dataset(dataset_as_string)
 ```
+
+
+### Validating datasets
+
+A `Dataset` object can be validated for adherence to XML and/or the IATI schemas. IATI schemas can be verified using methods in `iati.validator`.
+
+#### Simple validation
+
+Returns a number of booleans:
+
+```python
+import iati.default
+import iati.validator
+
+# Set-up a sample dataset and get the default v2.03 schema
+>>> dataset = iati.Dataset("""
+... <iati-activities version="2.03">
+...   <iati-activity>
+...   </iati-activity>
+... </iati-activities>
+... """)  # This dataset is XML, but not IATI XML as it's missing mandatory elements.
+>>> v203_schema = iati.default.activity_schema('2.03')
+
+# Check whether the dataset is valid XML.
+>>> iati.validator.is_xml(dataset)
+True
+
+# Check whether the dataset is valid IATI XML according to the 2.03 schema version.
+>>> iati.validator.is_iati_xml(dataset, v203_schema)
+False
+
+# Check whether the dataset is valid according to the 2.03 IATI schema and ruleset.
+>>> iati.validator.is_valid(dataset, v203_schema)
+False
+```
+
+#### Detailed validation
+
+Datasets can be validated to return a `ValidationErrorLog`. This can be performed using:
+
+```python
+import iati.default
+import iati.validator
+
+# Set-up a sample dataset and get the default v2.03 schema
+>>> dataset = iati.Dataset("""
+... <iati-activities version="2.03">
+...   <iati-activity>
+...   </iati-activity>
+... </iati-activities>
+... """)  # This dataset is XML, but not IATI XML as it's missing mandatory elements.
+>>> v203_schema = iati.default.activity_schema('2.03')
+
+# Check whether the dataset is valid XML. Returns a ValidationErrorLog object.
+>>> error_log = iati.validator.full_validation(dataset, v203_schema)
+
+# The error log can be read using the following:
+>>> len(error_log)  # Number of errors or warnings found
+25
+
+>>> error_log.contains_errors()  # Boolean value returned if at least one error is present
+True
+
+>>> error_log.contains_warnings() # Boolean value returned if at least one warning is present
+True
+
+# A breakdown of the first error found:
+>>> first_error = error_log[0]
+>>> first_error.info
+"<string>:2:0:ERROR:SCHEMASV:SCHEMAV_ELEMENT_CONTENT: Element 'iati-activity': Missing child element(s). Expected is ( iati-identifier )."
+
+>>> first_error.description
+'A different element was found than was expected.'
+
+>>> first_error.help
+'There are a number of mandatory elements that an IATI data file must contain. Additionally, these must occur in the required order.\nFor more information about what an XML element is, see https://www.w3schools.com/xml/xml_elements.asp'
+
+>>> first_error.status
+'error'
+
+>>> first_error.name
+'err-not-iati-xml-missing-required-element'
+
+```
+
 
 #### Accessing data
 
@@ -188,7 +280,7 @@ virtualenv -p python3 pyenv
 source pyenv/bin/activate
 
 # install Python package dependencies
-pip install -r requirements-dev.txt
+pip install -r requirements_dev.txt
 ```
 
 

@@ -14,7 +14,7 @@ import os
 from io import StringIO
 import chardet
 from lxml import etree
-import iati.constants
+import iati
 
 
 def add_namespace(tree, new_ns_name, new_ns_uri):
@@ -111,7 +111,7 @@ def convert_xml_to_tree(xml):
     """Convert an XML string into an etree.
 
     Args:
-        xml (str): An XML string to be converted.
+        xml (str / bytes): An XML string to be converted.
 
     Returns:
         etree._Element: An lxml element tree representing the provided XML.
@@ -120,7 +120,7 @@ def convert_xml_to_tree(xml):
         Does not fully hide the lxml internal workings.
 
     Raises:
-        ValueError: The XML provided was something other than a string.
+        TypeError: The XML provided was something other than a string.
         lxml.etree.XMLSyntaxError: There was an error with the syntax of the provided XML.
 
     """
@@ -134,7 +134,7 @@ def convert_xml_to_tree(xml):
     except ValueError:
         msg = "To parse XML into a tree, the XML must be a string, not a {0}.".format(type(xml))
         iati.utilities.log_error(msg)
-        raise ValueError(msg)
+        raise TypeError(msg)
 
 
 def dict_raise_on_duplicates(ordered_pairs):
@@ -175,10 +175,10 @@ def load_as_bytes(path):
         bytes: The contents of the file at the specified location.
 
     Raises:
-        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+        FileNotFoundError: When a file at the specified path does not exist.
 
     Todo:
-        Ensure all reasonably possible `OSError`s are documented here and in functions that call this.
+        Ensure all reasonably possible OSErrors are documented here and in functions that call this.
 
     """
     with open(path, 'rb') as file_to_load:
@@ -197,7 +197,7 @@ def load_as_dataset(path):
         iati.Dataset: A Dataset object representing the contents of the file at the specified location.
 
     Raises:
-        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+        FileNotFoundError: When a file at the specified path does not exist.
 
         ValueError: When a file at the specified path does not contain valid XML.
 
@@ -217,10 +217,10 @@ def load_as_string(path):
         path (str): An absolute (rather than relative) path to the file that is to be read in.
 
     Returns:
-        str (python3) / unicode (python2): The contents of the file at the specified location.
+        str: The contents of the file at the specified location.
 
     Raises:
-        FileNotFoundError (python3) / IOError (python2): When a file at the specified path does not exist.
+        FileNotFoundError: When a file at the specified path does not exist.
 
     """
     loaded_bytes = load_as_bytes(path)
@@ -233,9 +233,6 @@ def load_as_string(path):
         detected_info = chardet.detect(loaded_bytes[:25000])
         try:
             loaded_str = loaded_bytes.decode(detected_info['encoding'])
-            # in Python 2 it is necessary to strip the BOM when decoding from UTF-16BE
-            if detected_info['encoding'] == 'UTF-16' and loaded_str[:1] == u'\ufeff':
-                loaded_str = loaded_str[1:]
         except TypeError:
             raise ValueError('Could not detect encoding of file')
 
@@ -343,21 +340,3 @@ def log_warning(msg, *args, **kwargs):
 
     """
     log(logging.WARN, msg, *args, **kwargs)
-
-
-def versions_for_integer(integer):
-    """Return a list containing the supported versions for the input integer version.
-
-    Args:
-        integer (int): The integer version to find the supported version for.
-
-    Returns:
-        list of str: Containing the supported versions for the input integer.
-
-    """
-    output = list()
-    for version in iati.constants.STANDARD_VERSIONS:
-        if version.startswith(str(integer)):
-            output.append(version)
-
-    return output

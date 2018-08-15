@@ -1,7 +1,7 @@
 """A module containing tests to demonstrate that tests are working."""
 
 
-class TestTest(object):
+class TestTest:
     """Container to demonstrate that tests are running."""
 
     def test_trivial(self):

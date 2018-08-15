@@ -7,7 +7,9 @@ pyenv/
 pyenv2/
 
 # generated docs files
-docs/source/*.rst
+docs/source/iati.rst
+docs/source/modules.rst
+docs/source/README.rst
 
 # defined files to ignore
 ignore_*
@@ -106,3 +108,12 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+###
+### Include things that are otherwise ignored
+###
+
+# test data files hidden because they're in a folder called 'target'
+
+!iati/resources/test_data/2-03/ssot-activity-xml-fail/iati-activities/iati-activity/result/indicator/period/target/
+!iati/resources/test_data/2-03/ssot-activity-xml-pass/iati-activities/iati-activity/result/indicator/period/target/
