@@ -18,6 +18,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Security
 
+## [0.4.1] - 2018-08-16
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+	- [Documentation] Fixed details on RELEASING.md and updated README.md files
+
+	- [Deployment] Updated to the correct version number
+
+### Security
+
 ## [0.4.0] - 2018-08-15
 
 ### Added
