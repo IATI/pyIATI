@@ -10,22 +10,22 @@
 # linters
 flake8==3.6.0 # rq.filter: <4.0
 pydocstyle==2.1.1 # rq.filter: <3.0
-pylint==1.9.3 # rq.filter: <2.0
+pylint==1.9.4 # rq.filter: <2.0
 
 # code complexity
 radon==2.4.0 # rq.filter: <3.0
 
 # testing tools
-pytest==3.9.3 # rq.filter: <4.0
-pytest-cov==2.6.0 # rq.filter: <3.0
-pytest-xdist==1.24.0 # rq.filter: <2.0
+pytest==3.10.1 # rq.filter: <4.0
+pytest-cov==2.6.1 # rq.filter: <3.0
+pytest-xdist==1.26.0 # rq.filter: <2.0
 
 #
 # distribution requirements
 #
 
 # documentation
-Sphinx==1.8.1 # rq.filter: <2.0
+Sphinx==1.8.3 # rq.filter: <2.0
 sphinx-rtd-theme==0.4.2 # rq.filter: <1.0
 
 # version bumping
