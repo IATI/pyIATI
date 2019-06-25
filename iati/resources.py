@@ -96,7 +96,7 @@ def get_codelist_paths(version):
         folder_path = ''
 
     if os.path.isdir(folder_path):
-        files = pkg_resources.resource_listdir(PACKAGE, folder_path[len(resource_filesystem_path('')):])
+        files = pkg_resources.resource_listdir(PACKAGE, os.path.join(*folder_path[len(resource_filesystem_path('')):].split(os.sep)))
         files_codelists_only = [file_name for file_name in files if file_name[-4:] == FILE_CODELIST_EXTENSION]
         paths = [create_codelist_path(file_name, version) for file_name in files_codelists_only]
 
