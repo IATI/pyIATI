@@ -17,7 +17,7 @@ setup(
         # XML handling library
         'lxml==4.2.4',
         # YAML parsing for validation error codes
-        'PyYAML==3.13',
+        'PyYAML==5.4',
         # SemVer library
         'semantic_version==2.6.0'
         ],
